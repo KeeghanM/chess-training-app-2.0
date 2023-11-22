@@ -105,7 +105,7 @@ export default async function Dashboard() {
           <Heading size="9">Welcome back, {user.name}.</Heading>
           <Grid columns={{ initial: "1", md: "3", lg: "4" }} gap={"4"}>
             {tools.map((tool) => (
-              <ToolGrid tool={tool} />
+              <ToolGrid tool={tool} key={tool.name} />
             ))}
           </Grid>
         </Flex>
