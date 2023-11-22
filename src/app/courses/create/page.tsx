@@ -1,4 +1,5 @@
-import { Container, Em, Heading, Section } from "@radix-ui/themes";
+import { Container, Heading, Section, Text } from "@radix-ui/themes";
+import CreateCourseForm from "~/app/components/courses/create/CreateCourseForm";
 
 export default function CreateCourse() {
   return (
@@ -7,10 +8,9 @@ export default function CreateCourse() {
         <Heading size="9" as="h1">
           Create a new course
         </Heading>
-        <Heading size="6" as="h2">
-          <Em>Coming soon!</Em>
-        </Heading>
+        <Text></Text>
       </Container>
+      <CreateCourseForm />
     </Section>
   );
 }

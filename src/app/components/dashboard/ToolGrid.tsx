@@ -1,13 +1,16 @@
 "use client";
 
-import { Box, Button, Card, Flex, Heading, Link, Text } from "@radix-ui/themes";
+import { Button, Card, Flex, Heading, Link, Text } from "@radix-ui/themes";
 import { useState } from "react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Tool } from "~/app/dashboard/page";
+import { useRouter } from "next/navigation";
 
 export default function ToolGrid(props: { tool: Tool }) {
   const [showDescription, setShowDescription] = useState(false);
-  const [parent, enableAnimations] = useAutoAnimate();
+  const [parent] = useAutoAnimate();
+  const router = useRouter();
+
   return (
     <Card>
       <Flex direction={"column"} justify={"between"} height={"100%"} gap={"4"}>
@@ -36,7 +39,11 @@ export default function ToolGrid(props: { tool: Tool }) {
             </Button>
           </Flex>
         </Flex>
-        <Button color="plum" variant="solid">
+        <Button
+          color="plum"
+          variant="solid"
+          onClick={() => router.push(props.tool.href)}
+        >
           {props.tool.buttonText}
         </Button>
       </Flex>
