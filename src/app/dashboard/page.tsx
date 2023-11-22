@@ -20,9 +20,9 @@ export default async function Dashboard() {
 
   const tools: Tool[] = [
     {
-      name: "Study Course",
+      name: "Study from a Course",
       description: [
-        "Study a course you have created, or one that has been shared with you.",
+        "Train using a course you have created, or one that has been shared with you.",
         "Built using spaced repetition, our courses are a great way to learn.",
       ],
       href: "/training/courses",
@@ -41,9 +41,9 @@ export default async function Dashboard() {
     {
       name: "Endgame Training",
       description: [
+        "Pick from Queen, Rook, Knight, Bishop, or Pawn endgames. Or let fate decide.",
         "Fundamental to the game of chess, endgames are an area of chess which many players neglect in their training.",
         "Not as exciting as openings, not as sexy as middlegame tactics, but arguably much more important than either.",
-        "Pick from Queen, Rook, Knight, Bishop, or Pawn endgames. Or let fate decide.",
       ],
       href: "/training/endgames",
       buttonText: "Train",

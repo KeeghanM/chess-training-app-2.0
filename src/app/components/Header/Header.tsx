@@ -1,14 +1,14 @@
 import { Box, Container, Flex, Heading, Link } from "@radix-ui/themes";
 import Image from "next/image";
-import { getServerAuthSession } from "~/server/auth";
+// import { getServerAuthSession } from "~/server/auth";
 import LoginOrDash from "./LoginOrDash";
 
 export default async function Header() {
-  const session = await getServerAuthSession();
+  // const session = await getServerAuthSession();
   const menuItems = [
     { name: "Home", href: "/" },
-    { name: "Find Courses", href: "/courses" },
-    { name: "Puzzles", href: "/puzzle-training" },
+    { name: "Browse Courses", href: "/courses" },
+    { name: "Puzzles", href: "/training/puzzles" },
     { name: "About", href: "/about" },
     { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
@@ -17,15 +17,17 @@ export default async function Header() {
     <Box p="4" style={{ backgroundColor: "var(--gray-4)" }}>
       <Container>
         <Flex direction="row" align="center" justify="between">
-          <Flex direction="row" align="center">
-            <Image
-              src="/chesstrainingapplogo.webp"
-              alt="ChessTraining.app"
-              width={50}
-              height={50}
-            />
-            <Heading>ChessTraining.app</Heading>
-          </Flex>
+          <Link href="/" style={{ color: "white", textDecoration: "none" }}>
+            <Flex direction="row" align="center">
+              <Image
+                src="/chesstrainingapplogo.webp"
+                alt="ChessTraining.app"
+                width={50}
+                height={50}
+              />
+              <Heading>ChessTraining.app</Heading>
+            </Flex>
+          </Link>
           <Flex
             direction="row"
             align="center"

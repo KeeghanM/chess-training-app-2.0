@@ -1,5 +1,5 @@
 "use client";
-import { Avatar, Button, Flex } from "@radix-ui/themes";
+import { Avatar, Button, DropdownMenu, Flex } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
@@ -11,16 +11,34 @@ export default function LoginOrDash() {
     <Flex direction="row" align="center" gap="2">
       {status === "authenticated" && session.user?.name ? (
         <>
-          <Avatar src={session.user.image!} fallback="A" />
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger>
+              <Avatar src={session.user.image!} fallback="A" size="3" />
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Content>
+              <DropdownMenu.Item
+                onSelect={() => router.push("/training/courses")}
+              >
+                Train Courses
+              </DropdownMenu.Item>
+              <DropdownMenu.Item onSelect={() => router.push("/courses")}>
+                Find Courses
+              </DropdownMenu.Item>
+              <DropdownMenu.Item
+                onSelect={() => router.push("/account/settings")}
+              >
+                Settings
+              </DropdownMenu.Item>
+              <DropdownMenu.Item
+                onSelect={() => router.push("/api/auth/signout")}
+                color="red"
+              >
+                Logout
+              </DropdownMenu.Item>
+            </DropdownMenu.Content>
+          </DropdownMenu.Root>
           <Flex direction="row" gap="2">
             <Button onClick={() => router.push("/dashboard")}>Dashboard</Button>
-            <Button
-              color="red"
-              variant="soft"
-              onClick={() => router.push("/api/auth/signout")}
-            >
-              Logout
-            </Button>
           </Flex>
         </>
       ) : (
