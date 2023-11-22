@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { parse as PGNParse, type ParseTree } from "@mliebelt/pgn-parser";
 import {
-  Box,
   Button,
   Container,
   Em,
@@ -11,10 +10,12 @@ import {
   Tabs,
   Text,
   TextArea,
-  TextField,
 } from "@radix-ui/themes";
+import { Line } from "~/app/api/courses/create/parse/route";
 
-export default function CreateCourseForm() {
+export default function PgnToLinesForm(props: {
+  finished: (lines: Line[]) => void;
+}) {
   const [mode, setMode] = useState<"copy" | "lichess" | "upload">("copy");
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -35,13 +36,26 @@ export default function CreateCourseForm() {
 
     if (error) return;
 
-    const response = await fetch("/api/courses/create", {
+    const response = await fetch("/api/courses/create/parse", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pgnString }),
     });
     const data = await response.json();
-    console.log(data);
+    if (!response.ok) {
+      setError(response.statusText);
+      console.log(data.message);
+      return;
+    }
+    if (
+      data.data.lines === undefined ||
+      data.message != "Course Parsed Successfully"
+    ) {
+      setError("That's on us, please try again later.");
+      console.log(data.message);
+      return;
+    }
+    props.finished(data.data.lines);
   };
 
   const parseCopy = async () => {
@@ -64,13 +78,11 @@ export default function CreateCourseForm() {
     <Container size="2">
       <Flex direction="column" gap="4" p="4">
         <Flex direction={"column"} gap="2">
-          <Heading size="5">Give your course a name</Heading>
-          <TextField.Root>
-            <TextField.Input placeholder="Ruy Lopez: For white" size={"3"} />
-          </TextField.Root>
-        </Flex>
-        <Flex direction={"column"} gap="2">
-          <Heading size="5">Import PGN</Heading>
+          <Heading size="5">
+            <Flex align={"center"}>
+              <Text>Import PGN</Text>
+            </Flex>
+          </Heading>
           <Tabs.Root
             defaultValue="copy"
             onValueChange={(x) => setMode(x as "copy" | "lichess" | "upload")}
