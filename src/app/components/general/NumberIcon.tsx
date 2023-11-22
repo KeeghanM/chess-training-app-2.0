@@ -11,7 +11,6 @@ export default function NumberIcon(props: { number: number; color?: string }) {
         height: "2rem",
         fontSize: "1.5rem",
         fontWeight: "bold",
-        borderRadius: "9999px",
         border: "2px solid",
       }}
     >

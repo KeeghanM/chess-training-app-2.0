@@ -34,6 +34,9 @@ export default function PgnToLinesForm(props: {
     // else if (mode === "lichess") await parseLichess();
     // else if (mode === "upload") await parseUpload();
 
+    if (pgnString === "") {
+      setError("Missing PGN String");
+    }
     if (error) return;
 
     const response = await fetch("/api/courses/create/parse", {
@@ -71,7 +74,7 @@ export default function PgnToLinesForm(props: {
     }
 
     // The string is valid PGN, so we can send it to the server
-    setPgnString(string);
+    await setPgnString(string);
   };
 
   return (
@@ -79,9 +82,7 @@ export default function PgnToLinesForm(props: {
       <Flex direction="column" gap="4" p="4">
         <Flex direction={"column"} gap="2">
           <Heading size="5">
-            <Flex align={"center"}>
-              <Text>Import PGN</Text>
-            </Flex>
+            <Text>Import PGN</Text>
           </Heading>
           <Tabs.Root
             defaultValue="copy"

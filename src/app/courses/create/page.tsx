@@ -4,12 +4,15 @@ import PgnToLinesForm from "~/app/components/courses/create/PgnToLinesForm";
 import { useState } from "react";
 import Steps from "~/app/api/courses/create/Steps";
 import { Line } from "~/app/api/courses/create/parse/route";
+import GroupSelector from "~/app/components/courses/create/GroupSelector";
+import CourseName from "~/app/components/courses/create/CourseName";
 
 export default function CreateCourse() {
   const [currentStep, setCurrentStep] = useState<"import" | "group" | "name">(
     "import",
   );
   const [lines, setLines] = useState<Line[]>([]);
+  const [group, setGroup] = useState<string>("");
   return (
     <Section>
       <Container p={{ initial: "2", lg: "0" }}>
@@ -28,11 +31,16 @@ export default function CreateCourse() {
         />
       )}
       {currentStep == "group" && (
-        <Box>
-          <Text>Group</Text>
-          <Text>{JSON.stringify(lines)}</Text>
-        </Box>
+        <GroupSelector
+          lines={lines}
+          finished={(group, sortedLines) => {
+            setCurrentStep("name");
+            setGroup(group);
+            setLines(sortedLines);
+          }}
+        />
       )}
+      {currentStep == "name" && <CourseName />}
     </Section>
   );
 }
