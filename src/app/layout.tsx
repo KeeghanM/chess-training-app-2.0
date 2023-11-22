@@ -1,7 +1,7 @@
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
-import NextAuthProvider from "./context/NextAuthProvider"
-import Header from "./components/Header/Header"
+import NextAuthProvider from "./context/NextAuthProvider";
+import Header from "./components/Header/Header";
 
 export const metadata = {
   title: "Create T3 App",
@@ -16,17 +16,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body style={{margin:0,padding:0}}>
+      <body style={{ margin: 0, padding: 0 }}>
         <NextAuthProvider>
-        <Theme
-          appearance="dark"
-          accentColor="tomato"
-          grayColor="mauve"
-          radius="none"
-        >
-          <Header />
-          {children}
-        </Theme>
+          <Theme
+            appearance="dark"
+            accentColor="tomato"
+            grayColor="mauve"
+            radius="none"
+          >
+            <Header />
+            {children}
+          </Theme>
         </NextAuthProvider>
       </body>
     </html>
