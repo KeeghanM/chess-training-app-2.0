@@ -43,19 +43,18 @@ export async function POST(request: Request) {
         .map((line) => line.tags[group])
         .filter((groupName) => groupName !== undefined),
     ),
-  ].join(",");
+  ];
 
   const prisma = new PrismaClient();
   let course: Course;
   let userCourse: UserCourse;
 
-  // Create a new course
+  // Create a new global course
   try {
     course = await prisma.course.create({
       data: {
         courseName: courseName,
         courseDescription: description,
-        groupNames: groupNames,
         createdBy: session.user.id,
       },
     });
@@ -70,6 +69,34 @@ export async function POST(request: Request) {
       },
     );
   }
+
+  // Setup the groups
+  try {
+    for (const groupName of groupNames) {
+      await prisma.group.create({
+        data: {
+          course: {
+            connect: {
+              id: course.id,
+            },
+          },
+          groupName: groupName,
+        },
+      });
+    }
+  } catch (e: any) {
+    return new Response(
+      JSON.stringify({
+        message: e.message,
+      }),
+      {
+        status: 500,
+        headers: { "content-type": "application/json" },
+      },
+    );
+  }
+
+  // Link the user to the course by creating their userCourse
   try {
     userCourse = await prisma.userCourse.create({
       data: {
@@ -93,8 +120,9 @@ export async function POST(request: Request) {
       },
     );
   }
+
+  // Create the lines, and link the user to the line by creating their lineStat
   try {
-    // Create the lines
     for (const line of lines) {
       const moveString = line.moves.map((move) => move.notation).join(",");
 
@@ -141,6 +169,7 @@ export async function POST(request: Request) {
     );
   }
 
+  // All went well, so return the course id and line count
   return new Response(
     JSON.stringify({
       message: "Course Uploaded Successfully",

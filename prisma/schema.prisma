@@ -14,13 +14,22 @@ datasource db {
 model Course {
     id                String   @id @default(cuid())
     courseName        String
-    courseDescription String
-    groupNames        String
+    courseDescription String?  @db.Text
     createdBy         String
     createdAt         DateTime @default(now())
     updatedAt         DateTime @updatedAt
     published         Boolean  @default(false)
     lines             Line[]
+    groups            Group[]
+}
+
+model Group {
+    id        String   @id @default(cuid())
+    courseId  String
+    groupName String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model Line {
