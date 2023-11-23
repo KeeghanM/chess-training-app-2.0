@@ -26,7 +26,7 @@ model Course {
 model Line {
     id        String   @id @default(cuid())
     courseId  String
-    lineName  String
+    lineName  String?
     colour    String
     groupName String
     moves     String
@@ -36,16 +36,16 @@ model Line {
 }
 
 model UserCourse {
-    id            String   @id @default(cuid())
+    id            String    @id @default(cuid())
     courseId      String
     userId        String
-    active        Boolean  @default(true)
-    lastTrained   DateTime
-    linesLearned  Int
-    linesLearning Int
-    linesHard     Int
+    active        Boolean   @default(true)
+    lastTrained   DateTime?
+    linesLearned  Int       @default(0)
+    linesLearning Int       @default(0)
+    linesHard     Int       @default(0)
     linesUnseen   Int
-    user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model LineStat {
@@ -54,22 +54,22 @@ model LineStat {
     userId       String
     userCourseId String
     lineId       String
-    lastTrained  DateTime
-    timesTrained Int
-    timesCorrect Int
-    timesWrong   Int
+    lastTrained  DateTime?
+    timesTrained Int        @default(0)
+    timesCorrect Int        @default(0)
+    timesWrong   Int        @default(0)
     moves        MoveStat[]
 }
 
 model MoveStat {
-    id           Int      @id @default(autoincrement())
+    id           Int       @id @default(autoincrement())
     lineStatId   String
     move         String
-    lastTrained  DateTime
-    timesTrained Int
-    timesCorrect Int
-    timesWrong   Int
-    line         LineStat @relation(fields: [lineStatId], references: [id], onDelete: Cascade)
+    lastTrained  DateTime?
+    timesTrained Int       @default(0)
+    timesCorrect Int       @default(0)
+    timesWrong   Int       @default(0)
+    line         LineStat  @relation(fields: [lineStatId], references: [id], onDelete: Cascade)
 }
 
 // Necessary for Next auth

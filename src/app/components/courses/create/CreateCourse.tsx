@@ -16,9 +16,13 @@ export default function CreateCourseForm() {
   const [courseName, setCourseName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [lines, setLines] = useState<Line[]>([]);
-  const [group, setGroup] = useState<string>("");
 
-  const upload = async () => {
+  const upload = async (
+    courseName: string,
+    description: string,
+    group: string,
+    lines: Line[],
+  ) => {
     if (!session) return;
 
     const response = await fetch("/api/courses/create/upload", {
@@ -68,11 +72,9 @@ export default function CreateCourseForm() {
       {currentStep == "group" && (
         <GroupSelector
           lines={lines}
-          finished={(group, sortedLines) => {
-            setGroup(group);
-            setLines(sortedLines);
-            setCurrentStep("upload");
-            upload();
+          finished={async (group, sortedLines) => {
+            await setCurrentStep("upload");
+            upload(courseName, description, group, sortedLines);
           }}
         />
       )}
