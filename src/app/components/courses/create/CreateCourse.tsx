@@ -1,14 +1,16 @@
 "use client";
-import { Heading, Text } from "@radix-ui/themes";
+import { Heading } from "@radix-ui/themes";
 import PgnToLinesForm from "~/app/components/courses/create/PgnToLinesForm";
 import { useState } from "react";
-import Steps from "~/app/api/courses/create/Steps";
+import Steps from "~/app/components/courses/create/Steps";
 import { Line } from "~/app/api/courses/create/parse/route";
 import GroupSelector from "~/app/components/courses/create/GroupSelector";
 import DetailsForm from "~/app/components/courses/create/DetailsForm";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function CreateCourseForm() {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const [currentStep, setCurrentStep] = useState<
     "import" | "group" | "name" | "upload"
@@ -34,14 +36,12 @@ export default function CreateCourseForm() {
       body: JSON.stringify({ courseName, description, group, lines }),
     });
     const data = await response.json();
-    if (!response.ok) {
+    if (!response.ok || data.message != "Course Uploaded Successfully") {
       console.log(data.message);
       return;
     }
-    if (data.message != "Course Uploaded Successfully") {
-      console.log(data.message);
-      return;
-    }
+
+    router.push("/courses/" + data.course.id);
   };
 
   return (

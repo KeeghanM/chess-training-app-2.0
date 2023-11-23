@@ -1,22 +1,16 @@
 import { Course, PrismaClient, UserCourse } from "@prisma/client";
 import { getServerAuthSession } from "~/server/auth";
 import { Line } from "../parse/route";
+import { errorResponse, successResponse } from "../../../responses";
+
+const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   // Check if user is authenticated and reject request if not
   const session = await getServerAuthSession();
   const authToken = request.headers.get("Authorization")?.split(" ")[1];
-  if (!session || session.user.id !== authToken) {
-    return new Response(
-      JSON.stringify({
-        message: "Unauthorized",
-      }),
-      {
-        status: 401,
-        headers: { "content-type": "application/json" },
-      },
-    );
-  }
+  if (!session || session.user.id !== authToken)
+    return errorResponse("Unauthorized", 401);
 
   const { courseName, description, group, lines } = (await request.json()) as {
     courseName: string;
@@ -25,17 +19,8 @@ export async function POST(request: Request) {
     lines: Line[];
   };
 
-  if (!courseName || !group || !lines) {
-    return new Response(
-      JSON.stringify({
-        message: "Missing required fields",
-      }),
-      {
-        status: 400,
-        headers: { "content-type": "application/json" },
-      },
-    );
-  }
+  if (!courseName || !group || !lines)
+    return errorResponse("Missing required fields", 400);
 
   const groupNames = [
     ...new Set(
@@ -45,7 +30,6 @@ export async function POST(request: Request) {
     ),
   ];
 
-  const prisma = new PrismaClient();
   let course: Course;
   let userCourse: UserCourse;
 
@@ -80,7 +64,7 @@ export async function POST(request: Request) {
               id: course.id,
             },
           },
-          groupName: groupName,
+          groupName: groupName as string,
         },
       });
     }
