@@ -67,7 +67,7 @@ export default function PgnToLinesForm(props: {
     // Parse the PGN Locally before sending it to the server
     // This is to avoid sending invalid PGN to the server
     try {
-      parsed = PGNParse(string, { startRule: "games" }) as ParseTree[];
+      parsed = (await PGNParse(string, { startRule: "games" })) as ParseTree[];
     } catch (e: any) {
       setError(e.message);
       return;

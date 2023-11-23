@@ -1,10 +1,8 @@
 import { Box, Container, Flex, Heading, Link } from "@radix-ui/themes";
 import Image from "next/image";
-// import { getServerAuthSession } from "~/server/auth";
 import LoginOrDash from "./LoginOrDash";
 
 export default async function Header() {
-  // const session = await getServerAuthSession();
   const menuItems = [
     { name: "Home", href: "/" },
     { name: "Browse Courses", href: "/courses" },

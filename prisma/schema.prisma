@@ -12,14 +12,15 @@ datasource db {
 }
 
 model Course {
-    id         String   @id @default(cuid())
-    courseName String
-    groupNames String
-    createdBy  String
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
-    published  Boolean  @default(false)
-    lines      Line[]
+    id                String   @id @default(cuid())
+    courseName        String
+    courseDescription String
+    groupNames        String
+    createdBy         String
+    createdAt         DateTime @default(now())
+    updatedAt         DateTime @updatedAt
+    published         Boolean  @default(false)
+    lines             Line[]
 }
 
 model Line {
