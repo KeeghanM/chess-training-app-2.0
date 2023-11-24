@@ -1,0 +1,20 @@
+import { cookies } from "next/headers";
+// @ts-ignore
+import { v4 as uuidv4 } from "uuid";
+
+export async function GET(request: Request) {
+  const cookiesList = cookies();
+  if (!cookiesList.get("sessionId")) {
+    const sessionId = uuidv4();
+    cookiesList.set("sessionId", sessionId);
+  }
+
+  const sessionId = cookiesList.get("sessionId")?.value;
+
+  return new Response(JSON.stringify({ sessionId }), {
+    headers: {
+      "content-type": "application/json",
+      "Set-Cookie": sessionId as string,
+    },
+  });
+}

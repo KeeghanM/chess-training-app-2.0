@@ -1,7 +1,8 @@
 import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
-import NextAuthProvider from "./context/NextAuthProvider";
+import NextAuthProvider from "./util/NextAuthProvider";
 import Header from "./components/Header/Header";
+import { trackEvent } from "./util/MixPanel";
 
 export const metadata = {
   title: "Create T3 App",
@@ -9,11 +10,13 @@ export const metadata = {
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  await trackEvent("page_view");
+
   return (
     <html lang="en">
       <body style={{ margin: 0, padding: 0 }}>
