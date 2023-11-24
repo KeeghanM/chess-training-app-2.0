@@ -2,7 +2,7 @@ import { Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import NextAuthProvider from "./util/NextAuthProvider";
 import Header from "./components/Header/Header";
-import { trackEvent } from "./util/MixPanel";
+import { trackEventOnServer } from "./util/trackEventOnServer";
 
 export const metadata = {
   title: "ChessTraining.app - The best way to improve your chess",
@@ -16,7 +16,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  await trackEvent("page_view");
+  await trackEventOnServer("page_view");
 
   return (
     <html lang="en">

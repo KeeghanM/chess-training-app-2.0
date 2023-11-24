@@ -15,6 +15,8 @@ import {
   Line,
   ParsePGNtoLineData,
 } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
+import trackEventOnClient from "~/app/util/trackEventOnClient";
+import { track } from "mixpanel";
 
 export default function PgnToLinesForm(props: {
   finished: (lines: Line[]) => void;
@@ -50,6 +52,10 @@ export default function PgnToLinesForm(props: {
     if (!validPGN(string)) {
       setError("Invalid PGN");
       setStatus("idle");
+      trackEventOnClient("Create Course", {
+        step: "Import PGN",
+        value: "Invalid PGN",
+      });
       return;
     }
     // Final Catch
@@ -65,6 +71,10 @@ export default function PgnToLinesForm(props: {
       return;
     }
 
+    trackEventOnClient("Create Course", {
+      step: "Import PGN",
+      value: "Success",
+    });
     props.finished(lines);
   };
 

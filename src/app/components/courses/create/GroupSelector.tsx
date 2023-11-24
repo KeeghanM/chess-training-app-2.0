@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Button, Container, Flex, Heading, Tabs, Text } from "@radix-ui/themes";
 import { GroupItem } from "./GroupItem";
 import Spinner from "../../general/Spinner";
+import trackEventOnClient from "~/app/util/trackEventOnClient";
 
 export default function GroupSelector(props: {
   lines: Line[];
@@ -55,6 +56,10 @@ export default function GroupSelector(props: {
             defaultValue={groupOptions[0]}
             onValueChange={(x) => {
               countLines(x);
+              trackEventOnClient("Create Course", {
+                step: "Grouping",
+                value: "Change Group",
+              });
             }}
           >
             <Tabs.List>

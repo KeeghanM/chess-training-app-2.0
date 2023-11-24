@@ -3,7 +3,6 @@ import { useState } from "react";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import {
   AlertDialog,
-  Box,
   Button,
   Card,
   Flex,
@@ -13,6 +12,7 @@ import {
   Text,
 } from "@radix-ui/themes";
 import PrettyPrintLine from "../../general/PrettyPrintLine";
+import trackEventOnClient from "~/app/util/trackEventOnClient";
 
 export function GroupItem(props: {
   lines: Line[];
@@ -48,6 +48,10 @@ export function GroupItem(props: {
                       <Select.Root
                         defaultValue={line.tags["Colour"]}
                         onValueChange={(v) => {
+                          trackEventOnClient("Create Course", {
+                            step: "Grouping",
+                            value: "Change Colour",
+                          });
                           line.tags["Colour"] = v as string;
                         }}
                       >
@@ -80,6 +84,10 @@ export function GroupItem(props: {
                                 color="red"
                                 variant="soft"
                                 onClick={() => {
+                                  trackEventOnClient("Create Course", {
+                                    step: "Grouping",
+                                    value: "Delete Line",
+                                  });
                                   lines.splice(lines.indexOf(line), 1),
                                     setLinesToShow(
                                       linesToShow.filter((l) => l !== line),

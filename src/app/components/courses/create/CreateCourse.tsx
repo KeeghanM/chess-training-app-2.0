@@ -9,13 +9,14 @@ import DetailsForm from "~/app/components/courses/create/DetailsForm";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { set } from "zod";
+import trackEventOnClient from "~/app/util/trackEventOnClient";
 
 export default function CreateCourseForm() {
   const router = useRouter();
   const { data: session } = useSession();
   const [currentStep, setCurrentStep] = useState<
     "import" | "group" | "name" | "error"
-  >("error");
+  >("name");
   const [courseName, setCourseName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [lines, setLines] = useState<Line[]>([]);
@@ -39,10 +40,20 @@ export default function CreateCourseForm() {
     const data = await response.json();
 
     if (!response.ok || data.message != "Course created") {
+      trackEventOnClient("Create Course", {
+        step: "Upload",
+        value: "Error",
+        message: data.message,
+      });
       setCurrentStep("error");
       return;
     }
 
+    trackEventOnClient("Create Course", {
+      step: "Upload",
+      value: "Success",
+    });
+    console.log("/courses/" + data.data.slug);
     router.push("/courses/" + data.data.slug);
   };
 

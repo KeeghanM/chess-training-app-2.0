@@ -13,6 +13,7 @@ import {
 } from "@radix-ui/themes";
 import { useState } from "react";
 import Spinner from "../../general/Spinner";
+import trackEventOnClient from "~/app/util/trackEventOnClient";
 
 export default function DetailsForm(props: {
   finished: (name: string, description: string) => void;
@@ -41,9 +42,19 @@ export default function DetailsForm(props: {
     if (!json.data?.isAvailable) {
       setError("Name is already taken");
       setStatus("idle");
+      trackEventOnClient("Create Course", {
+        step: "Details",
+        value: "Name Taken",
+        name,
+      });
       return;
     }
 
+    trackEventOnClient("Create Course", {
+      step: "Details",
+      value: "Success",
+      name,
+    });
     props.finished(name, description);
   };
 

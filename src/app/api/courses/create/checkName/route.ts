@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 export async function POST(request: Request) {
   const { name } = await request.json();
   if (!name) return errorResponse("Missing name", 400);
+
   try {
     const course = await prisma.course.findFirst({
       where: {
@@ -21,6 +22,7 @@ export async function POST(request: Request) {
         },
         200,
       );
+
     return successResponse(
       "Course name is not available",
       {

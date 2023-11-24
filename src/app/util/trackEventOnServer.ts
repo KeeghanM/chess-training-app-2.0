@@ -8,7 +8,7 @@ export const mixpanel = Mixpanel.init(process.env.MIXPANEL_TOKEN as string, {
   host: "api-eu.mixpanel.com",
 });
 
-export async function trackEvent(event: string, data?: any) {
+export async function trackEventOnServer(event: string, data?: any) {
   // get all the headers and sessionCookie
   const session = await getServerAuthSession();
   const headersList = headers();
