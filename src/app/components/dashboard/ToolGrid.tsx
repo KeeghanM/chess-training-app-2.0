@@ -51,6 +51,7 @@ export default function ToolGrid(props: { tool: Tool }) {
             color="plum"
             variant="solid"
             onClick={() => router.push(tool.href)}
+            style={{ cursor: "pointer" }}
           >
             {tool.buttonText}
           </Button>
