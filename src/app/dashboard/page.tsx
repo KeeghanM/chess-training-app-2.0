@@ -1,6 +1,7 @@
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
 import { Container, Flex, Grid, Heading, Section } from "@radix-ui/themes";
+import { GrowthBook } from "@growthbook/growthbook";
 import ToolGrid from "../components/dashboard/ToolGrid";
 
 export type Tool = {
@@ -8,10 +9,18 @@ export type Tool = {
   description: string[];
   href: string;
   buttonText: string;
+  active: boolean;
 };
+
+const growthbook = new GrowthBook({
+  apiHost: process.env.GROWTHBOOK_HOST,
+  clientKey: process.env.GROWTHBOOK_CLIENT_KEY,
+  enableDevMode: process.env.NODE_ENV === "development",
+});
 
 export default async function Dashboard() {
   const session = await getServerAuthSession();
+  await growthbook.loadFeatures();
 
   // Redirect to login if no session
   if (!session) redirect("/api/auth/signin");
@@ -27,6 +36,7 @@ export default async function Dashboard() {
       ],
       href: "/training/courses",
       buttonText: "Train",
+      active: growthbook.isOn("study-course"),
     },
     {
       name: "Puzzle Training",
@@ -37,6 +47,7 @@ export default async function Dashboard() {
       ],
       href: "/training/puzzles",
       buttonText: "Train",
+      active: growthbook.isOn("puzzle-trainer"),
     },
     {
       name: "Endgame Training",
@@ -47,6 +58,7 @@ export default async function Dashboard() {
       ],
       href: "/training/endgames",
       buttonText: "Train",
+      active: growthbook.isOn("endgame-trainer"),
     },
     {
       name: "Visualisation & Calculation",
@@ -57,6 +69,7 @@ export default async function Dashboard() {
       ],
       href: "/training/visualisation",
       buttonText: "Train",
+      active: growthbook.isOn("visualisation-trainer"),
     },
     {
       name: "Knight Vision",
@@ -67,6 +80,7 @@ export default async function Dashboard() {
       ],
       href: "/training/knight-vision",
       buttonText: "Train",
+      active: growthbook.isOn("knight-vision"),
     },
     {
       name: "Find Courses",
@@ -76,6 +90,7 @@ export default async function Dashboard() {
       ],
       href: "/courses",
       buttonText: "Find",
+      active: true,
     },
     {
       name: "Create a Course",
@@ -86,6 +101,7 @@ export default async function Dashboard() {
       ],
       href: "/courses/create",
       buttonText: "Create",
+      active: growthbook.isOn("create-course"),
     },
     {
       name: "Account Settings",
@@ -95,6 +111,7 @@ export default async function Dashboard() {
       ],
       href: "/account/settings",
       buttonText: "Open",
+      active: true,
     },
   ];
 
@@ -104,9 +121,15 @@ export default async function Dashboard() {
         <Flex direction={"column"} gap={"4"}>
           <Heading size="9">Welcome back, {user.name}.</Heading>
           <Grid columns={{ initial: "1", md: "3", lg: "4" }} gap={"4"}>
-            {tools.map((tool) => (
-              <ToolGrid tool={tool} key={tool.name} />
-            ))}
+            {tools
+              .sort((a, b) => {
+                if (a.active && !b.active) return -1;
+                if (!a.active && b.active) return 1;
+                return 0;
+              })
+              .map((tool) => (
+                <ToolGrid tool={tool} key={tool.name} />
+              ))}
           </Grid>
         </Flex>
       </Container>

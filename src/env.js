@@ -33,6 +33,8 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: z.string(),
     API_BASE_URL: z.string().url(),
     MIXPANEL_TOKEN: z.string(),
+    GROWTHBOOK_HOST: z.string().url(),
+    GROWTHBOOK_CLIENT_KEY: z.string(),
   },
 
   /**
@@ -57,6 +59,8 @@ export const env = createEnv({
     DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
     API_BASE_URL: process.env.API_BASE_URL,
     MIXPANEL_TOKEN: process.env.MIXPANEL_TOKEN,
+    GROWTHBOOK_HOST: process.env.GROWTHBOOK_HOST,
+    GROWTHBOOK_CLIENT_KEY: process.env.GROWTHBOOK_CLIENT_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
