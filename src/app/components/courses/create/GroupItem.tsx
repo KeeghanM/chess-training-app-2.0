@@ -1,4 +1,4 @@
-import { Line } from "~/app/api/courses/create/parse/route";
+import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
 import { useState } from "react";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import {

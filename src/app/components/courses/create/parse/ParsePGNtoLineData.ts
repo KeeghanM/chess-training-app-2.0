@@ -1,7 +1,5 @@
 import { parse, type ParseTree } from "@mliebelt/pgn-parser";
-import { getServerAuthSession } from "~/server/auth";
 import ECO from "./ecoCodes";
-import { errorResponse, successResponse } from "../../../responses";
 
 interface CleanMove {
   notation: string;
@@ -15,30 +13,16 @@ export interface Line {
   moves: CleanMove[];
 }
 
-export async function POST(request: Request) {
-  const session = await getServerAuthSession();
-  if (!session) return errorResponse("Unauthorized", 401);
-
-  const { pgnString } = await request.json();
-  if (!pgnString) return errorResponse("Missing PGN String", 400);
+export function ParsePGNtoLineData(pgnString: string) {
+  if (!pgnString) return null;
 
   // Parse PGN String, and reject request if it is invalid
-  let parsedLines: ParseTree[];
-  try {
-    parsedLines = parse(pgnString, { startRule: "games" }) as ParseTree[];
-  } catch (error: any) {
-    return errorResponse("Invalid PGN: " + error.message, 400);
-  }
-
+  const parsedLines = parse(pgnString, { startRule: "games" }) as ParseTree[];
   // Now split out all the variations into separate lines
-  let lines: Line[] = [];
-  try {
-    for (let line of parsedLines) {
-      const tags = line.tags as unknown as Tags;
-      recursiveParse([], line.moves, tags, lines);
-    }
-  } catch (error: any) {
-    return errorResponse(error.message, 500);
+  const lines: Line[] = [];
+  for (let line of parsedLines) {
+    const tags = line.tags as unknown as Tags;
+    recursiveParse([], line.moves, tags, lines);
   }
 
   // Map the lines to a specific and a general opening name
@@ -88,13 +72,7 @@ export async function POST(request: Request) {
     return a.moves.length - b.moves.length;
   });
 
-  return successResponse(
-    "Course Parsed Successfully",
-    {
-      lines,
-    },
-    200,
-  );
+  return lines;
 }
 
 function recursiveParse(

@@ -1,6 +1,6 @@
 import { PrismaClient, Course, Group as PrismaGroup } from "@prisma/client";
 import { getServerAuthSession } from "~/server/auth";
-import { Line } from "../parse/route";
+import { Line } from "../../../../components/courses/create/parse/ParsePGNtoLineData";
 import { errorResponse, successResponse } from "../../../responses";
 
 const prisma = new PrismaClient();

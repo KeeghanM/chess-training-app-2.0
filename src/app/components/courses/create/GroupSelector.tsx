@@ -1,6 +1,6 @@
 "use client";
 
-import { Line } from "~/app/api/courses/create/parse/route";
+import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
 import { useState, useEffect } from "react";
 import { Button, Container, Flex, Heading, Tabs, Text } from "@radix-ui/themes";
 import { GroupItem } from "./GroupItem";

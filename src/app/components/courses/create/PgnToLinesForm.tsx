@@ -11,7 +11,10 @@ import {
   Text,
   TextArea,
 } from "@radix-ui/themes";
-import { Line } from "~/app/api/courses/create/parse/route";
+import {
+  Line,
+  ParsePGNtoLineData,
+} from "~/app/components/courses/create/parse/ParsePGNtoLineData";
 
 export default function PgnToLinesForm(props: {
   finished: (lines: Line[]) => void;
@@ -55,27 +58,14 @@ export default function PgnToLinesForm(props: {
       return;
     }
 
-    const response = await fetch("/api/courses/create/parse", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pgnString: string }),
-    });
-    const data = await response.json();
-    if (!response.ok) {
-      setError(data.message);
+    const lines = ParsePGNtoLineData(string);
+    if (!lines) {
+      setError("Something went wrong parsing the PGN");
       setStatus("idle");
       return;
     }
-    if (
-      data.data.lines === undefined ||
-      data.message != "Course Parsed Successfully"
-    ) {
-      setError("That's on us, please try again later.");
-      setStatus("idle");
-      return;
-    }
-    props.finished(data.data.lines);
-    setStatus("idle");
+
+    props.finished(lines);
   };
 
   return (

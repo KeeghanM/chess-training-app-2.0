@@ -1,5 +1,5 @@
 import { Flex, Text } from "@radix-ui/themes";
-import { Line } from "~/app/api/courses/create/parse/route";
+import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
 
 export default function PrettyPrintLine(line: Line) {
   // Return the moves, with the move number bolded

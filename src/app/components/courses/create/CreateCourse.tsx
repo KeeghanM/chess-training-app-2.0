@@ -3,7 +3,7 @@ import { Heading } from "@radix-ui/themes";
 import PgnToLinesForm from "~/app/components/courses/create/PgnToLinesForm";
 import { useState } from "react";
 import Steps from "~/app/components/courses/create/Steps";
-import { Line } from "~/app/api/courses/create/parse/route";
+import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
 import GroupSelector from "~/app/components/courses/create/GroupSelector";
 import DetailsForm from "~/app/components/courses/create/DetailsForm";
 import { useSession } from "next-auth/react";
