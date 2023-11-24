@@ -1,5 +1,5 @@
 "use client";
-import { Heading } from "@radix-ui/themes";
+import { Button, Heading } from "@radix-ui/themes";
 import PgnToLinesForm from "~/app/components/courses/create/PgnToLinesForm";
 import { useState } from "react";
 import Steps from "~/app/components/courses/create/Steps";
@@ -8,13 +8,14 @@ import GroupSelector from "~/app/components/courses/create/GroupSelector";
 import DetailsForm from "~/app/components/courses/create/DetailsForm";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { set } from "zod";
 
 export default function CreateCourseForm() {
   const router = useRouter();
   const { data: session } = useSession();
-  const [currentStep, setCurrentStep] = useState<"import" | "group" | "name">(
-    "name",
-  );
+  const [currentStep, setCurrentStep] = useState<
+    "import" | "group" | "name" | "error"
+  >("error");
   const [courseName, setCourseName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [lines, setLines] = useState<Line[]>([]);
@@ -27,9 +28,6 @@ export default function CreateCourseForm() {
   ) => {
     if (!session) return;
 
-    // TODO: Move server side parsing to client side
-    // then just validate on the server
-
     const response = await fetch("/api/courses/create/upload", {
       method: "POST",
       headers: {
@@ -40,12 +38,12 @@ export default function CreateCourseForm() {
     });
     const data = await response.json();
 
-    if (!response.ok || data.message != "Course Uploaded Successfully") {
-      //TODO: Handle error
+    if (!response.ok || data.message != "Course created") {
+      setCurrentStep("error");
       return;
     }
 
-    router.push("/courses/" + data.data.course.id);
+    router.push("/courses/" + data.data.slug);
   };
 
   return (
@@ -80,6 +78,22 @@ export default function CreateCourseForm() {
             upload(courseName, description, group, sortedLines);
           }}
         />
+      )}
+      {currentStep == "error" && (
+        <>
+          <Heading size="7" as={"h2"} color="red">
+            Error: Something went wrong
+          </Heading>
+          <Button
+            onClick={() => setCurrentStep("name")}
+            color="red"
+            variant="soft"
+            size={"4"}
+            style={{ cursor: "pointer" }}
+          >
+            Try again
+          </Button>
+        </>
       )}
     </>
   );

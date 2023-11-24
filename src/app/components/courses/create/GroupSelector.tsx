@@ -4,6 +4,7 @@ import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
 import { useState, useEffect } from "react";
 import { Button, Container, Flex, Heading, Tabs, Text } from "@radix-ui/themes";
 import { GroupItem } from "./GroupItem";
+import Spinner from "../../general/Spinner";
 
 export default function GroupSelector(props: {
   lines: Line[];
@@ -96,33 +97,6 @@ export default function GroupSelector(props: {
   );
 }
 
-function Spinner() {
-  return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 38 38"
-      xmlns="http://www.w3.org/2000/svg"
-      stroke="#fff"
-    >
-      <g fill="none" fillRule="evenodd">
-        <g transform="translate(1 1)" strokeWidth="2">
-          <circle strokeOpacity=".5" cx="18" cy="18" r="18" />
-          <path d="M36 18c0-9.94-8.06-18-18-18">
-            <animateTransform
-              attributeName="transform"
-              type="rotate"
-              from="0 18 18"
-              to="360 18 18"
-              dur="1s"
-              repeatCount="indefinite"
-            />
-          </path>
-        </g>
-      </g>
-    </svg>
-  );
-}
 function getGroupOptions(lines: Line[]): string[] {
   // Get a list of tags which exist on all lines
   // ignore tags which are not on all lines

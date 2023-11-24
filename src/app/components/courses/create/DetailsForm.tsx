@@ -12,6 +12,7 @@ import {
   TextField,
 } from "@radix-ui/themes";
 import { useState } from "react";
+import Spinner from "../../general/Spinner";
 
 export default function DetailsForm(props: {
   finished: (name: string, description: string) => void;
@@ -87,7 +88,12 @@ export default function DetailsForm(props: {
         </Box>
         <Flex direction={"column"} gap="2">
           <Button color={"plum"} onClick={create}>
-            Create Course
+            <Flex align={"center"} gap={"4"}>
+              <Text>
+                {status == "idle" ? "Create Course" : "Checking Name"}
+              </Text>
+              {status == "loading" && <Spinner />}
+            </Flex>
           </Button>
           {error && (
             <Text as="p" color="red">
