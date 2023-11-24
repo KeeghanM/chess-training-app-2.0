@@ -1,6 +1,7 @@
 import { parse, type ParseTree } from "@mliebelt/pgn-parser";
 import { getServerAuthSession } from "~/server/auth";
 import ECO from "./ecoCodes";
+import { errorResponse, successResponse } from "../../../responses";
 
 interface CleanMove {
   notation: string;
@@ -15,74 +16,32 @@ export interface Line {
 }
 
 export async function POST(request: Request) {
-  // Check if user is authenticated and reject request if not
   const session = await getServerAuthSession();
-  if (!session) {
-    return new Response(
-      JSON.stringify({
-        message: "Unauthorized",
-      }),
-      {
-        status: 401,
-        headers: { "content-type": "application/json" },
-      },
-    );
-  }
+  if (!session) return errorResponse("Unauthorized", 401);
 
-  // Check if request body contains required fields and reject request if not
   const { pgnString } = await request.json();
-  if (!pgnString) {
-    return new Response(
-      JSON.stringify({
-        message: "Missing PGN",
-      }),
-      {
-        status: 400,
-        headers: { "content-type": "application/json" },
-      },
-    );
-  }
+  if (!pgnString) return errorResponse("Missing PGN String", 400);
 
   // Parse PGN String, and reject request if it is invalid
   let parsedLines: ParseTree[];
-  let lines: Line[] = [];
   try {
     parsedLines = parse(pgnString, { startRule: "games" }) as ParseTree[];
   } catch (error: any) {
-    return new Response(
-      JSON.stringify({
-        message: error.message,
-      }),
-      {
-        status: 400,
-        headers: { "content-type": "application/json" },
-      },
-    );
+    return errorResponse("Invalid PGN: " + error.message, 400);
   }
 
   // Now split out all the variations into separate lines
-  // the recursiveParse function is defined below
-  // resulting lines are stored in the "lines" array
+  let lines: Line[] = [];
   try {
     for (let line of parsedLines) {
       const tags = line.tags as unknown as Tags;
       recursiveParse([], line.moves, tags, lines);
     }
   } catch (error: any) {
-    return new Response(
-      JSON.stringify({
-        message: error.message,
-      }),
-      {
-        status: 500,
-        headers: { "content-type": "application/json" },
-      },
-    );
+    return errorResponse(error.message, 500);
   }
 
-  // Map the lines to the ecoCodes we have
-  // Once for the "specific" eco code
-  // and once for the "general" eco code
+  // Map the lines to a specific and a general opening name
   for (let line of lines) {
     // Specific
     let id = "";
@@ -129,17 +88,12 @@ export async function POST(request: Request) {
     return a.moves.length - b.moves.length;
   });
 
-  return new Response(
-    JSON.stringify({
-      message: "Course Parsed Successfully",
-      data: {
-        lines,
-      },
-    }),
+  return successResponse(
+    "Course Parsed Successfully",
     {
-      status: 200,
-      headers: { "content-type": "application/json" },
+      lines,
     },
+    200,
   );
 }
 

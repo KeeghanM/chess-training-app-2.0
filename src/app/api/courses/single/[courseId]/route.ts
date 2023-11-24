@@ -12,22 +12,21 @@ export async function GET(
 
   let course: Course | null = null;
   try {
-    // if(courseId.includes("-")) {
-    //   // lookup is a slug
-    //   course = await prisma.course.findUnique({
-    //     where: {
-    //       slug: courseId,
-    //     },
-    //   });
-
-    // } else {
-    // lookup is an id
-    course = await prisma.course.findUnique({
-      where: {
-        id: courseId,
-      },
-    });
-    // }
+    if (courseId.includes("-")) {
+      // lookup is a slug
+      course = await prisma.course.findUnique({
+        where: {
+          slug: courseId,
+        },
+      });
+    } else {
+      // lookup is an id
+      course = await prisma.course.findUnique({
+        where: {
+          id: courseId,
+        },
+      });
+    }
   } catch (e: any) {
     return errorResponse(e.message, 500);
   }

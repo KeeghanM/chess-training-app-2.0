@@ -14,6 +14,7 @@ datasource db {
 model Course {
     id                String   @id @default(cuid())
     courseName        String
+    slug              String   @unique
     courseDescription String?  @db.Text
     createdBy         String
     createdAt         DateTime @default(now())
@@ -30,6 +31,7 @@ model Group {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+    lines     Line[]
 }
 
 model Line {
@@ -37,27 +39,29 @@ model Line {
     courseId  String
     lineName  String?
     colour    String
-    groupName String
+    groupId   String
     moves     String
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+    group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
 }
 
 model UserCourse {
-    id            String    @id @default(cuid())
+    id            String     @id @default(cuid())
     courseId      String
     userId        String
-    active        Boolean   @default(true)
+    active        Boolean    @default(true)
     lastTrained   DateTime?
-    linesLearned  Int       @default(0)
-    linesLearning Int       @default(0)
-    linesHard     Int       @default(0)
+    linesLearned  Int        @default(0)
+    linesLearning Int        @default(0)
+    linesHard     Int        @default(0)
     linesUnseen   Int
-    user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+    lines         UserLine[]
 }
 
-model LineStat {
+model UserLine {
     id           String     @id @default(cuid())
     courseId     String
     userId       String
@@ -67,10 +71,11 @@ model LineStat {
     timesTrained Int        @default(0)
     timesCorrect Int        @default(0)
     timesWrong   Int        @default(0)
-    moves        MoveStat[]
+    moves        UserMove[]
+    course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
 }
 
-model MoveStat {
+model UserMove {
     id           Int       @id @default(autoincrement())
     lineStatId   String
     move         String
@@ -78,7 +83,7 @@ model MoveStat {
     timesTrained Int       @default(0)
     timesCorrect Int       @default(0)
     timesWrong   Int       @default(0)
-    line         LineStat  @relation(fields: [lineStatId], references: [id], onDelete: Cascade)
+    line         UserLine  @relation(fields: [lineStatId], references: [id], onDelete: Cascade)
 }
 
 // Necessary for Next auth

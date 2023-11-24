@@ -18,14 +18,31 @@ export default function DetailsForm(props: {
 }) {
   const [extrasOpen, setExtrasOpen] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
+  const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [description, setDescription] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
 
-  const create = () => {
+  const create = async () => {
+    setStatus("loading");
+    setError(null);
+
     if (name === "") {
       setError("Name cannot be empty");
+      setStatus("idle");
       return;
     }
+
+    const res = await fetch("/api/courses/create/checkName", {
+      method: "POST",
+      body: JSON.stringify({ name }),
+    });
+    const json = await res.json();
+    if (!json.data?.isAvailable) {
+      setError("Name is already taken");
+      setStatus("idle");
+      return;
+    }
+
     props.finished(name, description);
   };
 
@@ -33,7 +50,7 @@ export default function DetailsForm(props: {
     <Container size="2">
       <Flex direction={"column"} gap="6">
         <Box>
-          <Heading size="5">Give your course a name,</Heading>
+          <Heading size="5">Give your course a name</Heading>
           <TextField.Root>
             <TextField.Input
               placeholder="Ruy Lopez: For white"
@@ -44,7 +61,7 @@ export default function DetailsForm(props: {
           </TextField.Root>
         </Box>
         <Box>
-          <Heading size="5">and a helpful description.</Heading>
+          <Heading size="5">and a helpful description</Heading>
           <TextArea
             rows={5}
             placeholder="An opening course covering all the main lines for White"
