@@ -53,80 +53,73 @@ export async function POST(request: Request) {
   if (existingCourse) return errorResponse("Course name is not available", 400);
 
   try {
-    await prisma.$transaction(
-      async (tx) => {
-        // Create a new global course and it's groups
-        const course = (await tx.course.create({
-          include: {
-            groups: true,
-          },
-          data: {
-            courseName: courseName,
-            courseDescription: description,
-            createdBy: session.user.id,
-            slug: slug,
-            groups: {
-              create: groupNames,
-            },
-          },
-        })) as Course & { groups: PrismaGroup[] };
+    // Create a new global course and it's groups
+    const course = (await prisma.course.create({
+      include: {
+        groups: true,
+      },
+      data: {
+        courseName: courseName,
+        courseDescription: description,
+        createdBy: session.user.id,
+        slug: slug,
+        groups: {
+          create: groupNames,
+        },
+      },
+    })) as Course & { groups: PrismaGroup[] };
 
-        // Link the user to the course by creating their userCourse
-        const userCourse = await tx.userCourse.create({
+    // Link the user to the course by creating their userCourse
+    const userCourse = await prisma.userCourse.create({
+      data: {
+        user: {
+          connect: {
+            id: session.user.id,
+          },
+        },
+        courseId: course.id,
+        linesUnseen: lines.length,
+      },
+    });
+
+    // Process each line and create a new line and userLine
+    // as well as the moves for the userLine
+    await Promise.all(
+      lines.map(async (line) => {
+        const groupName = line.tags[group] as string;
+        const colour = line.tags["Colour"] as string;
+        const moves = line.moves.map((move) => move.notation).join(",");
+        const matchingGroup = course.groups.find(
+          (group) => group.groupName === groupName,
+        );
+
+        if (!matchingGroup) throw new Error("Invalid group name");
+
+        const dbLine = await prisma.line.create({
           data: {
-            user: {
-              connect: {
-                id: session.user.id,
-              },
-            },
+            colour: colour,
+            moves: moves,
+            groupId: matchingGroup.id,
             courseId: course.id,
-            linesUnseen: lines.length,
           },
         });
 
-        // Process each line and create a new line and userLine
-        // as well as the moves for the userLine
-        await Promise.all(
-          lines.map(async (line) => {
-            const groupName = line.tags[group] as string;
-            const colour = line.tags["Colour"] as string;
-            const moves = line.moves.map((move) => move.notation).join(",");
-            const matchingGroup = course.groups.find(
-              (group) => group.groupName === groupName,
-            );
+        const movesToCreate = line.moves.map((move) => ({
+          move: move.notation,
+        }));
 
-            if (!matchingGroup) throw new Error("Invalid group name");
-
-            const dbLine = await tx.line.create({
-              data: {
-                colour: colour,
-                moves: moves,
-                groupId: matchingGroup.id,
-                courseId: course.id,
-              },
-            });
-
-            const movesToCreate = line.moves.map((move) => ({
-              move: move.notation,
-            }));
-
-            await tx.userLine.create({
-              data: {
-                courseId: course.id,
-                userId: session.user.id,
-                userCourseId: userCourse.id,
-                lineId: dbLine.id,
-                moves: {
-                  create: movesToCreate,
-                },
-              },
-            });
-          }),
-        );
-      },
-      {
-        timeout: 10000,
-      },
+        await prisma.userLine.create({
+          data: {
+            courseId: course.id,
+            userId: session.user.id,
+            userCourseId: userCourse.id,
+            lineId: dbLine.id,
+            moves: {
+              create: movesToCreate,
+            },
+          },
+        });
+      }),
     );
 
     return successResponse(

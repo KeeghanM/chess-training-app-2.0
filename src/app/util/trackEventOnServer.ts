@@ -46,7 +46,6 @@ export async function trackEventOnServer(event: string, data?: any) {
     $os_version: os.version,
     $device: device.type,
   };
-  //   console.log(event, enhancedData);
   mixpanel.track(event, enhancedData);
 }
 

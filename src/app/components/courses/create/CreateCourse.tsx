@@ -53,7 +53,6 @@ export default function CreateCourseForm() {
       step: "Upload",
       value: "Success",
     });
-    console.log("/courses/" + data.data.slug);
     router.push("/courses/" + data.data.slug);
   };
 
@@ -96,7 +95,12 @@ export default function CreateCourseForm() {
             Error: Something went wrong
           </Heading>
           <Button
-            onClick={() => setCurrentStep("name")}
+            onClick={() => {
+              setCurrentStep("name");
+              setCourseName("");
+              setDescription("");
+              setLines([]);
+            }}
             color="red"
             variant="soft"
             size={"4"}
