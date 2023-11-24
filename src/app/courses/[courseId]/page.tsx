@@ -11,7 +11,6 @@ export default async function CoursePage({
     `${process.env.API_BASE_URL}/courses/single/${courseId}`,
   );
   const data = await response.json();
-  console.log(data);
   const course: Course = data.data.course;
   const createdBy: User = data.data.user;
   if (!course || data.message != "Course found") redirect("/404");

@@ -11,10 +11,10 @@ import { useRouter } from "next/navigation";
 
 export default function CreateCourseForm() {
   const router = useRouter();
-  const { data: session, status } = useSession();
-  const [currentStep, setCurrentStep] = useState<
-    "import" | "group" | "name" | "upload"
-  >("name");
+  const { data: session } = useSession();
+  const [currentStep, setCurrentStep] = useState<"import" | "group" | "name">(
+    "name",
+  );
   const [courseName, setCourseName] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [lines, setLines] = useState<Line[]>([]);
@@ -27,6 +27,9 @@ export default function CreateCourseForm() {
   ) => {
     if (!session) return;
 
+    // TODO: Move server side parsing to client side
+    // then just validate on the server
+
     const response = await fetch("/api/courses/create/upload", {
       method: "POST",
       headers: {
@@ -36,12 +39,13 @@ export default function CreateCourseForm() {
       body: JSON.stringify({ courseName, description, group, lines }),
     });
     const data = await response.json();
+
     if (!response.ok || data.message != "Course Uploaded Successfully") {
-      console.log(data.message);
+      //TODO: Handle error
       return;
     }
 
-    router.push("/courses/" + data.course.id);
+    router.push("/courses/" + data.data.course.id);
   };
 
   return (
@@ -73,7 +77,6 @@ export default function CreateCourseForm() {
         <GroupSelector
           lines={lines}
           finished={async (group, sortedLines) => {
-            await setCurrentStep("upload");
             upload(courseName, description, group, sortedLines);
           }}
         />

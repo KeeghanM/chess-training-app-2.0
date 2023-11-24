@@ -41,7 +41,7 @@ export function GroupItem(props: {
             .filter((line) => line.tags[selectedGroup] === groupKey)
             .map((line) => {
               return (
-                <Card>
+                <Card key={line.moves.join("")}>
                   <Flex align={"center"} gap={"2"}>
                     <PrettyPrintLine {...line} />
                     <Flex align={"center"} gap={"2"} p={"2"} ml={"auto"}>

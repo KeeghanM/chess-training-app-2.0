@@ -17,6 +17,7 @@ export default function GroupSelector(props: {
   const [groupedLineCounts, setGroupedLineCounts] = useState<{
     [key: string]: number;
   }>({});
+  const [status, setStatus] = useState<"idle" | "loading">("idle");
 
   useEffect(() => {
     setSelectedGroup(groupOptions[0]!);
@@ -64,6 +65,7 @@ export default function GroupSelector(props: {
           <Flex direction={"column"} gap="2">
             {Object.keys(groupedLineCounts).map((key) => (
               <GroupItem
+                key={key}
                 lines={lines}
                 selectedGroup={selectedGroup}
                 groupKey={key}
@@ -72,12 +74,21 @@ export default function GroupSelector(props: {
             ))}
           </Flex>
           <Button
-            color="plum"
+            disabled={status == "loading"}
+            color="green"
             onClick={() => {
+              setStatus("loading");
               props.finished(selectedGroup, lines);
             }}
+            mt={"8"}
+            style={{ cursor: "pointer" }}
           >
-            Confirm
+            <Flex align={"center"} gap={"4"}>
+              <Text>
+                {status == "loading" ? "Creating" : "Confirm and Create"}
+              </Text>
+              {status == "loading" && <Spinner />}
+            </Flex>
           </Button>
         </Flex>
       </Flex>
@@ -85,6 +96,33 @@ export default function GroupSelector(props: {
   );
 }
 
+function Spinner() {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 38 38"
+      xmlns="http://www.w3.org/2000/svg"
+      stroke="#fff"
+    >
+      <g fill="none" fillRule="evenodd">
+        <g transform="translate(1 1)" strokeWidth="2">
+          <circle strokeOpacity=".5" cx="18" cy="18" r="18" />
+          <path d="M36 18c0-9.94-8.06-18-18-18">
+            <animateTransform
+              attributeName="transform"
+              type="rotate"
+              from="0 18 18"
+              to="360 18 18"
+              dur="1s"
+              repeatCount="indefinite"
+            />
+          </path>
+        </g>
+      </g>
+    </svg>
+  );
+}
 function getGroupOptions(lines: Line[]): string[] {
   // Get a list of tags which exist on all lines
   // ignore tags which are not on all lines

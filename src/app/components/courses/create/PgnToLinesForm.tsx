@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { parse as PGNParse, type ParseTree } from "@mliebelt/pgn-parser";
+import { parse as PGNParse } from "@mliebelt/pgn-parser";
 import {
   Button,
   Container,
@@ -20,34 +20,50 @@ export default function PgnToLinesForm(props: {
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [error, setError] = useState<string | null>(null);
   const [string, setString] = useState<string>("");
-  const [pgnString, setPgnString] = useState<string>("");
+
+  const validPGN = (string: string) => {
+    try {
+      const parsed = PGNParse(string, { startRule: "games" });
+      if (parsed) return true;
+
+      return false;
+    } catch (e: any) {
+      setError(e.message);
+      return false;
+    }
+  };
 
   const parse = async () => {
     setError(null);
     setStatus("loading");
 
+    // Check for empty string
     if (string == "") {
       setError("Input cannot be empty");
+      setStatus("idle");
       return;
     }
-    if (mode === "copy") await parseCopy();
-    // else if (mode === "lichess") await parseLichess();
-    // else if (mode === "upload") await parseUpload();
-
-    if (pgnString === "") {
-      setError("Missing PGN String");
+    // Check for valid PGN
+    if (!validPGN(string)) {
+      setError("Invalid PGN");
+      setStatus("idle");
+      return;
     }
-    if (error) return;
+    // Final Catch
+    if (error) {
+      setStatus("idle");
+      return;
+    }
 
     const response = await fetch("/api/courses/create/parse", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ pgnString }),
+      body: JSON.stringify({ pgnString: string }),
     });
     const data = await response.json();
     if (!response.ok) {
-      setError(response.statusText);
-      console.log(data.message);
+      setError(data.message);
+      setStatus("idle");
       return;
     }
     if (
@@ -55,26 +71,11 @@ export default function PgnToLinesForm(props: {
       data.message != "Course Parsed Successfully"
     ) {
       setError("That's on us, please try again later.");
-      console.log(data.message);
+      setStatus("idle");
       return;
     }
     props.finished(data.data.lines);
-  };
-
-  const parseCopy = async () => {
-    let parsed: ParseTree[];
-
-    // Parse the PGN Locally before sending it to the server
-    // This is to avoid sending invalid PGN to the server
-    try {
-      parsed = (await PGNParse(string, { startRule: "games" })) as ParseTree[];
-    } catch (e: any) {
-      setError(e.message);
-      return;
-    }
-
-    // The string is valid PGN, so we can send it to the server
-    await setPgnString(string);
+    setStatus("idle");
   };
 
   return (
@@ -103,7 +104,10 @@ export default function PgnToLinesForm(props: {
                 </Text>
                 <TextArea
                   rows={10}
-                  onChange={(e) => setString(e.target.value)}
+                  onChange={(e) => {
+                    setString(e.target.value);
+                    setError(null);
+                  }}
                   value={string}
                   placeholder={`[Event "Ruy Lopez: For White"]
 [Opening "Ruy Lopez: Morphy Defense, Caro Variation"]
@@ -130,7 +134,7 @@ export default function PgnToLinesForm(props: {
           </Tabs.Root>
         </Flex>
         <Flex direction={"column"} gap="4">
-          <Button color="plum" onClick={parse}>
+          <Button color="plum" onClick={parse} disabled={status == "loading"}>
             Create
           </Button>
           {error && (

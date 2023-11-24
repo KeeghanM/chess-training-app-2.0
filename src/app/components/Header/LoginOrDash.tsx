@@ -13,7 +13,12 @@ export default function LoginOrDash() {
         <>
           <DropdownMenu.Root>
             <DropdownMenu.Trigger>
-              <Avatar src={session.user.image!} fallback="A" size="3" />
+              <Avatar
+                src={session.user.image!}
+                fallback="A"
+                size="3"
+                style={{ cursor: "pointer" }}
+              />
             </DropdownMenu.Trigger>
             <DropdownMenu.Content>
               <DropdownMenu.Item
@@ -38,12 +43,20 @@ export default function LoginOrDash() {
             </DropdownMenu.Content>
           </DropdownMenu.Root>
           <Flex direction="row" gap="2">
-            <Button onClick={() => router.push("/dashboard")}>Dashboard</Button>
+            <Button
+              onClick={() => router.push("/dashboard")}
+              style={{ cursor: "pointer" }}
+            >
+              Dashboard
+            </Button>
           </Flex>
         </>
       ) : (
         <Flex direction="row" gap="2">
-          <Button onClick={() => router.push("/api/auth/signin")}>
+          <Button
+            onClick={() => router.push("/api/auth/signin")}
+            style={{ cursor: "pointer" }}
+          >
             Login/Register
           </Button>
         </Flex>
