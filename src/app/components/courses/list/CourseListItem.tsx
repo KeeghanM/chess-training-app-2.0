@@ -2,9 +2,9 @@
 
 import { UserCourse, Course } from "@prisma/client";
 import { Box, Button, Flex, HoverCard, Text } from "@radix-ui/themes";
-import { PrismaCourse } from "~/app/training/courses/page";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { PrismaCourse } from "~/app/util/GetUserCourse";
 
 export default function CourseListItem(props: {
   userCourse: PrismaCourse;
@@ -117,7 +117,7 @@ export default function CourseListItem(props: {
           color={"green"}
           onClick={openCourse}
         >
-          Train
+          Study
         </Button>
         <Button variant={"outline"} color={"sky"} style={{ cursor: "pointer" }}>
           Settings
