@@ -1,7 +1,6 @@
 import { errorResponse, successResponse } from "../../../responses";
-import { Course, PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { Course } from "@prisma/client";
+import { prisma } from "~/server/db";
 
 export async function GET(
   request: Request,

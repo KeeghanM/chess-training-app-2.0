@@ -1,8 +1,7 @@
-import { PrismaClient, Course, Group as PrismaGroup } from "@prisma/client";
+import { Course, Group as PrismaGroup } from "@prisma/client";
 import { getServerAuthSession } from "~/server/auth";
 import { errorResponse, successResponse } from "../../../responses";
-
-const prisma = new PrismaClient();
+import { prisma } from "~/server/db";
 
 export async function POST(request: Request) {
   // Check if user is authenticated and reject request if not
