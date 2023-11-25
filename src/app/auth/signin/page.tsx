@@ -1,9 +1,14 @@
 import { Container, Flex, Heading, Section, Text } from "@radix-ui/themes";
 import { getProviders } from "next-auth/react";
 import ProviderButton from "~/app/components/auth/ProviderButton";
+import { getServerAuthSession } from "~/server/auth";
+import { redirect } from "next/navigation";
 
 export default async function SignIn() {
   const providers = await getProviders();
+  const session = await getServerAuthSession();
+
+  if (session) redirect("/dashboard");
 
   return (
     <Section>

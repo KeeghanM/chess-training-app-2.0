@@ -2,6 +2,7 @@
 import { Avatar, Button, DropdownMenu, Flex } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 
 export default function LoginOrDash() {
   const { data: session, status } = useSession();
@@ -35,7 +36,9 @@ export default function LoginOrDash() {
                 Settings
               </DropdownMenu.Item>
               <DropdownMenu.Item
-                onSelect={() => router.push("/api/auth/signout")}
+                onSelect={() => {
+                  signOut();
+                }}
                 color="red"
               >
                 Logout
