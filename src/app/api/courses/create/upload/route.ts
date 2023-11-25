@@ -29,8 +29,6 @@ export async function POST(request: Request) {
   if (!courseName || !groupNames || !lines || !slug)
     return errorResponse("Missing required fields", 400);
 
-  console.log({ courseName, description, groupNames, lines, slug });
-
   // Check slug is valid
   const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
   if (!slugRegex.test(slug)) return errorResponse("Invalid slug", 400);
