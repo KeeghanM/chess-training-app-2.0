@@ -12,16 +12,17 @@ datasource db {
 }
 
 model Course {
-    id                String   @id @default(cuid())
+    id                String       @id @default(cuid())
     courseName        String
-    slug              String   @unique
-    courseDescription String?  @db.Text
+    slug              String       @unique
+    courseDescription String?      @db.Text
     createdBy         String
-    createdAt         DateTime @default(now())
-    updatedAt         DateTime @updatedAt
-    published         Boolean  @default(false)
+    createdAt         DateTime     @default(now())
+    updatedAt         DateTime     @updatedAt
+    published         Boolean      @default(false)
     lines             Line[]
     groups            Group[]
+    userCourses       UserCourse[]
 }
 
 model Group {
@@ -59,6 +60,7 @@ model UserCourse {
     linesUnseen   Int
     user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
     lines         UserLine[]
+    course        Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model UserLine {

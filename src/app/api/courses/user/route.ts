@@ -1,27 +1,25 @@
-import { getServerAuthSession } from "~/server/auth";
 import { errorResponse, successResponse } from "~/app/api/responses";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function GET(
-  request: Request,
-  { params }: { params: { courseId: string } },
-) {
-  const session = await getServerAuthSession();
-  if (!session) return errorResponse("Unauthorized", 401);
+export async function GET(req: Request) {
+  const userId = req.headers.get("authorization")?.split(" ")[1];
+  if (!userId) {
+    return errorResponse("Unauthorized", 401);
+  }
 
-  const { courseId } = params;
-  if (!courseId) return errorResponse("Missing courseId", 400);
   try {
     const courses = await prisma.userCourse.findMany({
+      include: {
+        course: true,
+      },
       where: {
-        userId: session.user.id,
+        userId: userId,
       },
     });
 
-    if (!courses) return errorResponse("Course not found", 404);
-    return successResponse("Course found", courses, 200);
+    return successResponse("Courses found", { courses }, 200);
   } catch (e: any) {
     return errorResponse(e.message, 500);
   }
