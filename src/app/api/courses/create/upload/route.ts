@@ -1,6 +1,5 @@
 import { PrismaClient, Course, Group as PrismaGroup } from "@prisma/client";
 import { getServerAuthSession } from "~/server/auth";
-import { Line } from "../../../../components/courses/create/parse/ParsePGNtoLineData";
 import { errorResponse, successResponse } from "../../../responses";
 
 const prisma = new PrismaClient();
@@ -12,36 +11,29 @@ export async function POST(request: Request) {
   if (!session || session.user.id !== authToken)
     return errorResponse("Unauthorized", 401);
 
-  const { courseName, description, group, lines } = (await request.json()) as {
-    courseName: string;
-    description: string;
-    group: string;
-    lines: Line[];
-  };
+  const { courseName, description, groupNames, lines, slug } =
+    (await request.json()) as {
+      courseName: string;
+      slug: string;
+      description: string;
+      groupNames: {
+        groupName: string;
+      }[];
+      lines: {
+        groupName: string;
+        colour: string;
+        moves: string;
+      }[];
+    };
 
-  if (!courseName || !group || !lines)
+  if (!courseName || !groupNames || !lines || !slug)
     return errorResponse("Missing required fields", 400);
 
-  // Extract the unique group names from the lines
-  // into an array of objects with a groupName property
-  const groupNames = lines.reduce((acc: { groupName: string }[], line) => {
-    const groupName = line.tags[group] as string;
-    if (
-      groupName !== undefined &&
-      !acc.some((item) => item.groupName === groupName)
-    ) {
-      acc.push({ groupName });
-    }
-    return acc;
-  }, []);
+  console.log({ courseName, description, groupNames, lines, slug });
 
-  // Get the slug for the course name
-  const slug = courseName
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+  // Check slug is valid
+  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  if (!slugRegex.test(slug)) return errorResponse("Invalid slug", 400);
 
   // Check if course name is available
   const existingCourse = await prisma.course.findFirst({
@@ -77,36 +69,31 @@ export async function POST(request: Request) {
             id: session.user.id,
           },
         },
-        courseId: course.id,
+        course: {
+          connect: {
+            id: course.id,
+          },
+        },
         linesUnseen: lines.length,
       },
     });
 
-    // Process each line and create a new line and userLine
-    // as well as the moves for the userLine
+    // Create each new line and userLine
     await Promise.all(
-      lines.map(async (line) => {
-        const groupName = line.tags[group] as string;
-        const colour = line.tags["Colour"] as string;
-        const moves = line.moves.map((move) => move.notation).join(",");
+      lines.map((line) => async () => {
         const matchingGroup = course.groups.find(
-          (group) => group.groupName === groupName,
+          (group) => group.groupName === line.groupName,
         );
-
-        if (!matchingGroup) throw new Error("Invalid group name");
+        if (!matchingGroup) throw new Error("Group not found");
 
         const dbLine = await prisma.line.create({
           data: {
-            colour: colour,
-            moves: moves,
+            colour: line.colour,
+            moves: line.moves,
             groupId: matchingGroup.id,
             courseId: course.id,
           },
         });
-
-        const movesToCreate = line.moves.map((move) => ({
-          move: move.notation,
-        }));
 
         await prisma.userLine.create({
           data: {
@@ -114,9 +101,6 @@ export async function POST(request: Request) {
             userId: session.user.id,
             userCourseId: userCourse.id,
             lineId: dbLine.id,
-            moves: {
-              create: movesToCreate,
-            },
           },
         });
       }),

@@ -28,13 +28,14 @@ export default function CreateCourseForm() {
   ) => {
     if (!session) return;
 
+    const courseData = transformCourseData(courseName, group, lines);
     const response = await fetch("/api/courses/create/upload", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         authorization: "Bearer " + session.user.id,
       },
-      body: JSON.stringify({ courseName, description, group, lines }),
+      body: JSON.stringify({ ...courseData, description }),
     });
     const data = await response.json();
 
@@ -111,4 +112,45 @@ export default function CreateCourseForm() {
       )}
     </>
   );
+}
+
+function transformCourseData(courseName: string, group: string, lines: Line[]) {
+  // Extract the unique group names from the lines
+  // into an array of objects with a groupName property
+  const groupNames = lines.reduce((acc: { groupName: string }[], line) => {
+    const groupName = line.tags[group] as string;
+    if (
+      groupName !== undefined &&
+      !acc.some((item) => item.groupName === groupName)
+    ) {
+      acc.push({ groupName });
+    }
+    return acc;
+  }, []);
+
+  // Get the slug for the course name
+  const slug = courseName
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+  const processedLines = lines.map((line) => {
+    const groupName = line.tags[group] as string;
+    const colour = line.tags["Colour"] as string;
+    const moves = line.moves.map((move) => move.notation).join(",");
+    return {
+      groupName,
+      colour,
+      moves,
+    };
+  });
+
+  return {
+    courseName,
+    slug,
+    groupNames,
+    lines: processedLines,
+  };
 }

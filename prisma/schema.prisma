@@ -60,6 +60,7 @@ model UserCourse {
     linesUnseen   Int
     user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
     lines         UserLine[]
+    fens          UserFens[]
     course        Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
@@ -73,19 +74,17 @@ model UserLine {
     timesTrained Int        @default(0)
     timesCorrect Int        @default(0)
     timesWrong   Int        @default(0)
-    moves        UserMove[]
     course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
 }
 
-model UserMove {
-    id           Int       @id @default(autoincrement())
-    lineStatId   String
-    move         String
-    lastTrained  DateTime?
-    timesTrained Int       @default(0)
-    timesCorrect Int       @default(0)
-    timesWrong   Int       @default(0)
-    line         UserLine  @relation(fields: [lineStatId], references: [id], onDelete: Cascade)
+model UserFens {
+    id           String     @id @default(cuid())
+    userCourseId String
+    fen          String
+    timesTrained Int        @default(0)
+    timesCorrect Int        @default(0)
+    timesWrong   Int        @default(0)
+    course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
 }
 
 // Necessary for Next auth
