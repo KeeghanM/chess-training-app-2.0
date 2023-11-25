@@ -8,10 +8,10 @@ import { Chessboard } from "react-chessboard";
 import { Chess, Square } from "chess.js";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Spinner from "../../general/Spinner";
 
 // TODO: Bug fixes
-// multiple wrong moves are not handled correctly during recap
-// Seems to not reset the board properly maybe??
+//
 // TODO: Improvements
 // Pause after successfully completing a line, show a "next line" button
 
@@ -28,6 +28,7 @@ export default function CourseTrainer(props: {
   );
   const [position, setPosition] = useState(game.fen());
   const [teaching, setTeaching] = useState(false);
+  const [nextLine, setNextLine] = useState<PrismaUserLine | null>(null);
   const [mode, setMode] = useState<"normal" | "recap">("normal");
   const [currentWrongMove, setCurrentWrongMove] = useState(0);
   const [wrongMoves, setWrongMoves] = useState<{ move: string; fen: string }[]>(
@@ -37,6 +38,7 @@ export default function CourseTrainer(props: {
     props.userFens.map((fen) => fen.fen),
   );
   const [newFens, setNewFens] = useState<string[]>([]);
+  const [status, setStatus] = useState<"idle" | "loading">("idle");
 
   // Get all the data for the current line
   const moveList = currentLine.line.moves.split(",");
@@ -110,22 +112,31 @@ export default function CourseTrainer(props: {
           );
         }
 
-        setCurrentLine(nextLine);
-        setMode("normal");
-        setWrongMoves([]);
-        await processNewFens();
-        setNewFens([]);
-        game.reset();
-        setPosition(game.fen());
+        setNextLine(nextLine);
       }
     }
   };
 
+  const startNextLine = async () => {
+    if (!nextLine) return;
+
+    setStatus("loading");
+    await processNewFens();
+    setNextLine(null);
+    setCurrentLine(nextLine);
+    setMode("normal");
+    setWrongMoves([]);
+    setNewFens([]);
+    game.reset();
+    setStatus("idle");
+    setPosition(game.fen());
+  };
+
   const processNewFens = async () => {
     const fensToUpload = newFens.filter((fen) => !seenFens.includes(fen));
-    const newSeenFens = [...seenFens, ...fensToUpload];
+    const allSeenFens = [...seenFens, ...fensToUpload];
 
-    setSeenFens(newSeenFens);
+    setSeenFens(allSeenFens);
     await fetch(`/api/courses/user/${props.userCourse.id}/fens/upload`, {
       method: "POST",
       headers: {
@@ -218,6 +229,14 @@ export default function CourseTrainer(props: {
           boardOrientation={orientation}
         />
         {teaching && <Button onClick={resetTeachingMove}>Got it!</Button>}
+        {nextLine && (
+          <Button
+            disabled={status == "loading"}
+            onClick={() => startNextLine()}
+          >
+            Next Line {status == "loading" && <Spinner />}
+          </Button>
+        )}
       </Flex>
     </Container>
   );
