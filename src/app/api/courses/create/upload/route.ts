@@ -78,7 +78,7 @@ export async function POST(request: Request) {
 
     // Create each new line and userLine
     await Promise.all(
-      lines.map((line) => async () => {
+      lines.map(async (line) => {
         const matchingGroup = course.groups.find(
           (group) => group.groupName === line.groupName,
         );

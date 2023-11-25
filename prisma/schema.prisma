@@ -35,19 +35,6 @@ model Group {
     lines     Line[]
 }
 
-model Line {
-    id        String   @id @default(cuid())
-    courseId  String
-    lineName  String?
-    colour    String
-    groupId   String
-    moves     String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-    course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
-    group     Group    @relation(fields: [groupId], references: [id], onDelete: Cascade)
-}
-
 model UserCourse {
     id            String     @id @default(cuid())
     courseId      String
@@ -64,6 +51,20 @@ model UserCourse {
     course        Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
+model Line {
+    id        String     @id @default(cuid())
+    courseId  String
+    lineName  String?
+    colour    String
+    groupId   String
+    moves     String
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+    group     Group      @relation(fields: [groupId], references: [id], onDelete: Cascade)
+    userLines UserLine[]
+}
+
 model UserLine {
     id           String     @id @default(cuid())
     courseId     String
@@ -75,6 +76,7 @@ model UserLine {
     timesCorrect Int        @default(0)
     timesWrong   Int        @default(0)
     course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
+    line         Line       @relation(fields: [lineId], references: [id], onDelete: Cascade)
 }
 
 model UserFens {
