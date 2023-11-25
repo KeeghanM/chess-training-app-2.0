@@ -9,10 +9,20 @@ import {
 } from "@radix-ui/themes";
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
+import { mixpanel } from "~/app/util/trackEventOnServer";
 
 export default async function NewUserWelcome() {
   const session = await getServerAuthSession();
   if (!session) redirect("/auth/signin");
+
+  mixpanel.people.set(session.user.id, {
+    username: session.user.name,
+    email: session.user.email,
+  });
+  mixpanel.people.set_once(session.user.id, {
+    $created: new Date(),
+  });
+
   return (
     <Section>
       <Container size="3">
