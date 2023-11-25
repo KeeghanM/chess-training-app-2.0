@@ -21,25 +21,12 @@ export async function GET(
         userId: userId,
       },
       include: {
-        course: true,
+        fens: true,
       },
     });
 
-    const userLines = await prisma.userLine.findMany({
-      where: {
-        userCourseId: courseId,
-      },
-      include: {
-        line: {
-          include: {
-            group: true,
-          },
-        },
-      },
-    });
-
-    if (!userCourse) return errorResponse("Course not found", 404);
-    return successResponse("Course found", { userCourse, userLines }, 200);
+    if (!userCourse) return errorResponse("User Course not found", 404);
+    return successResponse("Fens found", { fens: userCourse.fens }, 200);
   } catch (e: any) {
     return errorResponse(e.message, 500);
   }

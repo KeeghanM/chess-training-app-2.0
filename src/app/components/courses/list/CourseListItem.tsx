@@ -4,10 +4,10 @@ import { UserCourse, Course } from "@prisma/client";
 import { Box, Button, Flex, HoverCard, Text } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { PrismaCourse } from "~/app/util/GetUserCourse";
+import { PrismaUserCourse } from "~/app/util/GetUserCourse";
 
 export default function CourseListItem(props: {
-  userCourse: PrismaCourse;
+  userCourse: PrismaUserCourse;
   background: string;
 }) {
   const router = useRouter();
@@ -16,7 +16,6 @@ export default function CourseListItem(props: {
   const conicGradient = Dial(userCourse);
 
   const openCourse = () => {
-    console.log(userCourse.id);
     router.push("/training/courses/" + userCourse.id);
   };
   return (
