@@ -20,11 +20,13 @@ export default async function ({ params }: { params: { courseId: string } }) {
         <Heading size={"9"} as={"h1"}>
           {userCourse.course.courseName}
         </Heading>
-        <CourseTrainer
-          userCourse={userCourse}
-          userLines={userLines}
-          userFens={userFens}
-        />
+        {userCourse && (
+          <CourseTrainer
+            userCourse={userCourse}
+            userLines={userLines}
+            userFens={userFens}
+          />
+        )}
       </Container>
     </Section>
   );
