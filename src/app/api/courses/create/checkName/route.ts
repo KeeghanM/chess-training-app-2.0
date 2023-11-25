@@ -1,7 +1,5 @@
 import { errorResponse, successResponse } from "~/app/api/responses";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "~/server/db";
 
 export async function POST(request: Request) {
   const { name } = await request.json();
