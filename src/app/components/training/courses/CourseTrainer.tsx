@@ -9,6 +9,12 @@ import { Chess, Square } from "chess.js";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
+// TODO: Bug fixes
+// multiple wrong moves are not handled correctly during recap
+// Seems to not reset the board properly maybe??
+// TODO: Improvements
+// Pause after successfully completing a line, show a "next line" button
+
 export default function CourseTrainer(props: {
   userCourse: PrismaUserCourse;
   userLines: PrismaUserLine[];
@@ -118,6 +124,7 @@ export default function CourseTrainer(props: {
   const processNewFens = async () => {
     const fensToUpload = newFens.filter((fen) => !seenFens.includes(fen));
     const newSeenFens = [...seenFens, ...fensToUpload];
+
     setSeenFens(newSeenFens);
     await fetch(`/api/courses/user/${props.userCourse.id}/fens/upload`, {
       method: "POST",
