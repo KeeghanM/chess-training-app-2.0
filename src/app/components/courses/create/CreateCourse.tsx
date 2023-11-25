@@ -8,7 +8,6 @@ import GroupSelector from "~/app/components/courses/create/GroupSelector";
 import DetailsForm from "~/app/components/courses/create/DetailsForm";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { set } from "zod";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
 
 export default function CreateCourseForm() {

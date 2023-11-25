@@ -3,14 +3,22 @@
 import { UserCourse, Course } from "@prisma/client";
 import { Box, Button, Flex, HoverCard, Text } from "@radix-ui/themes";
 import { PrismaCourse } from "~/app/training/courses/page";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function CourseListItem(props: {
   userCourse: PrismaCourse;
   background: string;
 }) {
+  const router = useRouter();
+  const { data: session } = useSession();
   const { userCourse, background } = props;
   const conicGradient = Dial(userCourse);
 
+  const openCourse = () => {
+    console.log(userCourse.id);
+    router.push("/training/courses/" + userCourse.id);
+  };
   return (
     <Flex
       direction={"row"}
@@ -26,6 +34,7 @@ export default function CourseListItem(props: {
           as={"p"}
           size={"6"}
           style={{ fontWeight: "bold", cursor: "pointer" }}
+          onClick={openCourse}
         >
           {userCourse.course.courseName}
         </Text>
@@ -103,12 +112,21 @@ export default function CourseListItem(props: {
         </HoverCard.Content>
       </HoverCard.Root>
       <Flex align={"center"} gap={"2"}>
-        <Button style={{ cursor: "pointer" }} color={"green"}>
+        <Button
+          style={{ cursor: "pointer" }}
+          color={"green"}
+          onClick={openCourse}
+        >
           Train
         </Button>
-        <Button variant={"outline"} style={{ cursor: "pointer" }}>
+        <Button variant={"outline"} color={"sky"} style={{ cursor: "pointer" }}>
           Settings
         </Button>
+        {session?.user.id == userCourse.course.createdBy && (
+          <Button variant={"outline"} style={{ cursor: "pointer" }}>
+            Admin Panel
+          </Button>
+        )}
       </Flex>
     </Flex>
   );
