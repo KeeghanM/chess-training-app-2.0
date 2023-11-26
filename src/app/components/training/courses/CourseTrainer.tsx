@@ -113,6 +113,12 @@ export default function CourseTrainer(props: {
           );
         }
 
+        // To display the PGN we need to reset after the recaps
+        game.reset();
+        moveList.forEach((move) => game.move(move));
+        setPosition(game.fen());
+        setGame(game);
+
         setNextLine(nextLine);
         setInteractive(false);
       }
