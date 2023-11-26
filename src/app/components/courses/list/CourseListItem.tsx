@@ -2,7 +2,6 @@
 
 import { UserCourse, Course } from "@prisma/client";
 import { Box, Button, Flex, HoverCard, Text } from "@radix-ui/themes";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { PrismaUserCourse } from "~/app/util/GetUserCourse";
 
@@ -11,7 +10,6 @@ export default function CourseListItem(props: {
   background: string;
 }) {
   const router = useRouter();
-  const { data: session } = useSession();
   const { userCourse, background } = props;
   const conicGradient = Dial(userCourse);
 
@@ -121,7 +119,7 @@ export default function CourseListItem(props: {
         <Button variant={"outline"} color={"sky"} style={{ cursor: "pointer" }}>
           Settings
         </Button>
-        {session?.user.id == userCourse.course.createdBy && (
+        {userCourse.userId == userCourse.course.createdBy && (
           <Button variant={"outline"} style={{ cursor: "pointer" }}>
             Admin Panel
           </Button>
