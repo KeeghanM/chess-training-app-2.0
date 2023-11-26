@@ -1,4 +1,4 @@
-import { Theme } from "@radix-ui/themes";
+import { Box, Theme } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import NextAuthProvider from "./util/NextAuthProvider";
 import Header from "./components/Header/Header";
@@ -29,7 +29,7 @@ export default async function RootLayout({
             radius="none"
           >
             <Header />
-            {children}
+            <Box p={"3"}>{children}</Box>
           </Theme>
         </NextAuthProvider>
       </body>

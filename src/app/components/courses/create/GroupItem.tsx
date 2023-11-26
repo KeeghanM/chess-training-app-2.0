@@ -43,7 +43,7 @@ export function GroupItem(props: {
               return (
                 <Card key={line.moves.join("")}>
                   <Flex align={"center"} gap={"2"}>
-                    <PrettyPrintLine {...line} />
+                    <PrettyPrintLine line={line} />
                     <Flex align={"center"} gap={"2"} p={"2"} ml={"auto"}>
                       <Select.Root
                         defaultValue={line.tags["Colour"]}

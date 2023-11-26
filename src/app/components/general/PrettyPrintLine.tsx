@@ -1,10 +1,16 @@
 import { Flex, Text } from "@radix-ui/themes";
 import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
 
-export default function PrettyPrintLine(line: Line) {
+export default function PrettyPrintLine(props: { line: Line | string }) {
   // Return the moves, with the move number bolded
   // and each move "set" (i.e one white one black) wrapped in a <p> tag
   // each move, and move number, needs separating by a space
+
+  const { line } = props;
+
+  if (typeof line === "string") {
+    return <Text>{line}</Text>;
+  }
 
   const movePairs: { whiteMove: string; blackMove: string }[] = [];
   for (let i = 0; i < line.moves.length; i += 2) {

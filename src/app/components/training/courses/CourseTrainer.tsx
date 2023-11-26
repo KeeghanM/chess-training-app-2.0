@@ -1,8 +1,9 @@
 "use client";
 
+import { useWindowSize } from "@uidotdev/usehooks";
 import { PrismaUserCourse, PrismaUserLine } from "~/app/util/GetUserCourse";
 import { useEffect, useState } from "react";
-import { Button, Container, Flex, Text } from "@radix-ui/themes";
+import { Box, Button, Container, Flex, Text } from "@radix-ui/themes";
 import { UserFens } from "@prisma/client";
 import { Chessboard } from "react-chessboard";
 import { Chess, Square } from "chess.js";
@@ -10,10 +11,9 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Spinner from "../../general/Spinner";
 
-// TODO: Bug fixes
-//
-// TODO: Improvements
-// Pause after successfully completing a line, show a "next line" button
+// TODO: Add line stat tracking
+// TODO: Add move/fen stat tracking
+// TODO: Add comments/notes viewer that shows in teaching mode
 
 export default function CourseTrainer(props: {
   userCourse: PrismaUserCourse;
@@ -39,6 +39,7 @@ export default function CourseTrainer(props: {
   );
   const [newFens, setNewFens] = useState<string[]>([]);
   const [status, setStatus] = useState<"idle" | "loading">("idle");
+  const [interactive, setInteractive] = useState(true);
 
   // Get all the data for the current line
   const moveList = currentLine.line.moves.split(",");
@@ -113,6 +114,7 @@ export default function CourseTrainer(props: {
         }
 
         setNextLine(nextLine);
+        setInteractive(false);
       }
     }
   };
@@ -129,6 +131,7 @@ export default function CourseTrainer(props: {
     setNewFens([]);
     game.reset();
     setStatus("idle");
+    setInteractive(true);
     setPosition(game.fen());
   };
 
@@ -137,6 +140,9 @@ export default function CourseTrainer(props: {
     const allSeenFens = [...seenFens, ...fensToUpload];
 
     setSeenFens(allSeenFens);
+
+    if (fensToUpload.length == 0) return;
+
     await fetch(`/api/courses/user/${props.userCourse.id}/fens/upload`, {
       method: "POST",
       headers: {
@@ -205,38 +211,104 @@ export default function CourseTrainer(props: {
     return true;
   };
 
+  const PgnDisplay = game.history().map((move, index) => {
+    const moveNumber = Math.floor(index / 2) + 1;
+    const moveColour = index % 2 === 0 ? "White" : "Black";
+    const FlexText = () => (
+      <Flex align={"center"} gap={"1"}>
+        {moveColour == "White" && <Text weight={"bold"}>{moveNumber}</Text>}{" "}
+        <Text>{move}</Text>
+      </Flex>
+    );
+
+    if (nextLine) {
+      return (
+        <Button
+          variant={"ghost"}
+          color={"green"}
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            const newGame = new Chess();
+            for (let i = 0; i <= index; i++) {
+              newGame.move(game.history()[i] as string);
+            }
+            setPosition(newGame.fen());
+          }}
+        >
+          <FlexText />
+        </Button>
+      );
+    } else {
+      return <FlexText />;
+    }
+  });
+
+  const windowSize = useWindowSize() as { width: number; height: number };
   return (
-    <Container size={"1"} mt={"3"}>
-      <Flex direction={"column"} gap={"6"}>
-        <Flex direction={"column"} gap={"2"}>
-          <Text size={"4"}>
-            Current Group: {currentLine.line.group.groupName}
-          </Text>
-          <Text size={"4"}>
-            Current Line: {props.userLines.indexOf(currentLine) + 1}/
-            {props.userLines.length} (
-            {Math.round(
-              ((props.userLines.indexOf(currentLine) + 1) /
-                props.userLines.length) *
-                100,
-            )}
-            %) {currentLine.line.lineName || ""}
-          </Text>
-        </Flex>
+    <Container
+      style={{
+        maxHeight: "calc(80vh - 4rem)",
+      }}
+      mt={"3"}
+    >
+      <Flex direction={{ initial: "column", md: "row" }}>
         <Chessboard
+          arePiecesDraggable={interactive}
           position={position}
           onPieceDrop={userDroppedPiece}
           boardOrientation={orientation}
+          boardWidth={Math.min(windowSize.height / 2, windowSize.width - 50)}
+          customBoardStyle={{
+            marginInline: "auto",
+          }}
         />
-        {teaching && <Button onClick={resetTeachingMove}>Got it!</Button>}
-        {nextLine && (
-          <Button
-            disabled={status == "loading"}
-            onClick={() => startNextLine()}
-          >
-            Next Line {status == "loading" && <Spinner />}
-          </Button>
-        )}
+        <Box
+          p={"4"}
+          style={{
+            background: "var(--plum-3)",
+          }}
+        >
+          <Flex direction={"column"} gap={"2"}>
+            <Text
+              size={"4"}
+              weight={"bold"}
+              style={{
+                minWidth: "max-content",
+              }}
+            >
+              Group: {currentLine.line.group.groupName}
+            </Text>
+            <Text size={"4"}>
+              Line: {props.userLines.indexOf(currentLine) + 1}/
+              {props.userLines.length} (
+              {Math.round(
+                ((props.userLines.indexOf(currentLine) + 1) /
+                  props.userLines.length) *
+                  100,
+              )}
+              %) {currentLine.line.lineName || ""}
+            </Text>
+            <Flex
+              wrap={"wrap"}
+              gap={"1"}
+              style={{ height: "100%", background: "var(--plum-2)" }}
+              p={"4"}
+            >
+              {PgnDisplay.map((item) => item)}
+            </Flex>
+            <Flex direction={"column"} gap={"2"}>
+              {teaching && <Button onClick={resetTeachingMove}>Got it!</Button>}
+              {nextLine && (
+                <Button
+                  disabled={status == "loading"}
+                  onClick={() => startNextLine()}
+                >
+                  Next Line {status == "loading" && <Spinner />}
+                </Button>
+              )}
+            </Flex>
+          </Flex>
+        </Box>
       </Flex>
     </Container>
   );
