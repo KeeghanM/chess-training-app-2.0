@@ -15,9 +15,8 @@ export default function CourseListItem(props: {
   const conicGradient = Dial(userCourse);
 
   const openCourse = () => {
-    trackEventOnClient("Opened Course", {
-      courseName: userCourse.course.courseName,
-      courseId: userCourse.courseId,
+    trackEventOnClient("Course Trainer", {
+      action: "Open Course",
     });
     router.push("/training/courses/" + userCourse.id);
   };

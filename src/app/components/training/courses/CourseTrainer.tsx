@@ -12,11 +12,11 @@ import { useRouter } from "next/navigation";
 import Spinner from "../../general/Spinner";
 // @ts-ignore
 import useSound from "use-sound";
+import trackEventOnClient from "~/app/util/trackEventOnClient";
 
-// TODO: BugFix - teaching mode only shows once??? are we not checking the fen correctly?
 // TODO: BugFix - last line in course isn't being logged
 // TODO: BugFix - the board/pgn size is changing causing the board to jump around
-// TODO: Add event tracking
+// TODO: Repeat full line if there were any teaching moves
 // TODO: Add comments/notes viewer that shows in teaching mode
 // TODO: Handle alternate moves (probably do this on the FEN level)
 
@@ -125,17 +125,23 @@ export default function CourseTrainer(props: {
         const nextLine = props.userLines[currentLineIndex + 1];
         if (!nextLine) {
           // We've reached the end of the course
-          // TODO: Handle this
+          setStatus("loading");
+          trackEventOnClient("Course Trainer", {
+            action: "Course Complete",
+          });
+
+          await processNewFens();
+          await processStats();
           router.push("/training/courses");
           return;
         }
 
         if (nextLine.line.groupId !== currentLine.line.groupId) {
           // We've reached the end of the group
-          // TODO: Handle this properly!
-          confirm(
-            "You've reached the end of the group! Click OK to move on to the next group.",
-          );
+          // TODO: Add a nice modal popup here
+          trackEventOnClient("Course Trainer", {
+            action: "Group Complete",
+          });
         }
 
         // To display the PGN we need to reset after the recaps
@@ -144,6 +150,7 @@ export default function CourseTrainer(props: {
         setPosition(game.fen());
         setGame(game);
 
+        // Setup for the next line
         setNextLine(nextLine);
         setInteractive(false);
       }
@@ -338,6 +345,10 @@ export default function CourseTrainer(props: {
           color={"green"}
           style={{ cursor: "pointer" }}
           onClick={() => {
+            trackEventOnClient("Course Trainer", {
+              action: "Jump to move",
+            });
+
             const newGame = new Chess();
             for (let i = 0; i <= index; i++) {
               newGame.move(game.history()[i] as string);
@@ -411,7 +422,12 @@ export default function CourseTrainer(props: {
               {nextLine && (
                 <Button
                   disabled={status == "loading"}
-                  onClick={() => startNextLine()}
+                  onClick={() => {
+                    trackEventOnClient("Course Trainer", {
+                      action: "Next Line",
+                    });
+                    startNextLine();
+                  }}
                 >
                   Next Line {status == "loading" && <Spinner />}
                 </Button>
