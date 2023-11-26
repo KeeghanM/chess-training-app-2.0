@@ -4,6 +4,7 @@ import { UserCourse, Course } from "@prisma/client";
 import { Box, Button, Flex, HoverCard, Text } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
 import { PrismaUserCourse } from "~/app/util/GetUserCourse";
+import trackEventOnClient from "~/app/util/trackEventOnClient";
 
 export default function CourseListItem(props: {
   userCourse: PrismaUserCourse;
@@ -14,6 +15,10 @@ export default function CourseListItem(props: {
   const conicGradient = Dial(userCourse);
 
   const openCourse = () => {
+    trackEventOnClient("Opened Course", {
+      courseName: userCourse.course.courseName,
+      courseId: userCourse.courseId,
+    });
     router.push("/training/courses/" + userCourse.id);
   };
   return (

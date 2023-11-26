@@ -17,7 +17,6 @@ export async function POST(
   if (!fens) return errorResponse("Missing fens", 400);
 
   try {
-    // TODO: Add increment to timesTrained/correct/wrong
     await prisma.userFens.createMany({
       data: fens.map((fen: string) => ({
         fen,

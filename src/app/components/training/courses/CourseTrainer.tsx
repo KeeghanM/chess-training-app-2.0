@@ -10,10 +10,14 @@ import { Chess, Square } from "chess.js";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Spinner from "../../general/Spinner";
+// @ts-ignore
+import useSound from "use-sound";
 
 // TODO: Add line stat tracking
 // TODO: Add move/fen stat tracking
 // TODO: Add comments/notes viewer that shows in teaching mode
+// TODO:  Handle alternate moves (probably do this on the FEN level)
+// TODO: BugFix - the board/pgn size is changing causing the board to jump around
 
 export default function CourseTrainer(props: {
   userCourse: PrismaUserCourse;
@@ -34,12 +38,19 @@ export default function CourseTrainer(props: {
   const [wrongMoves, setWrongMoves] = useState<{ move: string; fen: string }[]>(
     [],
   );
-  const [seenFens, setSeenFens] = useState<string[]>(
+  const [existingFens, setExistingFens] = useState<string[]>(
     props.userFens.map((fen) => fen.fen),
   );
-  const [newFens, setNewFens] = useState<string[]>([]);
+  const [trainedFens, setTrainedFens] = useState<string[]>([]);
+  const [wrongFens, setWrongFens] = useState<string[]>([]);
+  const [lineCorrect, setLineCorrect] = useState(true);
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [interactive, setInteractive] = useState(true);
+  const [checkSound] = useSound("/sfx/check.mp3");
+  const [captureSound] = useSound("/sfx/capture.mp3");
+  const [promotionSound] = useSound("/sfx/promotion.mp3");
+  const [castleSound] = useSound("/sfx/castle.mp3");
+  const [moveSound] = useSound("/sfx/move.mp3");
 
   // Get all the data for the current line
   const moveList = currentLine.line.moves.split(",");
@@ -47,15 +58,21 @@ export default function CourseTrainer(props: {
     | "white"
     | "black";
 
+  const makeMove = (move: string) => {
+    game.move(move);
+    playMoveSound(move);
+    setPosition(game.fen());
+  };
+
   // Makes a move for the "opponent"
   const makeBookMove = () => {
     const currentMove = moveList[game.history().length];
     if (!currentMove) return;
 
-    setTimeout(() => {
-      game.move(currentMove);
-      setPosition(game.fen());
+    const timeoutId = setTimeout(() => {
+      makeMove(currentMove);
     }, 500);
+    return timeoutId;
   };
 
   // Makes a move for the "player"
@@ -68,10 +85,10 @@ export default function CourseTrainer(props: {
     if (!currentMove) return;
 
     setTeaching(true);
-    setTimeout(() => {
-      game.move(currentMove);
-      setPosition(game.fen());
+    const timeoutId = setTimeout(() => {
+      makeMove(currentMove);
     }, 500);
+    return timeoutId;
   };
 
   const resetTeachingMove = () => {
@@ -130,50 +147,87 @@ export default function CourseTrainer(props: {
 
     setStatus("loading");
     await processNewFens();
+    await processStats();
     setNextLine(null);
     setCurrentLine(nextLine);
     setMode("normal");
     setWrongMoves([]);
-    setNewFens([]);
+    setTrainedFens([]);
     game.reset();
     setStatus("idle");
     setInteractive(true);
     setPosition(game.fen());
   };
 
-  const processNewFens = async () => {
-    const fensToUpload = newFens.filter((fen) => !seenFens.includes(fen));
-    const allSeenFens = [...seenFens, ...fensToUpload];
-
-    setSeenFens(allSeenFens);
-
-    if (fensToUpload.length == 0) return;
-
-    await fetch(`/api/courses/user/${props.userCourse.id}/fens/upload`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: "Bearer " + session?.user.id,
-      },
-      body: JSON.stringify({
-        fens: fensToUpload,
-      }),
-    });
+  const playMoveSound = (move: string) => {
+    if (move.includes("+")) {
+      checkSound();
+    } else if (move.includes("x")) {
+      captureSound();
+    } else if (move.includes("=")) {
+      promotionSound();
+    } else if (move.includes("O")) {
+      castleSound();
+    } else {
+      moveSound();
+    }
   };
 
-  useEffect(() => {
-    // If we're playing black, we need the first
-    // white move to be made automatically
-    // if we're playing white then we need to check
-    // if we've seen the first move before
-    if (orientation === "white") {
-      if (!seenFens.includes(game.fen())) {
-        makeTeachingMove();
-      }
-    } else {
-      makeBookMove();
+  const processNewFens = async () => {
+    // Add new fens to the server
+    const fensToUpload = trainedFens.filter(
+      (fen) => !existingFens.includes(fen),
+    );
+    const allSeenFens = [...existingFens, ...fensToUpload];
+    setExistingFens(allSeenFens);
+
+    if (fensToUpload.length > 0) {
+      const resp = await fetch(
+        `/api/courses/user/${props.userCourse.id}/fens/new`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: "Bearer " + session?.user.id,
+          },
+          body: JSON.stringify({
+            fens: fensToUpload,
+          }),
+        },
+      );
+      const json = await resp.json();
+      if (json.message != "Fens uploaded")
+        throw new Error("Error uploading fens"); // TODO: Handle nicer
     }
-  }, []);
+
+    // Now we need to update the fens that we've trained
+    // with the correct/incorrect status
+    const fensWithStats = trainedFens.map((fen) => {
+      return {
+        fen: fen,
+        correct: !wrongFens.includes(fen),
+      };
+    });
+
+    const resp = await fetch(
+      `/api/courses/user/${props.userCourse.id}/fens/update`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: "Bearer " + session?.user.id,
+        },
+        body: JSON.stringify({
+          fens: fensWithStats,
+        }),
+      },
+    );
+
+    const json = await resp.json();
+    if (json.message != "Fens updated") throw new Error("Error updating fens"); // TODO: Handle nicer
+  };
+
+  const processStats = async () => {};
 
   // When we drop a piece, we need to check if it's a valid move
   // if it is, we then need to check if it's the correct move
@@ -192,17 +246,22 @@ export default function CourseTrainer(props: {
         : (wrongMoves[currentWrongMove]?.move as string);
 
     if (correctMove !== playerMove.san) {
+      // We played the wrong move
+      setLineCorrect(false);
       game.undo();
+      setWrongFens([...wrongFens, game.fen()]);
       setWrongMoves([...wrongMoves, { move: correctMove, fen: game.fen() }]);
       makeTeachingMove();
       return false;
     }
 
+    playMoveSound(correctMove);
+
     // We played the correct move
     if (mode == "normal") {
       // log the previous fen as one we've seen and done right.
       game.undo();
-      setNewFens([...newFens, game.fen()]);
+      setTrainedFens([...trainedFens, game.fen()]);
       game.move(playerMove);
 
       // Update the position and continue
@@ -216,6 +275,25 @@ export default function CourseTrainer(props: {
     checkEndOfLine();
     return true;
   };
+
+  useEffect(() => {
+    // If we're playing black, we need the first
+    // white move to be made automatically
+    // if we're playing white then we need to check
+    // if we've seen the first move before
+    let timeoutId: NodeJS.Timeout | undefined;
+    if (orientation === "white") {
+      if (!existingFens.includes(game.fen())) {
+        timeoutId = makeTeachingMove();
+      }
+    } else {
+      timeoutId = makeBookMove();
+    }
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, []);
 
   const PgnDisplay = game.history().map((move, index) => {
     const moveNumber = Math.floor(index / 2) + 1;
