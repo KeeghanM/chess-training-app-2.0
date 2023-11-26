@@ -72,6 +72,7 @@ model UserLine {
     userCourseId String
     lineId       String
     lastTrained  DateTime?
+    lastStatus   Boolean?
     timesTrained Int        @default(0)
     timesCorrect Int        @default(0)
     timesWrong   Int        @default(0)

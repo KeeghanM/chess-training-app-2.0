@@ -13,11 +13,12 @@ import Spinner from "../../general/Spinner";
 // @ts-ignore
 import useSound from "use-sound";
 
-// TODO: Add line stat tracking
-// TODO: Add move/fen stat tracking
-// TODO: Add comments/notes viewer that shows in teaching mode
-// TODO:  Handle alternate moves (probably do this on the FEN level)
+// TODO: BugFix - teaching mode only shows once??? are we not checking the fen correctly?
+// TODO: BugFix - last line in course isn't being logged
 // TODO: BugFix - the board/pgn size is changing causing the board to jump around
+// TODO: Add event tracking
+// TODO: Add comments/notes viewer that shows in teaching mode
+// TODO: Handle alternate moves (probably do this on the FEN level)
 
 export default function CourseTrainer(props: {
   userCourse: PrismaUserCourse;
@@ -227,7 +228,25 @@ export default function CourseTrainer(props: {
     if (json.message != "Fens updated") throw new Error("Error updating fens"); // TODO: Handle nicer
   };
 
-  const processStats = async () => {};
+  const processStats = async () => {
+    const resp = await fetch(
+      `/api/courses/user/${props.userCourse.id}/stats/${currentLine.id}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: "Bearer " + session?.user.id,
+        },
+        body: JSON.stringify({
+          lineCorrect,
+        }),
+      },
+    );
+
+    const json = await resp.json();
+    if (json.message != "Stats updated")
+      throw new Error("Error updating stats"); // TODO: Handle nicer
+  };
 
   // When we drop a piece, we need to check if it's a valid move
   // if it is, we then need to check if it's the correct move
