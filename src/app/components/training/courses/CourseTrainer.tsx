@@ -72,6 +72,13 @@ export default function CourseTrainer(props: {
 
     const timeoutId = setTimeout(() => {
       makeMove(currentMove);
+      // Now we need to check if we've seen this fen before
+      // if not, we need to make a teaching move
+      if (
+        !existingFens.includes(game.fen()) &&
+        !trainedFens.includes(game.fen())
+      )
+        makeTeachingMove();
     }, 500);
     return timeoutId;
   };
@@ -85,8 +92,8 @@ export default function CourseTrainer(props: {
         : wrongMoves[currentWrongMove]?.move;
     if (!currentMove) return;
 
-    setTeaching(true);
     const timeoutId = setTimeout(() => {
+      setTeaching(true);
       makeMove(currentMove);
     }, 500);
     return timeoutId;
