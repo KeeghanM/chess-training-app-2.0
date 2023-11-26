@@ -1,8 +1,11 @@
-import { Box, Container, Flex, Heading, Link } from "@radix-ui/themes";
+import { Box, Button, Container, Flex, Heading, Link } from "@radix-ui/themes";
 import Image from "next/image";
-import LoginOrDash from "./LoginOrDash";
+import UserButtons from "./UserButtons";
+import { getServerAuthSession } from "~/server/auth";
 
 export default async function Header() {
+  const session = await getServerAuthSession();
+
   const menuItems = [
     { name: "Home", href: "/" },
     { name: "Browse Courses", href: "/courses" },
@@ -38,7 +41,13 @@ export default async function Header() {
               </Link>
             ))}
             <Box ml={"auto"}>
-              <LoginOrDash />
+              {session ? (
+                <UserButtons />
+              ) : (
+                <Link href="/api/auth/signin">
+                  <Button style={{ cursor: "pointer" }}>Login/Register</Button>
+                </Link>
+              )}
             </Box>
           </Flex>
         </Flex>
