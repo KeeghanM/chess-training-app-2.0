@@ -3,7 +3,9 @@
 import { UserCourse, Course } from "@prisma/client";
 import { Box, Button, Flex, HoverCard, Text } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
+import ReactTimeAgo from "react-time-ago";
 import { PrismaUserCourse } from "~/app/util/GetUserCourse";
+import TimeSince from "~/app/util/TimeSince";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
 
 export default function CourseListItem(props: {
@@ -20,6 +22,8 @@ export default function CourseListItem(props: {
     });
     router.push("/training/courses/" + userCourse.id);
   };
+
+  console.log({ userCourse });
   return (
     <Flex
       direction={"row"}
@@ -40,10 +44,12 @@ export default function CourseListItem(props: {
           {userCourse.course.courseName}
         </Text>
         <Text style={{ fontStyle: "italic" }}>
-          Last trained:{" "}
-          {userCourse.lastTrained
-            ? userCourse.lastTrained.toLocaleDateString()
-            : "Never"}
+          Last trained{" "}
+          {userCourse.lastTrained ? (
+            <TimeSince date={new Date(userCourse.lastTrained)} />
+          ) : (
+            "Never"
+          )}
         </Text>
       </Flex>
       <HoverCard.Root>

@@ -16,6 +16,7 @@ import trackEventOnClient from "~/app/util/trackEventOnClient";
 
 // TODO: BugFix - last line in course isn't being logged
 // TODO: BugFix - the board/pgn size is changing causing the board to jump around
+// TODO: BugBix - random error on saving stats, maybe just retry/ignore?
 // TODO: Repeat full line if there were any teaching moves
 // TODO: Add comments/notes viewer that shows in teaching mode
 // TODO: Handle alternate moves (probably do this on the FEN level)
