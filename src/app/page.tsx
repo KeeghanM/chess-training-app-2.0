@@ -8,7 +8,7 @@ import {
   Em,
 } from "@radix-ui/themes";
 
-export default async function MyApp({ req }: { req: any }) {
+export async function MyApp() {
   return (
     <Section>
       <Container>
