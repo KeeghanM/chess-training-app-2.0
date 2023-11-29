@@ -54,5 +54,11 @@
   "ct3aMetadata": {
     "initVersion": "7.24.0"
   },
-  "packageManager": "npm@9.6.7"
+  "packageManager": "npm@9.6.7",
+  "postcss": {
+    "plugins": {
+      "tailwindcss": {},
+      "autoprefixer": {}
+    }
+  }
 }
