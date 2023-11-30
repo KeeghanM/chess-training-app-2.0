@@ -2,10 +2,16 @@ import Button from "../components/_elements/button";
 import Container from "../components/_elements/container";
 import Heading from "../components/_elements/heading";
 import StyledLink from "../components/_elements/styledLink";
+import PageHeader from "../components/_layouts/pageHeader";
 
 export default function Design() {
   return (
     <>
+      <PageHeader
+        title="Design Guide - Elements & Layouts"
+        subTitle="This is the design guide page"
+        imageUrl="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+      />
       <Container>
         <div className="flex flex-wrap gap-4">
           <Button text="Primary" variant="primary" />
