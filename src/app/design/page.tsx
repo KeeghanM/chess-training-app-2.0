@@ -2,15 +2,21 @@ import Button from "../components/_elements/button";
 import Container from "../components/_elements/container";
 import Heading from "../components/_elements/heading";
 import StyledLink from "../components/_elements/styledLink";
+import ImageRowFull from "../components/_layouts/imageRowFull";
 import PageHeader from "../components/_layouts/pageHeader";
 
 export default function Design() {
+  const image = {
+    src: "https://images.unsplash.com/photo-1529699211952-734e80c4d42b?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    alt: "Wooden chess pieces setup in the starting position on a chess board",
+  };
+
   return (
     <>
       <PageHeader
         title="Design Guide - Elements & Layouts"
         subTitle="This is the design guide page"
-        imageUrl="https://images.unsplash.com/photo-1529699211952-734e80c4d42b?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+        image={image}
       />
       <Container>
         <div className="flex flex-wrap gap-4">
@@ -24,6 +30,44 @@ export default function Design() {
           <Button text="Info" variant="info" />
         </div>
       </Container>
+      <ImageRowFull
+        heading="Image Row"
+        imageSide="left"
+        image={image}
+        background={"light"}
+      >
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
+          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
+          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
+          explicabo.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
+          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
+          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
+          explicabo.
+        </p>
+      </ImageRowFull>
+      <ImageRowFull
+        heading="Image Row Right"
+        imageSide="right"
+        image={image}
+        background={"dark"}
+      >
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
+          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
+          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
+          explicabo.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
+          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
+          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
+          explicabo.
+        </p>
+      </ImageRowFull>
       <Container>
         <Heading as="h1">Heading 1</Heading>
         <p>

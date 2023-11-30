@@ -4,7 +4,10 @@ import Heading from "../_elements/heading";
 interface PageHeaderProps {
   title: string;
   subTitle?: string;
-  imageUrl: string;
+  image: {
+    src: string;
+    alt: string;
+  };
 }
 
 export default function PageHeader(props: PageHeaderProps) {
@@ -13,8 +16,8 @@ export default function PageHeader(props: PageHeaderProps) {
       <div className="absolute inset-0">
         <img
           className="w-full h-full object-cover"
-          src={props.imageUrl}
-          alt="Background"
+          src={props.image.src}
+          alt={props.image.alt}
         />
         <div
           className="absolute inset-0"
