@@ -26,7 +26,7 @@ export default async function RootLayout({
     <html lang="en">
       <body style={{ margin: 0, padding: 0 }}>
         <NextAuthProvider>
-          {/* {/* <Header /> */}
+          <Header />
           {children}
         </NextAuthProvider>
       </body>

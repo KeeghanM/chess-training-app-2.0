@@ -1,52 +1,79 @@
 "use client";
-import { Avatar, Button, DropdownMenu, Flex } from "@radix-ui/themes";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { signOut } from "next-auth/react";
+import { useState } from "react";
+import Button from "../_elements/button";
 
 export default function UserButtons() {
   const { data: session } = useSession();
   const router = useRouter();
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <Flex direction="row" align="center" gap="2">
-      <DropdownMenu.Root>
-        <DropdownMenu.Trigger>
-          <Avatar
-            src={session?.user.image!}
-            fallback="A"
-            size="3"
-            style={{ cursor: "pointer" }}
-          />
-        </DropdownMenu.Trigger>
-        <DropdownMenu.Content>
-          <DropdownMenu.Item onSelect={() => router.push("/training/courses")}>
-            Train Courses
-          </DropdownMenu.Item>
-          <DropdownMenu.Item onSelect={() => router.push("/courses")}>
-            Find Courses
-          </DropdownMenu.Item>
-          <DropdownMenu.Item onSelect={() => router.push("/account/settings")}>
-            Settings
-          </DropdownMenu.Item>
-          <DropdownMenu.Item
-            onSelect={() => {
-              signOut();
-            }}
-            color="red"
+    <>
+      <div
+        onClick={() => setMenuOpen(false)}
+        className={
+          menuOpen
+            ? "fixed w-screen h-screen left-0 top-0 z-10"
+            : "hidden -z-50"
+        }
+      ></div>
+      <div className="flex gap-4 items-center lg:sticky lg:top-0">
+        <div className="relative">
+          <button
+            className="bg-white h-8 w-8  flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-gray-900"
+            id="user-menu"
+            aria-haspopup="true"
+            onClick={() => setMenuOpen(!menuOpen)}
           >
-            Logout
-          </DropdownMenu.Item>
-        </DropdownMenu.Content>
-      </DropdownMenu.Root>
-      <Flex direction="row" gap="2">
+            <span className="sr-only">Open user menu</span>
+            <img
+              className="h-8 w-8 rounded-full"
+              src={session?.user.image ?? "/images/default-avatar.png"}
+              alt=""
+            />
+          </button>
+          <div
+            className={
+              "origin-bottom-left md:origin-top-right z-50 absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5" +
+              (menuOpen ? "" : " hidden")
+            }
+            role="menu"
+            aria-orientation="vertical"
+            aria-labelledby="user-menu"
+          >
+            <a
+              href="#"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              role="menuitem"
+            >
+              Your Profile
+            </a>
+            <a
+              href="#"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              role="menuitem"
+            >
+              Settings
+            </a>
+            <button
+              onClick={() => signOut()}
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 w-full text-left"
+              role="menuitem"
+            >
+              Sign out
+            </button>
+          </div>
+        </div>
         <Button
-          onClick={() => router.push("/dashboard")}
-          style={{ cursor: "pointer" }}
-        >
-          Dashboard
-        </Button>
-      </Flex>
-    </Flex>
+          func={() => router.push("/dashboard")}
+          variant="accent"
+          text="Dashboard"
+        />
+      </div>
+    </>
   );
 }
