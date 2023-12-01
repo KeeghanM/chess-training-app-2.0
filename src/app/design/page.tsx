@@ -2,8 +2,13 @@ import Button from "../components/_elements/button";
 import Container from "../components/_elements/container";
 import Heading from "../components/_elements/heading";
 import StyledLink from "../components/_elements/styledLink";
+import BigText from "../components/_layouts/bigText";
+import CtaRow from "../components/_layouts/ctaRow";
+import Hero from "../components/_layouts/hero";
 import ImageRowFull from "../components/_layouts/imageRowFull";
+import { MultiCol, MultiColItem } from "../components/_layouts/multiCol";
 import PageHeader from "../components/_layouts/pageHeader";
+import { TextWall } from "../components/_layouts/textWall";
 
 export default function Design() {
   const image = {
@@ -13,11 +18,131 @@ export default function Design() {
 
   return (
     <>
-      <PageHeader
-        title="Design Guide - Elements & Layouts"
+      <Hero
+        title="Style Guide - Elements & Layouts"
+        image={image}
+        cta={{
+          text: "Primary",
+          link: "#",
+        }}
+        secondary={{
+          text: "Secondary",
+          link: "#",
+        }}
+      >
+        <p>
+          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Provident
+          natus quas in facilis. Dolore iure ipsum dolores sunt! Et quo
+          recusandae libero voluptatem ipsam eos! Provident impedit ut a est!
+        </p>
+      </Hero>
+      {/* <PageHeader
+        title="Style Guide - Elements & Layouts"
         subTitle="This is the design guide page"
         image={image}
-      />
+      /> */}
+      <TextWall title="Text Wall" background="dark">
+        <p>
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sapiente
+          eveniet nihil praesentium saepe, fugiat iusto fugit laudantium
+          voluptatibus ex? Consequuntur in labore earum repudiandae, ea maxime
+          eaque autem blanditiis quia.
+        </p>
+        <p>
+          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sapiente
+          eveniet nihil praesentium saepe, fugiat iusto fugit laudantium
+          voluptatibus ex? Consequuntur in labore earum repudiandae, ea maxime
+          eaque autem blanditiis quia.
+        </p>
+      </TextWall>
+      <ImageRowFull
+        heading="Full Image Row"
+        imageSide="left"
+        image={image}
+        background={"light"}
+      >
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
+          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
+          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
+          explicabo.
+        </p>
+        <p>
+          Lorem ipsum dolor globsit amet consectetur adipisicing elit. Facilis,
+          sunt quae ex eos nihil veniam perspiciatis cumque delectus ratione
+          optio, blanditiis aperiam aliquid suscipit magnam itaque in unde,
+          harum explicabo.
+        </p>
+        <Heading as="h3">Heading 3</Heading>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
+          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
+          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
+          explicabo.
+        </p>
+      </ImageRowFull>
+      <ImageRowFull
+        heading="Full Image Row Right"
+        imageSide="right"
+        image={image}
+        background={"dark"}
+      >
+        <Heading as="h3">Heading 3</Heading>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
+          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
+          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
+          explicabo.
+        </p>
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
+          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
+          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
+          explicabo.
+        </p>
+      </ImageRowFull>
+      <BigText color="primary">
+        This is an example of a big text element. Punchy. Important.
+      </BigText>
+      <MultiCol title="Multiple columns, all related" background="light">
+        <MultiColItem title="Item 1">
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis,
+            sunt quae ex eos nihil veniam perspiciatis cumque delectus ratione
+            optio, blanditiis aperiam aliquid suscipit magnam itaque in unde,
+            harum explicabo.
+          </p>
+        </MultiColItem>
+        <MultiColItem title="Item 1">
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis,
+            sunt quae ex eos nihil veniam perspiciatis cumque delectus ratione
+            optio, blanditiis aperiam aliquid suscipit magnam itaque in unde,
+            harum explicabo.
+          </p>
+        </MultiColItem>
+        <MultiColItem title="Item 1">
+          <p>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis,
+            sunt quae ex eos nihil veniam perspiciatis cumque delectus ratione
+            optio, blanditiis aperiam aliquid suscipit magnam itaque in unde,
+            harum explicabo.
+          </p>
+        </MultiColItem>
+      </MultiCol>
+      <CtaRow
+        heading="Call To Action Row"
+        cta={{ text: "Primary", link: "#" }}
+        secondary={{ text: "Secondary", link: "#" }}
+        background="dark"
+      >
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
+          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
+          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
+          explicabo.
+        </p>
+      </CtaRow>
       <Container>
         <div className="flex flex-wrap gap-4">
           <Button text="Primary" variant="primary" />
@@ -30,44 +155,6 @@ export default function Design() {
           <Button text="Info" variant="info" />
         </div>
       </Container>
-      <ImageRowFull
-        heading="Image Row"
-        imageSide="left"
-        image={image}
-        background={"light"}
-      >
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
-          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
-          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
-          explicabo.
-        </p>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
-          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
-          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
-          explicabo.
-        </p>
-      </ImageRowFull>
-      <ImageRowFull
-        heading="Image Row Right"
-        imageSide="right"
-        image={image}
-        background={"dark"}
-      >
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
-          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
-          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
-          explicabo.
-        </p>
-        <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, sunt
-          quae ex eos nihil veniam perspiciatis cumque delectus ratione optio,
-          blanditiis aperiam aliquid suscipit magnam itaque in unde, harum
-          explicabo.
-        </p>
-      </ImageRowFull>
       <Container>
         <Heading as="h1">Heading 1</Heading>
         <p>
@@ -90,20 +177,6 @@ export default function Design() {
           dignissimos, itaque atque eius iste?
         </p>
         <Heading as="h4">Heading 4</Heading>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis
-          distinctio, nemo dolorem atque quam, iure architecto ipsa ad
-          temporibus veniam vitae recusandae aspernatur. Placeat voluptatum
-          dignissimos, itaque atque eius iste?
-        </p>
-        <Heading as="h5">Heading 5</Heading>
-        <p>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis
-          distinctio, nemo dolorem atque quam, iure architecto ipsa ad
-          temporibus veniam vitae recusandae aspernatur. Placeat voluptatum
-          dignissimos, itaque atque eius iste?
-        </p>
-        <Heading as="h6">Heading 6</Heading>
         <p>
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Officiis
           distinctio, nemo dolorem atque quam, iure architecto ipsa ad

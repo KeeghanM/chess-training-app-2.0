@@ -29,26 +29,26 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Hedvig Letters Serif", serif;
+  font-family: "Hedvig Letters Sans", sans-serif;
 }
 
 .text-lg {
   font-size: var(--step-1);
-  line-height: 1.5;
+  line-height: 1.4;
 }
 .text-xl {
   font-size: var(--step-2);
-  line-height: 1.5;
+  line-height: 1.4;
 }
 .text-2xl {
   font-size: var(--step-3);
-  line-height: 1.7;
+  line-height: 1.2;
 }
 .text-3xl {
   font-size: var(--step-4);
-  line-height: 1.7;
+  line-height: 1.2;
 }
 .text-4xl {
   font-size: var(--step-5);
-  line-height: 1.7;
+  line-height: 1.1;
 }

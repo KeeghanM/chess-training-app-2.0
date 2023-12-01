@@ -28,10 +28,10 @@ export default function PageHeader(props: PageHeaderProps) {
           aria-hidden="true"
         />
       </div>
-      <Container>
-        <Heading as={"h1"}>Design Guide</Heading>
+      <div className="relative px-4 md:px-12 lg:px-24 py-2 md:py-4 lg:py-6">
+        <Heading as={"h1"}>{props.title}</Heading>
         {props.subTitle && <Heading as={"h2"}>{props.subTitle}</Heading>}
-      </Container>
+      </div>
     </div>
   );
 }

@@ -5,29 +5,27 @@ export default function Heading(props: {
   switch (props.as) {
     case "h1":
       return (
-        <h1 className="text-4xl font-bold text-purple-700">{props.children}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-purple-700 mb-2">
+          {props.children}
+        </h1>
       );
     case "h2":
       return (
-        <h2 className="text-3xl font-bold text-gray-700">{props.children}</h2>
+        <h2 className="text-2xl md:text-3xl font-bold text-gray-700 mb-2 mt-4">
+          {props.children}
+        </h2>
       );
     case "h3":
       return (
-        <h3 className="text-2xl font-bold text-orange-500">{props.children}</h3>
+        <h3 className="text-xl md:text-2xl font-bold text-orange-500 mb-2 mt-4">
+          {props.children}
+        </h3>
       );
     case "h4":
       return (
-        <h4 className="text-xl font-bold text-purple-700">{props.children}</h4>
-      );
-    case "h5":
-      return (
-        <h5 className="text-lg font-bold text-purple-700">{props.children}</h5>
-      );
-    case "h6":
-      return (
-        <h6 className="text-base font-bold text-purple-700">
+        <h4 className="text-xl md:text-lg font-bold text-purple-700 mb-2 mt-4">
           {props.children}
-        </h6>
+        </h4>
       );
   }
 }
