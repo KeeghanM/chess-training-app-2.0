@@ -1,12 +1,11 @@
 import { getProviders } from "next-auth/react";
-import ProviderButton from "~/app/components/auth/ProviderButton";
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
 import Container from "~/app/components/_elements/container";
 import Heading from "~/app/components/_elements/heading";
+import GoogleSignIn from "~/app/components/auth/GoogleSignIn";
 
 export default async function SignIn() {
-  const providers = await getProviders();
   const session = await getServerAuthSession();
 
   if (session) redirect("/dashboard");
@@ -22,13 +21,7 @@ export default async function SignIn() {
           get access to every single one of our Science Backed training tools
           forever.
         </p>
-        <p>
-          We support a wide range of sign in providers, including Google,
-          Facebook, and Twitter. We also support email sign in, if you prefer.
-        </p>
-        {Object.values(providers as Object).map((provider) => (
-          <ProviderButton provider={provider} />
-        ))}
+        <GoogleSignIn />
       </div>
     </Container>
   );
