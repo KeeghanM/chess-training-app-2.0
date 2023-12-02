@@ -12,12 +12,10 @@ import Spinner from "../../general/Spinner";
 // @ts-ignore
 import useSound from "use-sound";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
-import Container from "../../_elements/container";
-import Heading from "../../_elements/heading";
 import Button from "../../_elements/button";
 
+// TODO: BugFix - Weird jumping between lines, doesn't seem to be in order + showing "next line" after teaching moves finished instead of jumping to start for repeat
 // TODO: BugFix - last line in course isn't being logged
-// TODO: BugFix - the board/pgn size is changing causing the board to jump around
 // TODO: BugBix - random error on saving stats, maybe just retry/ignore?
 // TODO: Repeat full line if there were any teaching moves
 // TODO: Add comments/notes viewer that shows in teaching mode
@@ -335,18 +333,18 @@ export default function CourseTrainer(props: {
     const moveNumber = Math.floor(index / 2) + 1;
     const moveColour = index % 2 === 0 ? "White" : "Black";
     const FlexText = () => (
-      <div className="flex items-center gap-2">
+      <p>
         {moveColour == "White" && (
           <span className="font-bold">{moveNumber}</span>
         )}{" "}
         <span>{move}</span>
-      </div>
+      </p>
     );
 
     if (nextLine) {
       return (
         <button
-          className="bg-none hover:bg-orange-200 text-white px-2 py-1"
+          className="bg-none hover:bg-purple-800 text-white px-1 py-1 h-max max-h-fit"
           onClick={() => {
             trackEventOnClient("Course Trainer", {
               action: "Jump to move",
@@ -363,62 +361,68 @@ export default function CourseTrainer(props: {
         </button>
       );
     } else {
-      return <FlexText />;
+      return (
+        <div className="px-1 py-1 text-white">
+          <FlexText />
+        </div>
+      );
     }
   });
 
   const windowSize = useWindowSize() as { width: number; height: number };
   return (
-    <Container>
-      <div className="flex flex-col md:flex-row gap-0">
-        <Chessboard
-          arePiecesDraggable={interactive}
-          position={position}
-          onPieceDrop={userDroppedPiece}
-          boardOrientation={orientation}
-          boardWidth={Math.min(windowSize.height / 2, windowSize.width - 50)}
-          customBoardStyle={{
-            marginInline: "auto",
-          }}
-        />
-        <div className="flex flex-col gap-2 p-4 md:p-6 lg:p-12">
-          <Heading as={"h3"}>Group: {currentLine.line.group.groupName}</Heading>
-          <Heading as={"h4"}>
-            Line: {props.userLines.indexOf(currentLine) + 1}/
-            {props.userLines.length} (
-            {Math.round(
-              ((props.userLines.indexOf(currentLine) + 1) /
-                props.userLines.length) *
-                100,
-            )}
-            %) {currentLine.line.lineName || ""}
-          </Heading>
-          <div className="flex flex-wrap gap-1 bg-purple-300 p-4">
+    <div className=" bg-purple-700 p-4">
+      <p className="text-lg text-white font-bold">
+        Current Group: {currentLine.line.group.groupName}
+      </p>
+      <p className="text-white font-bold">
+        Line: {props.userLines.indexOf(currentLine) + 1}/
+        {props.userLines.length} (
+        {Math.round(
+          ((props.userLines.indexOf(currentLine) + 1) /
+            props.userLines.length) *
+            100,
+        )}
+        %) {currentLine.line.lineName || ""}
+      </p>
+      <div className="flex flex-col md:flex-row gap-4">
+        <div>
+          <Chessboard
+            arePiecesDraggable={interactive}
+            position={position}
+            onPieceDrop={userDroppedPiece}
+            boardOrientation={orientation}
+            boardWidth={Math.min(windowSize.height / 2, windowSize.width - 50)}
+            customBoardStyle={{
+              marginInline: "auto",
+            }}
+          />
+        </div>
+        <div className="flex flex-col gap-2 flex-1">
+          <div className="flex flex-wrap content-start gap-1 bg-purple-600 h-full p-2">
             {PgnDisplay.map((item) => item)}
           </div>
-          <div className="flex flex-col gap-2">
-            {teaching && (
-              <Button variant="accent" onClick={resetTeachingMove}>
-                Got it!
-              </Button>
-            )}
-            {nextLine && (
-              <Button
-                variant="accent"
-                disabled={status == "loading"}
-                onClick={() => {
-                  trackEventOnClient("Course Trainer", {
-                    action: "Next Line",
-                  });
-                  startNextLine();
-                }}
-              >
-                Next Line {status == "loading" && <Spinner />}
-              </Button>
-            )}
-          </div>
+          {teaching && (
+            <Button variant="accent" onClick={resetTeachingMove}>
+              Got it!
+            </Button>
+          )}
+          {nextLine && (
+            <Button
+              variant="accent"
+              disabled={status == "loading"}
+              onClick={() => {
+                trackEventOnClient("Course Trainer", {
+                  action: "Next Line",
+                });
+                startNextLine();
+              }}
+            >
+              Next Line {status == "loading" && <Spinner />}
+            </Button>
+          )}
         </div>
       </div>
-    </Container>
+    </div>
   );
 }

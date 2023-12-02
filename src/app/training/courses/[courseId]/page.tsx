@@ -19,7 +19,7 @@ export default async function ({ params }: { params: { courseId: string } }) {
   return (
     <>
       <PageHeader
-        title={userCourse.course.courseName}
+        title={"Training Course: " + userCourse.course.courseName}
         image={{
           src: "/images/hero.avif",
           alt: "Hero Image",
