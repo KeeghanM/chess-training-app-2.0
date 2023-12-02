@@ -35,7 +35,7 @@ export default function Button(props: ButtonProps) {
   return (
     <button
       className={
-        "min-w-[145px] flex items-center justify-center gap-2 text-sm md:text-lg " +
+        "min-w-[145px] flex items-center justify-center gap-2 text-sm " +
         styles[props.variant] +
         (props.disabled ? " opacity-50 cursor-not-allowed" : "")
       }
