@@ -3,12 +3,9 @@
 import * as Tabs from "@radix-ui/react-tabs";
 import { useState } from "react";
 import { parse as PGNParse } from "@mliebelt/pgn-parser";
-import {
-  Line,
-  ParsePGNtoLineData,
-} from "~/app/components/courses/create/parse/ParsePGNtoLineData";
+import { Line, ParsePGNtoLineData } from "./parse/ParsePGNtoLineData";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
-import Button from "../../_elements/button";
+import Button from "~/app/components/_elements/button";
 
 export default function PgnToLinesForm(props: {
   finished: (lines: Line[]) => void;

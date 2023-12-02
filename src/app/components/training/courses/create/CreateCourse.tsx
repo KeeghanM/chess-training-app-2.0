@@ -1,17 +1,16 @@
 "use client";
-import PgnToLinesForm from "~/app/components/courses/create/PgnToLinesForm";
+import PgnToLinesForm from "./PgnToLinesForm";
 import { useState } from "react";
-import Steps from "~/app/components/courses/create/Steps";
-import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
-import GroupSelector from "~/app/components/courses/create/GroupSelector";
-import DetailsForm from "~/app/components/courses/create/DetailsForm";
+import Steps from "./Steps";
+import { Line } from "./parse/ParsePGNtoLineData";
+import GroupSelector from "./GroupSelector";
+import DetailsForm from "./DetailsForm";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
-import PageHeader from "../../_layouts/pageHeader";
-import Heading from "../../_elements/heading";
-import Button from "../../_elements/button";
-import Container from "../../_elements/container";
+import Heading from "~/app/components/_elements/heading";
+import Button from "~/app/components/_elements/button";
+import Container from "~/app/components/_elements/container";
 
 export default function CreateCourseForm() {
   const router = useRouter();

@@ -5,6 +5,8 @@ import Error from "~/app/components/general/ErrorPage";
 import { GetUserCourses } from "~/app/util/GetUserCourse";
 import Container from "~/app/components/_elements/container";
 import PageHeader from "~/app/components/_layouts/pageHeader";
+import Heading from "~/app/components/_elements/heading";
+import StyledLink from "~/app/components/_elements/styledLink";
 
 export default async function Courses() {
   const session = await getServerAuthSession();
@@ -24,9 +26,20 @@ export default async function Courses() {
       />
       <Container>
         <div className="flex flex-col gap-4">
-          {courses.map((course, index: number) => (
-            <CourseListItem userCourse={course} />
-          ))}
+          {courses.length > 0 ? (
+            courses.map((course, index: number) => (
+              <CourseListItem userCourse={course} />
+            ))
+          ) : (
+            <div>
+              <Heading as="h3">You haven't got any courses yet</Heading>
+              <p className="text-gray-500">
+                You can browse courses from the{" "}
+                <StyledLink href="/courses" text="courses list" /> or try{" "}
+                <StyledLink href="/courses/create" text="creating your own" />.
+              </p>
+            </div>
+          )}
         </div>
       </Container>
     </>

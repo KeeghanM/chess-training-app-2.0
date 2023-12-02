@@ -1,9 +1,8 @@
 import { useState } from "react";
-import Spinner from "../../general/Spinner";
+import Spinner from "~/app/components/general/Spinner";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
-import Container from "../../_elements/container";
-import Heading from "../../_elements/heading";
-import Button from "../../_elements/button";
+import Heading from "~/app/components/_elements/heading";
+import Button from "~/app/components/_elements/button";
 
 export default function DetailsForm(props: {
   finished: (name: string, description: string) => void;

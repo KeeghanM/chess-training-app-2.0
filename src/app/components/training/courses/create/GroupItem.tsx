@@ -1,10 +1,10 @@
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
+import { Line } from "./parse/ParsePGNtoLineData";
 import { useState } from "react";
-import PrettyPrintLine from "../../general/PrettyPrintLine";
+import PrettyPrintLine from "~/app/components/general/PrettyPrintLine";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
-import Button from "../../_elements/button";
-import Heading from "../../_elements/heading";
+import Button from "~/app/components/_elements/button";
+import Heading from "~/app/components/_elements/heading";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export function GroupItem(props: {

@@ -1,14 +1,14 @@
 "use client";
 
 import * as Tabs from "@radix-ui/react-tabs";
-import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
+import { Line } from "./parse/ParsePGNtoLineData";
 import { useState, useEffect } from "react";
 import { GroupItem } from "./GroupItem";
-import Spinner from "../../general/Spinner";
+import Spinner from "~/app/components/general/Spinner";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
-import Container from "../../_elements/container";
-import Heading from "../../_elements/heading";
-import Button from "../../_elements/button";
+import Container from "~/app/components/_elements/container";
+import Heading from "~/app/components/_elements/heading";
+import Button from "~/app/components/_elements/button";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export default function GroupSelector(props: {
