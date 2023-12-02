@@ -1,10 +1,14 @@
 "use client";
 
+import * as Tabs from "@radix-ui/react-tabs";
 import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
 import { useState, useEffect } from "react";
 import { GroupItem } from "./GroupItem";
 import Spinner from "../../general/Spinner";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
+import Container from "../../_elements/container";
+import Heading from "../../_elements/heading";
+import Button from "../../_elements/button";
 
 export default function GroupSelector(props: {
   lines: Line[];
@@ -45,12 +49,10 @@ export default function GroupSelector(props: {
   };
 
   return (
-    <Container size="2">
-      <Flex direction="column" gap="4" p="4">
-        <Flex direction={"column"} gap="2">
-          <Heading size="5">
-            <Text>Select Grouping</Text>
-          </Heading>
+    <Container>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-2">
+          <Heading as={"h2"}>Select Grouping</Heading>
           <Tabs.Root
             defaultValue={groupOptions[0]}
             onValueChange={(x) => {
@@ -67,7 +69,7 @@ export default function GroupSelector(props: {
               ))}
             </Tabs.List>
           </Tabs.Root>
-          <Flex direction={"column"} gap="2">
+          <div className="flex flex-col gap-2">
             {Object.keys(groupedLineCounts).map((key) => (
               <GroupItem
                 key={key}
@@ -77,26 +79,24 @@ export default function GroupSelector(props: {
                 count={groupedLineCounts[key] as number}
               />
             ))}
-          </Flex>
+          </div>
           <Button
             disabled={status == "loading"}
-            color="green"
+            variant="primary"
             onClick={() => {
               setStatus("loading");
               props.finished(selectedGroup, lines);
             }}
-            mt={"8"}
-            style={{ cursor: "pointer" }}
           >
-            <Flex align={"center"} gap={"4"}>
-              <Text>
+            <div className="flex items-center gap-4">
+              <span>
                 {status == "loading" ? "Creating" : "Confirm and Create"}
-              </Text>
+              </span>
               {status == "loading" && <Spinner />}
-            </Flex>
+            </div>
           </Button>
-        </Flex>
-      </Flex>
+        </div>
+      </div>
     </Container>
   );
 }

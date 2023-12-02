@@ -12,6 +12,9 @@ import Spinner from "../../general/Spinner";
 // @ts-ignore
 import useSound from "use-sound";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
+import Container from "../../_elements/container";
+import Heading from "../../_elements/heading";
+import Button from "../../_elements/button";
 
 // TODO: BugFix - last line in course isn't being logged
 // TODO: BugFix - the board/pgn size is changing causing the board to jump around
@@ -332,18 +335,18 @@ export default function CourseTrainer(props: {
     const moveNumber = Math.floor(index / 2) + 1;
     const moveColour = index % 2 === 0 ? "White" : "Black";
     const FlexText = () => (
-      <Flex align={"center"} gap={"1"}>
-        {moveColour == "White" && <Text weight={"bold"}>{moveNumber}</Text>}{" "}
-        <Text>{move}</Text>
-      </Flex>
+      <div className="flex items-center gap-2">
+        {moveColour == "White" && (
+          <span className="font-bold">{moveNumber}</span>
+        )}{" "}
+        <span>{move}</span>
+      </div>
     );
 
     if (nextLine) {
       return (
-        <Button
-          variant={"ghost"}
-          color={"green"}
-          style={{ cursor: "pointer" }}
+        <button
+          className="bg-none hover:bg-orange-200 text-white px-2 py-1"
           onClick={() => {
             trackEventOnClient("Course Trainer", {
               action: "Jump to move",
@@ -357,7 +360,7 @@ export default function CourseTrainer(props: {
           }}
         >
           <FlexText />
-        </Button>
+        </button>
       );
     } else {
       return <FlexText />;
@@ -366,13 +369,8 @@ export default function CourseTrainer(props: {
 
   const windowSize = useWindowSize() as { width: number; height: number };
   return (
-    <Container
-      style={{
-        maxHeight: "calc(80vh - 4rem)",
-      }}
-      mt={"3"}
-    >
-      <Flex direction={{ initial: "column", md: "row" }}>
+    <Container>
+      <div className="flex flex-col md:flex-row gap-0">
         <Chessboard
           arePiecesDraggable={interactive}
           position={position}
@@ -383,59 +381,44 @@ export default function CourseTrainer(props: {
             marginInline: "auto",
           }}
         />
-        <Box
-          p={"4"}
-          style={{
-            background: "var(--plum-3)",
-          }}
-        >
-          <Flex direction={"column"} gap={"2"}>
-            <Text
-              size={"4"}
-              weight={"bold"}
-              style={{
-                minWidth: "max-content",
-              }}
-            >
-              Group: {currentLine.line.group.groupName}
-            </Text>
-            <Text size={"4"}>
-              Line: {props.userLines.indexOf(currentLine) + 1}/
-              {props.userLines.length} (
-              {Math.round(
-                ((props.userLines.indexOf(currentLine) + 1) /
-                  props.userLines.length) *
-                  100,
-              )}
-              %) {currentLine.line.lineName || ""}
-            </Text>
-            <Flex
-              wrap={"wrap"}
-              gap={"1"}
-              style={{ height: "100%", background: "var(--plum-2)" }}
-              p={"4"}
-            >
-              {PgnDisplay.map((item) => item)}
-            </Flex>
-            <Flex direction={"column"} gap={"2"}>
-              {teaching && <Button onClick={resetTeachingMove}>Got it!</Button>}
-              {nextLine && (
-                <Button
-                  disabled={status == "loading"}
-                  onClick={() => {
-                    trackEventOnClient("Course Trainer", {
-                      action: "Next Line",
-                    });
-                    startNextLine();
-                  }}
-                >
-                  Next Line {status == "loading" && <Spinner />}
-                </Button>
-              )}
-            </Flex>
-          </Flex>
-        </Box>
-      </Flex>
+        <div className="flex flex-col gap-2 p-4 md:p-6 lg:p-12">
+          <Heading as={"h3"}>Group: {currentLine.line.group.groupName}</Heading>
+          <Heading as={"h4"}>
+            Line: {props.userLines.indexOf(currentLine) + 1}/
+            {props.userLines.length} (
+            {Math.round(
+              ((props.userLines.indexOf(currentLine) + 1) /
+                props.userLines.length) *
+                100,
+            )}
+            %) {currentLine.line.lineName || ""}
+          </Heading>
+          <div className="flex flex-wrap gap-1 bg-purple-300 p-4">
+            {PgnDisplay.map((item) => item)}
+          </div>
+          <div className="flex flex-col gap-2">
+            {teaching && (
+              <Button variant="accent" onClick={resetTeachingMove}>
+                Got it!
+              </Button>
+            )}
+            {nextLine && (
+              <Button
+                variant="accent"
+                disabled={status == "loading"}
+                onClick={() => {
+                  trackEventOnClient("Course Trainer", {
+                    action: "Next Line",
+                  });
+                  startNextLine();
+                }}
+              >
+                Next Line {status == "loading" && <Spinner />}
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
     </Container>
   );
 }

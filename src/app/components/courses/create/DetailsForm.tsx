@@ -1,6 +1,9 @@
 import { useState } from "react";
 import Spinner from "../../general/Spinner";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
+import Container from "../../_elements/container";
+import Heading from "../../_elements/heading";
+import Button from "../../_elements/button";
 
 export default function DetailsForm(props: {
   finished: (name: string, description: string) => void;
@@ -46,60 +49,64 @@ export default function DetailsForm(props: {
   };
 
   return (
-    <Container size="2">
-      <Flex direction={"column"} gap="6">
-        <Box>
-          <Heading size="5">Give your course a name</Heading>
-          <TextField.Root>
-            <TextField.Input
-              placeholder="Ruy Lopez: For white"
-              size={"3"}
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-          </TextField.Root>
-        </Box>
-        <Box>
-          <Heading size="5">and a helpful description</Heading>
-          <TextArea
+    <Container>
+      <div className="flex flex-col gap-6">
+        <div>
+          <Heading as="h3">Give your course a name</Heading>
+          <input
+            type="text"
+            placeholder="Ruy Lopez: For white"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div>
+          <Heading as={"h3"}>and a helpful description</Heading>
+          <textarea
             rows={5}
             placeholder="An opening course covering all the main lines for White"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-        </Box>
-        <Box>
-          <Flex align={"center"} gap={"2"}>
-            <Text>Optional Extras</Text>
-            <IconButton
-              variant="outline"
+        </div>
+        <div>
+          <div className="flex items-center gap-2">
+            <Heading as="h4">Optional Extras</Heading>
+            <Button
+              variant="tertiary"
               onClick={() => setExtrasOpen(!extrasOpen)}
             >
-              <ChevronDownIcon />
-            </IconButton>
-          </Flex>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="12"
+                height="12"
+                viewBox="0 0 12 12"
+              >
+                <path
+                  fill="currentColor"
+                  d="M6 8.825c-.2 0-.4-.1-.5-.2l-3.3-3.3c-.3-.3-.3-.8 0-1.1c.3-.3.8-.3 1.1 0l2.7 2.7l2.7-2.7c.3-.3.8-.3 1.1 0c.3.3.3.8 0 1.1l-3.2 3.2c-.2.2-.4.3-.6.3Z"
+                />
+              </svg>
+            </Button>
+          </div>
           {extrasOpen && (
-            <Flex direction={"column"} gap={"2"}>
-              <Em>Coming Soon!</Em>
-            </Flex>
+            <div className="flex flex-col gap-2">
+              <p>Coming Soon!</p>
+            </div>
           )}
-        </Box>
-        <Flex direction={"column"} gap="2">
-          <Button color={"plum"} onClick={create}>
-            <Flex align={"center"} gap={"4"}>
-              <Text>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Button variant="primary" onClick={create}>
+            <span className="flex items-center gap-4">
+              <span>
                 {status == "idle" ? "Create Course" : "Checking Name"}
-              </Text>
+              </span>
               {status == "loading" && <Spinner />}
-            </Flex>
+            </span>
           </Button>
-          {error && (
-            <Text as="p" color="red">
-              {error}
-            </Text>
-          )}
-        </Flex>
-      </Flex>
+          {error && <p className="text-red-500">{error}</p>}
+        </div>
+      </div>
     </Container>
   );
 }

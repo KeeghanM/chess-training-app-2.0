@@ -1,10 +1,13 @@
 "use client";
 
+import * as HoverCard from "@radix-ui/react-hover-card";
 import { UserCourse, Course } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { PrismaUserCourse } from "~/app/util/GetUserCourse";
 import TimeSince from "~/app/util/TimeSince";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
+import Heading from "../../_elements/heading";
+import Button from "../../_elements/button";
 
 export default function CourseListItem(props: {
   userCourse: PrismaUserCourse;
@@ -23,117 +26,63 @@ export default function CourseListItem(props: {
 
   console.log({ userCourse });
   return (
-    <Flex
-      direction={"row"}
-      align={"center"}
+    <div
+      className="flex items-center p-2 gap-6 px-5"
       key={userCourse.id}
       style={{ background: background }}
-      p={"2"}
-      gap={"6"}
-      px={"5"}
     >
-      <Flex direction={"column"} gap={"2"}>
-        <Text
-          as={"p"}
-          size={"6"}
-          style={{ fontWeight: "bold", cursor: "pointer" }}
-          onClick={openCourse}
-        >
-          {userCourse.course.courseName}
-        </Text>
-        <Text style={{ fontStyle: "italic" }}>
+      <div className="flex flex-col gap-2 cursor-pointer" onClick={openCourse}>
+        <Heading as={"h3"}>{userCourse.course.courseName}</Heading>
+        <p className="italic">
           Last trained{" "}
           {userCourse.lastTrained ? (
             <TimeSince date={new Date(userCourse.lastTrained)} />
           ) : (
             "Never"
           )}
-        </Text>
-      </Flex>
+        </p>
+      </div>
       <HoverCard.Root>
         <HoverCard.Trigger>
-          <Box
+          <div
+            className="grid place-items-center ml-auto rounded-full w-16 h-16"
             style={{
               background: conicGradient,
-              width: "75px",
-              height: "75px",
-              borderRadius: "9999px",
-              marginLeft: "auto",
-              display: "grid",
-              placeItems: "center",
-              boxShadow: "0 0 15px 5px var(--plum-1)",
             }}
           >
-            <Box
+            <div
+              className="w-12 h-12 rounded-full"
               style={{
-                width: "50px",
-                height: "50px",
-                borderRadius: "9999px",
                 background: background,
               }}
-            ></Box>
-          </Box>
+            ></div>
+          </div>
         </HoverCard.Trigger>
-        <HoverCard.Content size={"1"}>
-          <Flex direction={"column"} gap={"2"} p={"2"}>
-            <Text
-              as={"p"}
-              size={"3"}
-              style={{
-                color: "#4ade80",
-              }}
-            >
+        <HoverCard.Content>
+          <div className="flex flex-col gap-2 p-2">
+            <p className="text-[#4ade80]">
               {userCourse.linesLearned} lines learned
-            </Text>
-
-            <Text
-              as={"p"}
-              size={"3"}
-              style={{
-                color: "#2563eb",
-              }}
-            >
+            </p>
+            <p className="text-[#2563eb]">
               {userCourse.linesLearning} lines learning
-            </Text>
-            <Text
-              as={"p"}
-              size={"3"}
-              style={{
-                color: "#f87171",
-              }}
-            >
-              {userCourse.linesHard} lines hard
-            </Text>
-            <Text
-              as={"p"}
-              size={"3"}
-              style={{
-                color: "#e2e8f0",
-              }}
-            >
+            </p>
+            <p className="text-[#f87171]">{userCourse.linesHard} lines hard</p>
+            <p className="text-[#e2e8f0]">
               {userCourse.linesUnseen} lines unseen
-            </Text>
-          </Flex>
+            </p>
+          </div>
         </HoverCard.Content>
       </HoverCard.Root>
-      <Flex align={"center"} gap={"2"}>
-        <Button
-          style={{ cursor: "pointer" }}
-          color={"green"}
-          onClick={openCourse}
-        >
+      <div className="flex items-center gap-2">
+        <Button variant="primary" onClick={openCourse}>
           Study
         </Button>
-        <Button variant={"outline"} color={"sky"} style={{ cursor: "pointer" }}>
-          Settings
-        </Button>
+        <Button variant="secondary">Settings</Button>
         {userCourse.userId == userCourse.course.createdBy && (
-          <Button variant={"outline"} style={{ cursor: "pointer" }}>
-            Admin Panel
-          </Button>
+          <Button variant="accent">Admin Panel</Button>
         )}
-      </Flex>
-    </Flex>
+      </div>
+    </div>
   );
 }
 

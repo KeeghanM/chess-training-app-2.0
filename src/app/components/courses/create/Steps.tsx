@@ -4,18 +4,18 @@ export default function Steps(props: { currentStep: string }) {
   const { currentStep } = props;
 
   return (
-    <Box width={"max-content"} mx={"auto"} my={"4"}>
-      <Flex gap="4" align="center" mx={"auto"}>
-        <Flex gap="1" align="center">
+    <div className="w-max mx-auto my-4">
+      <div className="flex gap-4 items-center mx-auto">
+        <div className="flex gap-1 items-center">
           <NumberIcon
             number={1}
             color={
               currentStep == "name" ? "var(--plum-9)" : "rgba(255,255,255,0.5)"
             }
           />
-          <Text size="1">Name & Details</Text>
-        </Flex>
-        <Flex gap="1" align="center">
+          <p className="text-sm">Name & Details</p>
+        </div>
+        <div className="flex gap-1 items-center">
           <NumberIcon
             number={2}
             color={
@@ -24,18 +24,18 @@ export default function Steps(props: { currentStep: string }) {
                 : "rgba(255,255,255,0.5)"
             }
           />
-          <Text size="1">Import PGN</Text>
-        </Flex>
-        <Flex gap="1" align="center">
+          <p className="text-sm">Import PGN</p>
+        </div>
+        <div className="flex gap-1 items-center">
           <NumberIcon
             number={3}
             color={
               currentStep == "group" ? "var(--plum-9)" : "rgba(255,255,255,0.5)"
             }
           />
-          <Text size="1">Select Grouping</Text>
-        </Flex>
-      </Flex>
-    </Box>
+          <p className="text-sm">Select Grouping</p>
+        </div>
+      </div>
+    </div>
   );
 }

@@ -1,7 +1,11 @@
+import * as Select from "@radix-ui/react-select";
+import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
 import { useState } from "react";
 import PrettyPrintLine from "../../general/PrettyPrintLine";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
+import Button from "../../_elements/button";
+import Heading from "../../_elements/heading";
 
 export function GroupItem(props: {
   lines: Line[];
@@ -14,26 +18,37 @@ export function GroupItem(props: {
   const [linesToShow, setLinesToShow] = useState<Line[]>(lines);
 
   return (
-    <Card>
-      <Flex align={"center"} gap={"2"} mb={"2"}>
-        <Text weight={"bold"} size={"4"}>
-          {count} x
-        </Text>
-        <Text size={"4"}>{groupKey}</Text>
-        <IconButton variant="outline" onClick={() => setOpen(!open)}>
-          <ChevronDownIcon />
-        </IconButton>
-      </Flex>
-      <Flex direction={"column"} gap={"2"}>
+    <div className="flex flex-col gap-2 justify-center p-4 md:p-6 lg:p-12">
+      <div className="flex items-center gap-2 mb-2">
+        <p className="font-bold">{count} x</p>
+        <p>{groupKey}</p>
+        <Button variant="tertiary" onClick={() => setOpen(!open)}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="12"
+            height="12"
+            viewBox="0 0 12 12"
+          >
+            <path
+              fill="currentColor"
+              d="M6 8.825c-.2 0-.4-.1-.5-.2l-3.3-3.3c-.3-.3-.3-.8 0-1.1c.3-.3.8-.3 1.1 0l2.7 2.7l2.7-2.7c.3-.3.8-.3 1.1 0c.3.3.3.8 0 1.1l-3.2 3.2c-.2.2-.4.3-.6.3Z"
+            />
+          </svg>
+        </Button>
+      </div>
+      <div className="flex flex-col gap-2">
         {open &&
           linesToShow
             .filter((line) => line.tags[selectedGroup] === groupKey)
             .map((line) => {
               return (
-                <Card key={line.moves.join("")}>
-                  <Flex align={"center"} gap={"2"}>
+                <div
+                  className="flex flex-col gap-2 justify-center p-4 md:p-6 lg:p-12"
+                  key={line.moves.join("")}
+                >
+                  <div className="flex items-center gap-2">
                     <PrettyPrintLine line={line} />
-                    <Flex align={"center"} gap={"2"} p={"2"} ml={"auto"}>
+                    <div className="flex items-center gap-2 p-2 ml-auto">
                       <Select.Root
                         defaultValue={line.tags["Colour"]}
                         onValueChange={(v) => {
@@ -52,26 +67,23 @@ export function GroupItem(props: {
                       </Select.Root>
                       <AlertDialog.Root>
                         <AlertDialog.Trigger>
-                          <Button color="red" variant="soft">
-                            Delete
-                          </Button>
+                          <Button variant="danger">Delete</Button>
                         </AlertDialog.Trigger>
                         <AlertDialog.Content>
-                          <Flex direction={"column"} gap="4" mb="4">
-                            <Heading>
+                          <div className="flex flex-col gap-4 mb-4">
+                            <Heading as={"h3"}>
                               Are you sure you want to delete this line?
                             </Heading>
-                            <Text>
+                            <p>
                               This action cannot be undone. You will either need
                               to re-import the PGN, or manually re-create the
                               line later.
-                            </Text>
-                          </Flex>
-                          <Flex gap={"2"}>
+                            </p>
+                          </div>
+                          <div className="flex gap-2">
                             <AlertDialog.Action>
                               <Button
-                                color="red"
-                                variant="soft"
+                                variant="danger"
                                 onClick={() => {
                                   trackEventOnClient("Create Course", {
                                     step: "Grouping",
@@ -87,19 +99,17 @@ export function GroupItem(props: {
                               </Button>
                             </AlertDialog.Action>
                             <AlertDialog.Cancel>
-                              <Button color="green" variant="soft">
-                                Keep The Line
-                              </Button>
+                              <Button variant="primary">Keep The Line</Button>
                             </AlertDialog.Cancel>
-                          </Flex>
+                          </div>
                         </AlertDialog.Content>
                       </AlertDialog.Root>
-                    </Flex>
-                  </Flex>
-                </Card>
+                    </div>
+                  </div>
+                </div>
               );
             })}
-      </Flex>
-    </Card>
+      </div>
+    </div>
   );
 }
