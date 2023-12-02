@@ -57,7 +57,7 @@ export default function Nav({ props }: { props: { user: boolean } }) {
         <div className="absolute right-0 top-0 px-4 py-2 lg:hidden">
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            className="hover:text-orange-500"
+            className="text-black hover:text-orange-500"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -74,8 +74,10 @@ export default function Nav({ props }: { props: { user: boolean } }) {
         </div>
         {menuItems.map((item) => (
           <Link
+            key={item.name}
+            onClick={() => setMenuOpen(false)}
             href={item.href}
-            className="block px-4 py-2 text-white hover:bg-purple-100 lg:hover:bg-transparent lg:px-0 lg:py-0 lg:hover:underline lg:inline-block lg:min-w-fit font-bold"
+            className="block px-4 py-2 text-black lg:text-white hover:bg-purple-100 lg:hover:bg-transparent lg:px-0 lg:py-0 lg:hover:underline lg:inline-block lg:min-w-fit font-bold"
           >
             {item.name}
           </Link>
@@ -85,7 +87,7 @@ export default function Nav({ props }: { props: { user: boolean } }) {
           {props.user ? (
             <UserButtons />
           ) : (
-            <Link href="/auth/signin">
+            <Link onClick={() => setMenuOpen(false)} href="/auth/signin">
               <Button variant="accent">Login/Register</Button>
             </Link>
           )}

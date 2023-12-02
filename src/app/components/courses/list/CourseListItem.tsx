@@ -11,11 +11,10 @@ import Button from "../../_elements/button";
 
 export default function CourseListItem(props: {
   userCourse: PrismaUserCourse;
-  background: string;
 }) {
   const router = useRouter();
-  const { userCourse, background } = props;
-  const conicGradient = Dial(userCourse);
+  const { userCourse } = props;
+  const conicGradient = GenerateConicGradient(userCourse);
 
   const openCourse = () => {
     trackEventOnClient("Course Trainer", {
@@ -24,22 +23,24 @@ export default function CourseListItem(props: {
     router.push("/training/courses/" + userCourse.id);
   };
 
-  console.log({ userCourse });
   return (
     <div
-      className="flex items-center p-2 gap-6 px-5"
+      className="flex flex-col md:flex-row items-center p-2 gap-6 px-5 bg-gray-100"
       key={userCourse.id}
-      style={{ background: background }}
     >
-      <div className="flex flex-col gap-2 cursor-pointer" onClick={openCourse}>
+      <div
+        className="flex flex-col cursor-pointer mr-auto"
+        onClick={openCourse}
+      >
         <Heading as={"h3"}>{userCourse.course.courseName}</Heading>
-        <p className="italic">
+        <p className="italic text-sm text-gray-600">
           Last trained{" "}
           {userCourse.lastTrained ? (
             <TimeSince date={new Date(userCourse.lastTrained)} />
           ) : (
-            "Never"
+            "never"
           )}
+          .
         </p>
       </div>
       <HoverCard.Root>
@@ -50,16 +51,14 @@ export default function CourseListItem(props: {
               background: conicGradient,
             }}
           >
-            <div
-              className="w-12 h-12 rounded-full"
-              style={{
-                background: background,
-              }}
-            ></div>
+            <div className="w-12 h-12 rounded-full bg-gray-100"></div>
           </div>
         </HoverCard.Trigger>
         <HoverCard.Content>
-          <div className="flex flex-col gap-2 p-2">
+          <div className="flex flex-col gap-2 p-2 border border-gray-300 shadow bg-white">
+            <p className="text-[#6b21a8]">
+              {userCourse.linesUnseen} lines unseen
+            </p>
             <p className="text-[#4ade80]">
               {userCourse.linesLearned} lines learned
             </p>
@@ -67,13 +66,10 @@ export default function CourseListItem(props: {
               {userCourse.linesLearning} lines learning
             </p>
             <p className="text-[#f87171]">{userCourse.linesHard} lines hard</p>
-            <p className="text-[#e2e8f0]">
-              {userCourse.linesUnseen} lines unseen
-            </p>
           </div>
         </HoverCard.Content>
       </HoverCard.Root>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-col md:flex-row gap-2">
         <Button variant="primary" onClick={openCourse}>
           Study
         </Button>
@@ -86,7 +82,7 @@ export default function CourseListItem(props: {
   );
 }
 
-function Dial(course: UserCourse & { course: Course }) {
+function GenerateConicGradient(course: UserCourse & { course: Course }) {
   const totalLines =
     course.linesLearned +
     course.linesLearning +
@@ -103,7 +99,7 @@ function Dial(course: UserCourse & { course: Course }) {
             #f87171 ${learnedPercent + learningPercent}% ${
               learnedPercent + learningPercent + hardPercent
             }%,
-            #e2e8f0 ${learnedPercent + learningPercent + hardPercent}% ${
+            #6b21a8 ${learnedPercent + learningPercent + hardPercent}% ${
               learnedPercent + learningPercent + hardPercent + unseenPercent
             }%
           )`;

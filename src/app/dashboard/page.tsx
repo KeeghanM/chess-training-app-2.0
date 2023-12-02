@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { GrowthBook } from "@growthbook/growthbook";
 import ToolGrid from "../components/dashboard/ToolGrid";
 import PageHeader from "../components/_layouts/pageHeader";
+import Container from "../components/_elements/container";
 
 export type Tool = {
   name: string;
@@ -122,16 +123,18 @@ export default async function Dashboard() {
         subTitle={`Welcome back, ${user.name}`}
         image={{ src: "/images/hero.avif", alt: "Hero Image" }}
       />
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {tools
-          .sort((a, b) => {
-            if (a.active && !b.active) return -1;
-            if (!a.active && b.active) return 1;
-            return 0;
-          })
-          .map((tool) => (
-            <ToolGrid tool={tool} key={tool.name} />
-          ))}
+      <div className="p-4 md:p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {tools
+            .sort((a, b) => {
+              if (a.active && !b.active) return -1;
+              if (!a.active && b.active) return 1;
+              return 0;
+            })
+            .map((tool) => (
+              <ToolGrid tool={tool} key={tool.name} />
+            ))}
+        </div>
       </div>
     </>
   );

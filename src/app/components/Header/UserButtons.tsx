@@ -12,7 +12,7 @@ export default function UserButtons() {
 
   return (
     <>
-      <div className="flex gap-4 items-center lg:sticky lg:top-0">
+      <div className="flex flex-col md:flex-row gap-4 items-start md:items-center">
         <div className="relative">
           <button
             className="bg-white h-8 w-8  flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-50 focus:ring-gray-900"

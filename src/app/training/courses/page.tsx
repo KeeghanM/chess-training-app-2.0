@@ -25,10 +25,7 @@ export default async function Courses() {
       <Container>
         <div className="flex flex-col gap-4">
           {courses.map((course, index: number) => (
-            <CourseListItem
-              userCourse={course}
-              background={index % 2 == 0 ? "var(--plum-4)" : "var(--plum-5)"}
-            />
+            <CourseListItem userCourse={course} />
           ))}
         </div>
       </Container>
