@@ -4,7 +4,7 @@ import Heading from "../_elements/heading";
 import Link from "next/link";
 
 interface CtaRowProps {
-  heading: string;
+  title: string;
   cta: {
     text: string;
     link: string;
@@ -22,17 +22,17 @@ export default function CtaRow(props: CtaRowProps) {
     <div className={props.background == "light" ? "bg-white" : "bg-purple-100"}>
       <Container>
         <div className="flex flex-col gap-4">
-          <Heading as={"h2"}>{props.heading}</Heading>
+          <Heading as={"h2"}>{props.title}</Heading>
           <div className="flex flex-col md:flex-row gap-4 md:gap-6">
             {props.children}
           </div>
           <div className="flex gap-4">
             <Link href={props.cta.link}>
-              <Button text={props.cta.text} variant="primary" />
+              <Button variant="primary">{props.cta.text}</Button>
             </Link>
             {props.secondary && (
               <Link href={props.secondary.link}>
-                <Button text={props.secondary.text} variant="secondary" />
+                <Button variant="secondary">{props.secondary.text}</Button>
               </Link>
             )}
           </div>

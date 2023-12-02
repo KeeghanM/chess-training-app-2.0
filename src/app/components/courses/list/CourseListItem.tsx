@@ -1,9 +1,7 @@
 "use client";
 
 import { UserCourse, Course } from "@prisma/client";
-import { Box, Button, Flex, HoverCard, Text } from "@radix-ui/themes";
 import { useRouter } from "next/navigation";
-import ReactTimeAgo from "react-time-ago";
 import { PrismaUserCourse } from "~/app/util/GetUserCourse";
 import TimeSince from "~/app/util/TimeSince";
 import trackEventOnClient from "~/app/util/trackEventOnClient";

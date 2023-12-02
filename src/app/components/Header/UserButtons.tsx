@@ -1,7 +1,6 @@
 "use client";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { signOut } from "next-auth/react";
 import { useState } from "react";
 import Button from "../_elements/button";
 
@@ -13,14 +12,6 @@ export default function UserButtons() {
 
   return (
     <>
-      <div
-        onClick={() => setMenuOpen(false)}
-        className={
-          menuOpen
-            ? "fixed w-screen h-screen left-0 top-0 z-10"
-            : "hidden -z-50"
-        }
-      ></div>
       <div className="flex gap-4 items-center lg:sticky lg:top-0">
         <div className="relative">
           <button
@@ -45,6 +36,14 @@ export default function UserButtons() {
             aria-orientation="vertical"
             aria-labelledby="user-menu"
           >
+            <div
+              onClick={() => setMenuOpen(false)}
+              className={
+                menuOpen
+                  ? "fixed w-screen h-screen left-0 top-0 -z-10"
+                  : "hidden -z-50"
+              }
+            ></div>
             <a
               href="#"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
@@ -68,11 +67,9 @@ export default function UserButtons() {
             </button>
           </div>
         </div>
-        <Button
-          func={() => router.push("/dashboard")}
-          variant="accent"
-          text="Dashboard"
-        />
+        <Button onClick={() => router.push("/dashboard")} variant="accent">
+          Dashboard
+        </Button>
       </div>
     </>
   );

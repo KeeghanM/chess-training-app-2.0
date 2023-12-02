@@ -43,12 +43,12 @@ export default function Hero(props: HeroProps) {
         <div className="flex gap-4">
           {props.cta && (
             <Link href={props.cta.link}>
-              <Button text={props.cta.text} variant="primary" />
+              <Button variant="primary">{props.cta.text}</Button>
             </Link>
           )}
           {props.secondary && (
             <Link href={props.secondary.link}>
-              <Button text={props.secondary.text} variant="secondary" />
+              <Button variant="secondary">{props.secondary.text}</Button>
             </Link>
           )}
         </div>

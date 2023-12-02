@@ -1,16 +1,5 @@
 import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
 import { useState } from "react";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
-import {
-  AlertDialog,
-  Button,
-  Card,
-  Flex,
-  Heading,
-  IconButton,
-  Select,
-  Text,
-} from "@radix-ui/themes";
 import PrettyPrintLine from "../../general/PrettyPrintLine";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
 

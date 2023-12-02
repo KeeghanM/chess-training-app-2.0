@@ -1,6 +1,6 @@
 import { Course, User } from "@prisma/client";
-import { Container, Heading, Section } from "@radix-ui/themes";
 import { redirect } from "next/navigation";
+import PageHeader from "~/app/components/_layouts/pageHeader";
 export default async function CoursePage({
   params,
 }: {
@@ -16,15 +16,10 @@ export default async function CoursePage({
   if (!course || data.message != "Course found") redirect("/404");
 
   return (
-    <Section>
-      <Container size={"3"}>
-        <Heading size={"9"} as={"h1"}>
-          {course.courseName}
-        </Heading>
-        <Heading size={"5"} as={"h2"}>
-          By: {createdBy.name}
-        </Heading>
-      </Container>
-    </Section>
+    <PageHeader
+      title={course.courseName}
+      image={{ src: "/images/hero.jpg", alt: course.courseName }}
+      subTitle={`By: ${createdBy.name}`}
+    />
   );
 }

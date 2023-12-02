@@ -1,8 +1,7 @@
 "use client";
 
 interface ButtonProps {
-  func?: () => void;
-  text: string;
+  onClick?: () => void;
   variant:
     | "primary"
     | "secondary"
@@ -12,6 +11,8 @@ interface ButtonProps {
     | "warning"
     | "success"
     | "info";
+  disabled?: boolean;
+  children: React.ReactNode;
 }
 export default function Button(props: ButtonProps) {
   const styles = {
@@ -33,10 +34,14 @@ export default function Button(props: ButtonProps) {
 
   return (
     <button
-      className={"min-w-[145px] " + styles[props.variant]}
-      onClick={props.func ? props.func : undefined}
+      className={
+        "min-w-[145px] flex items-center justify-center gap-2 " +
+        styles[props.variant] +
+        (props.disabled ? " opacity-50 cursor-not-allowed" : "")
+      }
+      onClick={props.onClick ? props.onClick : undefined}
     >
-      {props.text}
+      {props.children}
     </button>
   );
 }

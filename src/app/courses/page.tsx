@@ -1,16 +1,16 @@
-import { Container, Em, Heading, Section } from "@radix-ui/themes";
+import PageHeader from "../components/_layouts/pageHeader";
 
 export default function Courses() {
   return (
-    <Section>
-      <Container p={{ initial: "2", lg: "0" }}>
-        <Heading size="9" as="h1">
-          Browse Courses
-        </Heading>
-        <Heading size="6" as="h2">
-          <Em>Coming soon!</Em>
-        </Heading>
-      </Container>
-    </Section>
+    <>
+      <PageHeader
+        title="Browse Courses"
+        subTitle="Coming soon!"
+        image={{
+          src: "/images/hero.avif",
+          alt: "Hero Image",
+        }}
+      />
+    </>
   );
 }

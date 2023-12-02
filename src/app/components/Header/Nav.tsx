@@ -40,9 +40,9 @@ export default function Nav({ props }: { props: { user: boolean } }) {
           <path
             fill="none"
             stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
             d="M5 8h22M5 16h22M5 24h22"
           />
         </svg>
@@ -86,7 +86,7 @@ export default function Nav({ props }: { props: { user: boolean } }) {
             <UserButtons />
           ) : (
             <Link href="/auth/signin">
-              <Button variant="accent" text="Login/Register" />
+              <Button variant="accent">Login/Register</Button>
             </Link>
           )}
         </div>

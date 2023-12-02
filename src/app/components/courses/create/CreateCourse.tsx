@@ -1,5 +1,4 @@
 "use client";
-import { Button, Heading } from "@radix-ui/themes";
 import PgnToLinesForm from "~/app/components/courses/create/PgnToLinesForm";
 import { useState } from "react";
 import Steps from "~/app/components/courses/create/Steps";
@@ -9,6 +8,9 @@ import DetailsForm from "~/app/components/courses/create/DetailsForm";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
+import PageHeader from "../../_layouts/pageHeader";
+import Heading from "../../_elements/heading";
+import Button from "../../_elements/button";
 
 export default function CreateCourseForm() {
   const router = useRouter();
@@ -59,9 +61,10 @@ export default function CreateCourseForm() {
   return (
     <>
       {courseName && (
-        <Heading size="7" as={"h2"}>
-          "{courseName}"
-        </Heading>
+        <PageHeader
+          title={courseName}
+          image={{ src: "/images/hero.jpg", alt: courseName }}
+        />
       )}
       <Steps currentStep={currentStep} />
       {currentStep == "name" && (
@@ -91,7 +94,7 @@ export default function CreateCourseForm() {
       )}
       {currentStep == "error" && (
         <>
-          <Heading size="7" as={"h2"} color="red">
+          <Heading as={"h2"} color="red">
             Error: Something went wrong
           </Heading>
           <Button
@@ -101,10 +104,7 @@ export default function CreateCourseForm() {
               setDescription("");
               setLines([]);
             }}
-            color="red"
-            variant="soft"
-            size={"4"}
-            style={{ cursor: "pointer" }}
+            variant="danger"
           >
             Try again
           </Button>

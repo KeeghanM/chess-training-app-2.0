@@ -1,8 +1,8 @@
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
-import { Container, Flex, Grid, Heading, Section } from "@radix-ui/themes";
 import { GrowthBook } from "@growthbook/growthbook";
 import ToolGrid from "../components/dashboard/ToolGrid";
+import PageHeader from "../components/_layouts/pageHeader";
 
 export type Tool = {
   name: string;
@@ -116,23 +116,23 @@ export default async function Dashboard() {
   ];
 
   return (
-    <Section>
-      <Container px={{ initial: "4", lg: "0" }}>
-        <Flex direction={"column"} gap={"4"}>
-          <Heading size="9">Welcome back, {user.name}.</Heading>
-          <Grid columns={{ initial: "1", md: "3", lg: "4" }} gap={"4"}>
-            {tools
-              .sort((a, b) => {
-                if (a.active && !b.active) return -1;
-                if (!a.active && b.active) return 1;
-                return 0;
-              })
-              .map((tool) => (
-                <ToolGrid tool={tool} key={tool.name} />
-              ))}
-          </Grid>
-        </Flex>
-      </Container>
-    </Section>
+    <>
+      <PageHeader
+        title="Dashboard"
+        subTitle={`Welcome back, ${user.name}`}
+        image={{ src: "/images/hero.avif", alt: "Hero Image" }}
+      />
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {tools
+          .sort((a, b) => {
+            if (a.active && !b.active) return -1;
+            if (!a.active && b.active) return 1;
+            return 0;
+          })
+          .map((tool) => (
+            <ToolGrid tool={tool} key={tool.name} />
+          ))}
+      </div>
+    </>
   );
 }

@@ -19,7 +19,7 @@ export default function ImageRowFull(props: ImageRowProps) {
   return (
     <div
       className={
-        "relative flex flex-col md:flex-row items-center justify-center" +
+        "relative flex flex-col md:flex-row items-center justify-center py-4 md:py-6 lg:py-12" +
         (props.imageSide === "left" ? "" : " md:flex-row-reverse") +
         (props.background === "light" ? " bg-white" : " bg-purple-100")
       }

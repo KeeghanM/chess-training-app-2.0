@@ -3,7 +3,6 @@
 import { useWindowSize } from "@uidotdev/usehooks";
 import { PrismaUserCourse, PrismaUserLine } from "~/app/util/GetUserCourse";
 import { useEffect, useState } from "react";
-import { Box, Button, Container, Flex, Text } from "@radix-ui/themes";
 import { UserFens } from "@prisma/client";
 import { Chessboard } from "react-chessboard";
 import { Chess, Square } from "chess.js";

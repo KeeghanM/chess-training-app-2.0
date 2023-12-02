@@ -14,9 +14,9 @@ interface MultiColProps {
 
 export function MultiColItem(props: MultiColItemProps) {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col flex-1">
       <Heading as={"h3"}>{props.title}</Heading>
-      <div>{props.children}</div>
+      <div className="flex flex-col gap-4">{props.children}</div>
     </div>
   );
 }
@@ -28,14 +28,12 @@ export function MultiCol(props: MultiColProps) {
         props.background === "light" ? "bg-white" : "bg-purple-100"
       }`}
     >
-      <Container>
-        <div className="flex flex-col items-center justify-center gap-4">
-          {props.title && <Heading as={"h2"}>{props.title}</Heading>}
-          <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-            {props.children}
-          </div>
+      <div className="flex flex-col items-center justify-center gap-4 px-4 md:px-6 lg:px-12 py-6 md:py-12">
+        {props.title && <Heading as={"h2"}>{props.title}</Heading>}
+        <div className="flex flex-col md:flex-row gap-4 md:gap-6">
+          {props.children}
         </div>
-      </Container>
+      </div>
     </div>
   );
 }

@@ -1,16 +1,7 @@
 "use client";
 import { useState } from "react";
 import { parse as PGNParse } from "@mliebelt/pgn-parser";
-import {
-  Button,
-  Container,
-  Em,
-  Flex,
-  Heading,
-  Tabs,
-  Text,
-  TextArea,
-} from "@radix-ui/themes";
+
 import {
   Line,
   ParsePGNtoLineData,

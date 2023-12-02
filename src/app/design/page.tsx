@@ -131,7 +131,7 @@ export default function Design() {
         </MultiColItem>
       </MultiCol>
       <CtaRow
-        heading="Call To Action Row"
+        title="Call To Action Row"
         cta={{ text: "Primary", link: "#" }}
         secondary={{ text: "Secondary", link: "#" }}
         background="dark"

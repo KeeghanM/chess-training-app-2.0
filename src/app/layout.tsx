@@ -18,10 +18,6 @@ export default async function RootLayout({
 }) {
   await trackEventOnServer("page_view");
 
-  const test = () => {
-    console.log("Hello");
-  };
-
   return (
     <html lang="en">
       <body style={{ margin: 0, padding: 0 }}>

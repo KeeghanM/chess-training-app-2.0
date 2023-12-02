@@ -1,4 +1,3 @@
-import { Box, Flex, Text } from "@radix-ui/themes";
 import NumberIcon from "~/app/components/general/NumberIcon";
 
 export default function Steps(props: { currentStep: string }) {

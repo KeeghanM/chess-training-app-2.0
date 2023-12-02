@@ -8,7 +8,7 @@ export default async function Header() {
 
   return (
     <header className="py-4 bg-purple-800 text-white sticky top-0 z-10 shadow">
-      <div className="flex justify-between items-center max-w-screen-2xl px-8 mx-auto">
+      <div className="flex justify-between items-center max-w-screen-2xl px-4 md:px-8 mx-auto">
         <Link href="/">
           <div className="flex items-center">
             <Image
@@ -18,7 +18,7 @@ export default async function Header() {
               height={75}
             />
             <div>
-              <h2 className="text-xl lg:text-2xl font-bold italic">
+              <h2 className="text-lg md:text-xl lg:text-2xl font-bold italic">
                 ChessTraining.app
               </h2>
               <h3 className="text-sm font-light">
