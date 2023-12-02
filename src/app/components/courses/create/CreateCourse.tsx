@@ -11,6 +11,7 @@ import trackEventOnClient from "~/app/util/trackEventOnClient";
 import PageHeader from "../../_layouts/pageHeader";
 import Heading from "../../_elements/heading";
 import Button from "../../_elements/button";
+import Container from "../../_elements/container";
 
 export default function CreateCourseForm() {
   const router = useRouter();
@@ -59,13 +60,8 @@ export default function CreateCourseForm() {
   };
 
   return (
-    <>
-      {courseName && (
-        <PageHeader
-          title={courseName}
-          image={{ src: "/images/hero.jpg", alt: courseName }}
-        />
-      )}
+    <Container>
+      {courseName && <Heading as={"h2"}>{courseName}</Heading>}
       <Steps currentStep={currentStep} />
       {currentStep == "name" && (
         <DetailsForm
@@ -74,10 +70,15 @@ export default function CreateCourseForm() {
             setDescription(description);
             setCurrentStep("import");
           }}
+          courseName={courseName}
+          description={description}
         />
       )}
       {currentStep == "import" && (
         <PgnToLinesForm
+          back={() => {
+            setCurrentStep("name");
+          }}
           finished={(lines) => {
             setCurrentStep("group");
             setLines(lines);
@@ -110,7 +111,7 @@ export default function CreateCourseForm() {
           </Button>
         </>
       )}
-    </>
+    </Container>
   );
 }
 

@@ -7,7 +7,7 @@ export default function Error(props: { PageTitle: string; error?: string }) {
     <>
       <PageHeader
         title="Oops! Something went wrong."
-        image={{ src: "/images/hero.jpg", alt: "Oops! Something went wrong." }}
+        image={{ src: "/images/hero.avif", alt: "Oops! Something went wrong." }}
         subTitle={props.error}
       />
       <Container>

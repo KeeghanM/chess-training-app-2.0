@@ -9,12 +9,14 @@ import trackEventOnClient from "~/app/util/trackEventOnClient";
 import Container from "../../_elements/container";
 import Heading from "../../_elements/heading";
 import Button from "../../_elements/button";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export default function GroupSelector(props: {
   lines: Line[];
   finished: (group: string, lines: Line[]) => void;
 }) {
   const { lines } = props;
+  const [parent] = useAutoAnimate();
   const [groupOptions, setGroupOptions] = useState<string[]>(
     getGroupOptions(lines),
   );
@@ -63,13 +65,23 @@ export default function GroupSelector(props: {
               });
             }}
           >
-            <Tabs.List>
+            <Tabs.List className="flex gap-2">
               {groupOptions.map((group) => (
-                <Tabs.Trigger value={group}>{group}</Tabs.Trigger>
+                <Tabs.Trigger
+                  className={
+                    "border-b-2 px-2 py-1 md:px-4 md:py-2 hover:bg-purple-200 hover:border-purple-700 " +
+                    (selectedGroup == group
+                      ? "border-purple-700 bg-purple-100"
+                      : "border-gray-300")
+                  }
+                  value={group}
+                >
+                  {group}
+                </Tabs.Trigger>
               ))}
             </Tabs.List>
           </Tabs.Root>
-          <div className="flex flex-col gap-2">
+          <div ref={parent} className="flex flex-col gap-2">
             {Object.keys(groupedLineCounts).map((key) => (
               <GroupItem
                 key={key}
@@ -80,21 +92,23 @@ export default function GroupSelector(props: {
               />
             ))}
           </div>
-          <Button
-            disabled={status == "loading"}
-            variant="primary"
-            onClick={() => {
-              setStatus("loading");
-              props.finished(selectedGroup, lines);
-            }}
-          >
-            <div className="flex items-center gap-4">
-              <span>
-                {status == "loading" ? "Creating" : "Confirm and Create"}
-              </span>
-              {status == "loading" && <Spinner />}
-            </div>
-          </Button>
+          <div>
+            <Button
+              disabled={status == "loading"}
+              variant="primary"
+              onClick={() => {
+                setStatus("loading");
+                props.finished(selectedGroup, lines);
+              }}
+            >
+              <div className="flex items-center gap-4">
+                <span>
+                  {status == "loading" ? "Creating" : "Confirm and Create"}
+                </span>
+                {status == "loading" && <Spinner />}
+              </div>
+            </Button>
+          </div>
         </div>
       </div>
     </Container>

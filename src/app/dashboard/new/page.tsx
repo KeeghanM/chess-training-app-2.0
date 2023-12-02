@@ -23,7 +23,7 @@ export default async function NewUserWelcome() {
       <PageHeader
         title={"Welcome to ChessTraining.app!"}
         image={{
-          src: "/images/hero.jpg",
+          src: "/images/hero.avif",
           alt: "Welcome to ChessTraining.app!",
         }}
       />

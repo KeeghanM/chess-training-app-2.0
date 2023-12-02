@@ -12,7 +12,7 @@ export default async function CreateCourse() {
       <PageHeader
         title={"Create a new course"}
         image={{
-          src: "/images/hero.jpg",
+          src: "/images/hero.avif",
           alt: "Create a new course",
         }}
       />

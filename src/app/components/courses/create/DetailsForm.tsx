@@ -7,11 +7,15 @@ import Button from "../../_elements/button";
 
 export default function DetailsForm(props: {
   finished: (name: string, description: string) => void;
+  courseName: string | undefined;
+  description: string | undefined;
 }) {
   const [extrasOpen, setExtrasOpen] = useState<boolean>(false);
-  const [name, setName] = useState<string>("");
+  const [name, setName] = useState<string>(props.courseName || "");
   const [status, setStatus] = useState<"idle" | "loading">("idle");
-  const [description, setDescription] = useState<string>("");
+  const [description, setDescription] = useState<string>(
+    props.description || "",
+  );
   const [error, setError] = useState<string | null>(null);
 
   const create = async () => {
@@ -49,64 +53,36 @@ export default function DetailsForm(props: {
   };
 
   return (
-    <Container>
-      <div className="flex flex-col gap-6">
-        <div>
-          <Heading as="h3">Give your course a name</Heading>
-          <input
-            type="text"
-            placeholder="Ruy Lopez: For white"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </div>
-        <div>
-          <Heading as={"h3"}>and a helpful description</Heading>
-          <textarea
-            rows={5}
-            placeholder="An opening course covering all the main lines for White"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </div>
-        <div>
-          <div className="flex items-center gap-2">
-            <Heading as="h4">Optional Extras</Heading>
-            <Button
-              variant="tertiary"
-              onClick={() => setExtrasOpen(!extrasOpen)}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-              >
-                <path
-                  fill="currentColor"
-                  d="M6 8.825c-.2 0-.4-.1-.5-.2l-3.3-3.3c-.3-.3-.3-.8 0-1.1c.3-.3.8-.3 1.1 0l2.7 2.7l2.7-2.7c.3-.3.8-.3 1.1 0c.3.3.3.8 0 1.1l-3.2 3.2c-.2.2-.4.3-.6.3Z"
-                />
-              </svg>
-            </Button>
-          </div>
-          {extrasOpen && (
-            <div className="flex flex-col gap-2">
-              <p>Coming Soon!</p>
-            </div>
-          )}
-        </div>
-        <div className="flex flex-col gap-2">
-          <Button variant="primary" onClick={create}>
-            <span className="flex items-center gap-4">
-              <span>
-                {status == "idle" ? "Create Course" : "Checking Name"}
-              </span>
-              {status == "loading" && <Spinner />}
-            </span>
-          </Button>
-          {error && <p className="text-red-500">{error}</p>}
-        </div>
+    <div className="flex flex-col gap-6">
+      <div>
+        <Heading as="h3">Give your course a name</Heading>
+        <input
+          className="px-4 py-2 border border-gray-300 w-full"
+          type="text"
+          placeholder="Ruy Lopez: For white"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
       </div>
-    </Container>
+      <div>
+        <Heading as={"h3"}>and a helpful description</Heading>
+        <textarea
+          className="px-4 py-2 border border-gray-300 w-full"
+          rows={5}
+          placeholder="An opening course covering all the main lines for White"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+      </div>
+      <div className="flex flex-col gap-2">
+        <Button variant="primary" onClick={create}>
+          <span className="flex items-center gap-4">
+            <span>{status == "idle" ? "Create Course" : "Checking Name"}</span>
+            {status == "loading" && <Spinner />}
+          </span>
+        </Button>
+        {error && <p className="text-red-500">{error}</p>}
+      </div>
+    </div>
   );
 }

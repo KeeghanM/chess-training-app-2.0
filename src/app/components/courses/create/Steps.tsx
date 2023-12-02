@@ -6,33 +6,16 @@ export default function Steps(props: { currentStep: string }) {
   return (
     <div className="w-max mx-auto my-4">
       <div className="flex gap-4 items-center mx-auto">
-        <div className="flex gap-1 items-center">
-          <NumberIcon
-            number={1}
-            color={
-              currentStep == "name" ? "var(--plum-9)" : "rgba(255,255,255,0.5)"
-            }
-          />
+        <div className="flex flex-col md:flex-row gap-1 items-center">
+          <NumberIcon number={1} active={currentStep == "name"} />
           <p className="text-sm">Name & Details</p>
         </div>
-        <div className="flex gap-1 items-center">
-          <NumberIcon
-            number={2}
-            color={
-              currentStep == "import"
-                ? "var(--plum-9)"
-                : "rgba(255,255,255,0.5)"
-            }
-          />
+        <div className="flex flex-col md:flex-row  gap-1 items-center">
+          <NumberIcon number={2} active={currentStep == "import"} />
           <p className="text-sm">Import PGN</p>
         </div>
-        <div className="flex gap-1 items-center">
-          <NumberIcon
-            number={3}
-            color={
-              currentStep == "group" ? "var(--plum-9)" : "rgba(255,255,255,0.5)"
-            }
-          />
+        <div className="flex flex-col md:flex-row  gap-1 items-center">
+          <NumberIcon number={3} active={currentStep == "group"} />
           <p className="text-sm">Select Grouping</p>
         </div>
       </div>
