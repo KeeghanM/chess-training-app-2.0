@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import Button from "../_elements/button";
+import Button from "../../_elements/button";
 import UserButtons from "./UserButtons";
 
 const menuItems = [
   { name: "Home", href: "/" },
   { name: "Browse Courses", href: "/courses" },
-  { name: "Puzzles", href: "/training/puzzles" },
+  { name: "Tactics Trainer", href: "/training/tactics" },
   { name: "About", href: "/about" },
   { name: "Blog", href: "/blog" },
   { name: "Contact", href: "/contact" },

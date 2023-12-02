@@ -1,6 +1,6 @@
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
-import CourseListItem from "~/app/components/courses/list/CourseListItem";
+import CourseListItem from "~/app/components/training/courses/list/CourseListItem";
 import Error from "~/app/components/general/ErrorPage";
 import { GetUserCourses } from "~/app/util/GetUserCourse";
 import Container from "~/app/components/_elements/container";

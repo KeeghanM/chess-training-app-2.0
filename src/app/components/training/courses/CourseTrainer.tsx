@@ -3,7 +3,7 @@
 import { useWindowSize } from "@uidotdev/usehooks";
 import { PrismaUserCourse, PrismaUserLine } from "~/app/util/GetUserCourse";
 import { useEffect, useState } from "react";
-import { UserFens } from "@prisma/client";
+import { UserFen } from "@prisma/client";
 import { Chessboard } from "react-chessboard";
 import { Chess, Square } from "chess.js";
 import { useSession } from "next-auth/react";
@@ -24,7 +24,7 @@ import Button from "../../_elements/button";
 export default function CourseTrainer(props: {
   userCourse: PrismaUserCourse;
   userLines: PrismaUserLine[];
-  userFens: UserFens[];
+  userFens: UserFen[];
 }) {
   const { data: session } = useSession();
   const router = useRouter();

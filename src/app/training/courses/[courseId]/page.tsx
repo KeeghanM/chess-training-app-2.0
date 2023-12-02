@@ -4,7 +4,6 @@ import { getServerAuthSession } from "~/server/auth";
 import { GetUserCourse } from "~/app/util/GetUserCourse";
 import CourseTrainer from "~/app/components/training/courses/CourseTrainer";
 import Container from "~/app/components/_elements/container";
-import Heading from "~/app/components/_elements/heading";
 import PageHeader from "~/app/components/_layouts/pageHeader";
 
 export default async function ({ params }: { params: { courseId: string } }) {

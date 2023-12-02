@@ -24,7 +24,7 @@ export async function POST(
         // TODO: This might be buggy with the upDateMany
         // in theory there is only one matching fen per userCourseId
         // but if there are multiple, this will update all of them
-        await prisma.userFens.updateMany({
+        await prisma.userFen.updateMany({
           where: {
             fen: fen.fen,
             userCourseId: courseId,

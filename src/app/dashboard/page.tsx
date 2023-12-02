@@ -40,13 +40,13 @@ export default async function Dashboard() {
       active: growthbook.isOn("study-course"),
     },
     {
-      name: "Puzzle Training",
+      name: "Tactics Training",
       description: [
         "Train tactics using the WoodPecker Method developed by GM's Axel Smith, and Hans Tikkanen.",
         "Re-program your unconscious mind. With benefits including sharper tactical vision, fewer blunders, and better play when in time trouble as well as improved intuition.",
         "Generate puzzle sets and train on them, while the site takes care of tracking your accuracy & time spent.",
       ],
-      href: "/training/puzzles",
+      href: "/training/tactics/list",
       buttonText: "Train",
       active: growthbook.isOn("puzzle-trainer"),
     },

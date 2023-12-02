@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import { PrismaUserCourse } from "~/app/util/GetUserCourse";
 import TimeSince from "~/app/util/TimeSince";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
-import Heading from "../../_elements/heading";
-import Button from "../../_elements/button";
+import Heading from "~/app/components/_elements/heading";
+import Button from "~/app/components/_elements/button";
 
 export default function CourseListItem(props: {
   userCourse: PrismaUserCourse;

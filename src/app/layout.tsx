@@ -1,8 +1,9 @@
 import "./globals.css";
 
 import NextAuthProvider from "./util/NextAuthProvider";
-import Header from "./components/Header/Header";
+import Header from "./components/template/header/Header";
 import { trackEventOnServer } from "./util/trackEventOnServer";
+import Footer from "./components/template/footer/Footer";
 
 export const metadata = {
   title: "ChessTraining.app - The best way to improve your chess",
@@ -24,6 +25,7 @@ export default async function RootLayout({
         <NextAuthProvider>
           <Header />
           {children}
+          <Footer />
         </NextAuthProvider>
       </body>
     </html>
