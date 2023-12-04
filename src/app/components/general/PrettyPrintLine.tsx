@@ -1,4 +1,4 @@
-import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
+import { Line } from "~/app/components/training/courses/create/parse/ParsePGNtoLineData";
 
 export default function PrettyPrintLine(props: { line: Line | string }) {
   // Return the moves, with the move number bolded
