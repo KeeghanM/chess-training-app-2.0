@@ -42,7 +42,7 @@ export default function PgnToLinesForm(props: {
     if (!validPGN(string)) {
       setError("Invalid PGN");
       setStatus("idle");
-      trackEventOnClient("Create Course", {
+      await trackEventOnClient("Create Course", {
         step: "Import PGN",
         value: "Invalid PGN",
       });
@@ -61,7 +61,7 @@ export default function PgnToLinesForm(props: {
       return;
     }
 
-    trackEventOnClient("Create Course", {
+    await trackEventOnClient("Create Course", {
       step: "Import PGN",
       value: "Success",
     });

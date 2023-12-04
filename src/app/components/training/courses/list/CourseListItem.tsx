@@ -16,8 +16,8 @@ export default function CourseListItem(props: {
   const { userCourse } = props;
   const conicGradient = GenerateConicGradient(userCourse);
 
-  const openCourse = () => {
-    trackEventOnClient("Course Trainer", {
+  const openCourse = async () => {
+    await trackEventOnClient("Course Trainer", {
       action: "Open Course",
     });
     router.push("/training/courses/" + userCourse.id);

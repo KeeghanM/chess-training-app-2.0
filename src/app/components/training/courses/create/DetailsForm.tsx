@@ -35,7 +35,7 @@ export default function DetailsForm(props: {
     if (!json.data?.isAvailable) {
       setError("Name is already taken");
       setStatus("idle");
-      trackEventOnClient("Create Course", {
+      await trackEventOnClient("Create Course", {
         step: "Details",
         value: "Name Taken",
         name,
@@ -43,7 +43,7 @@ export default function DetailsForm(props: {
       return;
     }
 
-    trackEventOnClient("Create Course", {
+    await trackEventOnClient("Create Course", {
       step: "Details",
       value: "Success",
       name,
