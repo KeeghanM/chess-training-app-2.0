@@ -399,7 +399,7 @@ export default function CourseTrainer(props: {
             arePiecesDraggable={interactive}
             position={position}
             // @ts-expect-error - ChessBoard doesnt expect AsyncFunction but works fine
-            onPieceDrop={serDroppedPiece}
+            onPieceDrop={setDroppedPiece}
             boardOrientation={orientation}
             boardWidth={Math.min(windowSize.height / 2, windowSize.width - 50)}
             customBoardStyle={{
