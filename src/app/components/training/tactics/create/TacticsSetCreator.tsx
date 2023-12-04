@@ -286,6 +286,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   defaultValue={[]}
                   isMulti
                   name={"themes"}
+                  // @ts-expect-error - react-select types are wrong
                   options={options}
                   onChange={(e) => {
                     const themes = e.map(

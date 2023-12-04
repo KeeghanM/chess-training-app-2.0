@@ -4,7 +4,7 @@ import { trackEventOnServer } from "~/app/util/trackEventOnServer";
 export async function POST(request: Request) {
   const { eventName, data } = (await request.json()) as {
     eventName: string;
-    data: Record<string, unknown>;
+    data: Record<string, string>;
   };
 
   if (!eventName) return errorResponse("Missing event name", 400);
