@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
-import { Tool } from "~/app/dashboard/page";
+import type { Tool } from "~/app/dashboard/page";
 import { useRouter } from "next/navigation";
 import Heading from "../_elements/heading";
 import Button from "../_elements/button";

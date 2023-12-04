@@ -1,4 +1,3 @@
-import Container from "../_elements/container";
 import Heading from "../_elements/heading";
 
 interface PageHeaderProps {

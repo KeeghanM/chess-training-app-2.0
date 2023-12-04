@@ -1,7 +1,6 @@
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
-import { TacticsSet, TacticsSetRound } from "@prisma/client";
-import { URLSearchParams } from "url";
+import type { TacticsSet, TacticsSetRound } from "@prisma/client";
 
 export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] };
 

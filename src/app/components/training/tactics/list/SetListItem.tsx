@@ -1,6 +1,6 @@
 "use client";
 import Heading from "~/app/components/_elements/heading";
-import { PrismaTacticsSet } from "~/app/util/GetTacticSets";
+import type { PrismaTacticsSet } from "~/app/util/GetTacticSets";
 import TimeSince from "~/app/util/TimeSince";
 
 export default function SetListItem({
@@ -9,7 +9,9 @@ export default function SetListItem({
   props: { set: PrismaTacticsSet };
 }) {
   const { set } = props;
-  const trainSet = () => {};
+  const trainSet = () => {
+    console.log("train set");
+  };
   return (
     <div
       className="flex flex-col md:flex-row items-center p-2 gap-6 px-5 bg-gray-100"

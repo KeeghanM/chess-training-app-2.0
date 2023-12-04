@@ -1,8 +1,8 @@
-export default function trackEventOnClient(
+export default async function trackEventOnClient(
   eventName: string,
-  data: { [key: string]: string },
+  data: Record<string, string>,
 ) {
-  fetch("/api/logEvent", {
+  await fetch("/api/logEvent", {
     method: "POST",
     body: JSON.stringify({
       eventName,

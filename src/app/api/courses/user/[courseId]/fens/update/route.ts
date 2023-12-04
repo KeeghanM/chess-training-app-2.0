@@ -50,7 +50,8 @@ export async function POST(
     );
 
     return successResponse("Fens updated", {}, 200);
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
+  } catch (e) {
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    else return errorResponse("Unknown error", 500);
   }
 }

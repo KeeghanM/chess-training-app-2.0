@@ -1,5 +1,5 @@
 import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import { Line } from "./parse/ParsePGNtoLineData";
+import type { Line } from "./parse/ParsePGNtoLineData";
 import { useState } from "react";
 import PrettyPrintLine from "~/app/components/general/PrettyPrintLine";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
@@ -59,14 +59,14 @@ export function GroupItem(props: {
                     <div className="flex items-center gap-2 p-2 ml-auto">
                       <select
                         className="p-2 border border-gray-300"
-                        defaultValue={line.tags["Colour"]}
+                        defaultValue={line.tags.Colour}
                         onChange={(e) => {
                           const v = e.target.value;
                           trackEventOnClient("Create Course", {
                             step: "Grouping",
                             value: "Change Colour",
                           });
-                          line.tags["Colour"] = v;
+                          line.tags.Colour = v;
                         }}
                       >
                         <option value="White">White</option>

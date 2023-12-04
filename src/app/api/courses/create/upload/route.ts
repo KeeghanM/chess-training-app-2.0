@@ -1,4 +1,4 @@
-import { Course, Group as PrismaGroup } from "@prisma/client";
+import type { Course, Group as PrismaGroup } from "@prisma/client";
 import { getServerAuthSession } from "~/server/auth";
 import { errorResponse, successResponse } from "../../../responses";
 import { prisma } from "~/server/db";
@@ -110,7 +110,8 @@ export async function POST(request: Request) {
       },
       200,
     );
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
+  } catch (e) {
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    else return errorResponse("Unknown error", 500);
   }
 }

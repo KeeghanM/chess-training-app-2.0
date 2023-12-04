@@ -11,7 +11,7 @@ export async function POST(
   }
 
   const { courseId, lineId } = params;
-  const { lineCorrect } = await request.json();
+  const { lineCorrect } = (await request.json()) as { lineCorrect: boolean };
 
   if (!courseId || !lineId || !lineCorrect)
     return errorResponse("Missing fields", 400);
@@ -53,7 +53,8 @@ export async function POST(
     });
 
     return successResponse("Stats updated", {}, 200);
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
+  } catch (e) {
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    else return errorResponse("Unknown error", 500);
   }
 }

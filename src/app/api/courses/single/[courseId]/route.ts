@@ -1,5 +1,5 @@
 import { errorResponse, successResponse } from "../../../responses";
-import { Course } from "@prisma/client";
+import type { Course } from "@prisma/client";
 import { prisma } from "~/server/db";
 
 export async function GET(
@@ -26,8 +26,9 @@ export async function GET(
         },
       });
     }
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
+  } catch (e) {
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    else return errorResponse("Unknown error", 500);
   }
 
   if (!course) return errorResponse("Course not found", 404);

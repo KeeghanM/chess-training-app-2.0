@@ -38,7 +38,8 @@ export async function GET(
 
     if (!userCourse) return errorResponse("Course not found", 404);
     return successResponse("Course found", { userCourse, userLines }, 200);
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
+  } catch (e) {
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    else return errorResponse("Unknown error", 500);
   }
 }

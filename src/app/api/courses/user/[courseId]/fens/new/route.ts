@@ -11,7 +11,7 @@ export async function POST(
   }
 
   const { courseId } = params;
-  const { fens } = await request.json();
+  const { fens } = (await request.json()) as { fens: string[] };
 
   if (!courseId) return errorResponse("Missing courseId", 400);
   if (!fens) return errorResponse("Missing fens", 400);
@@ -25,7 +25,8 @@ export async function POST(
     });
 
     return successResponse("Fens uploaded", { count: fens.length }, 200);
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
+  } catch (e) {
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    else return errorResponse("Unknown error", 500);
   }
 }

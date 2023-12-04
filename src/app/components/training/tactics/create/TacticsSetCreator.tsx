@@ -4,10 +4,11 @@ import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Select from "react-select";
 import Button from "~/app/components/_elements/button";
 import Heading from "~/app/components/_elements/heading";
-import { PrismaTacticsSet } from "~/app/util/GetTacticSets";
+import type { PrismaTacticsSet } from "~/app/util/GetTacticSets";
 import { useState } from "react";
 import Spinner from "~/app/components/general/Spinner";
 import { useSession } from "next-auth/react";
+import type { ResponseJson } from "~/app/api/responses";
 
 interface TacticsSetCreatorProps {
   setCount: number;
@@ -57,7 +58,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
     count: number,
     themes: string[],
   ) => {
-    let params: {
+    const params: {
       rating: string;
       count: string;
       themesType: "ONE" | "ALL";
@@ -70,25 +71,30 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
     if (themes.length > 0) {
       params.themes = JSON.stringify(themes);
     }
-    const queryUrl =
-      "https://chess-puzzles.p.rapidapi.com/?" + new URLSearchParams(params);
+    const paramsString = new URLSearchParams(params).toString();
+    const queryUrl = "https://chess-puzzles.p.rapidapi.com/?" + paramsString;
     try {
       const resp = await fetch(queryUrl, {
         method: "GET",
         headers: {
           "x-rapidapi-host": "chess-puzzles.p.rapidapi.com",
-          "x-rapidapi-key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY as string,
+          "x-rapidapi-key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
         },
       });
-      const json = await resp.json();
-      const puzzles = json.puzzles;
+      const json = (await resp.json()) as ResponseJson;
+      const puzzles = json.data?.puzzles;
       if (!puzzles) throw new Error("No Puzzles Returned");
 
-      return puzzles;
-    } catch (e: any) {
+      return puzzles as {
+        fen: string;
+        moves: string[];
+        rating: number;
+        themes: string[];
+      }[];
+    } catch (e) {
       // TODO: Proper error handling
-      console.log(e.message);
-      return null;
+      if (e instanceof Error) console.log(e.message);
+      return [];
     }
   };
   const resetForm = () => {
@@ -140,7 +146,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       return;
     }
 
-    const cleanPuzzles = puzzles.map((puzzle: any) => {
+    const cleanPuzzles = puzzles.map((puzzle) => {
       return {
         fen: puzzle.fen,
         moves: puzzle.moves.join(","),
@@ -161,22 +167,23 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
           puzzles: cleanPuzzles,
         }),
       });
-      const json = await resp.json();
+      const json = (await resp.json()) as ResponseJson;
 
       if (json.message != "Set Created") {
         setError("Oops! Something went wrong: " + json?.message);
         return;
       }
 
-      const set = json.data.set;
+      const set = json.data?.set as PrismaTacticsSet | undefined;
       if (!set) {
         throw new Error("Something went wrong");
       }
       resetForm();
       setCreated(set);
       setOpen(false);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+      if (e instanceof Error) setError(e.message);
+      else setError("Unknown error");
     }
   };
   return (
@@ -279,9 +286,8 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   defaultValue={[]}
                   isMulti
                   name={"themes"}
-                  // @ts-ignore
                   options={options}
-                  onChange={(e: any) => {
+                  onChange={(e) => {
                     const themes = e.map(
                       (theme: { label: string; value: string }) => theme.value,
                     );

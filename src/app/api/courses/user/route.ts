@@ -18,7 +18,8 @@ export async function GET(req: Request) {
     });
 
     return successResponse("Courses found", { courses }, 200);
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
+  } catch (e) {
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    else return errorResponse("Unknown error", 500);
   }
 }

@@ -27,9 +27,7 @@ export default async function Courses() {
       <Container>
         <div className="flex flex-col gap-4">
           {courses.length > 0 ? (
-            courses.map((course, index: number) => (
-              <CourseListItem userCourse={course} />
-            ))
+            courses.map((course) => <CourseListItem userCourse={course} />)
           ) : (
             <div>
               <Heading as="h3">You haven't got any courses yet</Heading>

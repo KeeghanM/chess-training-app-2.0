@@ -1,18 +1,23 @@
 "use client";
 
 import { useWindowSize } from "@uidotdev/usehooks";
-import { PrismaUserCourse, PrismaUserLine } from "~/app/util/GetUserCourse";
+import type {
+  PrismaUserCourse,
+  PrismaUserLine,
+} from "~/app/util/GetUserCourse";
 import { useEffect, useState } from "react";
-import { UserFen } from "@prisma/client";
+import type { UserFen } from "@prisma/client";
 import { Chessboard } from "react-chessboard";
-import { Chess, Square } from "chess.js";
+import { Chess } from "chess.js";
+import type { Square } from "chess.js";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Spinner from "../../general/Spinner";
-// @ts-ignore
+// @ts-expect-error - No types available
 import useSound from "use-sound";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
 import Button from "../../_elements/button";
+import type { ResponseJson } from "~/app/api/responses";
 
 // TODO: BugFix - Weird jumping between lines, doesn't seem to be in order + showing "next line" after teaching moves finished instead of jumping to start for repeat
 // TODO: BugFix - last line in course isn't being logged
@@ -30,7 +35,7 @@ export default function CourseTrainer(props: {
   const router = useRouter();
   const [game, setGame] = useState(new Chess());
   const [currentLine, setCurrentLine] = useState<PrismaUserLine>(
-    props.userLines[0] as PrismaUserLine,
+    props.userLines[0]!,
   );
   const [position, setPosition] = useState(game.fen());
   const [teaching, setTeaching] = useState(false);
@@ -116,7 +121,7 @@ export default function CourseTrainer(props: {
         // We got some wrong, so we need to go back over them
         setMode("recap");
         setCurrentWrongMove(0);
-        const fen = wrongMoves[currentWrongMove]?.fen as string;
+        const fen = wrongMoves[currentWrongMove]!.fen;
         game.load(fen);
         setPosition(fen);
       } else {
@@ -127,7 +132,7 @@ export default function CourseTrainer(props: {
         if (!nextLine) {
           // We've reached the end of the course
           setStatus("loading");
-          trackEventOnClient("Course Trainer", {
+          await trackEventOnClient("Course Trainer", {
             action: "Course Complete",
           });
 
@@ -140,7 +145,7 @@ export default function CourseTrainer(props: {
         if (nextLine.line.groupId !== currentLine.line.groupId) {
           // We've reached the end of the group
           // TODO: Add a nice modal popup here
-          trackEventOnClient("Course Trainer", {
+          await trackEventOnClient("Course Trainer", {
             action: "Group Complete",
           });
         }
@@ -211,7 +216,7 @@ export default function CourseTrainer(props: {
           }),
         },
       );
-      const json = await resp.json();
+      const json = (await resp.json()) as ResponseJson;
       if (json.message != "Fens uploaded")
         throw new Error("Error uploading fens"); // TODO: Handle nicer
     }
@@ -265,7 +270,10 @@ export default function CourseTrainer(props: {
 
   // When we drop a piece, we need to check if it's a valid move
   // if it is, we then need to check if it's the correct move
-  const userDroppedPiece = (sourceSquare: Square, targetSquare: Square) => {
+  const userDroppedPiece = async (
+    sourceSquare: Square,
+    targetSquare: Square,
+  ) => {
     // Make the move to see if it's legal
     const playerMove = game.move({
       from: sourceSquare,
@@ -276,8 +284,8 @@ export default function CourseTrainer(props: {
     // Check if the move is correct
     const correctMove =
       mode == "normal"
-        ? (moveList[game.history().length - 1] as string)
-        : (wrongMoves[currentWrongMove]?.move as string);
+        ? moveList[game.history().length - 1]!
+        : wrongMoves[currentWrongMove]!.move;
 
     if (correctMove !== playerMove.san) {
       // We played the wrong move
@@ -306,7 +314,7 @@ export default function CourseTrainer(props: {
       wrongMoves.splice(currentWrongMove, 1);
       setCurrentWrongMove(currentWrongMove + 1);
     }
-    checkEndOfLine();
+    await checkEndOfLine();
     return true;
   };
 
@@ -345,14 +353,14 @@ export default function CourseTrainer(props: {
       return (
         <button
           className="bg-none hover:bg-purple-800 text-white px-1 py-1 h-max max-h-fit"
-          onClick={() => {
-            trackEventOnClient("Course Trainer", {
+          onClick={async () => {
+            await trackEventOnClient("Course Trainer", {
               action: "Jump to move",
             });
 
             const newGame = new Chess();
             for (let i = 0; i <= index; i++) {
-              newGame.move(game.history()[i] as string);
+              newGame.move(game.history()[i]!);
             }
             setPosition(newGame.fen());
           }}
@@ -383,7 +391,7 @@ export default function CourseTrainer(props: {
             props.userLines.length) *
             100,
         )}
-        %) {currentLine.line.lineName || ""}
+        %) {currentLine.line.lineName ?? ""}
       </p>
       <div className="flex flex-col md:flex-row gap-4">
         <div>
@@ -411,11 +419,11 @@ export default function CourseTrainer(props: {
             <Button
               variant="accent"
               disabled={status == "loading"}
-              onClick={() => {
-                trackEventOnClient("Course Trainer", {
+              onClick={async () => {
+                await trackEventOnClient("Course Trainer", {
                   action: "Next Line",
                 });
-                startNextLine();
+                await startNextLine();
               }}
             >
               Next Line {status == "loading" && <Spinner />}

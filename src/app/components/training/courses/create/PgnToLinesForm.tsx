@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { parse as PGNParse } from "@mliebelt/pgn-parser";
-import { Line, ParsePGNtoLineData } from "./parse/ParsePGNtoLineData";
+import { ParsePGNtoLineData } from "./parse/ParsePGNtoLineData";
+import type { Line } from "./parse/ParsePGNtoLineData";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
 import Button from "~/app/components/_elements/button";
 
@@ -10,7 +11,6 @@ export default function PgnToLinesForm(props: {
   finished: (lines: Line[]) => void;
   back: () => void;
 }) {
-  const [mode, setMode] = useState<"copy" | "lichess" | "upload">("copy");
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [error, setError] = useState<string | null>(null);
   const [string, setString] = useState<string>("");
@@ -21,8 +21,9 @@ export default function PgnToLinesForm(props: {
       if (parsed) return true;
 
       return false;
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+      if (e instanceof Error) setError(e.message);
+      else setError("Unknown error");
       return false;
     }
   };

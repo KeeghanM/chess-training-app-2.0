@@ -7,7 +7,6 @@ import CtaRow from "../components/_layouts/ctaRow";
 import Hero from "../components/_layouts/hero";
 import ImageRowFull from "../components/_layouts/imageRowFull";
 import { MultiCol, MultiColItem } from "../components/_layouts/multiCol";
-import PageHeader from "../components/_layouts/pageHeader";
 import { TextWall } from "../components/_layouts/textWall";
 
 export default function Design() {
@@ -145,14 +144,14 @@ export default function Design() {
       </CtaRow>
       <Container>
         <div className="flex flex-wrap gap-4">
-          <Button text="Primary" variant="primary" />
-          <Button text="Secondary" variant="secondary" />
-          <Button text="Accent" variant="accent" />
-          <Button text="Tertiary" variant="tertiary" />
-          <Button text="Danger" variant="danger" />
-          <Button text="Warning" variant="warning" />
-          <Button text="Success" variant="success" />
-          <Button text="Info" variant="info" />
+          <Button variant="primary">Primary</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="accent">Accent</Button>
+          <Button variant="tertiary">Tertiary</Button>
+          <Button variant="danger">Danger</Button>
+          <Button variant="warning">Warning</Button>
+          <Button variant="success">Success</Button>
+          <Button variant="info">Info</Button>
         </div>
       </Container>
       <Container>

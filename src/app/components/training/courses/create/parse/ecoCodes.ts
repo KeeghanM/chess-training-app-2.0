@@ -1,4 +1,4 @@
-const ECO: { [key: string]: string } = {
+const ECO: Record<string, string> = {
   e4nf6: "Alekhine Defense",
   e4nf6e5nd5d4: "Alekhine Defense, 2. e5 Nd5 3. d4",
   e4nf6e5nd5d4d6: "Alekhine Defense, 2. e5 Nd5 3. d4 d6",

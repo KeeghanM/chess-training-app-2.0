@@ -3,17 +3,17 @@ import Spinner from "~/app/components/general/Spinner";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
 import Heading from "~/app/components/_elements/heading";
 import Button from "~/app/components/_elements/button";
+import type { ResponseJson } from "~/app/api/responses";
 
 export default function DetailsForm(props: {
   finished: (name: string, description: string) => void;
   courseName: string | undefined;
   description: string | undefined;
 }) {
-  const [extrasOpen, setExtrasOpen] = useState<boolean>(false);
-  const [name, setName] = useState<string>(props.courseName || "");
+  const [name, setName] = useState<string>(props.courseName ?? "");
   const [status, setStatus] = useState<"idle" | "loading">("idle");
   const [description, setDescription] = useState<string>(
-    props.description || "",
+    props.description ?? "",
   );
   const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +31,7 @@ export default function DetailsForm(props: {
       method: "POST",
       body: JSON.stringify({ name }),
     });
-    const json = await res.json();
+    const json = (await res.json()) as ResponseJson;
     if (!json.data?.isAvailable) {
       setError("Name is already taken");
       setStatus("idle");

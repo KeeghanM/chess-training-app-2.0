@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { GrowthBook } from "@growthbook/growthbook";
 import ToolGrid from "../components/dashboard/ToolGrid";
 import PageHeader from "../components/_layouts/pageHeader";
-import Container from "../components/_elements/container";
 
 export type Tool = {
   name: string;

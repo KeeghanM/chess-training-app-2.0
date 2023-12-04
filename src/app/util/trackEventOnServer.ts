@@ -1,34 +1,36 @@
 import Mixpanel from "mixpanel";
 import { getServerAuthSession } from "~/server/auth";
 import { headers } from "next/headers";
-// @ts-ignore
 import { UAParser } from "ua-parser-js";
 
-export const mixpanel = Mixpanel.init(process.env.MIXPANEL_TOKEN as string, {
+export const mixpanel = Mixpanel.init(process.env.MIXPANEL_TOKEN!, {
   host: "api-eu.mixpanel.com",
 });
 
-export async function trackEventOnServer(event: string, data?: any) {
+export async function trackEventOnServer(
+  event: string,
+  data?: Record<string, string>,
+) {
   // get all the headers and sessionCookie
   const session = await getServerAuthSession();
   const headersList = headers();
   const sessionId = await fetch(`${process.env.API_BASE_URL}/auth/cookies`)
     .then((resp) => resp.json())
-    .then((resp) => resp.sessionId);
+    .then((resp) => resp.sessionId as string);
 
   // get request information like IP and user agent
   const ip =
-    headersList.get("x-forwarded-for") ||
-    headersList.get("Forwarded") ||
+    headersList.get("x-forwarded-for") ??
+    headersList.get("Forwarded") ??
     headersList.get("x-real-ip");
-  const ua = new UAParser(headersList.get("user-agent"));
+  const ua = new UAParser(headersList.get("user-agent") ?? "");
   const browser = ua.getBrowser();
   const os = ua.getOS();
   const device = ua.getDevice();
 
   // Get URL information
   const currentUrl = headersList.get("x-url");
-  const utm_values = getUtmValues(currentUrl as string);
+  const utm_values = getUtmValues(currentUrl!);
 
   if (currentUrl?.includes("404")) return;
 

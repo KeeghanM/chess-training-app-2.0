@@ -1,4 +1,3 @@
-import { getProviders } from "next-auth/react";
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
 import Container from "~/app/components/_elements/container";

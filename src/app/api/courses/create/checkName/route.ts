@@ -2,7 +2,7 @@ import { errorResponse, successResponse } from "~/app/api/responses";
 import { prisma } from "~/server/db";
 
 export async function POST(request: Request) {
-  const { name } = await request.json();
+  const { name } = (await request.json()) as { name: string };
   if (!name) return errorResponse("Missing name", 400);
 
   try {
@@ -29,7 +29,8 @@ export async function POST(request: Request) {
       },
       200,
     );
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
+  } catch (e) {
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    else return errorResponse("Unknown error", 500);
   }
 }

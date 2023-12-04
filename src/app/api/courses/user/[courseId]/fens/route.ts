@@ -25,7 +25,8 @@ export async function GET(
 
     if (!userCourse) return errorResponse("User Course not found", 404);
     return successResponse("Fens found", { fens: userCourse.fens }, 200);
-  } catch (e: any) {
-    return errorResponse(e.message, 500);
+  } catch (e) {
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    else return errorResponse("Unknown error", 500);
   }
 }

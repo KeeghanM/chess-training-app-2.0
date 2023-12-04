@@ -1,4 +1,4 @@
-import { Line } from "~/app/components/training/courses/create/parse/ParsePGNtoLineData";
+import type { Line } from "~/app/components/training/courses/create/parse/ParsePGNtoLineData";
 
 export default function PrettyPrintLine(props: { line: Line | string }) {
   // Return the moves, with the move number bolded
@@ -14,8 +14,8 @@ export default function PrettyPrintLine(props: { line: Line | string }) {
   const movePairs: { whiteMove: string; blackMove: string }[] = [];
   for (let i = 0; i < line.moves.length; i += 2) {
     movePairs.push({
-      whiteMove: line.moves[i]?.notation || "",
-      blackMove: line.moves[i + 1]?.notation || "",
+      whiteMove: line.moves[i]?.notation ?? "",
+      blackMove: line.moves[i + 1]?.notation ?? "",
     });
   }
 

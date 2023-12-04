@@ -2,7 +2,7 @@
 import PgnToLinesForm from "./PgnToLinesForm";
 import { useState } from "react";
 import Steps from "./Steps";
-import { Line } from "./parse/ParsePGNtoLineData";
+import type { Line } from "./parse/ParsePGNtoLineData";
 import GroupSelector from "./GroupSelector";
 import DetailsForm from "./DetailsForm";
 import { useSession } from "next-auth/react";
@@ -11,6 +11,7 @@ import trackEventOnClient from "~/app/util/trackEventOnClient";
 import Heading from "~/app/components/_elements/heading";
 import Button from "~/app/components/_elements/button";
 import Container from "~/app/components/_elements/container";
+import type { ResponseJson } from "~/app/api/responses";
 
 export default function CreateCourseForm() {
   const router = useRouter();
@@ -39,10 +40,10 @@ export default function CreateCourseForm() {
       },
       body: JSON.stringify({ ...courseData, description }),
     });
-    const data = await response.json();
+    const data = (await response.json()) as ResponseJson;
 
     if (!response.ok || data.message != "Course created") {
-      trackEventOnClient("Create Course", {
+      await trackEventOnClient("Create Course", {
         step: "Upload",
         value: "Error",
         message: data.message,
@@ -51,11 +52,12 @@ export default function CreateCourseForm() {
       return;
     }
 
-    trackEventOnClient("Create Course", {
+    await trackEventOnClient("Create Course", {
       step: "Upload",
       value: "Success",
     });
-    router.push("/courses/" + data.data.slug);
+    const courseSlug = data.data!.slug as string;
+    router.push("/courses/" + courseSlug);
   };
 
   return (
@@ -88,7 +90,7 @@ export default function CreateCourseForm() {
         <GroupSelector
           lines={lines}
           finished={async (group, sortedLines) => {
-            upload(courseName, description, group, sortedLines);
+            await upload(courseName, description, group, sortedLines);
           }}
         />
       )}
@@ -118,7 +120,7 @@ function transformCourseData(courseName: string, group: string, lines: Line[]) {
   // Extract the unique group names from the lines
   // into an array of objects with a groupName property
   const groupNames = lines.reduce((acc: { groupName: string }[], line) => {
-    const groupName = line.tags[group] as string;
+    const groupName = line.tags[group]!;
     if (
       groupName !== undefined &&
       !acc.some((item) => item.groupName === groupName)
@@ -137,8 +139,8 @@ function transformCourseData(courseName: string, group: string, lines: Line[]) {
     .replace(/^-+|-+$/g, "");
 
   const processedLines = lines.map((line) => {
-    const groupName = line.tags[group] as string;
-    const colour = line.tags["Colour"] as string;
+    const groupName = line.tags[group]!;
+    const colour = line.tags.Colour!;
     const moves = line.moves.map((move) => move.notation).join(",");
     return {
       groupName,

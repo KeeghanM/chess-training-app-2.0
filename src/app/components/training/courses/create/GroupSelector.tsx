@@ -1,7 +1,7 @@
 "use client";
 
 import * as Tabs from "@radix-ui/react-tabs";
-import { Line } from "./parse/ParsePGNtoLineData";
+import type { Line } from "./parse/ParsePGNtoLineData";
 import { useState, useEffect } from "react";
 import { GroupItem } from "./GroupItem";
 import Spinner from "~/app/components/general/Spinner";
@@ -21,9 +21,9 @@ export default function GroupSelector(props: {
     getGroupOptions(lines),
   );
   const [selectedGroup, setSelectedGroup] = useState<string>("");
-  const [groupedLineCounts, setGroupedLineCounts] = useState<{
-    [key: string]: number;
-  }>({});
+  const [groupedLineCounts, setGroupedLineCounts] = useState<
+    Record<string, number>
+  >({});
   const [status, setStatus] = useState<"idle" | "loading">("idle");
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export default function GroupSelector(props: {
     setGroupedLineCounts(
       lines.reduce(
         (prev, curr) => {
-          const tag = curr.tags[group] as string;
+          const tag = curr.tags[group]!;
           if (prev[tag]) {
             prev[tag]++;
           } else {
@@ -45,7 +45,7 @@ export default function GroupSelector(props: {
           }
           return prev;
         },
-        {} as { [key: string]: number },
+        {} as Record<string, number>,
       ),
     );
   };
@@ -88,7 +88,7 @@ export default function GroupSelector(props: {
                 lines={lines}
                 selectedGroup={selectedGroup}
                 groupKey={key}
-                count={groupedLineCounts[key] as number}
+                count={groupedLineCounts[key]!}
               />
             ))}
           </div>
