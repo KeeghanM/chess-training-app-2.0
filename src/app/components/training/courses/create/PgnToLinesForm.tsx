@@ -1,6 +1,5 @@
 "use client";
 
-import * as Tabs from "@radix-ui/react-tabs";
 import { useState } from "react";
 import { parse as PGNParse } from "@mliebelt/pgn-parser";
 import { Line, ParsePGNtoLineData } from "./parse/ParsePGNtoLineData";

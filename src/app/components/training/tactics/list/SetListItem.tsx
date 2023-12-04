@@ -1,6 +1,6 @@
 "use client";
 import Heading from "~/app/components/_elements/heading";
-import { PrismaTacticsSet } from "~/app/util/GetPuzzleSets";
+import { PrismaTacticsSet } from "~/app/util/GetTacticSets";
 import TimeSince from "~/app/util/TimeSince";
 
 export default function SetListItem({

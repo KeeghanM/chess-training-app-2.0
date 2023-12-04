@@ -119,9 +119,9 @@ model Puzzle {
 model TacticsSetRound {
     id          String     @id @default(cuid())
     roundNumber Int
-    timeSpent   Int
-    correct     Int
-    incorrect   Int
+    timeSpent   Int        @default(0)
+    correct     Int        @default(0)
+    incorrect   Int        @default(0)
     setId       String
     createdAt   DateTime   @default(now())
     updatedAt   DateTime   @updatedAt

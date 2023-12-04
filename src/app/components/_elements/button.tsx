@@ -40,6 +40,7 @@ export default function Button(props: ButtonProps) {
         (props.disabled ? " opacity-50 cursor-not-allowed" : "")
       }
       onClick={props.onClick ? props.onClick : undefined}
+      disabled={props.disabled}
     >
       {props.children}
     </button>
