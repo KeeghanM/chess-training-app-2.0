@@ -6,7 +6,7 @@ import {
   Line,
   UserCourse,
   Group,
-  UserFens,
+  UserFen,
 } from "@prisma/client";
 
 export type PrismaUserCourse = UserCourse & { course: Course };
@@ -23,6 +23,7 @@ export async function GetUserCourses() {
       Authorization: `Bearer ${session.user.id}`,
     },
   });
+  console.log(`${process.env.API_BASE_URL}/courses/user`);
   const json = await resp.json();
   if (json.message != "Courses found") {
     // TODO: Handle error
@@ -78,6 +79,6 @@ export async function GetUserCourse(courseId: string) {
   return {
     userCourse: courseJson.data.userCourse as PrismaUserCourse,
     userLines: courseJson.data.userLines as PrismaUserLine[],
-    userFens: fensJson.data.fens as UserFens[],
+    userFens: fensJson.data.fens as UserFen[],
   };
 }

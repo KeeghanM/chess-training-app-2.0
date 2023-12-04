@@ -1,16 +1,16 @@
-import { Container, Em, Heading, Section } from "@radix-ui/themes";
+import PageHeader from "~/app/components/_layouts/pageHeader";
 
 export default function KnightVision() {
   return (
-    <Section>
-      <Container p={{ initial: "2", lg: "0" }}>
-        <Heading size="9" as="h1">
-          KnightVision
-        </Heading>
-        <Heading size="6" as="h2">
-          <Em>Coming soon!</Em>
-        </Heading>
-      </Container>
-    </Section>
+    <>
+      <PageHeader
+        title="Knight Vision"
+        subTitle="Coming soon!"
+        image={{
+          src: "/images/hero.avif",
+          alt: "Hero Image",
+        }}
+      />
+    </>
   );
 }

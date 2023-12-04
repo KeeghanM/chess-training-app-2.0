@@ -11,6 +11,7 @@ datasource db {
     relationMode = "prisma"
 }
 
+// Courses
 model Course {
     id                String       @id @default(cuid())
     courseName        String
@@ -47,7 +48,7 @@ model UserCourse {
     linesUnseen   Int
     user          User       @relation(fields: [userId], references: [id], onDelete: Cascade)
     lines         UserLine[]
-    fens          UserFens[]
+    fens          UserFen[]
     course        Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
@@ -80,7 +81,7 @@ model UserLine {
     line         Line       @relation(fields: [lineId], references: [id], onDelete: Cascade)
 }
 
-model UserFens {
+model UserFen {
     id           String     @id @default(cuid())
     userCourseId String
     fen          String
@@ -88,6 +89,43 @@ model UserFens {
     timesCorrect Int        @default(0)
     timesWrong   Int        @default(0)
     course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
+}
+
+// Tactics Trainer
+model TacticsSet {
+    id          String            @id @default(cuid())
+    name        String
+    userId      String
+    createdAt   DateTime          @default(now())
+    updatedAt   DateTime          @updatedAt
+    lastTrained DateTime?
+    user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+    puzzles     Puzzle[]
+    rounds      TacticsSetRound[]
+}
+
+model Puzzle {
+    id        String     @id @default(cuid())
+    setId     String
+    fen       String
+    moves     String
+    rating    Int
+    themes    String
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
+    set       TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+}
+
+model TacticsSetRound {
+    id          String     @id @default(cuid())
+    roundNumber Int
+    timeSpent   Int        @default(0)
+    correct     Int        @default(0)
+    incorrect   Int        @default(0)
+    setId       String
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    set         TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
 }
 
 // Necessary for Next auth
@@ -126,6 +164,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     courseStats   UserCourse[]
+    tacticsSets   TacticsSet[]
 }
 
 model VerificationToken {

@@ -3,8 +3,7 @@
 import { useWindowSize } from "@uidotdev/usehooks";
 import { PrismaUserCourse, PrismaUserLine } from "~/app/util/GetUserCourse";
 import { useEffect, useState } from "react";
-import { Box, Button, Container, Flex, Text } from "@radix-ui/themes";
-import { UserFens } from "@prisma/client";
+import { UserFen } from "@prisma/client";
 import { Chessboard } from "react-chessboard";
 import { Chess, Square } from "chess.js";
 import { useSession } from "next-auth/react";
@@ -13,9 +12,10 @@ import Spinner from "../../general/Spinner";
 // @ts-ignore
 import useSound from "use-sound";
 import trackEventOnClient from "~/app/util/trackEventOnClient";
+import Button from "../../_elements/button";
 
+// TODO: BugFix - Weird jumping between lines, doesn't seem to be in order + showing "next line" after teaching moves finished instead of jumping to start for repeat
 // TODO: BugFix - last line in course isn't being logged
-// TODO: BugFix - the board/pgn size is changing causing the board to jump around
 // TODO: BugBix - random error on saving stats, maybe just retry/ignore?
 // TODO: Repeat full line if there were any teaching moves
 // TODO: Add comments/notes viewer that shows in teaching mode
@@ -24,7 +24,7 @@ import trackEventOnClient from "~/app/util/trackEventOnClient";
 export default function CourseTrainer(props: {
   userCourse: PrismaUserCourse;
   userLines: PrismaUserLine[];
-  userFens: UserFens[];
+  userFens: UserFen[];
 }) {
   const { data: session } = useSession();
   const router = useRouter();
@@ -333,18 +333,18 @@ export default function CourseTrainer(props: {
     const moveNumber = Math.floor(index / 2) + 1;
     const moveColour = index % 2 === 0 ? "White" : "Black";
     const FlexText = () => (
-      <Flex align={"center"} gap={"1"}>
-        {moveColour == "White" && <Text weight={"bold"}>{moveNumber}</Text>}{" "}
-        <Text>{move}</Text>
-      </Flex>
+      <p>
+        {moveColour == "White" && (
+          <span className="font-bold">{moveNumber}</span>
+        )}{" "}
+        <span>{move}</span>
+      </p>
     );
 
     if (nextLine) {
       return (
-        <Button
-          variant={"ghost"}
-          color={"green"}
-          style={{ cursor: "pointer" }}
+        <button
+          className="bg-none hover:bg-purple-800 text-white px-1 py-1 h-max max-h-fit"
           onClick={() => {
             trackEventOnClient("Course Trainer", {
               action: "Jump to move",
@@ -358,85 +358,71 @@ export default function CourseTrainer(props: {
           }}
         >
           <FlexText />
-        </Button>
+        </button>
       );
     } else {
-      return <FlexText />;
+      return (
+        <div className="px-1 py-1 text-white">
+          <FlexText />
+        </div>
+      );
     }
   });
 
   const windowSize = useWindowSize() as { width: number; height: number };
   return (
-    <Container
-      style={{
-        maxHeight: "calc(80vh - 4rem)",
-      }}
-      mt={"3"}
-    >
-      <Flex direction={{ initial: "column", md: "row" }}>
-        <Chessboard
-          arePiecesDraggable={interactive}
-          position={position}
-          onPieceDrop={userDroppedPiece}
-          boardOrientation={orientation}
-          boardWidth={Math.min(windowSize.height / 2, windowSize.width - 50)}
-          customBoardStyle={{
-            marginInline: "auto",
-          }}
-        />
-        <Box
-          p={"4"}
-          style={{
-            background: "var(--plum-3)",
-          }}
-        >
-          <Flex direction={"column"} gap={"2"}>
-            <Text
-              size={"4"}
-              weight={"bold"}
-              style={{
-                minWidth: "max-content",
+    <div className=" bg-purple-700 p-4">
+      <p className="text-lg text-white font-bold">
+        Current Group: {currentLine.line.group.groupName}
+      </p>
+      <p className="text-white font-bold">
+        Line: {props.userLines.indexOf(currentLine) + 1}/
+        {props.userLines.length} (
+        {Math.round(
+          ((props.userLines.indexOf(currentLine) + 1) /
+            props.userLines.length) *
+            100,
+        )}
+        %) {currentLine.line.lineName || ""}
+      </p>
+      <div className="flex flex-col md:flex-row gap-4">
+        <div>
+          <Chessboard
+            arePiecesDraggable={interactive}
+            position={position}
+            onPieceDrop={userDroppedPiece}
+            boardOrientation={orientation}
+            boardWidth={Math.min(windowSize.height / 2, windowSize.width - 50)}
+            customBoardStyle={{
+              marginInline: "auto",
+            }}
+          />
+        </div>
+        <div className="flex flex-col gap-2 flex-1">
+          <div className="flex flex-wrap content-start gap-1 bg-purple-600 h-full p-2">
+            {PgnDisplay.map((item) => item)}
+          </div>
+          {teaching && (
+            <Button variant="accent" onClick={resetTeachingMove}>
+              Got it!
+            </Button>
+          )}
+          {nextLine && (
+            <Button
+              variant="accent"
+              disabled={status == "loading"}
+              onClick={() => {
+                trackEventOnClient("Course Trainer", {
+                  action: "Next Line",
+                });
+                startNextLine();
               }}
             >
-              Group: {currentLine.line.group.groupName}
-            </Text>
-            <Text size={"4"}>
-              Line: {props.userLines.indexOf(currentLine) + 1}/
-              {props.userLines.length} (
-              {Math.round(
-                ((props.userLines.indexOf(currentLine) + 1) /
-                  props.userLines.length) *
-                  100,
-              )}
-              %) {currentLine.line.lineName || ""}
-            </Text>
-            <Flex
-              wrap={"wrap"}
-              gap={"1"}
-              style={{ height: "100%", background: "var(--plum-2)" }}
-              p={"4"}
-            >
-              {PgnDisplay.map((item) => item)}
-            </Flex>
-            <Flex direction={"column"} gap={"2"}>
-              {teaching && <Button onClick={resetTeachingMove}>Got it!</Button>}
-              {nextLine && (
-                <Button
-                  disabled={status == "loading"}
-                  onClick={() => {
-                    trackEventOnClient("Course Trainer", {
-                      action: "Next Line",
-                    });
-                    startNextLine();
-                  }}
-                >
-                  Next Line {status == "loading" && <Spinner />}
-                </Button>
-              )}
-            </Flex>
-          </Flex>
-        </Box>
-      </Flex>
-    </Container>
+              Next Line {status == "loading" && <Spinner />}
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }

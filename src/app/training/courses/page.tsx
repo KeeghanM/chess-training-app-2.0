@@ -1,9 +1,12 @@
-import { Container, Flex, Heading, Section } from "@radix-ui/themes";
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
-import CourseListItem from "~/app/components/courses/list/CourseListItem";
+import CourseListItem from "~/app/components/training/courses/list/CourseListItem";
 import Error from "~/app/components/general/ErrorPage";
 import { GetUserCourses } from "~/app/util/GetUserCourse";
+import Container from "~/app/components/_elements/container";
+import PageHeader from "~/app/components/_layouts/pageHeader";
+import Heading from "~/app/components/_elements/heading";
+import StyledLink from "~/app/components/_elements/styledLink";
 
 export default async function Courses() {
   const session = await getServerAuthSession();
@@ -13,20 +16,32 @@ export default async function Courses() {
   if (!courses) return <Error PageTitle="Your Courses" />;
 
   return (
-    <Section>
-      <Container p={{ initial: "2", lg: "0" }}>
-        <Flex direction={"column"} gap={"4"}>
-          <Heading size="9" as="h1">
-            Your Courses
-          </Heading>
-          {courses.map((course, index: number) => (
-            <CourseListItem
-              userCourse={course}
-              background={index % 2 == 0 ? "var(--plum-4)" : "var(--plum-5)"}
-            />
-          ))}
-        </Flex>
+    <>
+      <PageHeader
+        title="Your Courses"
+        image={{
+          src: "/images/hero.avif",
+          alt: "Hero Image",
+        }}
+      />
+      <Container>
+        <div className="flex flex-col gap-4">
+          {courses.length > 0 ? (
+            courses.map((course, index: number) => (
+              <CourseListItem userCourse={course} />
+            ))
+          ) : (
+            <div>
+              <Heading as="h3">You haven't got any courses yet</Heading>
+              <p className="text-gray-500">
+                You can browse courses from the{" "}
+                <StyledLink href="/courses" text="courses list" /> or try{" "}
+                <StyledLink href="/courses/create" text="creating your own" />.
+              </p>
+            </div>
+          )}
+        </div>
       </Container>
-    </Section>
+    </>
   );
 }

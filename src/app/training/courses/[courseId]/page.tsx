@@ -1,9 +1,10 @@
 import { redirect } from "next/navigation";
 import Error from "~/app/components/general/ErrorPage";
-import { Container, Heading, Section } from "@radix-ui/themes";
 import { getServerAuthSession } from "~/server/auth";
 import { GetUserCourse } from "~/app/util/GetUserCourse";
 import CourseTrainer from "~/app/components/training/courses/CourseTrainer";
+import Container from "~/app/components/_elements/container";
+import PageHeader from "~/app/components/_layouts/pageHeader";
 
 export default async function ({ params }: { params: { courseId: string } }) {
   const session = await getServerAuthSession();
@@ -15,11 +16,15 @@ export default async function ({ params }: { params: { courseId: string } }) {
   if (!userCourse || !userLines) return <Error PageTitle="Studying:" />;
 
   return (
-    <Section>
-      <Container size={"3"}>
-        <Heading size={"9"} as={"h1"}>
-          {userCourse.course.courseName}
-        </Heading>
+    <>
+      <PageHeader
+        title={"Training Course: " + userCourse.course.courseName}
+        image={{
+          src: "/images/hero.avif",
+          alt: "Hero Image",
+        }}
+      />
+      <Container>
         {userCourse && (
           <CourseTrainer
             userCourse={userCourse}
@@ -28,6 +33,6 @@ export default async function ({ params }: { params: { courseId: string } }) {
           />
         )}
       </Container>
-    </Section>
+    </>
   );
 }

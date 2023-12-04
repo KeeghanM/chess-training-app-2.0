@@ -17,7 +17,7 @@ export async function POST(
   if (!fens) return errorResponse("Missing fens", 400);
 
   try {
-    await prisma.userFens.createMany({
+    await prisma.userFen.createMany({
       data: fens.map((fen: string) => ({
         fen,
         userCourseId: courseId,

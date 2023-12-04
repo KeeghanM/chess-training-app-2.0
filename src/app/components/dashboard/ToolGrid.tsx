@@ -1,10 +1,12 @@
 "use client";
 
-import { Button, Card, Flex, Heading, Link, Text } from "@radix-ui/themes";
 import { useState } from "react";
+import Link from "next/link";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { Tool } from "~/app/dashboard/page";
 import { useRouter } from "next/navigation";
+import Heading from "../_elements/heading";
+import Button from "../_elements/button";
 
 export default function ToolGrid(props: { tool: Tool }) {
   const [showDescription, setShowDescription] = useState(false);
@@ -13,54 +15,46 @@ export default function ToolGrid(props: { tool: Tool }) {
   const tool = props.tool;
 
   return (
-    <Card>
-      <Flex direction={"column"} justify={"between"} height={"100%"} gap={"4"}>
-        <Flex direction={"column"} gap="2">
+    <div className="flex flex-col items-center bg-gray-100 p-4 md:p-6">
+      <div className="flex flex-col justify-between h-full">
+        <div className="flex flex-col gap-2">
           {tool.active ? (
             <Link href={tool.href}>
-              <Heading size="6">{tool.name}</Heading>
+              <Heading as={"h3"}>{tool.name}</Heading>
             </Link>
           ) : (
-            <Heading size="6" color={"gray"}>
+            <Heading as={"h3"} color="#666">
               {tool.name}
             </Heading>
           )}
-          <Flex direction="column" gap="2" ref={parent}>
+          <div className="flex flex-col gap-2" ref={parent}>
             {
               // Only show the first line of the description
               // unless the user has clicked "Show More"
               tool.description
                 .slice(0, showDescription ? undefined : 1)
                 .map((line) => (
-                  <Text key={line} size="3">
-                    {line}
-                  </Text>
+                  <p key={line}>{line}</p>
                 ))
             }
             <Button
               onClick={() => setShowDescription(!showDescription)}
-              variant={"ghost"}
-              color="gray"
+              variant={"tertiary"}
             >
               {showDescription ? "Hide" : "Show More"}
             </Button>
-          </Flex>
-        </Flex>
+          </div>
+        </div>
         {tool.active ? (
-          <Button
-            color="plum"
-            variant="solid"
-            onClick={() => router.push(tool.href)}
-            style={{ cursor: "pointer" }}
-          >
+          <Button variant="primary" onClick={() => router.push(tool.href)}>
             {tool.buttonText}
           </Button>
         ) : (
-          <Button color="gray" variant="solid" disabled>
+          <Button variant="secondary" disabled={true}>
             Coming Soon
           </Button>
         )}
-      </Flex>
-    </Card>
+      </div>
+    </div>
   );
 }

@@ -1,4 +1,3 @@
-import { Flex, Text } from "@radix-ui/themes";
 import { Line } from "~/app/components/courses/create/parse/ParsePGNtoLineData";
 
 export default function PrettyPrintLine(props: { line: Line | string }) {
@@ -9,7 +8,7 @@ export default function PrettyPrintLine(props: { line: Line | string }) {
   const { line } = props;
 
   if (typeof line === "string") {
-    return <Text>{line}</Text>;
+    return <span>{line}</span>;
   }
 
   const movePairs: { whiteMove: string; blackMove: string }[] = [];
@@ -21,14 +20,14 @@ export default function PrettyPrintLine(props: { line: Line | string }) {
   }
 
   return (
-    <Flex align={"center"} gap={"2"} wrap={"wrap"}>
+    <div className="flex items-center gap-2 flex-wrap">
       {movePairs.map((pair, index) => (
-        <Flex align={"center"} gap={"1"}>
-          <Text weight={"bold"}>{index + 1}.</Text>
-          {pair.whiteMove && <Text>{pair.whiteMove}</Text>}
-          {pair.blackMove && <Text>{pair.blackMove}</Text>}
-        </Flex>
+        <div className="flex items-center gap-1">
+          <span className="font-bold">{index + 1}.</span>
+          {pair.whiteMove && <span>{pair.whiteMove}</span>}
+          {pair.blackMove && <span>{pair.blackMove}</span>}
+        </div>
       ))}
-    </Flex>
+    </div>
   );
 }
