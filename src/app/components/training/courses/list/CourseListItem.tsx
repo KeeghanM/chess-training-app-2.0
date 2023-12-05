@@ -4,7 +4,7 @@ import * as HoverCard from "@radix-ui/react-hover-card";
 import type { UserCourse, Course } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import type { PrismaUserCourse } from "~/app/_util/GetUserCourse";
-import TimeSince from "~/app/_util/TimeSince";
+import TimeSince from "~/app/components/general/TimeSince";
 import trackEventOnClient from "~/app/_util/trackEventOnClient";
 import Heading from "~/app/components/_elements/heading";
 import Button from "~/app/components/_elements/button";

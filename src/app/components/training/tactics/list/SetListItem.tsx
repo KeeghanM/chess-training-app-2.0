@@ -1,7 +1,7 @@
 "use client";
 import Heading from "~/app/components/_elements/heading";
 import type { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
-import TimeSince from "~/app/_util/TimeSince";
+import TimeSince from "~/app/components/general/TimeSince";
 
 export default function SetListItem({
   props,

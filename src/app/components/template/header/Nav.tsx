@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import Button from "../../_elements/button";
 import UserButtons from "./UserButtons";
+import type { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 
 const menuItems = [
   { name: "Home", href: "/" },
@@ -14,7 +15,7 @@ const menuItems = [
   { name: "Contact", href: "/contact" },
 ];
 
-export default function Nav({ props }: { props: { user: boolean } }) {
+export default function Nav({ props }: { props: { user: KindeUser | null } }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (

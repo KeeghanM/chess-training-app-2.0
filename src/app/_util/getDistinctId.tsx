@@ -1,7 +1,8 @@
-import { getServerAuthSession } from "~/server/auth";
+import { getUserServer } from "./getUserServer";
+
 export default async function getDistinctId() {
-  const session = await getServerAuthSession();
-  if (session) return session.user!.id!;
+  const { user } = await getUserServer();
+  if (user) return user.id;
 
   const sessionId = await fetch(`${process.env.API_BASE_URL}/auth/cookies`)
     .then((resp) => resp.json())

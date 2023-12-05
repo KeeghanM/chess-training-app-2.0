@@ -5,17 +5,16 @@ import Steps from "./Steps";
 import type { Line } from "./parse/ParsePGNtoLineData";
 import GroupSelector from "./GroupSelector";
 import DetailsForm from "./DetailsForm";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import trackEventOnClient from "~/app/_util/trackEventOnClient";
 import Heading from "~/app/components/_elements/heading";
 import Button from "~/app/components/_elements/button";
 import Container from "~/app/components/_elements/container";
 import type { ResponseJson } from "~/app/api/responses";
+import { getUserClient } from "~/app/_util/getUserClient";
 
 export default function CreateCourseForm() {
   const router = useRouter();
-  const { data: session } = useSession();
   const [currentStep, setCurrentStep] = useState<
     "import" | "group" | "name" | "error"
   >("name");
@@ -29,14 +28,15 @@ export default function CreateCourseForm() {
     group: string,
     lines: Line[],
   ) => {
-    if (!session) return;
+    const { user } = await getUserClient();
+    if (!user) return;
 
     const courseData = transformCourseData(courseName, group, lines);
     const response = await fetch("/api/courses/create/upload", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        authorization: "Bearer " + session.user.id,
+        authorization: "Bearer " + user.id,
       },
       body: JSON.stringify({ ...courseData, description }),
     });

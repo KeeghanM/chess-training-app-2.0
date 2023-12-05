@@ -1,13 +1,16 @@
-import { getServerAuthSession } from "~/server/auth";
+import {
+  RegisterLink,
+  LoginLink,
+} from "@kinde-oss/kinde-auth-nextjs/components";
 import { redirect } from "next/navigation";
+import { getUserServer } from "~/app/_util/getUserServer";
 import Container from "~/app/components/_elements/container";
 import Heading from "~/app/components/_elements/heading";
-import GoogleSignIn from "~/app/components/auth/GoogleSignIn";
 
 export default async function SignIn() {
-  const session = await getServerAuthSession();
+  const { user } = await getUserServer();
 
-  if (session) redirect("/dashboard");
+  if (user) redirect("/dashboard");
 
   return (
     <Container>
@@ -20,7 +23,10 @@ export default async function SignIn() {
           get access to every single one of our Science Backed training tools
           forever.
         </p>
-        <GoogleSignIn />
+        <LoginLink postLoginRedirectURL="/dashboard">Sign in</LoginLink>
+        <RegisterLink postLoginRedirectURL="/dashboard/new">
+          Sign up
+        </RegisterLink>
       </div>
     </Container>
   );

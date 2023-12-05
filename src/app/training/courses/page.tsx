@@ -1,4 +1,3 @@
-import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
 import CourseListItem from "~/app/components/training/courses/list/CourseListItem";
 import Error from "~/app/components/general/ErrorPage";
@@ -7,10 +6,11 @@ import Container from "~/app/components/_elements/container";
 import PageHeader from "~/app/components/_layouts/pageHeader";
 import Heading from "~/app/components/_elements/heading";
 import StyledLink from "~/app/components/_elements/styledLink";
+import { getUserServer } from "~/app/_util/getUserServer";
 
 export default async function Courses() {
-  const session = await getServerAuthSession();
-  if (!session) redirect("/api/auth/signin");
+  const { user } = await getUserServer();
+  if (!user) redirect("/api/auth/signin");
 
   const courses = await GetUserCourses();
   if (!courses) return <Error PageTitle="Your Courses" />;

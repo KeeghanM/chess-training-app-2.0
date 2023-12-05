@@ -1,10 +1,6 @@
 import "./globals.css";
 
-import {
-  PHProvider,
-  PostHogPageview,
-  NextAuthProvider,
-} from "./_util/_providers";
+import { PHProvider, PostHogPageview } from "./_util/_providers";
 import Header from "./components/template/header/Header";
 import Footer from "./components/template/footer/Footer";
 import { Suspense } from "react";
@@ -28,13 +24,11 @@ export default async function RootLayout({
         <PostHogPageview />
       </Suspense>
       <PHProvider>
-        <NextAuthProvider>
-          <body style={{ margin: 0, padding: 0 }}>
-            <Header />
-            {children}
-            <Footer />
-          </body>
-        </NextAuthProvider>
+        <body style={{ margin: 0, padding: 0 }}>
+          <Header />
+          {children}
+          <Footer />
+        </body>
       </PHProvider>
     </html>
   );

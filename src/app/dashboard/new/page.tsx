@@ -1,13 +1,13 @@
-import { getServerAuthSession } from "~/server/auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Container from "~/app/components/_elements/container";
 import PageHeader from "~/app/components/_layouts/pageHeader";
 import Button from "~/app/components/_elements/button";
+import { getUserServer } from "~/app/_util/getUserServer";
 
 export default async function NewUserWelcome() {
-  const session = await getServerAuthSession();
-  if (!session) redirect("/auth/signin");
+  const { user } = await getUserServer();
+  if (!user) redirect("/auth/signin");
 
   return (
     <>

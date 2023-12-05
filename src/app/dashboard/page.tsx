@@ -1,8 +1,8 @@
-import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
 import ToolGrid from "../components/dashboard/ToolGrid";
 import PageHeader from "../components/_layouts/pageHeader";
 import { isFlagEnabledServer } from "../_util/isFlagEnabledServer";
+import { getUserServer } from "../_util/getUserServer";
 
 export type Tool = {
   name: string;
@@ -13,12 +13,8 @@ export type Tool = {
 };
 
 export default async function Dashboard() {
-  const session = await getServerAuthSession();
-
-  // Redirect to login if no session
-  if (!session) redirect("/api/auth/signin");
-
-  const user = session.user;
+  const { user } = await getUserServer();
+  if (!user) redirect("/api/auth/signin");
 
   const tools: Tool[] = [
     {
@@ -112,7 +108,7 @@ export default async function Dashboard() {
     <>
       <PageHeader
         title="Dashboard"
-        subTitle={`Welcome back, ${user.name}`}
+        subTitle={`Welcome back, ${user.given_name}`}
         image={{ src: "/images/hero.avif", alt: "Hero Image" }}
       />
       <div className="p-4 md:p-6">

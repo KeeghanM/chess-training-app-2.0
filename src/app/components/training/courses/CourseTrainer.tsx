@@ -10,7 +10,6 @@ import type { UserFen } from "@prisma/client";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
 import type { Square } from "chess.js";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Spinner from "../../general/Spinner";
 // @ts-expect-error - No types available
@@ -18,6 +17,7 @@ import useSound from "use-sound";
 import trackEventOnClient from "~/app/_util/trackEventOnClient";
 import Button from "../../_elements/button";
 import type { ResponseJson } from "~/app/api/responses";
+import { getUserClient } from "~/app/_util/getUserClient";
 
 // TODO: BugFix - Weird jumping between lines, doesn't seem to be in order + showing "next line" after teaching moves finished instead of jumping to start for repeat
 // TODO: BugFix - last line in course isn't being logged
@@ -31,7 +31,6 @@ export default function CourseTrainer(props: {
   userLines: PrismaUserLine[];
   userFens: UserFen[];
 }) {
-  const { data: session } = useSession();
   const router = useRouter();
   const [game, setGame] = useState(new Chess());
   const [currentLine, setCurrentLine] = useState<PrismaUserLine>(
@@ -195,6 +194,9 @@ export default function CourseTrainer(props: {
   };
 
   const processNewFens = async () => {
+    // TODO: Might be double checking this, so can we store it in state?
+    const { user } = await getUserClient();
+    if (!user) return;
     // Add new fens to the server
     const fensToUpload = trainedFens.filter(
       (fen) => !existingFens.includes(fen),
@@ -209,7 +211,7 @@ export default function CourseTrainer(props: {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            authorization: "Bearer " + session?.user.id,
+            authorization: "Bearer " + user.id,
           },
           body: JSON.stringify({
             fens: fensToUpload,
@@ -236,7 +238,7 @@ export default function CourseTrainer(props: {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          authorization: "Bearer " + session?.user.id,
+          authorization: "Bearer " + user.id,
         },
         body: JSON.stringify({
           fens: fensWithStats,
@@ -249,13 +251,16 @@ export default function CourseTrainer(props: {
   };
 
   const processStats = async () => {
+    const { user } = await getUserClient();
+    if (!user) return;
+
     const resp = await fetch(
       `/api/courses/user/${props.userCourse.id}/stats/${currentLine.id}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          authorization: "Bearer " + session?.user.id,
+          authorization: "Bearer " + user.id,
         },
         body: JSON.stringify({
           lineCorrect,

@@ -1,4 +1,4 @@
-import type { Course, User } from "@prisma/client";
+import type { Course, UserProfile } from "@prisma/client";
 import { redirect } from "next/navigation";
 import type { ResponseJson } from "~/app/api/responses";
 import PageHeader from "~/app/components/_layouts/pageHeader";
@@ -12,15 +12,15 @@ export default async function CoursePage({
     `${process.env.API_BASE_URL}/courses/single/${courseId}`,
   );
   const data = (await response.json()) as ResponseJson;
-  const course: Course = data.data!.course as Course;
-  const createdBy: User = data.data!.user as User;
+  const course = data.data!.course as Course;
+  const createdBy = data.data!.user as UserProfile;
   if (!course || data.message != "Course found") redirect("/404");
 
   return (
     <PageHeader
       title={course.courseName}
       image={{ src: "/images/hero.avif", alt: course.courseName }}
-      subTitle={`By: ${createdBy.name}`}
+      subTitle={`By: ${createdBy.username}`}
     />
   );
 }
