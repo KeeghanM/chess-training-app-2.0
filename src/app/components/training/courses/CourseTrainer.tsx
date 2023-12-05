@@ -4,7 +4,7 @@ import { useWindowSize } from "@uidotdev/usehooks";
 import type {
   PrismaUserCourse,
   PrismaUserLine,
-} from "~/app/util/GetUserCourse";
+} from "~/app/_util/GetUserCourse";
 import { useEffect, useState } from "react";
 import type { UserFen } from "@prisma/client";
 import { Chessboard } from "react-chessboard";
@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import Spinner from "../../general/Spinner";
 // @ts-expect-error - No types available
 import useSound from "use-sound";
-import trackEventOnClient from "~/app/util/trackEventOnClient";
+import trackEventOnClient from "~/app/_util/trackEventOnClient";
 import Button from "../../_elements/button";
 import type { ResponseJson } from "~/app/api/responses";
 

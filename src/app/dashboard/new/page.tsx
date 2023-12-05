@@ -1,7 +1,6 @@
 import { getServerAuthSession } from "~/server/auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { mixpanel } from "~/app/util/trackEventOnServer";
 import Container from "~/app/components/_elements/container";
 import PageHeader from "~/app/components/_layouts/pageHeader";
 import Button from "~/app/components/_elements/button";
@@ -9,14 +8,6 @@ import Button from "~/app/components/_elements/button";
 export default async function NewUserWelcome() {
   const session = await getServerAuthSession();
   if (!session) redirect("/auth/signin");
-
-  mixpanel.people.set(session.user.id, {
-    username: session.user.name,
-    email: session.user.email,
-  });
-  mixpanel.people.set_once(session.user.id, {
-    $created: new Date(),
-  });
 
   return (
     <>

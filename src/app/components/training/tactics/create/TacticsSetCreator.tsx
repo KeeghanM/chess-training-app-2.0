@@ -4,7 +4,7 @@ import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Select from "react-select";
 import Button from "~/app/components/_elements/button";
 import Heading from "~/app/components/_elements/heading";
-import type { PrismaTacticsSet } from "~/app/util/GetTacticSets";
+import type { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
 import { useState } from "react";
 import Spinner from "~/app/components/general/Spinner";
 import { useSession } from "next-auth/react";

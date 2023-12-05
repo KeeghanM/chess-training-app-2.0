@@ -32,9 +32,6 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: z.string(),
     GOOGLE_CLIENT_SECRET: z.string(),
     API_BASE_URL: z.string().url(),
-    MIXPANEL_TOKEN: z.string(),
-    GROWTHBOOK_HOST: z.string().url(),
-    GROWTHBOOK_CLIENT_KEY: z.string(),
   },
 
   /**
@@ -45,6 +42,8 @@ export const env = createEnv({
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_RAPIDAPI_KEY: z.string(),
+    NEXT_PUBLIC_POSTHOG_KEY: z.string(),
+    NEXT_PUBLIC_POSTHOG_HOST: z.string(),
   },
 
   /**
@@ -59,10 +58,9 @@ export const env = createEnv({
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
     API_BASE_URL: process.env.API_BASE_URL,
-    MIXPANEL_TOKEN: process.env.MIXPANEL_TOKEN,
-    GROWTHBOOK_HOST: process.env.GROWTHBOOK_HOST,
-    GROWTHBOOK_CLIENT_KEY: process.env.GROWTHBOOK_CLIENT_KEY,
     NEXT_PUBLIC_RAPIDAPI_KEY: process.env.NEXT_PUBLIC_RAPIDAPI_KEY,
+    NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
+    NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

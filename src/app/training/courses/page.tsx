@@ -2,7 +2,7 @@ import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
 import CourseListItem from "~/app/components/training/courses/list/CourseListItem";
 import Error from "~/app/components/general/ErrorPage";
-import { GetUserCourses } from "~/app/util/GetUserCourse";
+import { GetUserCourses } from "~/app/_util/GetUserCourse";
 import Container from "~/app/components/_elements/container";
 import PageHeader from "~/app/components/_layouts/pageHeader";
 import Heading from "~/app/components/_elements/heading";

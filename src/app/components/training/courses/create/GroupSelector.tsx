@@ -5,7 +5,7 @@ import type { Line } from "./parse/ParsePGNtoLineData";
 import { useState, useEffect } from "react";
 import { GroupItem } from "./GroupItem";
 import Spinner from "~/app/components/general/Spinner";
-import trackEventOnClient from "~/app/util/trackEventOnClient";
+import trackEventOnClient from "~/app/_util/trackEventOnClient";
 import Container from "~/app/components/_elements/container";
 import Heading from "~/app/components/_elements/heading";
 import Button from "~/app/components/_elements/button";

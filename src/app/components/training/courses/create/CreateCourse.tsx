@@ -7,7 +7,7 @@ import GroupSelector from "./GroupSelector";
 import DetailsForm from "./DetailsForm";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import trackEventOnClient from "~/app/util/trackEventOnClient";
+import trackEventOnClient from "~/app/_util/trackEventOnClient";
 import Heading from "~/app/components/_elements/heading";
 import Button from "~/app/components/_elements/button";
 import Container from "~/app/components/_elements/container";

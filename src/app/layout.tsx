@@ -1,9 +1,14 @@
 import "./globals.css";
 
-import NextAuthProvider from "./util/NextAuthProvider";
+import {
+  PHProvider,
+  PostHogPageview,
+  NextAuthProvider,
+} from "./_util/_providers";
 import Header from "./components/template/header/Header";
-import { trackEventOnServer } from "./util/trackEventOnServer";
 import Footer from "./components/template/footer/Footer";
+import { Suspense } from "react";
+import type { ReactNode } from "react";
 
 export const metadata = {
   title: "ChessTraining.app - The best way to improve your chess",
@@ -15,19 +20,22 @@ export const metadata = {
 export default async function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
-  await trackEventOnServer("page_view");
-
   return (
     <html lang="en">
-      <body style={{ margin: 0, padding: 0 }}>
+      <Suspense>
+        <PostHogPageview />
+      </Suspense>
+      <PHProvider>
         <NextAuthProvider>
-          <Header />
-          {children}
-          <Footer />
+          <body style={{ margin: 0, padding: 0 }}>
+            <Header />
+            {children}
+            <Footer />
+          </body>
         </NextAuthProvider>
-      </body>
+      </PHProvider>
     </html>
   );
 }

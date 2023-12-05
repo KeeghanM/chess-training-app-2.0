@@ -1,5 +1,5 @@
 import { errorResponse, successResponse } from "~/app/api/responses";
-import { trackEventOnServer } from "~/app/util/trackEventOnServer";
+import { trackEventOnServer } from "~/app/_util/trackEventOnServer";
 
 export async function POST(request: Request) {
   const { eventName, data } = (await request.json()) as {
