@@ -1,8 +1,8 @@
 import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
-import { GrowthBook } from "@growthbook/growthbook";
 import ToolGrid from "../components/dashboard/ToolGrid";
 import PageHeader from "../components/_layouts/pageHeader";
+import { isFlagEnabledServer } from "../_util/isFlagEnabledServer";
 
 export type Tool = {
   name: string;
@@ -12,15 +12,8 @@ export type Tool = {
   active: boolean;
 };
 
-const growthbook = new GrowthBook({
-  apiHost: process.env.GROWTHBOOK_HOST,
-  clientKey: process.env.GROWTHBOOK_CLIENT_KEY,
-  enableDevMode: process.env.NODE_ENV === "development",
-});
-
 export default async function Dashboard() {
   const session = await getServerAuthSession();
-  await growthbook.loadFeatures();
 
   // Redirect to login if no session
   if (!session) redirect("/api/auth/signin");
@@ -36,7 +29,7 @@ export default async function Dashboard() {
       ],
       href: "/training/courses",
       buttonText: "Train",
-      active: growthbook.isOn("study-course"),
+      active: true,
     },
     {
       name: "Tactics Training",
@@ -47,7 +40,7 @@ export default async function Dashboard() {
       ],
       href: "/training/tactics/list",
       buttonText: "Train",
-      active: growthbook.isOn("puzzle-trainer"),
+      active: true,
     },
     {
       name: "Endgame Training",
@@ -58,7 +51,7 @@ export default async function Dashboard() {
       ],
       href: "/training/endgames",
       buttonText: "Train",
-      active: growthbook.isOn("endgame-trainer"),
+      active: await isFlagEnabledServer("endgame-trainer"),
     },
     {
       name: "Visualisation & Calculation",
@@ -69,7 +62,7 @@ export default async function Dashboard() {
       ],
       href: "/training/visualisation",
       buttonText: "Train",
-      active: growthbook.isOn("visualisation-trainer"),
+      active: await isFlagEnabledServer("visualisation-trainer"),
     },
     {
       name: "Knight Vision",
@@ -80,7 +73,7 @@ export default async function Dashboard() {
       ],
       href: "/training/knight-vision",
       buttonText: "Train",
-      active: growthbook.isOn("knight-vision"),
+      active: await isFlagEnabledServer("knight-vision"),
     },
     {
       name: "Find Courses",
@@ -101,7 +94,7 @@ export default async function Dashboard() {
       ],
       href: "/courses/create",
       buttonText: "Create",
-      active: growthbook.isOn("create-course"),
+      active: true,
     },
     {
       name: "Account Settings",
