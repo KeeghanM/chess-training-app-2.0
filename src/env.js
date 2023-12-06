@@ -25,7 +25,7 @@ export const env = createEnv({
     KINDE_POST_LOGOUT_REDIRECT_URL: z.string().url(),
     KINDE_POST_LOGIN_REDIRECT_URL: z.string().url(),
     KINDE_AUDIENCE: z.string().url(),
-    // KINDE_ORG_ID: z.string(),
+    KINDE_ORG_ID: z.string(),
   },
 
   /**
@@ -56,7 +56,7 @@ export const env = createEnv({
     KINDE_POST_LOGOUT_REDIRECT_URL: process.env.KINDE_POST_LOGOUT_REDIRECT_URL,
     KINDE_POST_LOGIN_REDIRECT_URL: process.env.KINDE_POST_LOGIN_REDIRECT_URL,
     KINDE_AUDIENCE: process.env.KINDE_AUDIENCE,
-    // KINDE_ORG_ID: process.env.KINDE_API_ID,
+    KINDE_ORG_ID: process.env.KINDE_API_ID,
     // CLIENT
     NEXT_PUBLIC_RAPIDAPI_KEY: process.env.NEXT_PUBLIC_RAPIDAPI_KEY,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,

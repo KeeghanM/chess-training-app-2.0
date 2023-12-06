@@ -1,31 +1,14 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import Container from "~/app/components/_elements/container";
 import PageHeader from "~/app/components/_layouts/pageHeader";
 import Button from "~/app/components/_elements/button";
 import { getUserServer } from "~/app/_util/getUserServer";
+import StyledLink from "~/app/components/_elements/styledLink";
+import Link from "next/link";
 
 export default async function NewUserWelcome() {
   const { user } = await getUserServer();
   if (!user) redirect("/auth/signin");
-
-  // const apiClient = await createKindeManagementAPIClient();
-  // try {
-  //   const orgCode = process.env.KINDE_ORG_ID!;
-  //   const userId = user.id;
-
-  //   const permissions =
-  //     await apiClient.organizationsApi.createOrganizationUserPermissionRaw({
-  //       orgCode,
-  //       userId,
-  //       createOrganizationUserPermissionRequest: {
-  //         permissionId: "has-seen-welcome",
-  //       },
-  //     });
-  // } catch (e) {
-  //   const json = e.response.json();
-  //   console.log(json);
-  // }
 
   return (
     <>
@@ -45,20 +28,21 @@ export default async function NewUserWelcome() {
           </p>
           <p>
             We hope you enjoy your time here! And to begin, we recommend you
-            visit our <Link href="/courses">Course Library</Link>.
+            visit our <StyledLink href="/courses" text="Course Library" />.
           </p>
           <p>
             If you're looking for a place to start, we recommend{" "}
-            <Link href="/courses/zero-to-hero-0-to-1600">
-              Zero To Hero: From 0 to 1600
-            </Link>
+            <StyledLink
+              href="/courses/zero-to-hero-0-to-1600"
+              text="Zero To Hero: From 0 to 1600"
+            />
             .
           </p>
           <Link href={"/dashboard"}>
             <Button variant="primary">Take me to my dashboard</Button>
           </Link>
         </div>
-      </Container>{" "}
+      </Container>
     </>
   );
 }

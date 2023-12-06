@@ -16,22 +16,7 @@ export default async function Dashboard() {
   const { user } = await getUserServer();
   if (!user) redirect("/api/auth/signin");
 
-  // // check if first time, and redirect to onboarding
-  // const { getPermission } = getKindeServerSession();
-  // const hasSeenWelcome = await getPermission("has-seen-welcome");
-  // if (hasSeenWelcome?.isGranted == false) redirect("/dashboard/new");
-
   const tools: Tool[] = [
-    {
-      name: "Study from a Course",
-      description: [
-        "Train using a course you have created, or one that has been shared with you.",
-        "Built using spaced repetition, our courses are a great way to learn.",
-      ],
-      href: "/training/courses",
-      buttonText: "Train",
-      active: true,
-    },
     {
       name: "Tactics Training",
       description: [
@@ -42,6 +27,16 @@ export default async function Dashboard() {
       href: "/training/tactics/list",
       buttonText: "Train",
       active: true,
+    },
+    {
+      name: "Study Course",
+      description: [
+        "Train using a course you have created, or one that has been shared with you.",
+        "Built using spaced repetition, our courses are a great way to learn.",
+      ],
+      href: "/training/courses",
+      buttonText: "Train",
+      active: await isFlagEnabledServer("course-trainer"),
     },
     {
       name: "Endgame Training",
@@ -84,7 +79,7 @@ export default async function Dashboard() {
       ],
       href: "/courses",
       buttonText: "Find",
-      active: true,
+      active: await isFlagEnabledServer("course-trainer"),
     },
     {
       name: "Create a Course",
@@ -95,7 +90,7 @@ export default async function Dashboard() {
       ],
       href: "/courses/create",
       buttonText: "Create",
-      active: true,
+      active: await isFlagEnabledServer("create-a-course"),
     },
     {
       name: "Account Settings",
