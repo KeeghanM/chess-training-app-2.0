@@ -16,6 +16,7 @@ interface TacticsSetCreatorProps {
   setCreated: (set: PrismaTacticsSet) => void;
 }
 export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
+  const { user } = getUserClient();
   const { setCount, maxSets, setCreated } = props;
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -80,8 +81,10 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
           "x-rapidapi-key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
         },
       });
-      const json = (await resp.json()) as ResponseJson;
-      const puzzles = json.data?.puzzles;
+      const json = await resp.json().catch((e) => {
+        throw new Error("Invalid response from API");
+      });
+      const puzzles = json?.puzzles;
       if (!puzzles) throw new Error("No Puzzles Returned");
 
       return puzzles as {
@@ -155,7 +158,6 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
     });
 
     try {
-      const { user } = await getUserClient();
       if (!user) throw new Error("Not logged in");
       const resp = await fetch("/api/tactics/create", {
         method: "POST",

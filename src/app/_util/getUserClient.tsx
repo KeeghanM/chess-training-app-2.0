@@ -2,7 +2,7 @@
 
 import { useKindeBrowserClient } from "@kinde-oss/kinde-auth-nextjs";
 
-export async function getUserClient() {
+export function getUserClient() {
   const { user } = useKindeBrowserClient();
   return { user };
 }
