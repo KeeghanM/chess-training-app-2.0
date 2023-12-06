@@ -15,7 +15,7 @@ export async function trackEventOnServer(
   data?: Record<string, string>,
 ) {
   const posthog = PostHogClient();
-  await posthog.capture({
+  posthog.capture({
     distinctId: await getDistinctId(),
     event,
     properties: data,

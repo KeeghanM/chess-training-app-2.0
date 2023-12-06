@@ -57,9 +57,9 @@ export default function GroupSelector(props: {
           <Heading as={"h2"}>Select Grouping</Heading>
           <Tabs.Root
             defaultValue={groupOptions[0]}
-            onValueChange={(x) => {
+            onValueChange={async (x) => {
               countLines(x);
-              trackEventOnClient("Create Course", {
+              await trackEventOnClient("Create Course", {
                 step: "Grouping",
                 value: "Change Group",
               });
