@@ -9,6 +9,24 @@ export default async function NewUserWelcome() {
   const { user } = await getUserServer();
   if (!user) redirect("/auth/signin");
 
+  // const apiClient = await createKindeManagementAPIClient();
+  // try {
+  //   const orgCode = process.env.KINDE_ORG_ID!;
+  //   const userId = user.id;
+
+  //   const permissions =
+  //     await apiClient.organizationsApi.createOrganizationUserPermissionRaw({
+  //       orgCode,
+  //       userId,
+  //       createOrganizationUserPermissionRequest: {
+  //         permissionId: "has-seen-welcome",
+  //       },
+  //     });
+  // } catch (e) {
+  //   const json = e.response.json();
+  //   console.log(json);
+  // }
+
   return (
     <>
       <PageHeader

@@ -16,6 +16,11 @@ export default async function Dashboard() {
   const { user } = await getUserServer();
   if (!user) redirect("/api/auth/signin");
 
+  // // check if first time, and redirect to onboarding
+  // const { getPermission } = getKindeServerSession();
+  // const hasSeenWelcome = await getPermission("has-seen-welcome");
+  // if (hasSeenWelcome?.isGranted == false) redirect("/dashboard/new");
+
   const tools: Tool[] = [
     {
       name: "Study from a Course",
