@@ -5,7 +5,7 @@ import type { Line } from "./parse/ParsePGNtoLineData";
 import { useState, useEffect } from "react";
 import { GroupItem } from "./GroupItem";
 import Spinner from "~/app/components/general/Spinner";
-import trackEventOnClient from "~/app/util/trackEventOnClient";
+import trackEventOnClient from "~/app/_util/trackEventOnClient";
 import Container from "~/app/components/_elements/container";
 import Heading from "~/app/components/_elements/heading";
 import Button from "~/app/components/_elements/button";
@@ -57,9 +57,9 @@ export default function GroupSelector(props: {
           <Heading as={"h2"}>Select Grouping</Heading>
           <Tabs.Root
             defaultValue={groupOptions[0]}
-            onValueChange={(x) => {
+            onValueChange={async (x) => {
               countLines(x);
-              trackEventOnClient("Create Course", {
+              await trackEventOnClient("Create Course", {
                 step: "Grouping",
                 value: "Change Group",
               });

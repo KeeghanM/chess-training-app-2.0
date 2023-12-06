@@ -1,13 +1,12 @@
-import { getServerAuthSession } from "~/server/auth";
+import { getUserServer } from "~/app/_util/getUserServer";
 import { errorResponse, successResponse } from "../../responses";
 import { prisma } from "~/server/db";
 
 export async function POST(request: Request) {
   // Check if user is authenticated and reject request if not
-  const session = await getServerAuthSession();
+  const { user } = await getUserServer();
   const authToken = request.headers.get("Authorization")?.split(" ")[1];
-  if (!session || session.user.id !== authToken)
-    return errorResponse("Unauthorized", 401);
+  if (!user || user.id !== authToken) return errorResponse("Unauthorized", 401);
 
   const { name, puzzles } = (await request.json()) as {
     name: string;
@@ -26,7 +25,7 @@ export async function POST(request: Request) {
   try {
     const set = await prisma.tacticsSet.create({
       data: {
-        userId: session.user.id,
+        userId: user.id,
         name: name,
         puzzles: {
           createMany: {

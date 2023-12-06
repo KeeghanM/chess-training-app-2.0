@@ -4,7 +4,7 @@ import { useState } from "react";
 import { parse as PGNParse } from "@mliebelt/pgn-parser";
 import { ParsePGNtoLineData } from "./parse/ParsePGNtoLineData";
 import type { Line } from "./parse/ParsePGNtoLineData";
-import trackEventOnClient from "~/app/util/trackEventOnClient";
+import trackEventOnClient from "~/app/_util/trackEventOnClient";
 import Button from "~/app/components/_elements/button";
 
 export default function PgnToLinesForm(props: {

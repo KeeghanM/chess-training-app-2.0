@@ -1,4 +1,3 @@
-import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
 import type {
   Course,
@@ -8,19 +7,20 @@ import type {
   Group,
   UserFen,
 } from "@prisma/client";
+import { getUserServer } from "./getUserServer";
 
 export type PrismaUserCourse = UserCourse & { course: Course };
 export type PrismaUserLine = UserLine & { line: Line & { group: Group } };
 
 export async function GetUserCourses() {
-  const session = await getServerAuthSession();
-  if (!session) redirect("/api/auth/signin");
+  const { user } = await getUserServer();
+  if (!user) redirect("/api/auth/signin");
 
   const resp = await fetch(`${process.env.API_BASE_URL}/courses/user`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${session.user.id}`,
+      Authorization: `Bearer ${user.id}`,
     },
   });
   console.log(`${process.env.API_BASE_URL}/courses/user`);
@@ -33,8 +33,9 @@ export async function GetUserCourses() {
 }
 
 export async function GetUserCourse(courseId: string) {
-  const session = await getServerAuthSession();
-  if (!session) redirect("/api/auth/signin");
+  const { user } = await getUserServer();
+
+  if (!user) redirect("/api/auth/signin");
 
   const courseResponse = await fetch(
     `${process.env.API_BASE_URL}/courses/user/${courseId}`,
@@ -42,7 +43,7 @@ export async function GetUserCourse(courseId: string) {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session.user.id}`,
+        Authorization: `Bearer ${user.id}`,
       },
     },
   );
@@ -62,7 +63,7 @@ export async function GetUserCourse(courseId: string) {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${session.user.id}`,
+        Authorization: `Bearer ${user.id}`,
       },
     },
   );

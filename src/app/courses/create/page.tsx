@@ -1,11 +1,11 @@
 import CreateCourseForm from "~/app/components/training/courses/create/CreateCourse";
-import { getServerAuthSession } from "~/server/auth";
 import { redirect } from "next/navigation";
 import PageHeader from "~/app/components/_layouts/pageHeader";
+import { getUserServer } from "~/app/_util/getUserServer";
 
 export default async function CreateCourse() {
-  const session = await getServerAuthSession();
-  if (!session) redirect("/api/auth/signin");
+  const { user } = await getUserServer();
+  if (!user) redirect("/api/auth/signin");
 
   return (
     <>

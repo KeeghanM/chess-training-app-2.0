@@ -1,5 +1,5 @@
 "use client";
-import { signOut } from "next-auth/react";
+import { LogoutLink } from "@kinde-oss/kinde-auth-nextjs/components";
 import { useRouter } from "next/navigation";
 import Button from "../../_elements/button";
 
@@ -11,9 +11,9 @@ export default function UserButtons() {
       <Button onClick={() => router.push("/dashboard")} variant="accent">
         Dashboard
       </Button>
-      <Button onClick={() => signOut()} variant="danger">
-        Sign out
-      </Button>
+      <LogoutLink>
+        <Button variant="danger">Sign out</Button>
+      </LogoutLink>
     </div>
   );
 }

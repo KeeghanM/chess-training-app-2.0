@@ -1,22 +1,31 @@
-import { getServerAuthSession } from "~/server/auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { mixpanel } from "~/app/util/trackEventOnServer";
 import Container from "~/app/components/_elements/container";
 import PageHeader from "~/app/components/_layouts/pageHeader";
 import Button from "~/app/components/_elements/button";
+import { getUserServer } from "~/app/_util/getUserServer";
 
 export default async function NewUserWelcome() {
-  const session = await getServerAuthSession();
-  if (!session) redirect("/auth/signin");
+  const { user } = await getUserServer();
+  if (!user) redirect("/auth/signin");
 
-  mixpanel.people.set(session.user.id, {
-    username: session.user.name,
-    email: session.user.email,
-  });
-  mixpanel.people.set_once(session.user.id, {
-    $created: new Date(),
-  });
+  // const apiClient = await createKindeManagementAPIClient();
+  // try {
+  //   const orgCode = process.env.KINDE_ORG_ID!;
+  //   const userId = user.id;
+
+  //   const permissions =
+  //     await apiClient.organizationsApi.createOrganizationUserPermissionRaw({
+  //       orgCode,
+  //       userId,
+  //       createOrganizationUserPermissionRequest: {
+  //         permissionId: "has-seen-welcome",
+  //       },
+  //     });
+  // } catch (e) {
+  //   const json = e.response.json();
+  //   console.log(json);
+  // }
 
   return (
     <>

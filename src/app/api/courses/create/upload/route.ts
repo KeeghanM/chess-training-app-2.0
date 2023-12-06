@@ -1,14 +1,14 @@
 import type { Course, Group as PrismaGroup } from "@prisma/client";
-import { getServerAuthSession } from "~/server/auth";
 import { errorResponse, successResponse } from "../../../responses";
 import { prisma } from "~/server/db";
+import { getUserServer } from "~/app/_util/getUserServer";
 
 export async function POST(request: Request) {
   // Check if user is authenticated and reject request if not
-  const session = await getServerAuthSession();
+  const { user } = await getUserServer();
+
   const authToken = request.headers.get("Authorization")?.split(" ")[1];
-  if (!session || session.user.id !== authToken)
-    return errorResponse("Unauthorized", 401);
+  if (!user || user.id !== authToken) return errorResponse("Unauthorized", 401);
 
   const { courseName, description, groupNames, lines, slug } =
     (await request.json()) as {
@@ -50,7 +50,7 @@ export async function POST(request: Request) {
       data: {
         courseName: courseName,
         courseDescription: description,
-        createdBy: session.user.id,
+        createdBy: user.id,
         slug: slug,
         groups: {
           create: groupNames,
@@ -61,17 +61,13 @@ export async function POST(request: Request) {
     // Link the user to the course by creating their userCourse
     const userCourse = await prisma.userCourse.create({
       data: {
-        user: {
-          connect: {
-            id: session.user.id,
-          },
-        },
         course: {
           connect: {
             id: course.id,
           },
         },
         linesUnseen: lines.length,
+        userId: user.id,
       },
     });
 
@@ -95,7 +91,7 @@ export async function POST(request: Request) {
         await prisma.userLine.create({
           data: {
             courseId: course.id,
-            userId: session.user.id,
+            userId: user.id,
             userCourseId: userCourse.id,
             lineId: dbLine.id,
           },

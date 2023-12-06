@@ -1,6 +1,6 @@
 "use client";
 
-import { PrismaTacticsSet } from "~/app/util/GetTacticSets";
+import { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
 import TacticsSetCreator from "../create/TacticsSetCreator";
 import Container from "~/app/components/_elements/container";
 import { useState } from "react";

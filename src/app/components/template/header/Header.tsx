@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getServerAuthSession } from "~/server/auth";
 import Nav from "./Nav";
+import { getUserServer } from "~/app/_util/getUserServer";
 
 export default async function Header() {
-  const session = await getServerAuthSession();
+  const { user } = await getUserServer();
 
   return (
     <header className="py-4 bg-purple-800 text-white sticky top-0 z-10 shadow">
@@ -27,7 +27,7 @@ export default async function Header() {
             </div>
           </div>
         </Link>
-        <Nav props={{ user: session?.user ? true : false }} />
+        <Nav props={{ user }} />
       </div>
     </header>
   );

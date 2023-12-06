@@ -33,7 +33,7 @@ export async function GET(
 
   if (!course) return errorResponse("Course not found", 404);
 
-  const user = await prisma.user.findUnique({
+  const user = await prisma.userProfile.findUnique({
     where: {
       id: course.createdBy,
     },

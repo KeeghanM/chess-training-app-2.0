@@ -5,6 +5,7 @@ export async function POST(
   request: Request,
   { params }: { params: { courseId: string } },
 ) {
+  //TODO: replace this with getUserServer -- does it work?
   const userId = request.headers.get("authorization")?.split(" ")[1];
   if (!userId) {
     return errorResponse("Unauthorized", 401);
