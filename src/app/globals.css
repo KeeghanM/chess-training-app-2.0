@@ -22,6 +22,12 @@ html {
   font-family: "Hedvig Letters Sans", sans-serif;
   line-height: 1.5;
 }
+.anchor {
+  display: block;
+  position: relative;
+  top: -100px;
+  visibility: hidden;
+}
 
 h1,
 h2,

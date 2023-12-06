@@ -16,10 +16,6 @@ export default async function Home() {
           text: "Start Training",
           link: "/auth/signin",
         }}
-        secondary={{
-          text: "Learn More",
-          link: "/about",
-        }}
         image={{
           src: "/images/chessbackground.webp",
           alt: "Chess board with pieces set up",
@@ -51,6 +47,11 @@ export default async function Home() {
           the warmth and accessibility of a global chess community, making
           learning both effective and enjoyable.
         </p>
+        <div>
+          <Link href="/about/features">
+            <Button variant="primary">See all features</Button>
+          </Link>
+        </div>
       </ImageRowFull>
       <ImageRowFull
         heading="Introducing Natural Play Learning"
@@ -74,6 +75,11 @@ export default async function Home() {
           intuitive, efficient, and enjoyable path to chess mastery. Join us
           today and discover the ChessTraining.app difference.
         </p>
+        <div>
+          <Link href="/courses#natural-play-learning">
+            <Button variant="primary">Learn More</Button>
+          </Link>
+        </div>
       </ImageRowFull>
       <BigText color="accent">
         From our flagship Tactics Trainer to innovative "Natural Play Learning"

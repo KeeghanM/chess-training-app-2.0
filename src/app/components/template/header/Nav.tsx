@@ -8,7 +8,7 @@ import type { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 
 const menuItems = [
   { name: "Home", href: "/" },
-  { name: "Browse Courses", href: "/courses" },
+  { name: "Courses", href: "/courses" },
   { name: "Tactics Trainer", href: "/training/tactics" },
   { name: "About", href: "/about" },
   { name: "Blog", href: "/blog" },

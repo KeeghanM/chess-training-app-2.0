@@ -15,10 +15,6 @@ export default async function Tactics() {
           text: "Start Training",
           link: "/training/tactics/list",
         }}
-        secondary={{
-          text: "Learn More",
-          link: "#about",
-        }}
       >
         <p>
           Train tactics using the WoodPecker Method developed by GM's Axel
