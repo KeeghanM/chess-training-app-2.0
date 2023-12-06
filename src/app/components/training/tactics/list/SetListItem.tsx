@@ -3,13 +3,16 @@ import Heading from "~/app/components/_elements/heading";
 import type { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
 import TimeSince from "~/app/components/general/TimeSince";
 import Button from "~/app/components/_elements/button";
+import { useRouter } from "next/navigation";
 
 export default function SetListItem(props: { set: PrismaTacticsSet }) {
   const { set } = props;
+  console.log(set);
   const currentRound = set.rounds[set.rounds.length - 1];
+  const router = useRouter();
 
   const trainSet = () => {
-    console.log("train set");
+    router.push(`/training/tactics/${set.id}`);
   };
   return (
     <div
@@ -33,7 +36,7 @@ export default function SetListItem(props: { set: PrismaTacticsSet }) {
           <p>Round: {set.rounds.length}/8</p>
           <p>
             Completed: {currentRound?.correct! + currentRound?.incorrect!}/
-            {set.size ?? 500}
+            {set.size}
           </p>
           <p>
             Accuracy:{" "}
@@ -48,7 +51,9 @@ export default function SetListItem(props: { set: PrismaTacticsSet }) {
           </p>
         </div>
         <div className="flex flex-col md:flex-row gap-2">
-          <Button variant="primary">Train</Button>
+          <Button onClick={trainSet} variant="primary">
+            Train
+          </Button>
           <Button variant="secondary">Edit</Button>
           <Button variant="accent">Stats</Button>
         </div>

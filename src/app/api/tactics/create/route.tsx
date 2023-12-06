@@ -27,6 +27,7 @@ export async function POST(request: Request) {
       data: {
         userId: user.id,
         name: name,
+        size: puzzles.length,
         puzzles: {
           createMany: {
             data: puzzles,

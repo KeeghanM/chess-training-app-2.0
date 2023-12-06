@@ -6,7 +6,11 @@ import Container from "~/app/components/_elements/container";
 import PageHeader from "~/app/components/_layouts/pageHeader";
 import { getUserServer } from "~/app/_util/getUserServer";
 
-export default async function ({ params }: { params: { courseId: string } }) {
+export default async function CourseTrainPage({
+  params,
+}: {
+  params: { courseId: string };
+}) {
   const { user } = await getUserServer();
   if (!user) redirect("/api/auth/signin");
 

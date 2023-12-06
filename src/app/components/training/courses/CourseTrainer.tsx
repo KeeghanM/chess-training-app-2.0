@@ -54,7 +54,7 @@ export default function CourseTrainer(props: {
   const [interactive, setInteractive] = useState(true);
   const [checkSound] = useSound("/sfx/check.mp3");
   const [captureSound] = useSound("/sfx/capture.mp3");
-  const [promotionSound] = useSound("/sfx/promotion.mp3");
+  const [promotionSound] = useSound("/sfx/promote.mp3");
   const [castleSound] = useSound("/sfx/castle.mp3");
   const [moveSound] = useSound("/sfx/move.mp3");
 
