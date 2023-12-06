@@ -13,7 +13,8 @@ import Button from "../../_elements/button";
 import type { ResponseJson } from "~/app/api/responses";
 import { getUserClient } from "~/app/_util/getUserClient";
 import type { Puzzle, TacticsSet, TacticsSetRound } from "@prisma/client";
-import { set } from "zod";
+import Toggle from "react-toggle";
+import "react-toggle/style.css";
 
 export default function TacticsTrainer(props: {
   set: TacticsSet & {
@@ -42,6 +43,8 @@ export default function TacticsTrainer(props: {
   const [promotionSound] = useSound("/sfx/promote.mp3");
   const [castleSound] = useSound("/sfx/castle.mp3");
   const [moveSound] = useSound("/sfx/move.mp3");
+  const [autoNext, setAutoNext] = useState(false);
+  const [puzzleFinished, setPuzzleFinished] = useState(false);
 
   const playMoveSound = (move: string) => {
     if (move.includes("+")) {
@@ -151,6 +154,7 @@ export default function TacticsTrainer(props: {
     }
     // We haven't completed the set
     // so we need to change the puzzle
+    setPuzzleFinished(false);
     setCompletedPuzzles(currentRound.correct + currentRound.incorrect + 1);
     const newPuzzle =
       props.set.puzzles[currentRound.correct + currentRound.incorrect + 1];
@@ -166,7 +170,11 @@ export default function TacticsTrainer(props: {
     if (game.history().length >= currentPuzzle!.moves.split(",").length) {
       // We have reached the end of the line
       await increaseCorrect();
-      goToNextPuzzle();
+      if (autoNext) {
+        goToNextPuzzle();
+      } else {
+        setPuzzleFinished(true);
+      }
       return true;
     }
 
@@ -251,6 +259,23 @@ export default function TacticsTrainer(props: {
             // @ts-expect-error - ChessBoard doesnt expect AsyncFunction but works fine
             onPieceDrop={userDroppedPiece}
           />
+        </div>
+        <div className="flex flex-col gap-2 flex-1">
+          <div className="flex flex-wrap content-start gap-1 bg-purple-600 h-full p-2"></div>
+          <label className="ml-auto flex items-center gap-2 text-sm text-white">
+            <Toggle
+              defaultChecked={autoNext}
+              onChange={() => {
+                setAutoNext(!autoNext);
+              }}
+            />
+            <span>Auto Next</span>
+          </label>
+          {puzzleFinished && (
+            <Button variant="accent" onClick={goToNextPuzzle}>
+              Next
+            </Button>
+          )}
         </div>
       </div>
     </div>
