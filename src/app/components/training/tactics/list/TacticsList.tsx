@@ -4,6 +4,7 @@ import { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
 import TacticsSetCreator from "../create/TacticsSetCreator";
 import Container from "~/app/components/_elements/container";
 import { useState } from "react";
+import SetListItem from "./SetListItem";
 
 interface TacticsListProps {
   sets: PrismaTacticsSet[];
@@ -11,10 +12,8 @@ interface TacticsListProps {
 export default function TacticsList(props: TacticsListProps) {
   const [sets, setSets] = useState<PrismaTacticsSet[]>(props.sets);
   const addSet = (set: PrismaTacticsSet) => {
-    console.log("Updating Set List");
     setSets([...sets, set]);
   };
-  console.log(sets);
   return (
     <Container>
       <div className="flex flex-col gap-4">
@@ -28,14 +27,7 @@ export default function TacticsList(props: TacticsListProps) {
             <p className="text-sm italic">Your sets will appear here</p>
           </div>
         ) : (
-          sets.map((set) => (
-            <div
-              key={set.id}
-              className="w-full p-4 md:p-6 lg:p-12 bg-gray-100 grid place-content-center"
-            >
-              <p>{set.name}</p>
-            </div>
-          ))
+          sets.map((set) => <SetListItem key={set.id} set={set} />)
         )}
       </div>
     </Container>

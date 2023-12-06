@@ -97,6 +97,7 @@ model TacticsSet {
     userId      String
     createdAt   DateTime          @default(now())
     updatedAt   DateTime          @updatedAt
+    size        Int
     lastTrained DateTime?
     puzzles     Puzzle[]
     rounds      TacticsSetRound[]
