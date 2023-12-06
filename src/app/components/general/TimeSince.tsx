@@ -5,10 +5,10 @@ import en from "javascript-time-ago/locale/en.json";
 TimeAgo.addDefaultLocale(en);
 import ReactTimeAgo from "react-time-ago";
 
-export default function TimeSince(props: { date: Date }) {
+export default function TimeSince(props: { date: Date; text?: string }) {
   return (
     <>
-      <ReactTimeAgo date={props.date} timeStyle="twitter" /> ago.
+      <ReactTimeAgo date={props.date} timeStyle="twitter" /> {props.text}
     </>
   );
 }

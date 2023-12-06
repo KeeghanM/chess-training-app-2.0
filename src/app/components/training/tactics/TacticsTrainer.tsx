@@ -15,6 +15,7 @@ import { getUserClient } from "~/app/_util/getUserClient";
 import type { Puzzle, TacticsSet, TacticsSetRound } from "@prisma/client";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
+import TimeSince from "../../general/TimeSince";
 
 export default function TacticsTrainer(props: {
   set: TacticsSet & {
@@ -45,6 +46,8 @@ export default function TacticsTrainer(props: {
   const [moveSound] = useSound("/sfx/move.mp3");
   const [autoNext, setAutoNext] = useState(false);
   const [puzzleFinished, setPuzzleFinished] = useState(false);
+  const [startTime, setStartTime] = useState(Date.now());
+  const [sessionTimeStarted, setSessionTimeStarted] = useState(new Date());
 
   const playMoveSound = (move: string) => {
     if (move.includes("+")) {
@@ -85,6 +88,28 @@ export default function TacticsTrainer(props: {
       setReadyForInput(true);
     }, 500);
     return timeoutId;
+  };
+
+  const increaseTimeTaken = async () => {
+    const newTime = Date.now();
+    const timeTaken = newTime - startTime;
+    try {
+      await fetch("/api/tactics/increaseTimeTaken", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          roundId: currentRound.id,
+          timeTaken,
+        }),
+      });
+    } catch (e) {
+      if (e instanceof Error) {
+        console.error(e.message);
+      }
+    }
+    setStartTime(newTime);
   };
 
   const increaseCorrect = async () => {
@@ -169,6 +194,7 @@ export default function TacticsTrainer(props: {
   const checkEndOfLine = async () => {
     if (game.history().length >= currentPuzzle!.moves.split(",").length) {
       // We have reached the end of the line
+      await increaseTimeTaken();
       await increaseCorrect();
       if (autoNext) {
         goToNextPuzzle();
@@ -220,6 +246,7 @@ export default function TacticsTrainer(props: {
     // so we need to play the first move whenever the puzzle changes
     const firstMove = currentPuzzle?.moves.split(",")[0];
     const timeoutId = makeFirstMove(firstMove!);
+
     return () => clearTimeout(timeoutId);
   }, [currentPuzzle]);
 
@@ -244,6 +271,9 @@ export default function TacticsTrainer(props: {
                   100,
               )}
           %
+        </p>
+        <p className="text-white font-bold">
+          Session Time: <TimeSince date={sessionTimeStarted} />
         </p>
       </div>
       <div className="flex flex-col md:flex-row gap-4">
