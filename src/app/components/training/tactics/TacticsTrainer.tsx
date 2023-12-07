@@ -94,7 +94,7 @@ export default function TacticsTrainer(props: {
     const newTime = Date.now();
     const timeTaken = newTime - startTime;
     try {
-      await fetch("/api/tactics/increaseTimeTaken", {
+      await fetch("/api/tactics/stats/increaseTimeTaken", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -114,7 +114,7 @@ export default function TacticsTrainer(props: {
 
   const increaseCorrect = async () => {
     try {
-      await fetch("/api/tactics/increaseCorrect", {
+      await fetch("/api/tactics/stats/increaseCorrect", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -133,7 +133,7 @@ export default function TacticsTrainer(props: {
   };
   const increaseIncorrect = async () => {
     try {
-      await fetch("/api/tactics/increaseIncorrect", {
+      await fetch("/api/tactics/stats/increaseIncorrect", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
