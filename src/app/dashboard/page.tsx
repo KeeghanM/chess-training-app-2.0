@@ -13,8 +13,9 @@ export type Tool = {
 };
 
 export default async function Dashboard() {
-  const { user } = await getUserServer();
+  const { user, profile } = await getUserServer();
   if (!user) redirect("/api/auth/signin");
+  if (!profile) redirect("/dashboard/new");
 
   const tools: Tool[] = [
     {

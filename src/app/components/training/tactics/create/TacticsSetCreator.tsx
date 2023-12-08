@@ -16,6 +16,7 @@ interface TacticsSetCreatorProps {
   maxSets: number;
   setCreated: (set: PrismaTacticsSet) => void;
 }
+// TODO: Don't store the whole puzzle data in the DB - only store the ID and fetch it from puzzle API
 export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
   const { user } = getUserClient();
   const { setCount, maxSets, setCreated } = props;

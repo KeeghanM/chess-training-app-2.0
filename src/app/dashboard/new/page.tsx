@@ -2,13 +2,16 @@ import { redirect } from "next/navigation";
 import Container from "~/app/components/_elements/container";
 import PageHeader from "~/app/components/_layouts/pageHeader";
 import Button from "~/app/components/_elements/button";
-import { getUserServer } from "~/app/_util/getUserServer";
+import { createUserProfile, getUserServer } from "~/app/_util/getUserServer";
 import StyledLink from "~/app/components/_elements/styledLink";
 import Link from "next/link";
 
 export default async function NewUserWelcome() {
-  const { user } = await getUserServer();
+  const { user, profile } = await getUserServer();
   if (!user) redirect("/auth/signin");
+  if (!profile) {
+    await createUserProfile(user);
+  }
 
   return (
     <>
