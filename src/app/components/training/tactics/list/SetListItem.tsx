@@ -37,15 +37,15 @@ export default function SetListItem(props: { set: PrismaTacticsSet }) {
         <div className="p-2 bg-gray-200 flex flex-col md:flex-row gap-2 justify-between">
           <p>Round: {set.rounds.length}/8</p>
           <p>
-            Completed: {currentRound?.correct! + currentRound?.incorrect!}/
+            Completed: {currentRound!.correct + currentRound!.incorrect}/
             {set.size}
           </p>
           <p>
             Accuracy:{" "}
-            {currentRound?.correct! + currentRound?.incorrect! > 0
+            {currentRound!.correct + currentRound!.incorrect > 0
               ? Math.round(
-                  (currentRound?.correct! /
-                    (currentRound?.correct! + currentRound?.incorrect!)) *
+                  (currentRound!.correct /
+                    (currentRound!.correct + currentRound!.incorrect)) *
                     100,
                 )
               : 0}

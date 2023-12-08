@@ -28,7 +28,7 @@ export default function CreateCourseForm() {
     group: string,
     lines: Line[],
   ) => {
-    const { user } = await getUserClient();
+    const { user } = getUserClient();
     if (!user) return;
 
     const courseData = transformCourseData(courseName, group, lines);

@@ -97,11 +97,7 @@ export default function TacticsTrainer(props: {
   };
 
   const makeFirstMove = (move: string) => {
-    const timeoutId = setTimeout(async () => {
-      await trackEventOnClient("tactics_set_puzzle_started", {
-        rating: currentPuzzle!.rating.toString(),
-        themes: currentPuzzle!.themes,
-      });
+    const timeoutId = setTimeout(() => {
       makeMove(move);
       setReadyForInput(true);
     }, 500);
@@ -136,6 +132,9 @@ export default function TacticsTrainer(props: {
   const increaseCorrect = async () => {
     setLoading(true);
     try {
+      await trackEventOnClient("tactics_set_puzzle_correct", {
+        rating: currentPuzzle!.rating.toString(),
+      });
       await fetch("/api/tactics/stats/increaseCorrect", {
         method: "POST",
         headers: {
@@ -157,6 +156,9 @@ export default function TacticsTrainer(props: {
   const increaseIncorrect = async () => {
     setLoading(true);
     try {
+      await trackEventOnClient("tactics_set_puzzle_incorrect", {
+        rating: currentPuzzle!.rating.toString(),
+      });
       await fetch("/api/tactics/stats/increaseIncorrect", {
         method: "POST",
         headers: {
@@ -224,7 +226,7 @@ export default function TacticsTrainer(props: {
       await increaseTimeTaken();
       await increaseCorrect();
       if (autoNext) {
-        goToNextPuzzle();
+        await goToNextPuzzle();
       } else {
         setPuzzleFinished(true);
       }
@@ -287,7 +289,7 @@ export default function TacticsTrainer(props: {
     playMoveSound(correctMove);
     setPosition(game.fen());
     makeBookMove();
-    checkEndOfLine();
+    await checkEndOfLine();
   };
 
   const PgnDisplay = game.history().map((move, index) => {

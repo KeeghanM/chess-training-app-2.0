@@ -20,7 +20,7 @@ export default async function Dashboard() {
   // Identify the user immediately
   const posthog = PostHogClient();
   posthog.identify({
-    distinctId: user.id!,
+    distinctId: user.id,
     properties: {
       email: user.email ?? "unknown",
     },

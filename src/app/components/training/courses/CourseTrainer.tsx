@@ -32,6 +32,8 @@ export default function CourseTrainer(props: {
   userFens: UserFen[];
 }) {
   const router = useRouter();
+  const { user } = getUserClient();
+
   const [game, setGame] = useState(new Chess());
   const [currentLine, setCurrentLine] = useState<PrismaUserLine>(
     props.userLines[0]!,
@@ -194,8 +196,6 @@ export default function CourseTrainer(props: {
   };
 
   const processNewFens = async () => {
-    // TODO: Might be double checking this, so can we store it in state?
-    const { user } = await getUserClient();
     if (!user) return;
     // Add new fens to the server
     const fensToUpload = trainedFens.filter(
@@ -251,7 +251,6 @@ export default function CourseTrainer(props: {
   };
 
   const processStats = async () => {
-    const { user } = await getUserClient();
     if (!user) return;
 
     const resp = await fetch(
