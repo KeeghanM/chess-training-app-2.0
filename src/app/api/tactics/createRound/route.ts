@@ -9,40 +9,21 @@ export async function POST(request: Request) {
   const authToken = request.headers.get("Authorization")?.split(" ")[1];
   if (!user || user.id !== authToken) return errorResponse("Unauthorized", 401);
 
-  const { roundId, timeTaken, setId } = (await request.json()) as {
-    timeTaken: number;
-    roundId: string;
+  const { setId, roundNumber } = (await request.json()) as {
     setId: string;
+    roundNumber: number;
   };
-  if (!roundId || !timeTaken) return errorResponse("Missing fields", 400);
+  if (!setId || !roundNumber) return errorResponse("Missing fields", 400);
 
   try {
-    await prisma.tacticsSetRound.update({
-      where: {
-        id: roundId,
-        set: {
-          userId: user.id,
-        },
-      },
+    await prisma.tacticsSetRound.create({
       data: {
-        timeSpent: {
-          increment: timeTaken,
-        },
+        setId,
+        roundNumber,
       },
     });
 
-    const date = new Date();
-    await prisma.tacticsSet.update({
-      where: {
-        id: setId,
-        userId: user.id,
-      },
-      data: {
-        lastTrained: date,
-      },
-    });
-
-    return successResponse("Time taken updated", {}, 200);
+    return successResponse("Round created", {}, 200);
   } catch (e) {
     if (e instanceof Error) return errorResponse(e.message, 500);
 

@@ -1,3 +1,4 @@
+import { getUserServer } from "~/app/_util/getUserServer";
 import { errorResponse, successResponse } from "~/app/api/responses";
 import { prisma } from "~/server/db";
 
@@ -5,10 +6,11 @@ export async function GET(
   request: Request,
   { params }: { params: { setId: string } },
 ) {
-  const userId = request.headers.get("authorization")?.split(" ")[1];
-  if (!userId) {
-    return errorResponse("Unauthorized", 401);
-  }
+  // Check if user is authenticated and reject request if not
+  const { user } = await getUserServer();
+
+  const authToken = request.headers.get("Authorization")?.split(" ")[1];
+  if (!user || user.id !== authToken) return errorResponse("Unauthorized", 401);
 
   const { setId } = params;
   if (!setId) return errorResponse("Missing courseId", 400);

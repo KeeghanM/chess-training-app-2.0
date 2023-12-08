@@ -15,6 +15,7 @@ import type { Puzzle, TacticsSet, TacticsSetRound } from "@prisma/client";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
 import TimeSince from "../../general/TimeSince";
+import Error from "../../general/ErrorPage";
 
 // TODO: Bug fix - AutoNext doesn't always work
 // TODO: Bug fix - wrong sound playing
@@ -27,6 +28,13 @@ export default function TacticsTrainer(props: {
   } & { puzzles: Puzzle[] };
 }) {
   const { user } = getUserClient();
+  if (!user)
+    return (
+      <Error
+        PageTitle="Tatcics Training"
+        error="Error Authenticating - please try again"
+      />
+    );
   const router = useRouter();
 
   // Setup main state for the game/puzzles
@@ -113,6 +121,7 @@ export default function TacticsTrainer(props: {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: "Bearer " + user.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -139,6 +148,7 @@ export default function TacticsTrainer(props: {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: "Bearer " + user.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -163,6 +173,7 @@ export default function TacticsTrainer(props: {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: "Bearer " + user.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -189,6 +200,11 @@ export default function TacticsTrainer(props: {
       // Create a new round
       setLoading(true);
       try {
+        await trackEventOnClient("tactics_set_round_completed", {
+          roundNumber: currentRound.roundNumber.toString(),
+          correct: currentRound.correct.toString(),
+          incorrect: currentRound.incorrect.toString(),
+        });
         await fetch("/api/tactics/createRound", {
           method: "POST",
           headers: {
@@ -197,6 +213,7 @@ export default function TacticsTrainer(props: {
           },
           body: JSON.stringify({
             setId: props.set.id,
+            roundNumber: currentRound.roundNumber + 1,
           }),
         });
       } catch (e) {

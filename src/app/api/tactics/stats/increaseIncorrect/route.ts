@@ -3,8 +3,11 @@ import { errorResponse, successResponse } from "~/app/api/responses";
 import { prisma } from "~/server/db";
 
 export async function POST(request: Request) {
+  // Check if user is authenticated and reject request if not
   const { user } = await getUserServer();
-  if (!user) return errorResponse("Not logged in", 401);
+
+  const authToken = request.headers.get("Authorization")?.split(" ")[1];
+  if (!user || user.id !== authToken) return errorResponse("Unauthorized", 401);
 
   const { roundId } = (await request.json()) as {
     roundId: string;

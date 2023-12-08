@@ -1,11 +1,13 @@
+import { getUserServer } from "~/app/_util/getUserServer";
 import { errorResponse, successResponse } from "~/app/api/responses";
 import { prisma } from "~/server/db";
 
-export async function GET(req: Request) {
-  const userId = req.headers.get("authorization")?.split(" ")[1];
-  if (!userId) {
-    return errorResponse("Unauthorized", 401);
-  }
+export async function GET(request: Request) {
+  // Check if user is authenticated and reject request if not
+  const { user } = await getUserServer();
+
+  const authToken = request.headers.get("Authorization")?.split(" ")[1];
+  if (!user || user.id !== authToken) return errorResponse("Unauthorized", 401);
 
   try {
     const courses = await prisma.userCourse.findMany({
@@ -13,7 +15,7 @@ export async function GET(req: Request) {
         course: true,
       },
       where: {
-        userId: userId,
+        userId: user.id,
       },
     });
 
