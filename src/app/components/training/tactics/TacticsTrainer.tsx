@@ -15,7 +15,10 @@ import type { Puzzle, TacticsSet, TacticsSetRound } from "@prisma/client";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
 import TimeSince from "../../general/TimeSince";
-import { set } from "zod";
+
+// TODO: Bug fix - AutoNext doesn't work when you get the puzzle wrong
+// TODO: Add an audio toggle
+// TODO: Add success/error sign
 
 export default function TacticsTrainer(props: {
   set: TacticsSet & {
@@ -93,7 +96,11 @@ export default function TacticsTrainer(props: {
   };
 
   const makeFirstMove = (move: string) => {
-    const timeoutId = setTimeout(() => {
+    const timeoutId = setTimeout(async () => {
+      await trackEventOnClient("tactics_set_puzzle_started", {
+        rating: currentPuzzle!.rating.toString(),
+        themes: currentPuzzle!.themes,
+      });
       makeMove(move);
       setReadyForInput(true);
     }, 500);
@@ -300,9 +307,7 @@ export default function TacticsTrainer(props: {
           key={moveNumber.toString() + move}
           className="bg-none hover:bg-purple-800 text-white px-1 py-1 h-max max-h-fit"
           onClick={async () => {
-            await trackEventOnClient("Course Trainer", {
-              action: "Jump to move",
-            });
+            await trackEventOnClient("tactics_set_jump_to_move", {});
 
             const newGame = new Chess(currentPuzzle!.fen);
             for (let i = 0; i <= index; i++) {
@@ -336,8 +341,11 @@ export default function TacticsTrainer(props: {
   }, [currentPuzzle]);
 
   const exit = async () => {
+    setLoading(true);
     await increaseTimeTaken();
+    await trackEventOnClient("tactics_set_closed", {});
     router.push("/training/tactics/list");
+    setLoading(false);
     return;
   };
 

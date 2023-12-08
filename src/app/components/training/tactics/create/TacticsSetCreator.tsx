@@ -9,6 +9,7 @@ import { useState } from "react";
 import Spinner from "~/app/components/general/Spinner";
 import type { ResponseJson } from "~/app/api/responses";
 import { getUserClient } from "~/app/_util/getUserClient";
+import trackEventOnClient from "~/app/_util/trackEventOnClient";
 
 interface TacticsSetCreatorProps {
   setCount: number;
@@ -181,12 +182,26 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       if (!set) {
         throw new Error("Something went wrong");
       }
+
+      await trackEventOnClient("create_tactics_set_success", {
+        setName: name,
+        setSize: cleanPuzzles.length.toString(),
+        themesList: themesList.join(","),
+        rating: rating.toString(),
+        difficulty:
+          difficulty == 0 ? "Easy" : difficulty == 1 ? "Medium" : "Hard",
+      });
       resetForm();
       setCreated(set);
       setOpen(false);
     } catch (e) {
-      if (e instanceof Error) setError(e.message);
-      else setError("Unknown error");
+      let message = "";
+      if (e instanceof Error) message = e.message;
+      else message = "Unknown error";
+
+      await trackEventOnClient("create_tactics_set_error", {
+        message,
+      });
     }
   };
   return (
@@ -196,7 +211,12 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       </Heading>
       <AlertDialog.Root open={open} onOpenChange={setOpen}>
         <AlertDialog.Trigger className={setCount < maxSets ? "" : "hidden"}>
-          <div className="flex items-center gap-2 bg-purple-700 text-white px-4 py-2 hover:bg-purple-600">
+          <div
+            onClick={async () =>
+              await trackEventOnClient("create_tactics_set_opened", {})
+            }
+            className="flex items-center gap-2 bg-purple-700 text-white px-4 py-2 hover:bg-purple-600"
+          >
             <p>Create</p>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -319,7 +339,8 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
               </Button>
               <Button
                 variant="secondary"
-                onClick={() => {
+                onClick={async () => {
+                  await trackEventOnClient("create_tactics_set_closed", {});
                   resetForm();
                   setOpen(false);
                 }}

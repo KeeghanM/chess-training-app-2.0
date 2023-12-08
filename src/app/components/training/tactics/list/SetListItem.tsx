@@ -4,13 +4,15 @@ import type { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
 import TimeSince from "~/app/components/general/TimeSince";
 import Button from "~/app/components/_elements/button";
 import { useRouter } from "next/navigation";
+import trackEventOnClient from "~/app/_util/trackEventOnClient";
 
 export default function SetListItem(props: { set: PrismaTacticsSet }) {
   const { set } = props;
   const currentRound = set.rounds[set.rounds.length - 1];
   const router = useRouter();
 
-  const trainSet = () => {
+  const trainSet = async () => {
+    await trackEventOnClient("tactics_set_opened", {});
     router.push(`/training/tactics/${set.id}`);
   };
   return (

@@ -62,10 +62,10 @@ export function GroupItem(props: {
                         defaultValue={line.tags.Colour}
                         onChange={async (e) => {
                           const v = e.target.value;
-                          await trackEventOnClient("Create Course", {
-                            step: "Grouping",
-                            value: "Change Colour",
-                          });
+                          await trackEventOnClient(
+                            "create_course_change_line_colour",
+                            {},
+                          );
                           line.tags.Colour = v;
                         }}
                       >
@@ -95,11 +95,8 @@ export function GroupItem(props: {
                                     variant="danger"
                                     onClick={async () => {
                                       await trackEventOnClient(
-                                        "Create Course",
-                                        {
-                                          step: "Grouping",
-                                          value: "Delete Line",
-                                        },
+                                        "create_course_delete_line",
+                                        {},
                                       );
                                       lines.splice(lines.indexOf(line), 1),
                                         setLinesToShow(

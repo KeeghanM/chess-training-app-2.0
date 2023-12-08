@@ -131,8 +131,8 @@ export default function CourseTrainer(props: {
         if (!nextLine) {
           // We've reached the end of the course
           setStatus("loading");
-          await trackEventOnClient("Course Trainer", {
-            action: "Course Complete",
+          await trackEventOnClient("course_completed", {
+            courseName: props.userCourse.course.courseName,
           });
 
           await processNewFens();
@@ -144,8 +144,8 @@ export default function CourseTrainer(props: {
         if (nextLine.line.groupId !== currentLine.line.groupId) {
           // We've reached the end of the group
           // TODO: Add a nice modal popup here
-          await trackEventOnClient("Course Trainer", {
-            action: "Group Complete",
+          await trackEventOnClient("course_group_completed", {
+            courseName: props.userCourse.course.courseName,
           });
         }
 
@@ -359,8 +359,8 @@ export default function CourseTrainer(props: {
         <button
           className="bg-none hover:bg-purple-800 text-white px-1 py-1 h-max max-h-fit"
           onClick={async () => {
-            await trackEventOnClient("Course Trainer", {
-              action: "Jump to move",
+            await trackEventOnClient("course_jump_to_move", {
+              courseName: props.userCourse.course.courseName,
             });
 
             const newGame = new Chess();
@@ -426,8 +426,8 @@ export default function CourseTrainer(props: {
               variant="accent"
               disabled={status == "loading"}
               onClick={async () => {
-                await trackEventOnClient("Course Trainer", {
-                  action: "Next Line",
+                await trackEventOnClient("course_next_line", {
+                  courseName: props.userCourse.course.courseName,
                 });
                 await startNextLine();
               }}

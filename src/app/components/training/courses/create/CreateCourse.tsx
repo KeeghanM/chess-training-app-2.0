@@ -43,19 +43,15 @@ export default function CreateCourseForm() {
     const data = (await response.json()) as ResponseJson;
 
     if (!response.ok || data.message != "Course created") {
-      await trackEventOnClient("Create Course", {
+      await trackEventOnClient("create_course_error", {
         step: "Upload",
-        value: "Error",
         message: data.message,
       });
       setCurrentStep("error");
       return;
     }
 
-    await trackEventOnClient("Create Course", {
-      step: "Upload",
-      value: "Success",
-    });
+    await trackEventOnClient("create_course_success", {});
     const courseSlug = data.data!.slug as string;
     router.push("/courses/" + courseSlug);
   };

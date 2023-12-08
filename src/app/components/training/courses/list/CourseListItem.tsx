@@ -17,9 +17,7 @@ export default function CourseListItem(props: {
   const conicGradient = GenerateConicGradient(userCourse);
 
   const openCourse = async () => {
-    await trackEventOnClient("Course Trainer", {
-      action: "Open Course",
-    });
+    await trackEventOnClient("open_course", {});
     router.push("/training/courses/" + userCourse.id);
   };
 

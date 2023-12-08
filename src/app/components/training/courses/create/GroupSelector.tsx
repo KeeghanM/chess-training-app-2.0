@@ -59,9 +59,8 @@ export default function GroupSelector(props: {
             defaultValue={groupOptions[0]}
             onValueChange={async (x) => {
               countLines(x);
-              await trackEventOnClient("Create Course", {
-                step: "Grouping",
-                value: "Change Group",
+              await trackEventOnClient("create_course_change_grouping", {
+                groupName: x,
               });
             }}
           >
