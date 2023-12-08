@@ -23,7 +23,6 @@ export async function GetUserCourses() {
       Authorization: `Bearer ${user.id}`,
     },
   });
-  console.log(`${process.env.API_BASE_URL}/courses/user`);
   const json = await resp.json();
   if (json.message != "Courses found") {
     // TODO: Handle error

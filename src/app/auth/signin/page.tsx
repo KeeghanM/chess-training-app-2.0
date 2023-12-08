@@ -4,6 +4,7 @@ import {
 } from "@kinde-oss/kinde-auth-nextjs/components";
 import { redirect } from "next/navigation";
 import { getUserServer } from "~/app/_util/getUserServer";
+import Button from "~/app/components/_elements/button";
 import Container from "~/app/components/_elements/container";
 import Heading from "~/app/components/_elements/heading";
 
@@ -23,10 +24,14 @@ export default async function SignIn() {
           get access to every single one of our Science Backed training tools
           forever.
         </p>
-        <LoginLink postLoginRedirectURL="/dashboard">Sign in</LoginLink>
-        <RegisterLink postLoginRedirectURL="/dashboard/new">
-          Sign up
-        </RegisterLink>
+        <div className="flex flex-col md:flex-row gap-4">
+          <LoginLink postLoginRedirectURL="/dashboard">
+            <Button variant="primary">Sign in</Button>
+          </LoginLink>
+          <RegisterLink postLoginRedirectURL="/dashboard/new">
+            <Button variant="accent">Register</Button>
+          </RegisterLink>
+        </div>
       </div>
     </Container>
   );

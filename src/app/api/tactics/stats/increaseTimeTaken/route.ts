@@ -6,9 +6,10 @@ export async function POST(request: Request) {
   const { user } = await getUserServer();
   if (!user) return errorResponse("Not logged in", 401);
 
-  const { roundId, timeTaken } = (await request.json()) as {
+  const { roundId, timeTaken, setId } = (await request.json()) as {
     timeTaken: number;
     roundId: string;
+    setId: string;
   };
   if (!roundId || !timeTaken) return errorResponse("Missing fields", 400);
 
@@ -24,6 +25,17 @@ export async function POST(request: Request) {
         timeSpent: {
           increment: timeTaken,
         },
+      },
+    });
+
+    const date = new Date();
+    await prisma.tacticsSet.update({
+      where: {
+        id: setId,
+        userId: user.id,
+      },
+      data: {
+        lastTrained: date,
       },
     });
 

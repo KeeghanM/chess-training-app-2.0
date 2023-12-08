@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 
 export default function SetListItem(props: { set: PrismaTacticsSet }) {
   const { set } = props;
-  console.log(set);
   const currentRound = set.rounds[set.rounds.length - 1];
   const router = useRouter();
 

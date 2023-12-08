@@ -10,6 +10,7 @@ interface TacticsListProps {
   sets: PrismaTacticsSet[];
 }
 export default function TacticsList(props: TacticsListProps) {
+  // TODO: Fetch sets on mount so that they can be updated
   const [sets, setSets] = useState<PrismaTacticsSet[]>(props.sets);
   const addSet = (set: PrismaTacticsSet) => {
     setSets([...sets, set]);
