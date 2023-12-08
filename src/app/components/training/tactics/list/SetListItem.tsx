@@ -6,6 +6,7 @@ import Button from "~/app/components/_elements/button";
 import { useRouter } from "next/navigation";
 import trackEventOnClient from "~/app/_util/trackEventOnClient";
 
+// TODO: Bug fix - TypeError: Cannot read properties of undefined (reading 'length') "currentRound =" when making a new set
 export default function SetListItem(props: { set: PrismaTacticsSet }) {
   const { set } = props;
   const currentRound = set.rounds[set.rounds.length - 1];

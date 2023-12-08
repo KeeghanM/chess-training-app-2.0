@@ -1,6 +1,7 @@
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { prisma } from "~/server/db";
+import { PostHogClient } from "./trackEventOnServer";
 
 export async function getUserServer() {
   const { getUser, isAuthenticated } = getKindeServerSession();

@@ -16,7 +16,8 @@ import Toggle from "react-toggle";
 import "react-toggle/style.css";
 import TimeSince from "../../general/TimeSince";
 
-// TODO: Bug fix - AutoNext doesn't work when you get the puzzle wrong
+// TODO: Bug fix - AutoNext doesn't always work
+// TODO: Bug fix - wrong sound playing
 // TODO: Add an audio toggle
 // TODO: Add success/error sign
 

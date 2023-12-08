@@ -3,6 +3,7 @@ import ToolGrid from "../components/dashboard/ToolGrid";
 import PageHeader from "../components/_layouts/pageHeader";
 import { isFlagEnabledServer } from "../_util/isFlagEnabledServer";
 import { getUserServer } from "../_util/getUserServer";
+import { PostHogClient } from "../_util/trackEventOnServer";
 
 export type Tool = {
   name: string;
@@ -15,6 +16,17 @@ export type Tool = {
 export default async function Dashboard() {
   const { user, profile } = await getUserServer();
   if (!user) redirect("/api/auth/signin");
+
+  // Identify the user immediately
+  const posthog = PostHogClient();
+  posthog.identify({
+    distinctId: user.id!,
+    properties: {
+      email: user.email ?? "unknown",
+    },
+  });
+
+  // This will force new users into the onboarding
   if (!profile) redirect("/dashboard/new");
 
   const tools: Tool[] = [
