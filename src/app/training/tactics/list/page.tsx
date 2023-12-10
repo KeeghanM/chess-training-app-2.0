@@ -10,7 +10,13 @@ export default async function TacticsListPage() {
   if (!user) redirect("/api/auth/signin");
 
   const puzzleSets = await GetTacticSets();
-  if (!puzzleSets) return <Error PageTitle="Your Courses" />;
+  if (puzzleSets === null)
+    return (
+      <Error
+        PageTitle="Tactics Sets"
+        error="Error loading sets, please try again"
+      />
+    );
 
   return (
     <>

@@ -18,7 +18,7 @@ export default function SetListItem(props: { set: PrismaTacticsSet }) {
   };
   return (
     <div
-      className="flex flex-col md:flex-row items-center p-2 gap-6 px-5 bg-gray-100"
+      className="flex flex-col md:flex-row items-center p-2 md:p-4 gap-6 bg-gray-100"
       key={set.id}
     >
       <div className="flex flex-col cursor-pointer mr-auto" onClick={trainSet}>
@@ -33,7 +33,7 @@ export default function SetListItem(props: { set: PrismaTacticsSet }) {
           .
         </p>
       </div>
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 w-full">
         <div className="p-2 bg-gray-200 flex flex-col md:flex-row gap-2 justify-between">
           <p>Round: {set.rounds.length}/8</p>
           <p>

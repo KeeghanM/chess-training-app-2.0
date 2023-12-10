@@ -24,7 +24,7 @@ export default async function RootLayout({
         <PostHogPageview />
       </Suspense>
       <PHProvider>
-        <body style={{ margin: 0, padding: 0 }}>
+        <body>
           <Header />
           {children}
           <Footer />

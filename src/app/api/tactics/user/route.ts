@@ -1,20 +1,16 @@
-import { getUserServer } from "~/app/_util/getUserServer";
 import { errorResponse, successResponse } from "~/app/api/responses";
 import { prisma } from "~/server/db";
 
 export async function GET(request: Request) {
-  // Check if user is authenticated and reject request if not
-  const { user } = await getUserServer();
-
-  const authToken = request.headers.get("Authorization")?.split(" ")[1];
-  if (!user || user.id !== authToken) return errorResponse("Unauthorized", 401);
+  const userId = request.headers.get("Authorization")?.split(" ")[1];
+  if (!userId) return errorResponse("Unauthorized", 401);
   try {
     const sets = await prisma.tacticsSet.findMany({
       include: {
         rounds: true,
       },
       where: {
-        userId: user.id,
+        userId,
       },
     });
 

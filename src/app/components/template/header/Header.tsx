@@ -18,10 +18,10 @@ export default async function Header() {
               height={75}
             />
             <div>
-              <h2 className="text-lg md:text-xl lg:text-2xl font-bold italic">
+              <h2 className="md:text-xl lg:text-2xl font-bold italic">
                 ChessTraining.app
               </h2>
-              <h3 className="text-sm font-light">
+              <h3 className="text-xs md:text-sm font-light">
                 The best way to improve your chess
               </h3>
             </div>

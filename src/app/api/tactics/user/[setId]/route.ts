@@ -6,12 +6,8 @@ export async function GET(
   request: Request,
   { params }: { params: { setId: string } },
 ) {
-  // Check if user is authenticated and reject request if not
-  const { user } = await getUserServer();
-
-  const authToken = request.headers.get("Authorization")?.split(" ")[1];
-  if (!user || user.id !== authToken) return errorResponse("Unauthorized", 401);
-
+  const userId = request.headers.get("Authorization")?.split(" ")[1];
+  if (!userId) return errorResponse("Unauthorized", 401);
   const { setId } = params;
   if (!setId) return errorResponse("Missing courseId", 400);
 

@@ -1,12 +1,12 @@
 import { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { prisma } from "~/server/db";
-import { PostHogClient } from "./trackEventOnServer";
 
 export async function getUserServer() {
   const { getUser, isAuthenticated } = getKindeServerSession();
   const user = await getUser();
   const hasAuth = await isAuthenticated();
+
   if (user) {
     try {
       const profile = await prisma.userProfile.findFirst({
@@ -14,7 +14,6 @@ export async function getUserServer() {
           id: user.id,
         },
       });
-
       return { user, hasAuth, profile };
     } catch (e) {
       //TODO: Proper error logging

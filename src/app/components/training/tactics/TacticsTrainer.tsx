@@ -3,7 +3,7 @@ import { useWindowSize } from "@uidotdev/usehooks";
 import { useEffect, useState } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
-import type { Square } from "chess.js";
+import type { Piece, Square } from "chess.js";
 import { useRouter } from "next/navigation";
 import Spinner from "../../general/Spinner";
 // @ts-expect-error - No types available
@@ -17,10 +17,11 @@ import "react-toggle/style.css";
 import TimeSince from "../../general/TimeSince";
 import Error from "../../general/ErrorPage";
 
-// TODO: Bug fix - AutoNext doesn't always work
-// TODO: Bug fix - wrong sound playing
+// TODO: Bug fix - AutoNext doesn't work
 // TODO: Add an audio toggle
 // TODO: Add success/error sign
+// TODO: Add a "show solution" button
+// TODO: Add "white/black to move" indicator
 
 export default function TacticsTrainer(props: {
   set: TacticsSet & {
@@ -28,21 +29,15 @@ export default function TacticsTrainer(props: {
   } & { puzzles: Puzzle[] };
 }) {
   const { user } = getUserClient();
-  if (!user)
-    return (
-      <Error
-        PageTitle="Tatcics Training"
-        error="Error Authenticating - please try again"
-      />
-    );
   const router = useRouter();
 
   // Setup main state for the game/puzzles
+  const [puzzlesList, setPuzzlesList] = useState(props.set.puzzles);
   const [currentRound, setCurrentRound] = useState(
     props.set.rounds[props.set.rounds.length - 1]!,
   );
   const [currentPuzzle, setCurrentPuzzle] = useState(
-    props.set.puzzles[currentRound.correct + currentRound.incorrect],
+    puzzlesList[currentRound.correct + currentRound.incorrect],
   );
   const [CompletedPuzzles, setCompletedPuzzles] = useState(
     currentRound.correct + currentRound.incorrect,
@@ -87,7 +82,8 @@ export default function TacticsTrainer(props: {
 
   const makeMove = (move: string) => {
     game.move(move);
-    playMoveSound(move);
+    const lanNotation = game.history()[game.history().length - 1];
+    playMoveSound(lanNotation!);
     setPosition(game.fen());
   };
 
@@ -121,7 +117,7 @@ export default function TacticsTrainer(props: {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          authorization: "Bearer " + user.id,
+          authorization: "Bearer " + user!.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -148,7 +144,7 @@ export default function TacticsTrainer(props: {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          authorization: "Bearer " + user.id,
+          authorization: "Bearer " + user!.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -173,7 +169,7 @@ export default function TacticsTrainer(props: {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          authorization: "Bearer " + user.id,
+          authorization: "Bearer " + user!.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -222,17 +218,18 @@ export default function TacticsTrainer(props: {
       await exit();
       return;
     }
+
     // We haven't completed the set
     // so we need to change the puzzle
-    setPuzzleFinished(false);
     setCompletedPuzzles(currentRound.correct + currentRound.incorrect + 1);
     const newPuzzle =
-      props.set.puzzles[currentRound.correct + currentRound.incorrect + 1];
+      puzzlesList[currentRound.correct + currentRound.incorrect + 1];
     const newGame = new Chess(newPuzzle!.fen);
     setCurrentPuzzle(newPuzzle);
     setGame(newGame);
     setOrientation(newGame.turn() === "w" ? "black" : "white");
     setPosition(newGame.fen());
+    setPuzzleFinished(false);
     makeBookMove();
   };
 
@@ -243,10 +240,10 @@ export default function TacticsTrainer(props: {
       await increaseTimeTaken();
       await increaseCorrect();
       if (autoNext) {
+        console.log("Auto Next Triggered");
         await goToNextPuzzle();
-      } else {
-        setPuzzleFinished(true);
       }
+      setPuzzleFinished(true);
       return true;
     }
 
@@ -277,14 +274,48 @@ export default function TacticsTrainer(props: {
 
     await Promise.all(timeouts);
   };
+
+  const checkPromotion = (
+    sourceSquare: Square,
+    targetSquare: Square,
+    piece: Piece,
+  ) => {
+    // CHECK IF LAST POSITION, BASED ON SOURCE SQUARE, IS A PAWN
+    // This works because we haven't actually made the move yet
+    const lastMovePiece = game.get(sourceSquare);
+    const sourceCol = sourceSquare.split("")[0];
+    const sourceRank = sourceSquare.split("")[1];
+    const targetCol = targetSquare.split("")[0];
+    const targetRank = targetSquare.split("")[1];
+    const pieceColor = piece.toString().split("")[0];
+    const pieceType = piece.toString().split("")[1];
+
+    if (
+      lastMovePiece?.type === "p" &&
+      ((pieceColor == "w" &&
+        sourceRank === "7" &&
+        targetRank === "8" &&
+        sourceCol == targetCol) ||
+        (pieceColor == "b" &&
+          sourceRank === "2" &&
+          targetRank === "1" &&
+          sourceCol == targetCol))
+    ) {
+      return pieceType?.toLowerCase();
+    }
+    return undefined;
+  };
+
   const userDroppedPiece = async (
     sourceSquare: Square,
     targetSquare: Square,
+    piece: Piece,
   ) => {
     // Make the move to see if it's legal
     const playerMove = game.move({
       from: sourceSquare,
       to: targetSquare,
+      promotion: checkPromotion(sourceSquare, targetSquare, piece),
     });
     if (playerMove === null) return false; // illegal move
 
@@ -307,6 +338,7 @@ export default function TacticsTrainer(props: {
     setPosition(game.fen());
     makeBookMove();
     await checkEndOfLine();
+    return true;
   };
 
   const PgnDisplay = game.history().map((move, index) => {
@@ -324,7 +356,7 @@ export default function TacticsTrainer(props: {
     if (puzzleFinished) {
       return (
         <button
-          key={moveNumber.toString() + move}
+          key={"btn" + moveNumber.toString() + move + moveColour}
           className="bg-none hover:bg-purple-800 text-white px-1 py-1 h-max max-h-fit"
           onClick={async () => {
             await trackEventOnClient("tactics_set_jump_to_move", {});
@@ -342,7 +374,7 @@ export default function TacticsTrainer(props: {
     } else {
       return (
         <div
-          key={moveNumber.toString() + move}
+          key={moveNumber.toString() + move + moveColour}
           className="px-1 py-1 text-white"
         >
           <FlexText />
@@ -370,6 +402,7 @@ export default function TacticsTrainer(props: {
   };
 
   const windowSize = useWindowSize() as { width: number; height: number };
+
   return (
     <div className="relative bg-purple-700 p-4">
       {loading && (
@@ -378,35 +411,44 @@ export default function TacticsTrainer(props: {
         </div>
       )}
       <p className="text-lg text-white font-bold">{props.set.name}</p>
-      <div className="flex flex-col md:flex-row gap-2">
-        <p className="text-white font-bold">
-          Round: {props.set.rounds.length}/8
+      <div className="flex text-xs md:text-sm flex-row justify-between md:justify-start gap-2">
+        <p className="text-white flex flex-col items-center">
+          <span className="font-bold">Round:</span>{" "}
+          <span>{props.set.rounds.length}/8</span>
         </p>
-        <p className="text-white font-bold">
-          Completed: {CompletedPuzzles}/{props.set.size}
+        <p className="text-white flex flex-col items-center">
+          <span className="font-bold">Completed:</span>
+          <span>
+            {CompletedPuzzles}/{props.set.size}
+          </span>
         </p>
-        <p className="text-white font-bold">
-          Accuracy:{" "}
-          {currentRound.correct == 0 && currentRound.incorrect == 0
-            ? "0"
-            : Math.round(
-                (currentRound.correct /
-                  (currentRound.correct + currentRound.incorrect)) *
-                  100,
-              )}
-          %
+        <p className="text-white flex flex-col items-center">
+          <span className="font-bold">Accuracy:</span>
+          <span>
+            {currentRound.correct == 0 && currentRound.incorrect == 0
+              ? "0"
+              : Math.round(
+                  (currentRound.correct /
+                    (currentRound.correct + currentRound.incorrect)) *
+                    100,
+                )}
+            %
+          </span>
         </p>
-        <p className="text-white font-bold">
-          Session Time: <TimeSince date={sessionTimeStarted} />
+        <p className="text-white flex flex-col items-center">
+          <span className="font-bold">Session Time:</span>
+          <span>
+            <TimeSince date={sessionTimeStarted} />
+          </span>
         </p>
       </div>
       <div className="flex flex-col md:flex-row gap-4">
-        <div className="">
+        <div>
           <Chessboard
             arePiecesDraggable={readyForInput}
             position={position}
             boardOrientation={orientation}
-            boardWidth={Math.min(windowSize.height / 2, windowSize.width - 50)}
+            boardWidth={Math.min(windowSize.height / 2, windowSize.width - 150)}
             customBoardStyle={{
               marginInline: "auto",
             }}
@@ -414,7 +456,7 @@ export default function TacticsTrainer(props: {
             onPieceDrop={userDroppedPiece}
           />
         </div>
-        <div className="flex flex-col gap-2 flex-1">
+        <div className="flex flex-col-reverse md:flex-col gap-2 flex-1">
           <div className="flex flex-wrap content-start gap-1 bg-purple-600 h-full p-2">
             {PgnDisplay.map((item) => item)}
           </div>
@@ -427,14 +469,16 @@ export default function TacticsTrainer(props: {
             />
             <span>Auto Next</span>
           </label>
-          {puzzleFinished && (
-            <Button variant="accent" onClick={goToNextPuzzle}>
-              Next
+          <div className="flex flex-col gap-2">
+            {puzzleFinished && (
+              <Button variant="accent" onClick={goToNextPuzzle}>
+                Next
+              </Button>
+            )}
+            <Button variant="danger" onClick={exit}>
+              Exit
             </Button>
-          )}
-          <Button variant="danger" onClick={exit}>
-            Exit
-          </Button>
+          </div>
         </div>
       </div>
     </div>
