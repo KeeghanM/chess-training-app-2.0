@@ -17,11 +17,9 @@ import "react-toggle/style.css";
 import TimeSince from "../../general/TimeSince";
 import Error from "../../general/ErrorPage";
 
-// TODO: Bug fix - AutoNext doesn't work
-// TODO: Add an audio toggle
-// TODO: Add success/error sign
-// TODO: Add a "show solution" button
-// TODO: Add "white/black to move" indicator
+// TODO: Bug fix - AutoNext doesn't work, and make it only work when puzzle is correct
+// TODO: Add a "show solution/not sure" button that shows the solution and marks it as incorrect
+// TODO: Add a "Show Solution" button when wrong move is played instead of auto showing it
 
 export default function TacticsTrainer(props: {
   set: TacticsSet & {
@@ -47,7 +45,7 @@ export default function TacticsTrainer(props: {
     game.turn() === "w" ? "black" : "white",
   ); // this is backwards as the first move is the opponent move
   const [position, setPosition] = useState(game.fen());
-  const [soundEnabled, setSoundEnabled] = useState(true); // TODO: Add to user settings
+  const [soundEnabled, setSoundEnabled] = useState(true);
 
   // Setup SFX
   const [checkSound] = useSound("/sfx/check.mp3");
@@ -65,6 +63,9 @@ export default function TacticsTrainer(props: {
   const [puzzleFinished, setPuzzleFinished] = useState(false);
   const [startTime, setStartTime] = useState(Date.now());
   const [sessionTimeStarted, setSessionTimeStarted] = useState(new Date());
+  const [thumbDisplay, setThumbDisplay] = useState<"none" | "up" | "down">(
+    "none",
+  );
 
   const playMoveSound = (move: string) => {
     if (move.includes("+")) {
@@ -191,6 +192,8 @@ export default function TacticsTrainer(props: {
     // If we haven't then we need to change the puzzle
     // to the next one and update the state
 
+    setThumbDisplay("none");
+
     if (currentRound.correct + currentRound.incorrect + 1 >= props.set.size) {
       // We have completed the set
       // Create a new round
@@ -237,6 +240,7 @@ export default function TacticsTrainer(props: {
     if (game.history().length >= currentPuzzle!.moves.split(",").length) {
       // We have reached the end of the line
       correctSound();
+      setThumbDisplay("up");
       await increaseTimeTaken();
       await increaseCorrect();
       if (autoNext) {
@@ -325,6 +329,7 @@ export default function TacticsTrainer(props: {
 
     if (correctMove !== playerMove.lan) {
       // We played the wrong move
+      setThumbDisplay("down");
       incorrectSound();
       game.undo();
       setReadyForInput(false);
@@ -410,7 +415,48 @@ export default function TacticsTrainer(props: {
           <Spinner />
         </div>
       )}
-      <p className="text-lg text-white font-bold">{props.set.name}</p>
+      <div className="flex items-center flex-row justify-between text-white">
+        <p className="text-lg font-bold">{props.set.name}</p>
+        <div
+          className="flex flex-row items-center gap-2 hover:text-orange-500 cursor-pointer"
+          onClick={() => setSoundEnabled(!soundEnabled)}
+        >
+          <p>Sound {soundEnabled ? "On" : "Off"}</p>
+          {soundEnabled ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="1.5"
+                d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
+              />
+            </svg>
+          )}
+        </div>
+      </div>
       <div className="flex text-xs md:text-sm flex-row justify-between md:justify-start gap-2">
         <p className="text-white flex flex-col items-center">
           <span className="font-bold">Round:</span>{" "}
@@ -456,28 +502,83 @@ export default function TacticsTrainer(props: {
             onPieceDrop={userDroppedPiece}
           />
         </div>
-        <div className="flex flex-col-reverse md:flex-col gap-2 flex-1">
-          <div className="flex flex-wrap content-start gap-1 bg-purple-600 h-full p-2">
-            {PgnDisplay.map((item) => item)}
-          </div>
-          <label className="ml-auto flex items-center gap-2 text-sm text-white">
-            <Toggle
-              defaultChecked={autoNext}
-              onChange={() => {
-                setAutoNext(!autoNext);
-              }}
-            />
-            <span>Auto Next</span>
-          </label>
-          <div className="flex flex-col gap-2">
-            {puzzleFinished && (
-              <Button variant="accent" onClick={goToNextPuzzle}>
-                Next
-              </Button>
+        <div className="flex flex-col gap-2 w-full">
+          <div className="flex flex-row items-center gap-2">
+            <p className="flex items-center gap-2 text-white">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                className={
+                  orientation === "white"
+                    ? "text-white"
+                    : "text-black transform rotate-180"
+                }
+              >
+                <path fill="currentColor" d="M1 21h22L12 2" />
+              </svg>
+              {orientation === "white" ? "White" : "Black"} to move
+            </p>
+            {thumbDisplay === "up" && (
+              <div className="flex items-center gap-2 text-white z-50">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 512 512"
+                  className="text-lime-500"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2h144c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48h-97.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192h64c17.7 0 32 14.3 32 32v224c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
+                  />
+                </svg>
+                <p>Correct!</p>
+              </div>
             )}
-            <Button variant="danger" onClick={exit}>
-              Exit
-            </Button>
+            {thumbDisplay === "down" && (
+              <div className="flex items-center gap-2 text-white z-50">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 512 512"
+                  className="text-red-500"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M313.4 479.1c26-5.2 42.9-30.5 37.7-56.5l-2.3-11.4c-5.3-26.7-15.1-52.1-28.8-75.2h144c26.5 0 48-21.5 48-48c0-18.5-10.5-34.6-25.9-42.6C497 236.6 504 223.1 504 208c0-23.4-16.8-42.9-38.9-47.1c4.4-7.3 6.9-15.8 6.9-24.9c0-21.3-13.9-39.4-33.1-45.6c.7-3.3 1.1-6.8 1.1-10.4c0-26.5-21.5-48-48-48h-97.5c-19 0-37.5 5.6-53.3 16.1l-38.5 25.7C176 91.6 160 121.6 160 153.7v111.2c0 29.2 13.3 56.7 36 75l7.4 5.9c26.5 21.2 44.6 51 51.2 84.2l2.3 11.4c5.2 26 30.5 42.9 56.5 37.7zM32 384h64c17.7 0 32-14.3 32-32V128c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32v224c0 17.7 14.3 32 32 32z"
+                  />
+                </svg>
+                <p>Incorrect!</p>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col-reverse md:flex-col gap-2 flex-1">
+            <div className="flex flex-wrap content-start gap-1 bg-purple-600 h-full p-2">
+              {PgnDisplay.map((item) => item)}
+            </div>
+            <label className="ml-auto flex items-center gap-2 text-sm text-white">
+              <Toggle
+                defaultChecked={autoNext}
+                onChange={() => {
+                  setAutoNext(!autoNext);
+                }}
+              />
+              <span>Auto Next</span>
+            </label>
+            <div className="flex flex-col gap-2">
+              {puzzleFinished && (
+                <Button variant="accent" onClick={goToNextPuzzle}>
+                  Next
+                </Button>
+              )}
+
+              <Button variant="danger" onClick={exit}>
+                Exit
+              </Button>
+            </div>
           </div>
         </div>
       </div>
