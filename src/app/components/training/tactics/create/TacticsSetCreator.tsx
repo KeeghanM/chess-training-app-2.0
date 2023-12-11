@@ -16,7 +16,6 @@ interface TacticsSetCreatorProps {
   maxSets: number;
   setCreated: (set: PrismaTacticsSet) => void;
 }
-// TODO: Don't store the whole puzzle data in the DB - only store the ID and fetch it from puzzle API
 export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
   const { user } = getUserClient();
   const { setCount, maxSets, setCreated } = props;
@@ -90,6 +89,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       if (!puzzles) throw new Error("No Puzzles Returned");
 
       return puzzles as {
+        puzzleid: string;
         fen: string;
         moves: string[];
         rating: number;
@@ -150,13 +150,13 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       return;
     }
 
-    const cleanPuzzles = puzzles.map((puzzle) => {
-      return {
-        fen: puzzle.fen,
-        moves: puzzle.moves.join(","),
-        rating: puzzle.rating,
-        themes: puzzle.themes.join(","),
-      };
+    const puzzleIds = puzzles.map((puzzle) => {
+      return { id: puzzle.puzzleid };
+    });
+
+    console.log({
+      puzzles,
+      puzzleIds,
     });
 
     try {
@@ -169,7 +169,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
         },
         body: JSON.stringify({
           name: name,
-          puzzles: cleanPuzzles,
+          puzzleIds,
         }),
       });
       const json = (await resp.json()) as ResponseJson;
@@ -186,7 +186,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
 
       await trackEventOnClient("create_tactics_set_success", {
         setName: name,
-        setSize: cleanPuzzles.length.toString(),
+        setSize: puzzleIds.length.toString(),
         themesList: themesList.join(","),
         rating: rating.toString(),
         difficulty:

@@ -11,12 +11,9 @@ import { ResponseJson } from "~/app/api/responses";
 export default function TacticsList() {
   // TODO: Show a loading/fallback item
   const { user } = getUserClient();
-  console.log("User list", user);
   const [sets, setSets] = useState<PrismaTacticsSet[]>([]);
 
   const getSets = async () => {
-    console.log("Getting sets", user);
-
     if (!user) return null;
     const resp = await fetch(`/api/tactics/user`, {
       method: "GET",

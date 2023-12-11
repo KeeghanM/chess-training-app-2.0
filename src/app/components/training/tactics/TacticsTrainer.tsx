@@ -11,40 +11,41 @@ import useSound from "use-sound";
 import trackEventOnClient from "~/app/_util/trackEventOnClient";
 import Button from "../../_elements/button";
 import { getUserClient } from "~/app/_util/getUserClient";
-import type { Puzzle, TacticsSet, TacticsSetRound } from "@prisma/client";
 import Toggle from "react-toggle";
 import "react-toggle/style.css";
 import TimeSince from "../../general/TimeSince";
-import Error from "../../general/ErrorPage";
+import type { PrismaTacticsSetWithPuzzles } from "~/app/_util/GetTacticSets";
 
-// TODO: Bug fix - AutoNext doesn't work, and make it only work when puzzle is correct
+interface TrainingPuzzle {
+  puzzleid: string;
+  fen: string;
+  rating: number;
+  ratingDeviation: number;
+  moves: string[];
+  themes: string[];
+}
+
 // TODO: Add a "show solution/not sure" button that shows the solution and marks it as incorrect
 // TODO: Add a "Show Solution" button when wrong move is played instead of auto showing it
-// TODO: Add a n 'offline mode' which saves stats to localStorage and syncs when online
+// TODO: Add an 'offline mode' which saves stats to localStorage and syncs when online
 
 export default function TacticsTrainer(props: {
-  set: TacticsSet & {
-    rounds: TacticsSetRound[];
-  } & { puzzles: Puzzle[] };
+  set: PrismaTacticsSetWithPuzzles;
 }) {
   const { user } = getUserClient();
   const router = useRouter();
 
   // Setup main state for the game/puzzles
-  const [puzzlesList, setPuzzlesList] = useState(props.set.puzzles);
   const [currentRound, setCurrentRound] = useState(
     props.set.rounds[props.set.rounds.length - 1]!,
   );
-  const [currentPuzzle, setCurrentPuzzle] = useState(
-    puzzlesList[currentRound.correct + currentRound.incorrect],
-  );
+  const [currentPuzzle, setCurrentPuzzle] = useState<TrainingPuzzle>();
   const [CompletedPuzzles, setCompletedPuzzles] = useState(
     currentRound.correct + currentRound.incorrect,
   );
-  const [game, setGame] = useState(new Chess(currentPuzzle!.fen));
-  const [orientation, setOrientation] = useState<"white" | "black">(
-    game.turn() === "w" ? "black" : "white",
-  ); // this is backwards as the first move is the opponent move
+  const [game, setGame] = useState(new Chess());
+  const [gameReady, setGameReady] = useState(false);
+  const [orientation, setOrientation] = useState<"white" | "black">("white");
   const [position, setPosition] = useState(game.fen());
   const [soundEnabled, setSoundEnabled] = useState(true);
 
@@ -59,14 +60,29 @@ export default function TacticsTrainer(props: {
 
   // Setup state for the settings/general
   const [autoNext, setAutoNext] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [readyForInput, setReadyForInput] = useState(false);
   const [puzzleFinished, setPuzzleFinished] = useState(false);
   const [startTime, setStartTime] = useState(Date.now());
   const [sessionTimeStarted, setSessionTimeStarted] = useState(new Date());
-  const [thumbDisplay, setThumbDisplay] = useState<"none" | "up" | "down">(
-    "none",
-  );
+  const [puzzleStatus, setPuzzleStatus] = useState<
+    "none" | "correct" | "incorrect"
+  >("none");
+
+  const getPuzzle = async (id: string) => {
+    const resp = await fetch(`https://chess-puzzles.p.rapidapi.com/?id=${id}`, {
+      method: "GET",
+      headers: {
+        "x-rapidapi-host": "chess-puzzles.p.rapidapi.com",
+        "x-rapidapi-key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
+      },
+    });
+    const json = await resp.json().catch((e) => {
+      throw new Error("Invalid response from API");
+    });
+    const puzzle = json.puzzles[0];
+    return puzzle;
+  };
 
   const playMoveSound = (move: string) => {
     if (move.includes("+")) {
@@ -92,7 +108,7 @@ export default function TacticsTrainer(props: {
   // Makes a move for the "opponent"
   const makeBookMove = () => {
     setReadyForInput(false);
-    const currentMove = currentPuzzle?.moves.split(",")[game.history().length];
+    const currentMove = currentPuzzle?.moves[game.history().length];
     if (!currentMove) return;
 
     const timeoutId = setTimeout(() => {
@@ -187,18 +203,21 @@ export default function TacticsTrainer(props: {
   };
 
   const goToNextPuzzle = async () => {
-    // Check if we've completed the set
-    // in which case we need to create a new round
-    // then redirect to the main lister
-    // If we haven't then we need to change the puzzle
-    // to the next one and update the state
+    // First log all the stats re:current puzzle
+    // Check if we've completed the set, in which case we need to create a new round & exit
+    // If we haven't then load the next puzzle
+    setLoading(true);
 
-    setThumbDisplay("none");
+    await increaseTimeTaken();
+    if (puzzleStatus == "correct") await increaseCorrect();
+    if (puzzleStatus == "incorrect") await increaseIncorrect();
 
-    if (currentRound.correct + currentRound.incorrect + 1 >= props.set.size) {
+    const currentPuzzleIndex = props.set.puzzles.findIndex(
+      (item) => item.id == currentPuzzle!.puzzleid,
+    );
+
+    if (currentPuzzleIndex + 1 >= props.set.size) {
       // We have completed the set
-      // Create a new round
-      setLoading(true);
       try {
         await trackEventOnClient("tactics_set_round_completed", {
           roundNumber: currentRound.roundNumber.toString(),
@@ -219,32 +238,32 @@ export default function TacticsTrainer(props: {
       } catch (e) {
         if (e instanceof Error) console.error(e);
       }
+      // Return to the main lister
       await exit();
       return;
     }
 
-    // We haven't completed the set
-    // so we need to change the puzzle
-    setCompletedPuzzles(currentRound.correct + currentRound.incorrect + 1);
-    const newPuzzle =
-      puzzlesList[currentRound.correct + currentRound.incorrect + 1];
-    const newGame = new Chess(newPuzzle!.fen);
+    // We haven't completed the set so we need to change the puzzle
+
+    const newPuzzle = await getPuzzle(
+      props.set.puzzles[currentPuzzleIndex + 1]!.id,
+    );
+    setPuzzleStatus("none");
+    setLoading(false);
+    setCompletedPuzzles(currentPuzzleIndex + 1);
     setCurrentPuzzle(newPuzzle);
-    setGame(newGame);
-    setOrientation(newGame.turn() === "w" ? "black" : "white");
-    setPosition(newGame.fen());
-    setPuzzleFinished(false);
-    makeBookMove();
   };
 
   const checkEndOfLine = async () => {
-    if (game.history().length >= currentPuzzle!.moves.split(",").length) {
+    if (game.history().length >= currentPuzzle!.moves.length) {
       // We have reached the end of the line
       correctSound();
-      setThumbDisplay("up");
-      await increaseTimeTaken();
-      await increaseCorrect();
+      setPuzzleStatus("correct");
       setPuzzleFinished(true);
+
+      if (autoNext && puzzleStatus != "incorrect") {
+        await goToNextPuzzle();
+      }
       return true;
     }
     return false;
@@ -253,20 +272,19 @@ export default function TacticsTrainer(props: {
   const showIncorrectSequence = async () => {
     let counter = 0;
     const timeouts = [];
-    for (
-      let i = game.history().length;
-      i < currentPuzzle!.moves.split(",").length;
-      i++
-    ) {
+    for (let i = game.history().length; i < currentPuzzle!.moves.length; i++) {
       counter++;
-      const move = currentPuzzle?.moves.split(",")[i];
+      const move = currentPuzzle?.moves[i];
       if (!move) return;
 
       const timeoutPromise = new Promise((resolve) => {
-        const timeoutId = setTimeout(() => {
-          makeMove(move);
-          resolve(timeoutId);
-        }, 1000 * counter);
+        const timeoutId = setTimeout(
+          () => {
+            makeMove(move);
+            resolve(timeoutId);
+          },
+          1000 * counter + 200,
+        );
       });
 
       timeouts.push(timeoutPromise);
@@ -312,25 +330,32 @@ export default function TacticsTrainer(props: {
     piece: Piece,
   ) => {
     // Make the move to see if it's legal
-    const playerMove = game.move({
-      from: sourceSquare,
-      to: targetSquare,
-      promotion: checkPromotion(sourceSquare, targetSquare, piece),
-    });
+    const playerMove = (() => {
+      try {
+        const move = game.move({
+          from: sourceSquare,
+          to: targetSquare,
+          promotion: checkPromotion(sourceSquare, targetSquare, piece),
+        });
+        return move;
+      } catch (e) {
+        return null;
+      }
+    })();
+
     if (playerMove === null) return false; // illegal move
 
     // Check if the move is correct
-    const correctMove =
-      currentPuzzle?.moves.split(",")[game.history().length - 1];
+    const correctMove = currentPuzzle?.moves[game.history().length - 1];
 
     if (correctMove !== playerMove.lan) {
       // We played the wrong move
-      setThumbDisplay("down");
+      setPuzzleStatus("incorrect");
       incorrectSound();
       game.undo();
       setReadyForInput(false);
       await showIncorrectSequence();
-      await increaseIncorrect();
+
       setReadyForInput(true);
       setPuzzleFinished(true);
       return false;
@@ -339,10 +364,6 @@ export default function TacticsTrainer(props: {
     setPosition(game.fen());
     makeBookMove();
     await checkEndOfLine();
-    if (autoNext) {
-      console.log("auto next");
-      await goToNextPuzzle();
-    }
     return true;
   };
 
@@ -388,25 +409,56 @@ export default function TacticsTrainer(props: {
     }
   });
 
-  useEffect(() => {
-    // The puzzles come in with the first opponent move NOT played
-    // so we need to play the first move whenever the puzzle changes
-    const firstMove = currentPuzzle?.moves.split(",")[0];
-    const timeoutId = makeFirstMove(firstMove!);
-
-    return () => clearTimeout(timeoutId);
-  }, [currentPuzzle]);
-
   const exit = async () => {
     setLoading(true);
-    await increaseTimeTaken();
     await trackEventOnClient("tactics_set_closed", {});
     router.push("/training/tactics/list");
-    setLoading(false);
     return;
   };
 
   const windowSize = useWindowSize() as { width: number; height: number };
+
+  // Here are all our useEffect functions
+  useEffect(() => {
+    // On mount, load the first puzzle
+    (async () => {
+      const puzzleId =
+        props.set.puzzles[currentRound.correct + currentRound.incorrect + 1]!
+          .id;
+      const puzzle = await getPuzzle(puzzleId);
+      if (!puzzle) return;
+      setCurrentPuzzle(puzzle);
+      setLoading(false);
+    })();
+
+    return;
+  }, []);
+
+  useEffect(() => {
+    // Create a new game from the puzzle whenever it changes
+    if (!currentPuzzle) return;
+    const newGame = new Chess(currentPuzzle.fen);
+    setGame(newGame);
+    setGameReady(false);
+  }, [currentPuzzle]);
+
+  useEffect(() => {
+    // We need to ensure the game is set before we can make a move
+    setGameReady(true);
+  }, [game]);
+
+  useEffect(() => {
+    // Now, whenever any of the elements associated with the game/puzzle
+    // change we can check if we need to make the first move
+    if (gameReady && currentPuzzle) {
+      setPuzzleFinished(false);
+      setPosition(currentPuzzle.fen);
+      setOrientation(game.turn() == "w" ? "black" : "white"); // reversed because the first move is opponents
+      const firstMove = currentPuzzle?.moves[0];
+      const timeoutId = makeFirstMove(firstMove!);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [gameReady, game, currentPuzzle]);
 
   return (
     <div className="relative bg-purple-700 p-4">
@@ -520,7 +572,7 @@ export default function TacticsTrainer(props: {
               </svg>
               {orientation === "white" ? "White" : "Black"} to move
             </p>
-            {thumbDisplay === "up" && (
+            {puzzleStatus === "correct" && (
               <div className="flex items-center gap-2 text-white z-50">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -537,7 +589,7 @@ export default function TacticsTrainer(props: {
                 <p>Correct!</p>
               </div>
             )}
-            {thumbDisplay === "down" && (
+            {puzzleStatus === "incorrect" && (
               <div className="flex items-center gap-2 text-white z-50">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -566,10 +618,10 @@ export default function TacticsTrainer(props: {
                   setAutoNext(!autoNext);
                 }}
               />
-              <span>Auto Next</span>
+              <span>Auto Next on correct</span>
             </label>
             <div className="flex flex-col gap-2">
-              {puzzleFinished && (
+              {puzzleFinished && !autoNext && (
                 <Button variant="accent" onClick={goToNextPuzzle}>
                   Next
                 </Button>

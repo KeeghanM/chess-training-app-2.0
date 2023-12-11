@@ -104,15 +104,9 @@ model TacticsSet {
 }
 
 model Puzzle {
-    id        String     @id @default(cuid())
-    setId     String
-    fen       String
-    moves     String
-    rating    Int
-    themes    String
-    createdAt DateTime   @default(now())
-    updatedAt DateTime   @updatedAt
-    set       TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+    id    String     @id
+    setId String
+    set   TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
 }
 
 model TacticsSetRound {

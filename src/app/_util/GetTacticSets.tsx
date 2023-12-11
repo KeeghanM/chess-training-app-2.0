@@ -1,9 +1,12 @@
 import { redirect } from "next/navigation";
-import type { TacticsSet, TacticsSetRound } from "@prisma/client";
+import type { Puzzle, TacticsSet, TacticsSetRound } from "@prisma/client";
 import { getUserServer } from "./getUserServer";
 import { ResponseJson } from "../api/responses";
 
 export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] };
+export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
+  puzzles: Puzzle[];
+};
 
 export async function GetTacticSets() {
   const { user } = await getUserServer();
@@ -45,5 +48,10 @@ export async function GetSetPuzzles(setId: string) {
     return null;
   }
 
-  return json.data?.set;
+  const set = json.data!.set as PrismaTacticsSetWithPuzzles;
+  set.puzzles.sort((a, b) => {
+    return a.id.localeCompare(b.id);
+  });
+
+  return set;
 }

@@ -8,12 +8,12 @@ export async function POST(request: Request) {
   const authToken = request.headers.get("Authorization")?.split(" ")[1];
   if (!user || user.id !== authToken) return errorResponse("Unauthorized", 401);
 
-  const { name, puzzles } = (await request.json()) as {
+  const { name, puzzleIds } = (await request.json()) as {
     name: string;
-    puzzles: { fen: string; moves: string; rating: number; themes: string }[];
+    puzzleIds: { id: string }[];
   };
 
-  if (!name || !puzzles) {
+  if (!name || !puzzleIds) {
     return errorResponse("Missing required fields", 400);
   }
 
@@ -27,10 +27,10 @@ export async function POST(request: Request) {
       data: {
         userId: user.id,
         name: name,
-        size: puzzles.length,
+        size: puzzleIds.length,
         puzzles: {
           createMany: {
-            data: puzzles,
+            data: puzzleIds,
           },
         },
         rounds: {
