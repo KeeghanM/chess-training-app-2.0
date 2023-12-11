@@ -1,3 +1,4 @@
+import Heading from "~/app/components/_elements/heading";
 import CtaRow from "~/app/components/_layouts/ctaRow";
 import Hero from "~/app/components/_layouts/hero";
 import ImageRowFull from "~/app/components/_layouts/imageRowFull";
@@ -16,10 +17,10 @@ export default async function Tactics() {
           link: "/training/tactics/list",
         }}
       >
-        <p>
+        <Heading as="h2">
           Train tactics using the WoodPecker Method developed by GM's Axel
           Smith, and Hans Tikkanen.
-        </p>
+        </Heading>
       </Hero>
       <ImageRowFull
         heading="What is the Woodpecker Method"
@@ -46,7 +47,7 @@ export default async function Tactics() {
         </p>
       </ImageRowFull>
       <ImageRowFull
-        heading="How to use the Puzzle Trainer"
+        heading="How to use the Tactics Trainer"
         background="light"
         image={{
           src: "/images/hero.avif",
@@ -55,7 +56,7 @@ export default async function Tactics() {
         imageSide="right"
       >
         <p>
-          Using the Puzzle Trainer, you can build a set of between 200-500
+          Using the Tactics Trainer, you can build a set of between 200-500
           puzzles. Each one tailored to your chess rating. We will automatically
           track the time spent on each puzzle, and the overall set. As well as
           your accuracy throughout your training.

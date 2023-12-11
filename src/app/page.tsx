@@ -85,7 +85,14 @@ export default async function Home() {
         From our flagship Tactics Trainer to innovative "Natural Play Learning"
         courses, each tool is designed to target specific areas of your game.
       </BigText>
-      <MultiCol title="Our Training Tools" background="light">
+      <MultiCol
+        title="Our Training Tools"
+        background="light"
+        cta={{
+          text: "See all features",
+          link: "/features",
+        }}
+      >
         <MultiColItem title="Tactics Trainer">
           <p>
             Train tactics using the WoodPecker Method developed by GM's Axel
@@ -100,7 +107,7 @@ export default async function Home() {
             Generate puzzle sets and train on them, while the site takes care of
             tracking your accuracy & time spent.
           </p>
-          <Link href="/training/puzzles">
+          <Link href="/training/tactics">
             <Button variant="primary">Start Training</Button>
           </Link>
         </MultiColItem>
@@ -137,7 +144,7 @@ export default async function Home() {
       </MultiCol>
       <CtaRow
         title="Ready to transform your chess game?"
-        cta={{ text: "Sign Up", link: "/auth/signin" }}
+        cta={{ text: "Sign Up Now", link: "/auth/signin" }}
         background="dark"
       >
         <p>Sign up now for free and start your journey to chess mastery.</p>

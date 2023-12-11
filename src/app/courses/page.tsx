@@ -1,19 +1,29 @@
 import Button from "../components/_elements/button";
+import Heading from "../components/_elements/heading";
 import CtaRow from "../components/_layouts/ctaRow";
+import Hero from "../components/_layouts/hero";
 import ImageRowFull from "../components/_layouts/imageRowFull";
-import PageHeader from "../components/_layouts/pageHeader";
 import { TextWall } from "../components/_layouts/textWall";
 
+// TODO: Signup form
 export default async function Courses() {
   return (
     <>
-      <PageHeader
+      <Hero
         title="Study courses with Natural Play Learning"
         image={{
           src: "/images/hero.avif",
           alt: "Hero Image",
         }}
-      />
+        cta={{
+          text: "Start Training",
+          link: "/training/tactics/list",
+        }}
+      >
+        <Heading as="h2">
+          The best way to improve your Chess Openings and beyond
+        </Heading>
+      </Hero>
       <ImageRowFull
         heading="What are courses?"
         background="light"
@@ -74,21 +84,25 @@ export default async function Courses() {
           fantastic Tactics Trainer based on the WoodPecker Method.
         </p>
       </CtaRow>
-      <TextWall title="Sounds great, how do I get started?" background="light">
-        <div className="flex flex-col gap-4">
-          Sadly we don't have the course trainer ready just yet, but we're
-          close! If you want to be the first to know when it's ready, sign up to
-          our newsletter here. We promise we won't spam you!
-          <input
-            type="email"
-            placeholder="Email"
-            className="px-4 py-2 w-sm border border-gray-300"
-          />
-          <div>
-            <Button variant="primary">Sign up</Button>
-          </div>
+      <CtaRow
+        title="Sounds great, how do I get started?"
+        background="light"
+        cta={{
+          text: "View our roadmap",
+          link: "/product-roadmap",
+        }}
+      >
+        <div className="flex flex-col gap-2">
+          <p>
+            Sadly we don't have the course trainer ready just yet, but we're
+            close! If you want to be the first to know when it's ready, checkout
+            our Product Roadmap below and subscribe to updates.
+          </p>
+          <p className="italic">
+            P.s You can also see all our other upcoming feature releases.
+          </p>
         </div>
-      </TextWall>
+      </CtaRow>
     </>
   );
 }

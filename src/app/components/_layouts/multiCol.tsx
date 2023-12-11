@@ -1,3 +1,5 @@
+import Link from "next/link";
+import Button from "../_elements/button";
 import Heading from "../_elements/heading";
 
 interface MultiColItemProps {
@@ -8,6 +10,10 @@ interface MultiColItemProps {
 interface MultiColProps {
   title?: string;
   background: "light" | "dark";
+  cta?: {
+    text: string;
+    link: string;
+  };
   children: React.ReactNode;
 }
 
@@ -32,6 +38,13 @@ export function MultiCol(props: MultiColProps) {
         <div className="flex flex-col md:flex-row gap-4 md:gap-6">
           {props.children}
         </div>
+        {props.cta && (
+          <div className="">
+            <Link href={props.cta.link}>
+              <Button variant="accent">{props.cta.text}</Button>
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
