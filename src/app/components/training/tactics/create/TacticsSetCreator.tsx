@@ -154,11 +154,6 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       return { id: puzzle.puzzleid };
     });
 
-    console.log({
-      puzzles,
-      puzzleIds,
-    });
-
     try {
       if (!user) throw new Error("Not logged in");
       const resp = await fetch("/api/tactics/create", {
@@ -205,6 +200,12 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       });
     }
   };
+
+  const close = async () => {
+    resetForm();
+    setOpen(false);
+  };
+
   return (
     <div className="flex flex-col md:flex-row items-center gap-1 md:gap-4">
       <Heading as={"h3"}>
@@ -233,7 +234,10 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
           </div>
         </AlertDialog.Trigger>
         <AlertDialog.Portal>
-          <AlertDialog.Overlay className="fixed inset-0 bg-[rgba(0,0,0,0.5)] z-50" />
+          <AlertDialog.Overlay
+            className="fixed inset-0 bg-[rgba(0,0,0,0.5)] z-50"
+            onClick={close}
+          />
           <AlertDialog.Content className="bg-white p-4 md:p-6 shadow-md fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-lg max-h-[75vh] z-50 overflow-y-auto">
             <AlertDialog.Title className="text-purple-700 text-lg font-bold">
               Create a new Tactics Set
@@ -338,14 +342,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   "Create"
                 )}
               </Button>
-              <Button
-                variant="secondary"
-                onClick={async () => {
-                  await trackEventOnClient("create_tactics_set_closed", {});
-                  resetForm();
-                  setOpen(false);
-                }}
-              >
+              <Button variant="secondary" onClick={close}>
                 Cancel
               </Button>
             </div>

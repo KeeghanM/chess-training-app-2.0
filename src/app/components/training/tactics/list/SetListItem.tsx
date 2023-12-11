@@ -5,6 +5,9 @@ import TimeSince from "~/app/components/general/TimeSince";
 import Button from "~/app/components/_elements/button";
 import { useRouter } from "next/navigation";
 import trackEventOnClient from "~/app/_util/trackEventOnClient";
+import SetListEdit from "./SetListEdit";
+import SetListStats from "./SetListStats";
+import toHHMMSS from "~/app/_util/toHHMMSS";
 
 // TODO: Bug fix - TypeError: Cannot read properties of undefined (reading 'length') "currentRound =" when making a new set
 export default function SetListItem(props: { set: PrismaTacticsSet }) {
@@ -51,13 +54,14 @@ export default function SetListItem(props: { set: PrismaTacticsSet }) {
               : 0}
             %
           </p>
+          <p>Time Spent: {toHHMMSS(currentRound!.timeSpent)}</p>
         </div>
-        <div className="flex flex-col md:flex-row gap-2">
+        <div className="flex flex-col md:flex-row gap-2 ml-auto">
           <Button onClick={trainSet} variant="primary">
             Train
           </Button>
-          <Button variant="secondary">Edit</Button>
-          <Button variant="accent">Stats</Button>
+          <SetListEdit set={set} />
+          <SetListStats set={set} />
         </div>
       </div>
     </div>
