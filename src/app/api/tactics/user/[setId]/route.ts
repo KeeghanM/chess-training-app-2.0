@@ -1,4 +1,3 @@
-import { getUserServer } from "~/app/_util/getUserServer";
 import { errorResponse, successResponse } from "~/app/api/responses";
 import { prisma } from "~/server/db";
 
@@ -7,6 +6,7 @@ export async function GET(
   { params }: { params: { setId: string } },
 ) {
   const userId = request.headers.get("Authorization")?.split(" ")[1];
+  console.log(userId);
   if (!userId) return errorResponse("Unauthorized", 401);
   const { setId } = params;
   if (!setId) return errorResponse("Missing courseId", 400);

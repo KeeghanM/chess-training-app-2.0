@@ -9,15 +9,6 @@ export default async function TacticsListPage() {
   const { user } = await getUserServer();
   if (!user) redirect("/api/auth/signin");
 
-  const puzzleSets = await GetTacticSets();
-  if (puzzleSets === null)
-    return (
-      <Error
-        PageTitle="Tactics Sets"
-        error="Error loading sets, please try again"
-      />
-    );
-
   return (
     <>
       <PageHeader
@@ -28,7 +19,7 @@ export default async function TacticsListPage() {
           alt: "Hero Image",
         }}
       />
-      <TacticsList sets={puzzleSets} />
+      <TacticsList />
     </>
   );
 }

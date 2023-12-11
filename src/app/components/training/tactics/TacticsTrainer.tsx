@@ -20,6 +20,7 @@ import Error from "../../general/ErrorPage";
 // TODO: Bug fix - AutoNext doesn't work, and make it only work when puzzle is correct
 // TODO: Add a "show solution/not sure" button that shows the solution and marks it as incorrect
 // TODO: Add a "Show Solution" button when wrong move is played instead of auto showing it
+// TODO: Add a n 'offline mode' which saves stats to localStorage and syncs when online
 
 export default function TacticsTrainer(props: {
   set: TacticsSet & {
@@ -243,14 +244,9 @@ export default function TacticsTrainer(props: {
       setThumbDisplay("up");
       await increaseTimeTaken();
       await increaseCorrect();
-      if (autoNext) {
-        console.log("Auto Next Triggered");
-        await goToNextPuzzle();
-      }
       setPuzzleFinished(true);
       return true;
     }
-
     return false;
   };
 
@@ -343,6 +339,10 @@ export default function TacticsTrainer(props: {
     setPosition(game.fen());
     makeBookMove();
     await checkEndOfLine();
+    if (autoNext) {
+      console.log("auto next");
+      await goToNextPuzzle();
+    }
     return true;
   };
 
