@@ -80,8 +80,8 @@ function recursiveParse(
   tags: Record<string, string>,
   outputArray: Line[],
 ) {
-  const movesList: CleanMove[] = JSON.parse(JSON.stringify(movesSoFar)); // Deep Clone the array
-  const clonedTags: Record<string, string> = JSON.parse(JSON.stringify(tags)); // Deep Clone the tags
+  const movesList = JSON.parse(JSON.stringify(movesSoFar)) as CleanMove[]; // Deep Clone the array
+  const clonedTags = JSON.parse(JSON.stringify(tags)) as Record<string, string>; // Deep Clone the tags
 
   for (const move of newMoves) {
     for (const variation of move.variations) {

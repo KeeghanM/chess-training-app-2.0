@@ -17,9 +17,7 @@ export default function GroupSelector(props: {
 }) {
   const { lines } = props;
   const [parent] = useAutoAnimate();
-  const [groupOptions, setGroupOptions] = useState<string[]>(
-    getGroupOptions(lines),
-  );
+  const [groupOptions] = useState<string[]>(getGroupOptions(lines));
   const [selectedGroup, setSelectedGroup] = useState<string>("");
   const [groupedLineCounts, setGroupedLineCounts] = useState<
     Record<string, number>

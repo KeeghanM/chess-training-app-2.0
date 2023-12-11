@@ -1,7 +1,5 @@
 import { redirect } from "next/navigation";
 import PageHeader from "~/app/components/_layouts/pageHeader";
-import { GetTacticSets } from "~/app/_util/GetTacticSets";
-import Error from "~/app/components/general/ErrorPage";
 import TacticsList from "~/app/components/training/tactics/list/TacticsList";
 import { getUserServer } from "~/app/_util/getUserServer";
 

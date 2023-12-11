@@ -16,7 +16,7 @@ import "react-toggle/style.css";
 import TimeSince from "../../general/TimeSince";
 import type { PrismaTacticsSetWithPuzzles } from "~/app/_util/GetTacticSets";
 
-interface TrainingPuzzle {
+export interface TrainingPuzzle {
   puzzleid: string;
   fen: string;
   rating: number;
@@ -64,24 +64,31 @@ export default function TacticsTrainer(props: {
   const [readyForInput, setReadyForInput] = useState(false);
   const [puzzleFinished, setPuzzleFinished] = useState(false);
   const [startTime, setStartTime] = useState(Date.now());
-  const [sessionTimeStarted, setSessionTimeStarted] = useState(new Date());
+  const [sessionTimeStarted] = useState(new Date());
   const [puzzleStatus, setPuzzleStatus] = useState<
     "none" | "correct" | "incorrect"
   >("none");
 
   const getPuzzle = async (id: string) => {
-    const resp = await fetch(`https://chess-puzzles.p.rapidapi.com/?id=${id}`, {
-      method: "GET",
-      headers: {
-        "x-rapidapi-host": "chess-puzzles.p.rapidapi.com",
-        "x-rapidapi-key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
-      },
-    });
-    const json = await resp.json().catch((e) => {
-      throw new Error("Invalid response from API");
-    });
-    const puzzle = json.puzzles[0];
-    return puzzle;
+    try {
+      const resp = await fetch(
+        `https://chess-puzzles.p.rapidapi.com/?id=${id}`,
+        {
+          method: "GET",
+          headers: {
+            "x-rapidapi-host": "chess-puzzles.p.rapidapi.com",
+            "x-rapidapi-key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
+          },
+        },
+      );
+      const json = (await resp.json()) as { puzzles: TrainingPuzzle[] };
+      const puzzle = json.puzzles[0];
+      return puzzle;
+    } catch (e) {
+      // TODO:  Handle error properly
+      console.log(e);
+      return undefined;
+    }
   };
 
   const playMoveSound = (move: string) => {
@@ -306,8 +313,9 @@ export default function TacticsTrainer(props: {
     const sourceRank = sourceSquare.split("")[1];
     const targetCol = targetSquare.split("")[0];
     const targetRank = targetSquare.split("")[1];
-    const pieceColor = piece.toString().split("")[0];
-    const pieceType = piece.toString().split("")[1];
+    const pieceString = piece as unknown as string; // Hacky cause Chess.js types are wrong
+    const pieceColor = pieceString.split("")[0];
+    const pieceType = pieceString.split("")[1];
 
     if (
       lastMovePiece?.type === "p" &&
@@ -430,7 +438,10 @@ export default function TacticsTrainer(props: {
       if (!puzzle) return;
       setCurrentPuzzle(puzzle);
       setLoading(false);
-    })();
+    })().catch((e) => {
+      console.log(e);
+      // TODO: Log properly
+    });
 
     return;
   }, []);

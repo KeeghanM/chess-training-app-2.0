@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import type { Puzzle, TacticsSet, TacticsSetRound } from "@prisma/client";
 import { getUserServer } from "./getUserServer";
-import { ResponseJson } from "../api/responses";
+import type { ResponseJson } from "../api/responses";
 
 export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] };
 export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {

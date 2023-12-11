@@ -8,6 +8,7 @@ import type {
   UserFen,
 } from "@prisma/client";
 import { getUserServer } from "./getUserServer";
+import type { ResponseJson } from "../api/responses";
 
 export type PrismaUserCourse = UserCourse & { course: Course };
 export type PrismaUserLine = UserLine & { line: Line & { group: Group } };
@@ -23,8 +24,8 @@ export async function GetUserCourses() {
       Authorization: `Bearer ${user.id}`,
     },
   });
-  const json = await resp.json();
-  if (json.message != "Courses found") {
+  const json = (await resp.json()) as ResponseJson;
+  if (json.message != "Courses found" || json.data == undefined) {
     // TODO: Handle error
     return null;
   }
@@ -46,8 +47,8 @@ export async function GetUserCourse(courseId: string) {
       },
     },
   );
-  const courseJson = await courseResponse.json();
-  if (courseJson.message != "Course found") {
+  const courseJson = (await courseResponse.json()) as ResponseJson;
+  if (courseJson.message != "Course found" || courseJson.data == undefined) {
     // TODO: Handle error
     return {
       userCourse: null,
@@ -66,8 +67,8 @@ export async function GetUserCourse(courseId: string) {
       },
     },
   );
-  const fensJson = await fensResponse.json();
-  if (fensJson.message != "Fens found") {
+  const fensJson = (await fensResponse.json()) as ResponseJson;
+  if (fensJson.message != "Fens found" || fensJson.data == undefined) {
     // TODO: Handle error
     return {
       userCourse: null,

@@ -1,23 +1,23 @@
 "use client";
 
+// @ts-expect-error - No types available
+import useSound from "use-sound";
+import Spinner from "../../general/Spinner";
+import trackEventOnClient from "~/app/_util/trackEventOnClient";
+import Button from "../../_elements/button";
 import { useWindowSize } from "@uidotdev/usehooks";
+import { useEffect, useState } from "react";
+import { Chessboard } from "react-chessboard";
+import { Chess } from "chess.js";
+import { useRouter } from "next/navigation";
+import { getUserClient } from "~/app/_util/getUserClient";
+import type { UserFen } from "@prisma/client";
+import type { Square } from "chess.js";
+import type { ResponseJson } from "~/app/api/responses";
 import type {
   PrismaUserCourse,
   PrismaUserLine,
 } from "~/app/_util/GetUserCourse";
-import { useEffect, useState } from "react";
-import type { UserFen } from "@prisma/client";
-import { Chessboard } from "react-chessboard";
-import { Chess } from "chess.js";
-import type { Square } from "chess.js";
-import { useRouter } from "next/navigation";
-import Spinner from "../../general/Spinner";
-// @ts-expect-error - No types available
-import useSound from "use-sound";
-import trackEventOnClient from "~/app/_util/trackEventOnClient";
-import Button from "../../_elements/button";
-import type { ResponseJson } from "~/app/api/responses";
-import { getUserClient } from "~/app/_util/getUserClient";
 
 // TODO: BugFix - Weird jumping between lines, doesn't seem to be in order + showing "next line" after teaching moves finished instead of jumping to start for repeat
 // TODO: BugFix - last line in course isn't being logged
@@ -246,7 +246,7 @@ export default function CourseTrainer(props: {
       },
     );
 
-    const json = await resp.json();
+    const json = (await resp.json()) as ResponseJson;
     if (json.message != "Fens updated") throw new Error("Error updating fens"); // TODO: Handle nicer
   };
 
@@ -267,7 +267,7 @@ export default function CourseTrainer(props: {
       },
     );
 
-    const json = await resp.json();
+    const json = (await resp.json()) as ResponseJson;
     if (json.message != "Stats updated")
       throw new Error("Error updating stats"); // TODO: Handle nicer
   };

@@ -4,12 +4,13 @@ import * as AlertDialog from "@radix-ui/react-alert-dialog";
 import Select from "react-select";
 import Button from "~/app/components/_elements/button";
 import Heading from "~/app/components/_elements/heading";
-import type { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
-import { useState } from "react";
 import Spinner from "~/app/components/general/Spinner";
-import type { ResponseJson } from "~/app/api/responses";
-import { getUserClient } from "~/app/_util/getUserClient";
 import trackEventOnClient from "~/app/_util/trackEventOnClient";
+import { useState } from "react";
+import { getUserClient } from "~/app/_util/getUserClient";
+import type { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
+import type { ResponseJson } from "~/app/api/responses";
+import type { TrainingPuzzle } from "../TacticsTrainer";
 
 interface TacticsSetCreatorProps {
   setCount: number;
@@ -82,9 +83,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
           "x-rapidapi-key": process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
         },
       });
-      const json = await resp.json().catch((e) => {
-        throw new Error("Invalid response from API");
-      });
+      const json = (await resp.json()) as { puzzles: TrainingPuzzle[] };
       const puzzles = json?.puzzles;
       if (!puzzles) throw new Error("No Puzzles Returned");
 

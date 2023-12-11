@@ -1,12 +1,12 @@
 "use client";
 
-import { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
 import TacticsSetCreator from "../create/TacticsSetCreator";
 import Container from "~/app/components/_elements/container";
 import { useEffect, useState } from "react";
 import SetListItem from "./SetListItem";
 import { getUserClient } from "~/app/_util/getUserClient";
-import { ResponseJson } from "~/app/api/responses";
+import type { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
+import type { ResponseJson } from "~/app/api/responses";
 
 export default function TacticsList() {
   // TODO: Show a loading/fallback item
@@ -36,11 +36,21 @@ export default function TacticsList() {
   };
 
   const updateList = () => {
-    getSets().then((sets) => setSets(sets ?? []));
+    getSets()
+      .then((sets) => setSets(sets ?? []))
+      .catch((e) => {
+        console.log(e);
+        // TODO: Log properly
+      });
   };
 
   useEffect(() => {
-    getSets().then((sets) => setSets(sets ?? []));
+    getSets()
+      .then((sets) => setSets(sets ?? []))
+      .catch((e) => {
+        console.log(e);
+        // TODO: Log properly
+      });
   }, [user]);
 
   return (

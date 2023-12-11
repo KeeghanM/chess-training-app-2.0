@@ -1,4 +1,3 @@
-import { getUserServer } from "~/app/_util/getUserServer";
 import { errorResponse, successResponse } from "~/app/api/responses";
 import { prisma } from "~/server/db";
 

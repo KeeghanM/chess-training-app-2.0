@@ -4,7 +4,6 @@ import type { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
 import Button from "~/app/components/_elements/button";
 import { useState } from "react";
 import toHHMMSS from "~/app/_util/toHHMMSS";
-import trackEventOnClient from "~/app/_util/trackEventOnClient";
 
 export default function SetListStats(props: { set: PrismaTacticsSet }) {
   const { set } = props;
