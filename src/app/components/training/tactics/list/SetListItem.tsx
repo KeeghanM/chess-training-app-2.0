@@ -10,7 +10,10 @@ import SetListStats from "./SetListStats";
 import toHHMMSS from "~/app/_util/toHHMMSS";
 
 // TODO: Bug fix - TypeError: Cannot read properties of undefined (reading 'length') "currentRound =" when making a new set
-export default function SetListItem(props: { set: PrismaTacticsSet }) {
+export default function SetListItem(props: {
+  set: PrismaTacticsSet;
+  updated: () => void;
+}) {
   const { set } = props;
   const currentRound = set.rounds[set.rounds.length - 1];
   const router = useRouter();
@@ -60,7 +63,7 @@ export default function SetListItem(props: { set: PrismaTacticsSet }) {
           <Button onClick={trainSet} variant="primary">
             Train
           </Button>
-          <SetListEdit set={set} />
+          <SetListEdit set={set} onFinished={props.updated} />
           <SetListStats set={set} />
         </div>
       </div>

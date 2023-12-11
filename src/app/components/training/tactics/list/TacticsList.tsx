@@ -35,6 +35,10 @@ export default function TacticsList() {
     setSets([...sets, set]);
   };
 
+  const updateList = () => {
+    getSets().then((sets) => setSets(sets ?? []));
+  };
+
   useEffect(() => {
     getSets().then((sets) => setSets(sets ?? []));
   }, [user]);
@@ -60,7 +64,9 @@ export default function TacticsList() {
                 new Date(a.lastTrained ?? fallback).getTime()
               );
             })
-            .map((set) => <SetListItem key={set.id} set={set} />)
+            .map((set) => (
+              <SetListItem key={set.id} set={set} updated={updateList} />
+            ))
         )}
       </div>
     </Container>
