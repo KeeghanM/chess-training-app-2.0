@@ -15,7 +15,7 @@ export type Tool = {
 
 export default async function Dashboard() {
   const { user, profile } = await getUserServer();
-  if (!user) redirect("/api/auth/signin");
+  if (!user) redirect("/auth/signin");
 
   // Identify the user immediately
   const posthog = PostHogClient();

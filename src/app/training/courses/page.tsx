@@ -10,7 +10,7 @@ import { getUserServer } from "~/app/_util/getUserServer";
 
 export default async function Courses() {
   const { user } = await getUserServer();
-  if (!user) redirect("/api/auth/signin");
+  if (!user) redirect("/auth/signin");
 
   const courses = await GetUserCourses();
   if (!courses) return <Error PageTitle="Your Courses" />;

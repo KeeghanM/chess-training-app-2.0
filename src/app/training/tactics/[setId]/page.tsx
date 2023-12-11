@@ -11,7 +11,7 @@ export default async function TacticsTrainPage({
   params: { setId: string };
 }) {
   const { user } = await getUserServer();
-  if (!user) redirect("/api/auth/signin");
+  if (!user) redirect("/auth/signin");
 
   const set = await GetSetPuzzles(params.setId);
   if (!set) return <Error PageTitle="Oops! Something went wrong" />;

@@ -10,7 +10,7 @@ export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
 
 export async function GetTacticSets() {
   const { user } = await getUserServer();
-  if (!user) redirect("/api/auth/signin");
+  if (!user) redirect("/auth/signin");
 
   const resp = await fetch(`${process.env.API_BASE_URL}/tactics/user`, {
     method: "GET",
@@ -30,7 +30,7 @@ export async function GetTacticSets() {
 
 export async function GetSetPuzzles(setId: string) {
   const { user } = await getUserServer();
-  if (!user) redirect("/api/auth/signin");
+  if (!user) redirect("/auth/signin");
 
   const resp = await fetch(
     `${process.env.API_BASE_URL}/tactics/user/${setId}`,

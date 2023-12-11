@@ -12,7 +12,7 @@ export default async function CourseTrainPage({
   params: { courseId: string };
 }) {
   const { user } = await getUserServer();
-  if (!user) redirect("/api/auth/signin");
+  if (!user) redirect("/auth/signin");
 
   const { userCourse, userLines, userFens } = await GetUserCourse(
     params.courseId,

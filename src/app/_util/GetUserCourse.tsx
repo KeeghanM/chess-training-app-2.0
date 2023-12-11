@@ -15,7 +15,7 @@ export type PrismaUserLine = UserLine & { line: Line & { group: Group } };
 
 export async function GetUserCourses() {
   const { user } = await getUserServer();
-  if (!user) redirect("/api/auth/signin");
+  if (!user) redirect("/auth/signin");
 
   const resp = await fetch(`${process.env.API_BASE_URL}/courses/user`, {
     method: "GET",
@@ -35,7 +35,7 @@ export async function GetUserCourses() {
 export async function GetUserCourse(courseId: string) {
   const { user } = await getUserServer();
 
-  if (!user) redirect("/api/auth/signin");
+  if (!user) redirect("/auth/signin");
 
   const courseResponse = await fetch(
     `${process.env.API_BASE_URL}/courses/user/${courseId}`,
