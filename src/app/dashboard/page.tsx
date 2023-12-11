@@ -13,11 +13,15 @@ export type Tool = {
   active: boolean;
 };
 
+export const metadata = {
+  title: "Dashboard - ChessTraining.app",
+};
+
 export default async function Dashboard() {
   const { user, profile } = await getUserServer();
   if (!user) redirect("/auth/signin");
 
-  // Identify the user immediately
+  // Identify the user immediately upon signin
   const posthog = PostHogClient();
   posthog.identify({
     distinctId: user.id,

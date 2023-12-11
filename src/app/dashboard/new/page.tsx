@@ -5,12 +5,14 @@ import Button from "~/app/components/_elements/button";
 import { createUserProfile, getUserServer } from "~/app/_util/getUserServer";
 import StyledLink from "~/app/components/_elements/styledLink";
 import Link from "next/link";
+import { trackEventOnServer } from "~/app/_util/trackEventOnServer";
 
 export default async function NewUserWelcome() {
   const { user, profile } = await getUserServer();
   if (!user) redirect("/auth/signin");
   if (!profile) {
     await createUserProfile(user);
+    await trackEventOnServer("new_user_registered", {});
   }
 
   return (

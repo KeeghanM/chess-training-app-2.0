@@ -2,6 +2,7 @@ import type { Course, UserProfile } from "@prisma/client";
 import { redirect } from "next/navigation";
 import type { ResponseJson } from "~/app/api/responses";
 import PageHeader from "~/app/components/_layouts/pageHeader";
+
 export default async function CoursePage({
   params,
 }: {

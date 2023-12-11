@@ -1,11 +1,15 @@
-import Button from "../components/_elements/button";
 import Heading from "../components/_elements/heading";
 import CtaRow from "../components/_layouts/ctaRow";
 import Hero from "../components/_layouts/hero";
 import ImageRowFull from "../components/_layouts/imageRowFull";
-import { TextWall } from "../components/_layouts/textWall";
 
-// TODO: Signup form
+export const metadata = {
+  title:
+    "Master Chess Openings with Courses Using Natural Play Learning - ChessTraining.app",
+  description:
+    "Embark on a chess learning adventure with ChessTraining.app's courses, featuring our unique Natural Play Learning method. Our courses are designed to help you learn and remember chess openings more effectively and enjoyably. Utilizing spaced repetition with a creative twist, we ensure you grasp every move without tedious repetition. While our own courses are in development, there's nothing stopping you creating your own. Stay updated with our upcoming courses and feature releases to enhance your chess journey!",
+};
+
 export default async function Courses() {
   return (
     <>

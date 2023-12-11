@@ -2,6 +2,12 @@ import StyledLink from "../components/_elements/styledLink";
 import BigText from "../components/_layouts/bigText";
 import { TextWall } from "../components/_layouts/textWall";
 
+export const metadata = {
+  title: "Explore Our Open Product Roadmap at ChessTraining.app",
+  description:
+    "Join us on our journey of transparent and open development at ChessTraining.app. Our Product Roadmap is a reflection of our commitment to honesty and customer engagement. Here, you can view upcoming features, current projects, and past updates. We encourage your participation - vote on features, offer feedback, and share your ideas. If you have suggestions not yet listed, we're just a click away. Discover our roadmap and help shape the future of chess training",
+};
+
 export default async function ProductRoadmap() {
   return (
     <>

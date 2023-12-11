@@ -8,6 +8,10 @@ import Heading from "~/app/components/_elements/heading";
 import StyledLink from "~/app/components/_elements/styledLink";
 import { getUserServer } from "~/app/_util/getUserServer";
 
+export const metadata = {
+  title: "Your Courses - ChessTraining.app",
+};
+
 export default async function Courses() {
   const { user } = await getUserServer();
   if (!user) redirect("/auth/signin");

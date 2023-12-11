@@ -3,6 +3,10 @@ import { redirect } from "next/navigation";
 import PageHeader from "~/app/components/_layouts/pageHeader";
 import { getUserServer } from "~/app/_util/getUserServer";
 
+export const metadata = {
+  title: "Create a new course - ChessTraining.app",
+};
+
 export default async function CreateCourse() {
   const { user } = await getUserServer();
   if (!user) redirect("/auth/signin");

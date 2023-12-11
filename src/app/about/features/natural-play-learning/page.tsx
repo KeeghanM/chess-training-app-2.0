@@ -4,6 +4,13 @@ import Hero from "~/app/components/_layouts/hero";
 import ImageRowFull from "~/app/components/_layouts/imageRowFull";
 import { TextWall } from "~/app/components/_layouts/textWall";
 
+export const metadata = {
+  title:
+    "Revolutionize your Chess Training with Natural Play Learning - ChessTraining.app",
+  description:
+    "Discover ChessTraining.app's Natural Play Learning, an innovative chess training method for faster learning and longer retention. Master chess openings like never before with our unique approach, combining the effectiveness of spaced repetition with real-game scenarios. Join us now and elevate your chess game",
+};
+
 export default async function NaturalPlayLearningPage() {
   return (
     <>

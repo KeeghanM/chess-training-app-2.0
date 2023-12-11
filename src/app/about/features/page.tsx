@@ -1,8 +1,12 @@
 import Link from "next/link";
-import Container from "~/app/components/_elements/container";
 import CtaRow from "~/app/components/_layouts/ctaRow";
 import Hero from "~/app/components/_layouts/hero";
-import PageHeader from "~/app/components/_layouts/pageHeader";
+
+export const metadata = {
+  title: "Explore Chess Training Tools & Features at ChessTraining.app",
+  description:
+    "Dive into the world of chess training with ChessTraining.app's range of unique tools. From our pioneering Natural Play Learning to the engaging Tactics Trainer, and our comprehensive Course Trainer, we offer tailored solutions to enhance your chess skills. Whether you're a beginner or a seasoned player, our features like Knight Vision and Endgame Trainer are designed to elevate your game. Start your journey towards chess mastery today with ChessTraining.app!",
+};
 
 export default async function FeaturesPage() {
   const features = [
