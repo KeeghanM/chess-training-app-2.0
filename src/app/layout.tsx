@@ -5,7 +5,7 @@ import Header from "./components/template/header/Header";
 import Footer from "./components/template/footer/Footer";
 import { Suspense } from "react";
 import type { ReactNode } from "react";
-import Script from "next/script";
+import CookieBanner from "./components/template/CookieBanner";
 
 export const metadata = {
   title: "ChessTraining.app - The best way to improve your chess",
@@ -29,6 +29,7 @@ export default async function RootLayout({
           <Header />
           {children}
           <Footer />
+          <CookieBanner />
         </body>
       </PHProvider>
     </html>

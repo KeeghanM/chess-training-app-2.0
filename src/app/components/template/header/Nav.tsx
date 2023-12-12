@@ -7,11 +7,10 @@ import UserButtons from "./UserButtons";
 import type { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 
 const menuItems = [
-  { name: "Home", href: "/" },
   { name: "Tactics Trainer", href: "/training/tactics" },
   { name: "Courses", href: "/courses" },
+  { name: "All Features", href: "/about/features" },
   { name: "About", href: "/about" },
-  { name: "Contact", href: "/contact" },
 ];
 
 export default function Nav({ props }: { props: { user: KindeUser | null } }) {
