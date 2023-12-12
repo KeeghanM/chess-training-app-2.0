@@ -8,13 +8,15 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <Container>
-      <Heading as="h1">Contact Us</Heading>
-      <p className="mb-4">
-        We'd love to hear from you! If you have any questions, comments, or
-        concerns, please don't hesitate to reach out.
-      </p>
-      <ContactForm />;
-    </Container>
+    <>
+      <Container>
+        <Heading as="h1">Contact Us</Heading>
+        <p className="mb-4">
+          We'd love to hear from you! If you have any questions, comments, or
+          concerns, please don't hesitate to reach out.
+        </p>
+        <ContactForm />
+      </Container>
+    </>
   );
 }

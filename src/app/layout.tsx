@@ -6,6 +6,7 @@ import Footer from "./components/template/footer/Footer";
 import { Suspense } from "react";
 import type { ReactNode } from "react";
 import CookieBanner from "./components/template/CookieBanner";
+import Script from "next/script";
 
 export const metadata = {
   title: "ChessTraining.app - The best way to improve your chess",
@@ -20,21 +21,33 @@ export default async function RootLayout({
   children: ReactNode;
 }) {
   return (
-    <html lang="en">
-      <head>
-        <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lcjei8pAAAAAMzsHEubDHvnyBWg2AuqmSSLmwZ0"></script>
-      </head>
-      <Suspense>
-        <PostHogPageview />
-      </Suspense>
-      <PHProvider>
-        <body>
-          <Header />
-          {children}
-          <Footer />
-          <CookieBanner />
-        </body>
-      </PHProvider>
-    </html>
+    <>
+      <Script src="https://www.google.com/recaptcha/enterprise.js?render=6Lcjei8pAAAAAMzsHEubDHvnyBWg2AuqmSSLmwZ0" />
+      <Script>
+        {`(function(d, w, c) {
+        w.BrevoConversationsID = '656f5685f955fb046f086532';
+        w[c] = w[c] || function() {
+          (w[c].q = w[c].q || []).push(arguments);
+        };
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = 'https://conversations-widget.brevo.com/brevo-conversations.js';
+        if (d.head) d.head.appendChild(s);
+      })(document, window, 'BrevoConversations');`}
+      </Script>
+      <html lang="en">
+        <Suspense>
+          <PostHogPageview />
+        </Suspense>
+        <PHProvider>
+          <body>
+            <Header />
+            {children}
+            <Footer />
+            <CookieBanner />
+          </body>
+        </PHProvider>
+      </html>
+    </>
   );
 }

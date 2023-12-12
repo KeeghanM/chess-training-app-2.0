@@ -6,6 +6,7 @@ import Button from "../_elements/button";
 import Spinner from "../general/Spinner";
 
 export default function ContactForm() {
+  const [sendEmail, setSendEmail] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -85,61 +86,103 @@ export default function ContactForm() {
       setLoading(false);
     }
   }
+
+  const openChat = () => {
+    // @ts-expect-error : BrevoConversations is defined in the head
+    BrevoConversations("openChat", true);
+  };
+
   return (
     <>
-      {success ? (
-        <div className="text-center p-4 md:p-6 lg:p-12 bg-lime-100">
-          <p>Thank you for contacting us!</p>
-          <Button variant="primary" onClick={() => setSuccess(false)}>
-            Send another message
-          </Button>
+      {!sendEmail ? (
+        <div className="flex flex-col gap-4 justify-center">
+          <p>
+            The fastest way to reach us is via our{" "}
+            <span
+              onClick={openChat}
+              className="text-purple-700 underline cursor-pointer hover:no-underline font-bold"
+            >
+              Live Chat
+            </span>{" "}
+            feature. And don't worry - you'll always talk to a real person
+            (usually Keeghan, the Founder) never a bot.
+          </p>
+          <p>
+            <span
+              onClick={openChat}
+              className="text-purple-700 underline cursor-pointer hover:no-underline font-bold"
+            >
+              Chat with us now
+            </span>{" "}
+            or would you rather{" "}
+            <span
+              onClick={() => setSendEmail(true)}
+              className="text-purple-700 underline cursor-pointer hover:no-underline font-bold"
+            >
+              use our contact form
+            </span>
+            .
+          </p>
         </div>
       ) : (
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-          <div className="flex flex-col md:flex-row gap-4">
-            <div>
-              <label>Name</label>
-              <input
-                className="px-4 py-2 border border-gray-300 w-full"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder={player}
-              />
+        <>
+          {success ? (
+            <div className="text-center p-4 md:p-6 lg:p-12 bg-lime-100">
+              <p>Thank you for contacting us!</p>
+              <Button variant="primary" onClick={() => setSuccess(false)}>
+                Send another message
+              </Button>
             </div>
-            <div>
-              <label>Email</label>
-              <input
-                className="px-4 py-2 border border-gray-300 w-full"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={player?.split(" ")[0] + "@chesstraining.app"}
-              />
-            </div>
-          </div>
-          <div>
-            <label>Message</label>
-            <textarea
-              rows={6}
-              className="px-4 py-2 border border-gray-300 w-full"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-            />
-          </div>
-          <div>
-            <Button variant="primary" disabled={loading}>
-              {loading ? (
-                <>
-                  Sending <Spinner />
-                </>
-              ) : (
-                "Send"
+          ) : (
+            <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+              <div className="flex flex-col md:flex-row gap-4">
+                <div>
+                  <label>Name</label>
+                  <input
+                    className="px-4 py-2 border border-gray-300 w-full"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder={player}
+                  />
+                </div>
+                <div>
+                  <label>Email</label>
+                  <input
+                    className="px-4 py-2 border border-gray-300 w-full"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={player?.split(" ")[0] + "@chesstraining.app"}
+                  />
+                </div>
+              </div>
+              <div>
+                <label>Message</label>
+                <textarea
+                  rows={6}
+                  className="px-4 py-2 border border-gray-300 w-full"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                />
+              </div>
+              <div>
+                <Button variant="primary" disabled={loading}>
+                  {loading ? (
+                    <>
+                      Sending <Spinner />
+                    </>
+                  ) : (
+                    "Send"
+                  )}
+                </Button>
+              </div>
+              {error && (
+                <div className="text-red-500 text-sm italic">{error}</div>
               )}
-            </Button>
-          </div>
-          {error && <div className="text-red-500 text-sm italic">{error}</div>}
-        </form>
+            </form>
+          )}
+        </>
       )}
     </>
   );
