@@ -5,7 +5,7 @@ import { ResponseJson } from "~/app/api/responses";
 import Button from "../_elements/button";
 import Spinner from "../general/Spinner";
 
-export default function ContactForm() {
+export default function ReportIssueForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
@@ -24,6 +24,16 @@ export default function ContactForm() {
   const [player] = useState(
     players[Math.floor(Math.random() * players.length)],
   );
+
+  const issueList = [
+    "My Account",
+    "Billing",
+    "Tactics Trainer",
+    "Course Trainer",
+    "Other",
+  ];
+
+  const [issue, setIssue] = useState("");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -48,6 +58,12 @@ export default function ContactForm() {
       return;
     }
 
+    if (!issue) {
+      setError("Issue type is required");
+      setLoading(false);
+      return;
+    }
+
     try {
       // @ts-expect-error : greptcha is defined in the head
       grecaptcha.enterprise.ready(async () => {
@@ -56,7 +72,8 @@ export default function ContactForm() {
           "6Lcjei8pAAAAAMzsHEubDHvnyBWg2AuqmSSLmwZ0",
           { action: "CONTACT_FORM" },
         );
-        const res = await fetch("/api/mail/contactForm", {
+        console.log(token);
+        const res = await fetch("/api/mail/reportIssue", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -64,12 +81,13 @@ export default function ContactForm() {
             name,
             email,
             message,
-            subject: `Contact Form from: ${name}`,
+            issue,
           }),
         });
         const data = (await res.json()) as ResponseJson;
         if (data.message != "Message sent") {
           setError(data.message);
+          setLoading(false);
           return;
         }
         setName("");
@@ -89,10 +107,7 @@ export default function ContactForm() {
     <>
       {success ? (
         <div className="text-center p-4 md:p-6 lg:p-12 bg-lime-100">
-          <p>Thank you for contacting us!</p>
-          <Button variant="primary" onClick={() => setSuccess(false)}>
-            Send another message
-          </Button>
+          <p>Thanks for reaching out, we'll be in touch as soon as possible!</p>
         </div>
       ) : (
         <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -117,6 +132,23 @@ export default function ContactForm() {
                 placeholder={player?.split(" ")[0] + "@chesstraining.app"}
               />
             </div>
+          </div>
+          <div>
+            <label>Issue Type</label>
+            <select
+              className="px-4 py-2 border border-gray-300 w-full"
+              value={issue}
+              onChange={(e) => setIssue(e.target.value)}
+            >
+              <option value="" disabled hidden>
+                I have an issue with...
+              </option>
+              {issueList.map((issue, i) => (
+                <option key={i} value={issue}>
+                  {issue}
+                </option>
+              ))}
+            </select>
           </div>
           <div>
             <label>Message</label>

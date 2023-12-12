@@ -3,15 +3,15 @@ import { successResponse, errorResponse } from "../../responses";
 
 export async function POST(request: Request) {
   try {
-    const { name, email, subject, message, token } = (await request.json()) as {
+    const { name, email, issue, message, token } = (await request.json()) as {
       name: string;
       email: string;
-      subject: string;
+      issue: string;
       message: string;
       token: string;
     };
 
-    if (!name || !email || !subject || !message || !token) {
+    if (!name || !email || !issue || !message || !token) {
       return errorResponse("Missing required fields", 400);
     }
 
@@ -64,9 +64,10 @@ export async function POST(request: Request) {
     });
     await transporter.sendMail({
       from: `${name} <${email}>`,
-      to: process.env.SMTP_USER,
-      subject: subject,
+      to: "product@chesstraining.app",
+      subject: "Issue Reported: " + issue,
       text: `From: ${name} <${email}>
+Issue Type: ${issue}
 Message:
 ${message}`,
     });

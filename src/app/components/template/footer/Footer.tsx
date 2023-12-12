@@ -89,7 +89,7 @@ export default function Footer() {
         },
         {
           text: "Report an issue",
-          url: "/report-an-issue",
+          url: "/contact/report-an-issue",
         },
       ],
     },
