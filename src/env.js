@@ -29,7 +29,6 @@ export const env = createEnv({
     SMTP_PORT: z.string(),
     SMTP_USER: z.string(),
     SMTP_PASS: z.string(),
-    RECAPTCHA_API_KEY: z.string(),
   },
 
   /**
@@ -64,7 +63,6 @@ export const env = createEnv({
     SMTP_PORT: process.env.SMTP_PORT,
     SMTP_USER: process.env.SMTP_USER,
     SMTP_PASS: process.env.SMTP_PASS,
-    RECAPTCHA_API_KEY: process.env.RECAPTCHA_API_KEY,
     // CLIENT
     NEXT_PUBLIC_RAPIDAPI_KEY: process.env.NEXT_PUBLIC_RAPIDAPI_KEY,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
