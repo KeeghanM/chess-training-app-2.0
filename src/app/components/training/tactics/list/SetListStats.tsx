@@ -28,7 +28,7 @@ export default function SetListStats(props: { set: PrismaTacticsSet }) {
             "{set.name}" Statistics
           </AlertDialog.Title>
           <ul>
-            {set.rounds.map((round, index) => {
+            {set.rounds?.map((round, index) => {
               return (
                 <li
                   key={index}

@@ -25,6 +25,7 @@ export interface TrainingPuzzle {
   themes: string[];
 }
 
+// TODO: Bug Fix - First puzzle in set loading wrong, completed jumping by two
 // TODO: Add a "show solution/not sure" button that shows the solution and marks it as incorrect
 // TODO: Add a "Show Solution" button when wrong move is played instead of auto showing it
 // TODO: Add an 'offline mode' which saves stats to localStorage and syncs when online

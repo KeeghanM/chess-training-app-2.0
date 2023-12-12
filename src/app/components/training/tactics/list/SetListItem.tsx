@@ -9,13 +9,16 @@ import SetListEdit from "./SetListEdit";
 import SetListStats from "./SetListStats";
 import toHHMMSS from "~/app/_util/toHHMMSS";
 
-// TODO: Bug fix - TypeError: Cannot read properties of undefined (reading 'length') "currentRound =" when making a new set
 export default function SetListItem(props: {
   set: PrismaTacticsSet;
   updated: () => void;
 }) {
   const { set } = props;
-  const currentRound = set.rounds[set.rounds.length - 1];
+  const currentRound = set.rounds
+    ? set.rounds[set.rounds.length - 1]
+    : undefined;
+  const completedCount =
+    (currentRound?.correct ?? 0) + (currentRound?.incorrect ?? 0);
   const router = useRouter();
 
   const trainSet = async () => {
@@ -41,23 +44,18 @@ export default function SetListItem(props: {
       </div>
       <div className="flex flex-col gap-2 w-full">
         <div className="p-2 bg-gray-200 flex flex-col md:flex-row gap-2 justify-between">
-          <p>Round: {set.rounds.length}/8</p>
+          <p>Round: {set.rounds ? set.rounds.length : 1}/8</p>
           <p>
-            Completed: {currentRound!.correct + currentRound!.incorrect}/
-            {set.size}
+            Completed: {completedCount}/{set.size}
           </p>
           <p>
             Accuracy:{" "}
-            {currentRound!.correct + currentRound!.incorrect > 0
-              ? Math.round(
-                  (currentRound!.correct /
-                    (currentRound!.correct + currentRound!.incorrect)) *
-                    100,
-                )
+            {completedCount > 0
+              ? Math.round((currentRound?.correct ?? 0 / completedCount) * 100)
               : 0}
             %
           </p>
-          <p>Time Spent: {toHHMMSS(currentRound!.timeSpent)}</p>
+          <p>Time Spent: {toHHMMSS(currentRound?.timeSpent ?? 0)}</p>
         </div>
         <div className="flex flex-col md:flex-row gap-2 ml-auto">
           <Button onClick={trainSet} variant="primary">
