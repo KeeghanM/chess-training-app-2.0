@@ -25,6 +25,11 @@ export const env = createEnv({
     KINDE_POST_LOGOUT_REDIRECT_URL: z.string().url(),
     KINDE_POST_LOGIN_REDIRECT_URL: z.string().url(),
     KINDE_AUDIENCE: z.string().url(),
+    SMTP_HOST: z.string(),
+    SMTP_PORT: z.string(),
+    SMTP_USER: z.string(),
+    SMTP_PASS: z.string(),
+    RECAPTCHA_API_KEY: z.string(),
   },
 
   /**
@@ -55,6 +60,11 @@ export const env = createEnv({
     KINDE_POST_LOGOUT_REDIRECT_URL: process.env.KINDE_POST_LOGOUT_REDIRECT_URL,
     KINDE_POST_LOGIN_REDIRECT_URL: process.env.KINDE_POST_LOGIN_REDIRECT_URL,
     KINDE_AUDIENCE: process.env.KINDE_AUDIENCE,
+    SMTP_HOST: process.env.SMTP_HOST,
+    SMTP_PORT: process.env.SMTP_PORT,
+    SMTP_USER: process.env.SMTP_USER,
+    SMTP_PASS: process.env.SMTP_PASS,
+    RECAPTCHA_API_KEY: process.env.RECAPTCHA_API_KEY,
     // CLIENT
     NEXT_PUBLIC_RAPIDAPI_KEY: process.env.NEXT_PUBLIC_RAPIDAPI_KEY,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,

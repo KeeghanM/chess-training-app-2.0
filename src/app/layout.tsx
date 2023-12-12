@@ -21,6 +21,9 @@ export default async function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <script src="https://www.google.com/recaptcha/enterprise.js?render=6Lcjei8pAAAAAMzsHEubDHvnyBWg2AuqmSSLmwZ0"></script>
+      </head>
       <Suspense>
         <PostHogPageview />
       </Suspense>
