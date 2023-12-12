@@ -77,12 +77,10 @@ export default function CookieBanner() {
                   Google Analytics or hidden ad trackers here.
                 </p>
                 <p>
-                  Curious about the details? Check out our{" "}
-                  <StyledLink href="privacy-policy" text="privacy policy" /> for
-                  the full rundown. Your privacy is our priority, and we're
-                  committed to being transparent and responsible with your data.
-                  So, let's enjoy a cookie-filled (data-wise!) journey to chess
-                  mastery, with no unexpected ads!
+                  Your privacy is our priority, and we're committed to being
+                  transparent and responsible with your data. So, let's enjoy a
+                  cookie-filled (data-wise!) journey to chess mastery, with no
+                  unexpected ads!
                 </p>
                 <p
                   className="text-sm underline cursor-pointer text-orange-500"
