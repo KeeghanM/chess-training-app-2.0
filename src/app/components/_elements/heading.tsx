@@ -41,7 +41,7 @@ export default function Heading(props: {
       return (
         <h4
           className={
-            "text-xl md:text-lg font-bold  mb-2 mt-4" +
+            "text-xl md:text-lg font-bold  mb-2 " +
             (props.color ?? "text-purple-700")
           }
         >

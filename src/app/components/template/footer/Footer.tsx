@@ -2,7 +2,14 @@ import Link from "next/link";
 import Heading from "../../_elements/heading";
 
 export default function Footer() {
-  const sections = [
+  const sections: {
+    title: string;
+    links: {
+      icon?: React.ReactNode;
+      text: string;
+      url: string;
+    }[];
+  }[] = [
     {
       title: "ChessTraining.app",
       links: [
@@ -53,23 +60,23 @@ export default function Footer() {
         },
         {
           text: "Our Mission",
-          url: "/about/our-mission",
+          url: "/about#our-mission",
         },
         {
           text: "Our Vision",
-          url: "/about/our-vision",
+          url: "/about#our-vision",
         },
         {
           text: "Our Values",
-          url: "/about/our-values",
+          url: "/about#our-values",
         },
         {
           text: "Our Culture",
-          url: "/about/our-culture",
+          url: "/about#our-culture",
         },
         {
           text: "Our Story",
-          url: "/about/our-story",
+          url: "/about#our-story",
         },
       ],
     },

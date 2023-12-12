@@ -5,6 +5,7 @@ import Header from "./components/template/header/Header";
 import Footer from "./components/template/footer/Footer";
 import { Suspense } from "react";
 import type { ReactNode } from "react";
+import Script from "next/script";
 
 export const metadata = {
   title: "ChessTraining.app - The best way to improve your chess",
