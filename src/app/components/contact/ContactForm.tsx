@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { ResponseJson } from "~/app/api/responses";
 import Button from "../_elements/button";
 import Spinner from "../general/Spinner";
+import { useState } from "react";
+import type { ResponseJson } from "~/app/api/responses";
 
 export default function ContactForm() {
   const [sendEmail, setSendEmail] = useState(false);

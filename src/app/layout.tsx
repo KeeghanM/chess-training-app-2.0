@@ -23,7 +23,7 @@ export default async function RootLayout({
   return (
     <>
       <Script src="https://www.google.com/recaptcha/enterprise.js?render=6Lcjei8pAAAAAMzsHEubDHvnyBWg2AuqmSSLmwZ0" />
-      <Script>
+      <Script id="brevo-conversations">
         {`(function(d, w, c) {
         w.BrevoConversationsID = '656f5685f955fb046f086532';
         w[c] = w[c] || function() {
