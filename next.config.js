@@ -1,7 +1,10 @@
 import { withSentryConfig } from "@sentry/nextjs";
-import type { NextConfig } from "next";
+
 // Next.js configuration
-const nextConfig: NextConfig = {
+/**
+ * @type {import('next').NextConfig}
+ */
+const nextConfig = {
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,
