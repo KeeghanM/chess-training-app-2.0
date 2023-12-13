@@ -15,10 +15,12 @@ export async function trackEventOnServer(
   data?: Record<string, string>,
 ) {
   const posthog = PostHogClient()
-  posthog.capture({
-    distinctId: await getDistinctId(),
-    event,
-    properties: data,
-  })
+  if (process.env.NODE_ENV === 'production') {
+    posthog.capture({
+      distinctId: await getDistinctId(),
+      event,
+      properties: data,
+    })
+  }
   await posthog.shutdownAsync()
 }
