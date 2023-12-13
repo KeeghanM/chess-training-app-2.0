@@ -7,12 +7,12 @@ export default async function Header() {
   const { user } = await getUserServer()
 
   return (
-    <header className="sticky top-0 z-10 bg-purple-800 py-4 text-white shadow">
+    <header className="sticky top-0 z-10 bg-purple-700 py-4 text-white shadow">
       <div className="mx-auto flex max-w-screen-2xl items-center justify-between px-4 md:px-8">
         <Link href="/">
           <div className="flex items-center">
             <Image
-              src="/chesstrainingapplogo.webp"
+              src="/chesstrainingapplogo.png"
               alt="ChessTraining.app"
               width={75}
               height={75}
