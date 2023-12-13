@@ -149,32 +149,6 @@ export default async function Home() {
       >
         <p>Sign up now for free and start your journey to chess mastery.</p>
       </CtaRow>
-      <MultiCol title="Customer Testimonials" background="light">
-        <MultiColItem title="NM Roger Williamson">
-          <p>
-            "I've been playing chess for 20 years and have always struggled with
-            tactics. I've tried everything, but nothing has worked as well as
-            ChessTraining.app. I've seen a dramatic improvement in my game since
-            I started using it."
-          </p>
-        </MultiColItem>
-        <MultiColItem title="Dr. Gaby Titley-Wilson">
-          <p>
-            "I'm a beginner and have always been intimidated by chess. I
-            recently started using ChessTraining.app and have been blown away by
-            how easy it is to use. I'm learning so much and having a blast doing
-            it!"
-          </p>
-        </MultiColItem>
-        <MultiColItem title="Keeghan McGarry">
-          <p>
-            "Having tried a lot of different chess improvement websites, I can
-            say that ChessTraining.app is the best. The tactics trainer is
-            great, and the courses are really helpful. I've seen a big
-            improvement in my game since I started using it."
-          </p>
-        </MultiColItem>
-      </MultiCol>
     </>
   );
 }

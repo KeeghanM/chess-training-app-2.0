@@ -51,35 +51,26 @@ export default function ContactForm() {
     }
 
     try {
-      // @ts-expect-error : greptcha is defined in the head
-      grecaptcha.enterprise.ready(async () => {
-        // @ts-expect-error : greptcha is defined in the head
-        const token = await grecaptcha.enterprise.execute(
-          "6Lcjei8pAAAAAMzsHEubDHvnyBWg2AuqmSSLmwZ0",
-          { action: "CONTACT_FORM" },
-        );
-        const res = await fetch("/api/mail/contactForm", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            token,
-            name,
-            email,
-            message,
-            subject: `Contact Form from: ${name}`,
-          }),
-        });
-        const data = (await res.json()) as ResponseJson;
-        if (data.message != "Message sent") {
-          setError(data.message);
-          return;
-        }
-        setName("");
-        setEmail("");
-        setMessage("");
-        setLoading(false);
-        setSuccess(true);
+      const res = await fetch("/api/mail/contactForm", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          email,
+          message,
+          subject: `Contact Form from: ${name}`,
+        }),
       });
+      const data = (await res.json()) as ResponseJson;
+      if (data.message != "Message sent") {
+        setError(data.message);
+        return;
+      }
+      setName("");
+      setEmail("");
+      setMessage("");
+      setLoading(false);
+      setSuccess(true);
     } catch (e) {
       Sentry.captureException(e);
       if (e instanceof Error) setError(e.message);
