@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import Error from "~/app/components/general/ErrorPage";
 import { GetUserCourse } from "~/app/_util/GetUserCourse";
 import CourseTrainer from "~/app/components/training/courses/CourseTrainer";
 import Container from "~/app/components/_elements/container";
@@ -17,7 +16,7 @@ export default async function CourseTrainPage({
   const { userCourse, userLines, userFens } = await GetUserCourse(
     params.courseId,
   );
-  if (!userCourse || !userLines) return <Error PageTitle="Studying:" />;
+  if (!userCourse || !userLines) return;
 
   return (
     <>

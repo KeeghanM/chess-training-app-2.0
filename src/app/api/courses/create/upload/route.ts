@@ -2,7 +2,7 @@ import type { Course, Group as PrismaGroup } from "@prisma/client";
 import { errorResponse, successResponse } from "../../../responses";
 import { prisma } from "~/server/db";
 import { getUserServer } from "~/app/_util/getUserServer";
-
+import * as Sentry from "@sentry/nextjs";
 export async function POST(request: Request) {
   // Check if user is authenticated and reject request if not
   const { user } = await getUserServer();
@@ -107,6 +107,7 @@ export async function POST(request: Request) {
       200,
     );
   } catch (e) {
+    Sentry.captureException(e);
     if (e instanceof Error) return errorResponse(e.message, 500);
     else return errorResponse("Unknown error", 500);
   }

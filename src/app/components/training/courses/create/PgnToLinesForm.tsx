@@ -6,6 +6,7 @@ import { ParsePGNtoLineData } from "./parse/ParsePGNtoLineData";
 import type { Line } from "./parse/ParsePGNtoLineData";
 import trackEventOnClient from "~/app/_util/trackEventOnClient";
 import Button from "~/app/components/_elements/button";
+import * as Sentry from "@sentry/nextjs";
 
 export default function PgnToLinesForm(props: {
   finished: (lines: Line[]) => void;
@@ -22,6 +23,7 @@ export default function PgnToLinesForm(props: {
 
       return false;
     } catch (e) {
+      Sentry.captureException(e);
       if (e instanceof Error) setError(e.message);
       else setError("Unknown error");
       return false;

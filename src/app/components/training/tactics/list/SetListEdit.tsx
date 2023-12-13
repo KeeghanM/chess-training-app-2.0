@@ -7,6 +7,7 @@ import { getUserClient } from "~/app/_util/getUserClient";
 import trackEventOnClient from "~/app/_util/trackEventOnClient";
 import { useState } from "react";
 import type { ResponseJson } from "~/app/api/responses";
+import * as Sentry from "@sentry/nextjs";
 
 export default function SetListEdit(props: {
   set: PrismaTacticsSet;
@@ -44,7 +45,7 @@ export default function SetListEdit(props: {
       props.onFinished();
       close();
     } catch (e) {
-      console.log(e);
+      Sentry.captureException(e);
     }
     setLoading(false);
   };
@@ -77,7 +78,7 @@ export default function SetListEdit(props: {
       props.onFinished();
       close();
     } catch (e) {
-      console.log(e);
+      Sentry.captureException(e);
     }
     setLoading(false);
   };

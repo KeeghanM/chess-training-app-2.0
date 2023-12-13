@@ -7,6 +7,7 @@ import SetListItem from "./SetListItem";
 import { getUserClient } from "~/app/_util/getUserClient";
 import type { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
 import type { ResponseJson } from "~/app/api/responses";
+import * as Sentry from "@sentry/nextjs";
 
 export default function TacticsList() {
   // TODO: Show a loading/fallback item
@@ -15,20 +16,24 @@ export default function TacticsList() {
 
   const getSets = async () => {
     if (!user) return null;
-    const resp = await fetch(`/api/tactics/user`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.id}`,
-      },
-    });
-    const json = (await resp.json()) as ResponseJson;
-    if (json.message != "Sets found") {
-      // TODO: Handle error
+    try {
+      const resp = await fetch(`/api/tactics/user`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.id}`,
+        },
+      });
+      const json = (await resp.json()) as ResponseJson;
+      if (json.message != "Sets found") {
+        throw new Error(json.message);
+      }
+
+      return json.data?.sets as PrismaTacticsSet[];
+    } catch (e) {
+      Sentry.captureException(e);
       return null;
     }
-
-    return json.data?.sets as PrismaTacticsSet[];
   };
 
   const addSet = (set: PrismaTacticsSet) => {
@@ -39,8 +44,8 @@ export default function TacticsList() {
     getSets()
       .then((sets) => setSets(sets ?? []))
       .catch((e) => {
-        console.log(e);
-        // TODO: Log properly
+        Sentry.captureException(e);
+        setSets([]);
       });
   };
 
@@ -48,8 +53,8 @@ export default function TacticsList() {
     getSets()
       .then((sets) => setSets(sets ?? []))
       .catch((e) => {
-        console.log(e);
-        // TODO: Log properly
+        Sentry.captureException(e);
+        setSets([]);
       });
   }, [user]);
 

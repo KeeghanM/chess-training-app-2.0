@@ -11,7 +11,7 @@ import { getUserClient } from "~/app/_util/getUserClient";
 import type { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
 import type { ResponseJson } from "~/app/api/responses";
 import type { TrainingPuzzle } from "../TacticsTrainer";
-
+import * as Sentry from "@sentry/nextjs";
 interface TacticsSetCreatorProps {
   setCount: number;
   maxSets: number;
@@ -25,7 +25,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
-  const [size, setsize] = useState(500);
+  const [size, setSize] = useState(500);
   const [themesList, setThemesList] = useState<string[]>([]);
   const [difficulty, setDifficulty] = useState(1);
   const [rating, setRating] = useState(1500);
@@ -95,14 +95,13 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
         themes: string[];
       }[];
     } catch (e) {
-      // TODO: Proper error handling
-      if (e instanceof Error) console.log(e.message);
+      Sentry.captureException(e);
       return [];
     }
   };
   const resetForm = () => {
     setName("");
-    setsize(500);
+    setSize(500);
     setRating(1500);
     setDifficulty(1);
     setThemesList([]);
@@ -130,6 +129,10 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
     }
     if (rating < 500 || rating > 3000) {
       setMessage("Rating must be between 500 & 3000");
+      return false;
+    }
+    if (size < 150 || size > 500) {
+      setMessage("Set must be between 150 & 500 Puzzles");
       return false;
     }
 
@@ -190,13 +193,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       setCreated(set);
       setOpen(false);
     } catch (e) {
-      let message = "";
-      if (e instanceof Error) message = e.message;
-      else message = "Unknown error";
-
-      await trackEventOnClient("create_tactics_set_error", {
-        message,
-      });
+      Sentry.captureException(e);
     }
   };
 
@@ -262,7 +259,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   max={"500"}
                   value={size}
                   onChange={(e) => {
-                    setsize(parseInt(e.currentTarget.value));
+                    setSize(parseInt(e.currentTarget.value));
                   }}
                 />
                 <p className="text-sm italic">

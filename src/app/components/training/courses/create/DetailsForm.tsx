@@ -4,6 +4,7 @@ import trackEventOnClient from "~/app/_util/trackEventOnClient";
 import Heading from "~/app/components/_elements/heading";
 import Button from "~/app/components/_elements/button";
 import type { ResponseJson } from "~/app/api/responses";
+import * as Sentry from "@sentry/nextjs";
 
 export default function DetailsForm(props: {
   finished: (name: string, description: string) => void;
@@ -27,24 +28,30 @@ export default function DetailsForm(props: {
       return;
     }
 
-    const res = await fetch("/api/courses/create/checkName", {
-      method: "POST",
-      body: JSON.stringify({ name }),
-    });
-    const json = (await res.json()) as ResponseJson;
-    if (!json.data?.isAvailable) {
-      setError("Name is already taken");
-      setStatus("idle");
-      await trackEventOnClient("create_course_duplicate_name", {
+    try {
+      const res = await fetch("/api/courses/create/checkName", {
+        method: "POST",
+        body: JSON.stringify({ name }),
+      });
+      const json = (await res.json()) as ResponseJson;
+      if (!json.data?.isAvailable) {
+        setError("Name is already taken");
+        setStatus("idle");
+        await trackEventOnClient("create_course_duplicate_name", {
+          name,
+        });
+        return;
+      }
+
+      await trackEventOnClient("create_course_details_submitted", {
         name,
       });
-      return;
+      props.finished(name, description);
+    } catch (e) {
+      Sentry.captureException(e);
+      setError("Oops! Something went wrong. Please try again later.");
+      setStatus("idle");
     }
-
-    await trackEventOnClient("create_course_details_submitted", {
-      name,
-    });
-    props.finished(name, description);
   };
 
   return (

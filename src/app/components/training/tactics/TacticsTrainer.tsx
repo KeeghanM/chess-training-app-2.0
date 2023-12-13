@@ -15,6 +15,7 @@ import Toggle from "react-toggle";
 import "react-toggle/style.css";
 import TimeSince from "../../general/TimeSince";
 import type { PrismaTacticsSetWithPuzzles } from "~/app/_util/GetTacticSets";
+import * as Sentry from "@sentry/nextjs";
 
 export interface TrainingPuzzle {
   puzzleid: string;
@@ -86,8 +87,7 @@ export default function TacticsTrainer(props: {
       const puzzle = json.puzzles[0];
       return puzzle;
     } catch (e) {
-      // TODO:  Handle error properly
-      console.log(e);
+      Sentry.captureException(e);
       return undefined;
     }
   };
@@ -153,9 +153,7 @@ export default function TacticsTrainer(props: {
         }),
       });
     } catch (e) {
-      if (e instanceof Error) {
-        console.error(e.message);
-      }
+      Sentry.captureException(e);
     }
     setStartTime(newTime);
     setLoading(false);
@@ -178,10 +176,7 @@ export default function TacticsTrainer(props: {
         }),
       });
     } catch (e) {
-      // TODO: Handle error
-      if (e instanceof Error) {
-        console.error(e.message);
-      }
+      Sentry.captureException(e);
     }
     setCurrentRound({ ...currentRound, correct: currentRound.correct + 1 });
     setLoading(false);
@@ -203,9 +198,7 @@ export default function TacticsTrainer(props: {
         }),
       });
     } catch (e) {
-      if (e instanceof Error) {
-        console.error(e.message);
-      }
+      Sentry.captureException(e);
     }
     setCurrentRound({ ...currentRound, incorrect: currentRound.incorrect + 1 });
     setLoading(false);
@@ -245,7 +238,7 @@ export default function TacticsTrainer(props: {
           }),
         });
       } catch (e) {
-        if (e instanceof Error) console.error(e);
+        Sentry.captureException(e);
       }
       // Return to the main lister
       await exit();
@@ -440,8 +433,8 @@ export default function TacticsTrainer(props: {
       setCurrentPuzzle(puzzle);
       setLoading(false);
     })().catch((e) => {
-      console.log(e);
-      // TODO: Log properly
+      Sentry.captureException(e);
+      throw new Error("Unable to load puzzle");
     });
 
     return;

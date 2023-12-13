@@ -1,15 +1,30 @@
-/**
- * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially useful
- * for Docker builds.
- */
-await import("./src/env.js");
+import { withSentryConfig } from "@sentry/nextjs";
 
-/** @type {import("next").NextConfig} */
-const config = {
+// Next.js configuration
+const nextConfig = {
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true,
   },
 };
+
+// Sentry configuration options
+const sentryWebpackPluginOptions = {
+  org: "chesstraining",
+  project: "chesstrainingapp",
+  // Suppresses source map uploading logs during build
+  silent: true,
+  // Upload a larger set of source maps for prettier stack traces (increases build time)
+  widenClientFileUpload: true,
+  // Hides source maps from generated client bundles
+  hideSourceMaps: true,
+  // Automatically tree-shake Sentry logger statements to reduce bundle size
+  disableLogger: true,
+  // Enables automatic instrumentation of Vercel Cron Monitors.
+  automaticVercelMonitors: true,
+};
+
+// Wrap your config with Sentry's configuration
+const config = withSentryConfig(nextConfig, sentryWebpackPluginOptions);
 
 export default config;

@@ -18,6 +18,7 @@ import type {
   PrismaUserCourse,
   PrismaUserLine,
 } from "~/app/_util/GetUserCourse";
+import * as Sentry from "@sentry/nextjs";
 
 // TODO: BugFix - Weird jumping between lines, doesn't seem to be in order + showing "next line" after teaching moves finished instead of jumping to start for repeat
 // TODO: BugFix - last line in course isn't being logged
@@ -205,8 +206,41 @@ export default function CourseTrainer(props: {
     setExistingFens(allSeenFens);
 
     if (fensToUpload.length > 0) {
+      try {
+        const resp = await fetch(
+          `/api/courses/user/${props.userCourse.id}/fens/new`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: "Bearer " + user.id,
+            },
+            body: JSON.stringify({
+              fens: fensToUpload,
+            }),
+          },
+        );
+        const json = (await resp.json()) as ResponseJson;
+        if (json.message != "Fens uploaded") {
+          throw new Error(json.message);
+        }
+      } catch (e) {
+        Sentry.captureException(e);
+      }
+    }
+
+    // Now we need to update the fens that we've trained
+    // with the correct/incorrect status
+    try {
+      const fensWithStats = trainedFens.map((fen) => {
+        return {
+          fen: fen,
+          correct: !wrongFens.includes(fen),
+        };
+      });
+
       const resp = await fetch(
-        `/api/courses/user/${props.userCourse.id}/fens/new`,
+        `/api/courses/user/${props.userCourse.id}/fens/update`,
         {
           method: "POST",
           headers: {
@@ -214,62 +248,45 @@ export default function CourseTrainer(props: {
             authorization: "Bearer " + user.id,
           },
           body: JSON.stringify({
-            fens: fensToUpload,
+            fens: fensWithStats,
           }),
         },
       );
+
       const json = (await resp.json()) as ResponseJson;
-      if (json.message != "Fens uploaded")
-        throw new Error("Error uploading fens"); // TODO: Handle nicer
+      if (json.message != "Fens updated") {
+        throw new Error(json.message);
+      }
+    } catch (e) {
+      Sentry.captureException(e);
     }
-
-    // Now we need to update the fens that we've trained
-    // with the correct/incorrect status
-    const fensWithStats = trainedFens.map((fen) => {
-      return {
-        fen: fen,
-        correct: !wrongFens.includes(fen),
-      };
-    });
-
-    const resp = await fetch(
-      `/api/courses/user/${props.userCourse.id}/fens/update`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: "Bearer " + user.id,
-        },
-        body: JSON.stringify({
-          fens: fensWithStats,
-        }),
-      },
-    );
-
-    const json = (await resp.json()) as ResponseJson;
-    if (json.message != "Fens updated") throw new Error("Error updating fens"); // TODO: Handle nicer
   };
 
   const processStats = async () => {
     if (!user) return;
 
-    const resp = await fetch(
-      `/api/courses/user/${props.userCourse.id}/stats/${currentLine.id}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: "Bearer " + user.id,
+    try {
+      const resp = await fetch(
+        `/api/courses/user/${props.userCourse.id}/stats/${currentLine.id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: "Bearer " + user.id,
+          },
+          body: JSON.stringify({
+            lineCorrect,
+          }),
         },
-        body: JSON.stringify({
-          lineCorrect,
-        }),
-      },
-    );
+      );
 
-    const json = (await resp.json()) as ResponseJson;
-    if (json.message != "Stats updated")
-      throw new Error("Error updating stats"); // TODO: Handle nicer
+      const json = (await resp.json()) as ResponseJson;
+      if (json.message != "Stats updated") {
+        throw new Error(json.message);
+      }
+    } catch (e) {
+      Sentry.captureException(e);
+    }
   };
 
   // When we drop a piece, we need to check if it's a valid move

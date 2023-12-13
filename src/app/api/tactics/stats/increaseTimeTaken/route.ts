@@ -1,5 +1,6 @@
 import { errorResponse, successResponse } from "~/app/api/responses";
 import { prisma } from "~/server/db";
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(request: Request) {
   const userId = request.headers.get("Authorization")?.split(" ")[1];
@@ -40,8 +41,8 @@ export async function POST(request: Request) {
 
     return successResponse("Time taken updated", {}, 200);
   } catch (e) {
+    Sentry.captureException(e);
     if (e instanceof Error) return errorResponse(e.message, 500);
-
-    return errorResponse("Unknown error", 500);
+    else return errorResponse("Unknown error", 500);
   }
 }

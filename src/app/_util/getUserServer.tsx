@@ -1,7 +1,7 @@
 import type { KindeUser } from "@kinde-oss/kinde-auth-nextjs/dist/types";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { prisma } from "~/server/db";
-
+import * as Sentry from "@sentry/nextjs";
 export async function getUserServer() {
   const { getUser, isAuthenticated } = getKindeServerSession();
   const user = await getUser();
@@ -16,10 +16,7 @@ export async function getUserServer() {
       });
       return { user, hasAuth, profile };
     } catch (e) {
-      //TODO: Proper error logging
-      if (e instanceof Error) {
-        console.error(e.message);
-      }
+      Sentry.captureException(e);
     }
   }
   return { user, hasAuth, profile: null };
@@ -34,9 +31,6 @@ export async function createUserProfile(user: KindeUser) {
       data: { id: user.id, username },
     });
   } catch (e) {
-    //TODO: Proper error logging
-    if (e instanceof Error) {
-      console.error(e.message);
-    }
+    Sentry.captureException(e);
   }
 }

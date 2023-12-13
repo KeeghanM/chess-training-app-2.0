@@ -1,4 +1,5 @@
 import { getUserServer } from "./getUserServer";
+import * as Sentry from "@sentry/nextjs";
 
 export default async function getDistinctId() {
   // First, try to just return the userId
@@ -12,8 +13,7 @@ export default async function getDistinctId() {
     const json = (await resp.json()) as { sessionId: string };
     if (json.sessionId) return json.sessionId;
   } catch (e) {
-    // TODO: Log this error
-    console.error(e);
+    Sentry.captureException(e);
     return "anonymous";
   }
 

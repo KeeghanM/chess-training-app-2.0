@@ -1,5 +1,6 @@
 import { errorResponse, successResponse } from "~/app/api/responses";
 import { trackEventOnServer } from "~/app/_util/trackEventOnServer";
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(request: Request) {
   const { eventName, data } = (await request.json()) as {
@@ -14,6 +15,7 @@ export async function POST(request: Request) {
     await trackEventOnServer(eventName, data);
     return successResponse("Logged", {}, 200);
   } catch (e) {
+    Sentry.captureException(e);
     if (e instanceof Error) return errorResponse(e.message, 500);
     else return errorResponse("Unknown error", 500);
   }

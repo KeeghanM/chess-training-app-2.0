@@ -1,6 +1,7 @@
 import { getUserServer } from "~/app/_util/getUserServer";
 import { errorResponse, successResponse } from "../../responses";
 import { prisma } from "~/server/db";
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(request: Request) {
   // Check if user is authenticated and reject request if not
@@ -26,6 +27,7 @@ export async function POST(request: Request) {
 
     return successResponse("Set Deleted", { setId }, 200);
   } catch (e) {
+    Sentry.captureException(e);
     if (e instanceof Error) return errorResponse(e.message, 500);
     else return errorResponse("Unknown error", 500);
   }

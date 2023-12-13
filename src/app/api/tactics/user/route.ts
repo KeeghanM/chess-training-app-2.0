@@ -1,5 +1,6 @@
 import { errorResponse, successResponse } from "~/app/api/responses";
 import { prisma } from "~/server/db";
+import * as Sentry from "@sentry/nextjs";
 
 export async function GET(request: Request) {
   const userId = request.headers.get("Authorization")?.split(" ")[1];
@@ -16,6 +17,7 @@ export async function GET(request: Request) {
 
     return successResponse("Sets found", { sets }, 200);
   } catch (e) {
+    Sentry.captureException(e);
     if (e instanceof Error) return errorResponse(e.message, 500);
     else return errorResponse("Unknown error", 500);
   }

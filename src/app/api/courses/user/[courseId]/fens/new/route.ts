@@ -1,6 +1,7 @@
 import { getUserServer } from "~/app/_util/getUserServer";
 import { errorResponse, successResponse } from "~/app/api/responses";
 import { prisma } from "~/server/db";
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(
   request: Request,
@@ -28,6 +29,7 @@ export async function POST(
 
     return successResponse("Fens uploaded", { count: fens.length }, 200);
   } catch (e) {
+    Sentry.captureException(e);
     if (e instanceof Error) return errorResponse(e.message, 500);
     else return errorResponse("Unknown error", 500);
   }

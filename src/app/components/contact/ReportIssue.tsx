@@ -4,6 +4,7 @@ import { useState } from "react";
 import { ResponseJson } from "~/app/api/responses";
 import Button from "../_elements/button";
 import Spinner from "../general/Spinner";
+import * as Sentry from "@sentry/nextjs";
 
 export default function ReportIssueForm() {
   const [sendEmail, setSendEmail] = useState(false);
@@ -97,6 +98,7 @@ export default function ReportIssueForm() {
         setSuccess(true);
       });
     } catch (e) {
+      Sentry.captureException(e);
       if (e instanceof Error) setError(e.message);
       else setError("Something went wrong");
 

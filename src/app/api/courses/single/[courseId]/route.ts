@@ -1,6 +1,7 @@
 import { errorResponse, successResponse } from "../../../responses";
 import type { Course } from "@prisma/client";
 import { prisma } from "~/server/db";
+import * as Sentry from "@sentry/nextjs";
 
 export async function GET(
   request: Request,
@@ -27,6 +28,7 @@ export async function GET(
       });
     }
   } catch (e) {
+    Sentry.captureException(e);
     if (e instanceof Error) return errorResponse(e.message, 500);
     else return errorResponse("Unknown error", 500);
   }

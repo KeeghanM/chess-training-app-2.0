@@ -12,6 +12,7 @@ import Button from "~/app/components/_elements/button";
 import Container from "~/app/components/_elements/container";
 import type { ResponseJson } from "~/app/api/responses";
 import { getUserClient } from "~/app/_util/getUserClient";
+import * as Sentry from "@sentry/nextjs";
 
 export default function CreateCourseForm() {
   const router = useRouter();
@@ -31,29 +32,29 @@ export default function CreateCourseForm() {
     const { user } = getUserClient();
     if (!user) return;
 
-    const courseData = transformCourseData(courseName, group, lines);
-    const response = await fetch("/api/courses/create/upload", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        authorization: "Bearer " + user.id,
-      },
-      body: JSON.stringify({ ...courseData, description }),
-    });
-    const data = (await response.json()) as ResponseJson;
-
-    if (!response.ok || data.message != "Course created") {
-      await trackEventOnClient("create_course_error", {
-        step: "Upload",
-        message: data.message,
+    try {
+      const courseData = transformCourseData(courseName, group, lines);
+      const response = await fetch("/api/courses/create/upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: "Bearer " + user.id,
+        },
+        body: JSON.stringify({ ...courseData, description }),
       });
-      setCurrentStep("error");
-      return;
-    }
+      const json = (await response.json()) as ResponseJson;
 
-    await trackEventOnClient("create_course_success", {});
-    const courseSlug = data.data!.slug as string;
-    router.push("/courses/" + courseSlug);
+      if (json.message != "Course created") {
+        throw new Error(json.message);
+      }
+
+      await trackEventOnClient("create_course_success", {});
+      const courseSlug = json.data!.slug as string;
+      router.push("/courses/" + courseSlug);
+    } catch (e) {
+      Sentry.captureException(e);
+      setCurrentStep("error");
+    }
   };
 
   return (

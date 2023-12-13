@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 import { successResponse, errorResponse } from "../../responses";
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(request: Request) {
   try {
@@ -74,9 +75,8 @@ ${message}`,
 
     return successResponse("Message sent", {}, 200);
   } catch (e) {
-    if (e instanceof Error) {
-      return errorResponse(e.message, 500);
-    }
-    return errorResponse("Unknown error", 500);
+    Sentry.captureException(e);
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    else return errorResponse("Unknown error", 500);
   }
 }
