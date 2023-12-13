@@ -1,10 +1,10 @@
-import { errorResponse, successResponse } from "~/app/api/responses";
-import { prisma } from "~/server/db";
-import * as Sentry from "@sentry/nextjs";
+import { errorResponse, successResponse } from '~/app/api/responses'
+import { prisma } from '~/server/db'
+import * as Sentry from '@sentry/nextjs'
 
 export async function GET(request: Request) {
-  const userId = request.headers.get("Authorization")?.split(" ")[1];
-  if (!userId) return errorResponse("Unauthorized", 401);
+  const userId = request.headers.get('Authorization')?.split(' ')[1]
+  if (!userId) return errorResponse('Unauthorized', 401)
   try {
     const sets = await prisma.tacticsSet.findMany({
       include: {
@@ -13,12 +13,12 @@ export async function GET(request: Request) {
       where: {
         userId,
       },
-    });
+    })
 
-    return successResponse("Sets found", { sets }, 200);
+    return successResponse('Sets found', { sets }, 200)
   } catch (e) {
-    Sentry.captureException(e);
-    if (e instanceof Error) return errorResponse(e.message, 500);
-    else return errorResponse("Unknown error", 500);
+    Sentry.captureException(e)
+    if (e instanceof Error) return errorResponse(e.message, 500)
+    else return errorResponse('Unknown error', 500)
   }
 }

@@ -1,14 +1,14 @@
-import Heading from "~/app/components/_elements/heading";
-import CtaRow from "~/app/components/_layouts/ctaRow";
-import Hero from "~/app/components/_layouts/hero";
-import ImageRowFull from "~/app/components/_layouts/imageRowFull";
+import Heading from '~/app/components/_elements/heading'
+import CtaRow from '~/app/components/_layouts/ctaRow'
+import Hero from '~/app/components/_layouts/hero'
+import ImageRowFull from '~/app/components/_layouts/imageRowFull'
 
 export const metadata = {
   title:
-    "Chess Tactics Training with the WoodPecker Method at ChessTraining.app",
+    'Chess Tactics Training with the WoodPecker Method at ChessTraining.app',
   description:
     "Transform your tactical play in chess with ChessTraining.app's Tactics Trainer, utilizing the renowned WoodPecker Method developed by GMs Axel Smith and Hans Tikkanen. This unique approach involves solving and re-solving challenging puzzles to enhance speed and accuracy, embedding core tactical patterns into your subconscious. Tailored to your chess rating, our Tactics Trainer automates tracking and admin, allowing you to focus solely on puzzle-solving. Experience a significant improvement in your game with sessions designed for all skill levels. Start your journey to tactical mastery today!",
-};
+}
 
 export default async function Tactics() {
   return (
@@ -16,12 +16,12 @@ export default async function Tactics() {
       <Hero
         title="Tactics Training"
         image={{
-          src: "/images/hero.avif",
-          alt: "Hero Image",
+          src: '/images/hero.avif',
+          alt: 'Hero Image',
         }}
         cta={{
-          text: "Start Training",
-          link: "/training/tactics/list",
+          text: 'Start Training',
+          link: '/training/tactics/list',
         }}
       >
         <Heading as="h2">
@@ -33,8 +33,8 @@ export default async function Tactics() {
         heading="What is the Woodpecker Method"
         background="light"
         image={{
-          src: "/images/hero.avif",
-          alt: "Hero Image",
+          src: '/images/hero.avif',
+          alt: 'Hero Image',
         }}
         imageSide="left"
       >
@@ -57,8 +57,8 @@ export default async function Tactics() {
         heading="How to use the Tactics Trainer"
         background="light"
         image={{
-          src: "/images/hero.avif",
-          alt: "Hero Image",
+          src: '/images/hero.avif',
+          alt: 'Hero Image',
         }}
         imageSide="right"
       >
@@ -79,13 +79,13 @@ export default async function Tactics() {
       <CtaRow
         title="Ready to take your game to the next level?"
         cta={{
-          text: "Start Training",
-          link: "/training/tactics/list",
+          text: 'Start Training',
+          link: '/training/tactics/list',
         }}
         background="dark"
       >
         <p>Create up to three puzzles sets for free. No costs. Forever.</p>
       </CtaRow>
     </>
-  );
+  )
 }

@@ -1,19 +1,19 @@
-import { cookies } from "next/headers";
-import { v4 as uuidv4 } from "uuid";
+import { cookies } from 'next/headers'
+import { v4 as uuidv4 } from 'uuid'
 
 export async function GET() {
-  const cookiesList = cookies();
-  if (!cookiesList.get("sessionId")) {
-    const sessionId = uuidv4();
-    cookiesList.set("sessionId", sessionId);
+  const cookiesList = cookies()
+  if (!cookiesList.get('sessionId')) {
+    const sessionId = uuidv4()
+    cookiesList.set('sessionId', sessionId)
   }
 
-  const sessionId = cookiesList.get("sessionId")?.value;
+  const sessionId = cookiesList.get('sessionId')?.value
 
   return new Response(JSON.stringify({ sessionId }), {
     headers: {
-      "content-type": "application/json",
-      "Set-Cookie": sessionId!,
+      'content-type': 'application/json',
+      'Set-Cookie': sessionId!,
     },
-  });
+  })
 }

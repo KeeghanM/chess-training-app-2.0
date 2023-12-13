@@ -1,62 +1,62 @@
-"use client";
+'use client'
 
-import TacticsSetCreator from "../create/TacticsSetCreator";
-import Container from "~/app/components/_elements/container";
-import { useEffect, useState } from "react";
-import SetListItem from "./SetListItem";
-import { getUserClient } from "~/app/_util/getUserClient";
-import type { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
-import type { ResponseJson } from "~/app/api/responses";
-import * as Sentry from "@sentry/nextjs";
+import TacticsSetCreator from '../create/TacticsSetCreator'
+import Container from '~/app/components/_elements/container'
+import { useEffect, useState } from 'react'
+import SetListItem from './SetListItem'
+import { getUserClient } from '~/app/_util/getUserClient'
+import type { PrismaTacticsSet } from '~/app/_util/GetTacticSets'
+import type { ResponseJson } from '~/app/api/responses'
+import * as Sentry from '@sentry/nextjs'
 
 export default function TacticsList() {
   // TODO: Show a loading/fallback item
-  const { user } = getUserClient();
-  const [sets, setSets] = useState<PrismaTacticsSet[]>([]);
+  const { user } = getUserClient()
+  const [sets, setSets] = useState<PrismaTacticsSet[]>([])
 
   const getSets = async () => {
-    if (!user) return null;
+    if (!user) return null
     try {
       const resp = await fetch(`/api/tactics/user`, {
-        method: "GET",
+        method: 'GET',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${user.id}`,
         },
-      });
-      const json = (await resp.json()) as ResponseJson;
-      if (json.message != "Sets found") {
-        throw new Error(json.message);
+      })
+      const json = (await resp.json()) as ResponseJson
+      if (json.message != 'Sets found') {
+        throw new Error(json.message)
       }
 
-      return json.data?.sets as PrismaTacticsSet[];
+      return json.data?.sets as PrismaTacticsSet[]
     } catch (e) {
-      Sentry.captureException(e);
-      return null;
+      Sentry.captureException(e)
+      return null
     }
-  };
+  }
 
   const addSet = (set: PrismaTacticsSet) => {
-    setSets([...sets, set]);
-  };
+    setSets([...sets, set])
+  }
 
   const updateList = () => {
     getSets()
       .then((sets) => setSets(sets ?? []))
       .catch((e) => {
-        Sentry.captureException(e);
-        setSets([]);
-      });
-  };
+        Sentry.captureException(e)
+        setSets([])
+      })
+  }
 
   useEffect(() => {
     getSets()
       .then((sets) => setSets(sets ?? []))
       .catch((e) => {
-        Sentry.captureException(e);
-        setSets([]);
-      });
-  }, [user]);
+        Sentry.captureException(e)
+        setSets([])
+      })
+  }, [user])
 
   return (
     <Container>
@@ -67,17 +67,17 @@ export default function TacticsList() {
           setCreated={addSet}
         />
         {sets.length == 0 ? (
-          <div className="w-full p-4 md:p-6 lg:p-12 h-24 bg-gray-100 grid place-content-center">
+          <div className="grid h-24 w-full place-content-center bg-gray-100 p-4 md:p-6 lg:p-12">
             <p className="text-sm italic">Your sets will appear here</p>
           </div>
         ) : (
           sets
             .sort((a, b) => {
-              const fallback = new Date(0);
+              const fallback = new Date(0)
               return (
                 new Date(b.lastTrained ?? fallback).getTime() -
                 new Date(a.lastTrained ?? fallback).getTime()
-              );
+              )
             })
             .map((set) => (
               <SetListItem key={set.id} set={set} updated={updateList} />
@@ -85,5 +85,5 @@ export default function TacticsList() {
         )}
       </div>
     </Container>
-  );
+  )
 }

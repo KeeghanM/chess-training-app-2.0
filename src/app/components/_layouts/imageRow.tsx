@@ -1,27 +1,27 @@
-import Container from "../_elements/container";
-import Heading from "../_elements/heading";
+import Container from '../_elements/container'
+import Heading from '../_elements/heading'
 
 interface ImageRowProps {
-  heading: string;
-  imageSide: "left" | "right";
+  heading: string
+  imageSide: 'left' | 'right'
   image: {
-    src: string;
-    alt: string;
-  };
-  background: "light" | "dark";
-  children: React.ReactNode;
+    src: string
+    alt: string
+  }
+  background: 'light' | 'dark'
+  children: React.ReactNode
 }
 
 export default function ImageRow(props: ImageRowProps) {
   return (
     <div
       className={
-        "flex flex-col md:flex-row items-center justify-center" +
-        (props.imageSide === "left" ? "" : " md:flex-row-reverse") +
-        (props.background === "light" ? " bg-white" : " bg-purple-100")
+        'flex flex-col items-center justify-center md:flex-row' +
+        (props.imageSide === 'left' ? '' : ' md:flex-row-reverse') +
+        (props.background === 'light' ? ' bg-white' : ' bg-purple-100')
       }
     >
-      <div className="w-full md:w-1/2 flex flex-col items-center justify-center">
+      <div className="flex w-full flex-col items-center justify-center md:w-1/2">
         <img
           src={props.image.src}
           alt={props.image.alt}
@@ -30,10 +30,10 @@ export default function ImageRow(props: ImageRowProps) {
       </div>
       <div className="w-full md:w-1/2">
         <Container>
-          <Heading as={"h2"}>{props.heading}</Heading>
+          <Heading as={'h2'}>{props.heading}</Heading>
           <div className="flex flex-col gap-4">{props.children}</div>
         </Container>
       </div>
     </div>
-  );
+  )
 }

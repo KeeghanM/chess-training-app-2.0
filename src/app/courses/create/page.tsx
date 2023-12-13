@@ -1,26 +1,26 @@
-import CreateCourseForm from "~/app/components/training/courses/create/CreateCourse";
-import { redirect } from "next/navigation";
-import PageHeader from "~/app/components/_layouts/pageHeader";
-import { getUserServer } from "~/app/_util/getUserServer";
+import CreateCourseForm from '~/app/components/training/courses/create/CreateCourse'
+import { redirect } from 'next/navigation'
+import PageHeader from '~/app/components/_layouts/pageHeader'
+import { getUserServer } from '~/app/_util/getUserServer'
 
 export const metadata = {
-  title: "Create a new course - ChessTraining.app",
-};
+  title: 'Create a new course - ChessTraining.app',
+}
 
 export default async function CreateCourse() {
-  const { user } = await getUserServer();
-  if (!user) redirect("/auth/signin");
+  const { user } = await getUserServer()
+  if (!user) redirect('/auth/signin')
 
   return (
     <>
       <PageHeader
-        title={"Create a new course"}
+        title={'Create a new course'}
         image={{
-          src: "/images/hero.avif",
-          alt: "Create a new course",
+          src: '/images/hero.avif',
+          alt: 'Create a new course',
         }}
       />
       <CreateCourseForm />
     </>
-  );
+  )
 }

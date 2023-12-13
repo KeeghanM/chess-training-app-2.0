@@ -1,11 +1,11 @@
-import Link from "next/link";
-import Button from "./components/_elements/button";
-import Heading from "./components/_elements/heading";
-import BigText from "./components/_layouts/bigText";
-import CtaRow from "./components/_layouts/ctaRow";
-import Hero from "./components/_layouts/hero";
-import ImageRowFull from "./components/_layouts/imageRowFull";
-import { MultiCol, MultiColItem } from "./components/_layouts/multiCol";
+import Link from 'next/link'
+import Button from './components/_elements/button'
+import Heading from './components/_elements/heading'
+import BigText from './components/_layouts/bigText'
+import CtaRow from './components/_layouts/ctaRow'
+import Hero from './components/_layouts/hero'
+import ImageRowFull from './components/_layouts/imageRowFull'
+import { MultiCol, MultiColItem } from './components/_layouts/multiCol'
 
 export default async function Home() {
   return (
@@ -13,12 +13,12 @@ export default async function Home() {
       <Hero
         title="Elevate Your Chess Game - Where Every Move Counts!"
         cta={{
-          text: "Start Training",
-          link: "/auth/signin",
+          text: 'Start Training',
+          link: '/auth/signin',
         }}
         image={{
-          src: "/images/chessbackground.webp",
-          alt: "Chess board with pieces set up",
+          src: '/images/chessBackground.webp',
+          alt: 'Chess board with pieces set up',
         }}
       >
         <Heading as="h2">
@@ -31,8 +31,8 @@ export default async function Home() {
         imageSide="left"
         background="light"
         image={{
-          src: "/images/hero.avif",
-          alt: "Chess board with pieces set up",
+          src: '/images/hero.avif',
+          alt: 'Chess board with pieces set up',
         }}
       >
         <p>
@@ -58,8 +58,8 @@ export default async function Home() {
         imageSide="right"
         background="light"
         image={{
-          src: "/images/hero.avif",
-          alt: "Chess board with pieces set up",
+          src: '/images/hero.avif',
+          alt: 'Chess board with pieces set up',
         }}
       >
         <p>
@@ -89,8 +89,8 @@ export default async function Home() {
         title="Our Training Tools"
         background="light"
         cta={{
-          text: "See all features",
-          link: "/features",
+          text: 'See all features',
+          link: '/about/features',
         }}
       >
         <MultiColItem title="Tactics Trainer">
@@ -144,11 +144,11 @@ export default async function Home() {
       </MultiCol>
       <CtaRow
         title="Ready to transform your chess game?"
-        cta={{ text: "Sign Up Now", link: "/auth/signin" }}
+        cta={{ text: 'Sign Up Now', link: '/auth/signin' }}
         background="dark"
       >
         <p>Sign up now for free and start your journey to chess mastery.</p>
       </CtaRow>
     </>
-  );
+  )
 }

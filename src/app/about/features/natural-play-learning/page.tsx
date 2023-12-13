@@ -1,34 +1,34 @@
-import Heading from "~/app/components/_elements/heading";
-import CtaRow from "~/app/components/_layouts/ctaRow";
-import Hero from "~/app/components/_layouts/hero";
-import ImageRowFull from "~/app/components/_layouts/imageRowFull";
-import { TextWall } from "~/app/components/_layouts/textWall";
+import Heading from '~/app/components/_elements/heading'
+import CtaRow from '~/app/components/_layouts/ctaRow'
+import Hero from '~/app/components/_layouts/hero'
+import ImageRowFull from '~/app/components/_layouts/imageRowFull'
+import { TextWall } from '~/app/components/_layouts/textWall'
 
 export const metadata = {
   title:
-    "Revolutionize your Chess Training with Natural Play Learning - ChessTraining.app",
+    'Revolutionize your Chess Training with Natural Play Learning - ChessTraining.app',
   description:
     "Discover ChessTraining.app's Natural Play Learning, an innovative chess training method for faster learning and longer retention. Master chess openings like never before with our unique approach, combining the effectiveness of spaced repetition with real-game scenarios. Join us now and elevate your chess game",
-};
+}
 
 export default async function NaturalPlayLearningPage() {
   return (
     <>
       <Hero
-        title={"Master Chess Openings with Natural Play Learning"}
+        title={'Master Chess Openings with Natural Play Learning'}
         image={{
-          src: "/images/hero.avif",
-          alt: "Wooden Chess pieces on a chess board",
+          src: '/images/hero.avif',
+          alt: 'Wooden Chess pieces on a chess board',
         }}
       >
-        <Heading as={"h2"}>
+        <Heading as={'h2'}>
           Welcome to a Revolutionary Chess Training Experience
         </Heading>
       </Hero>
       <ImageRowFull
         image={{
-          src: "/images/hero.avif",
-          alt: "Wooden Chess pieces on a chess board",
+          src: '/images/hero.avif',
+          alt: 'Wooden Chess pieces on a chess board',
         }}
         imageSide="left"
         heading="Unlock Your Chess Potential"
@@ -44,8 +44,8 @@ export default async function NaturalPlayLearningPage() {
       </ImageRowFull>
       <ImageRowFull
         image={{
-          src: "/images/hero.avif",
-          alt: "Wooden Chess pieces on a chess board",
+          src: '/images/hero.avif',
+          alt: 'Wooden Chess pieces on a chess board',
         }}
         imageSide="right"
         heading="What Is Natural Play Learning?"
@@ -84,11 +84,11 @@ export default async function NaturalPlayLearningPage() {
       </TextWall>
       <CtaRow
         title="Ready to transform your chess game?"
-        cta={{ text: "Sign Up Now", link: "/auth/signin" }}
+        cta={{ text: 'Sign Up Now', link: '/auth/signin' }}
         background="light"
       >
         <p>Sign up now for free and start your journey to chess mastery.</p>
       </CtaRow>
     </>
-  );
+  )
 }

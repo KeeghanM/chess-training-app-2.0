@@ -1,68 +1,68 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { parse as PGNParse } from "@mliebelt/pgn-parser";
-import { ParsePGNtoLineData } from "./parse/ParsePGNtoLineData";
-import type { Line } from "./parse/ParsePGNtoLineData";
-import trackEventOnClient from "~/app/_util/trackEventOnClient";
-import Button from "~/app/components/_elements/button";
-import * as Sentry from "@sentry/nextjs";
+import { useState } from 'react'
+import { parse as PGNParse } from '@mliebelt/pgn-parser'
+import { ParsePGNtoLineData } from './parse/ParsePGNtoLineData'
+import type { Line } from './parse/ParsePGNtoLineData'
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+import Button from '~/app/components/_elements/button'
+import * as Sentry from '@sentry/nextjs'
 
 export default function PgnToLinesForm(props: {
-  finished: (lines: Line[]) => void;
-  back: () => void;
+  finished: (lines: Line[]) => void
+  back: () => void
 }) {
-  const [status, setStatus] = useState<"idle" | "loading">("idle");
-  const [error, setError] = useState<string | null>(null);
-  const [string, setString] = useState<string>("");
+  const [status, setStatus] = useState<'idle' | 'loading'>('idle')
+  const [error, setError] = useState<string | null>(null)
+  const [string, setString] = useState<string>('')
 
   const validPGN = (string: string) => {
     try {
-      const parsed = PGNParse(string, { startRule: "games" });
-      if (parsed) return true;
+      const parsed = PGNParse(string, { startRule: 'games' })
+      if (parsed) return true
 
-      return false;
+      return false
     } catch (e) {
-      Sentry.captureException(e);
-      if (e instanceof Error) setError(e.message);
-      else setError("Unknown error");
-      return false;
+      Sentry.captureException(e)
+      if (e instanceof Error) setError(e.message)
+      else setError('Unknown error')
+      return false
     }
-  };
+  }
 
   const parse = async () => {
-    setError(null);
-    setStatus("loading");
+    setError(null)
+    setStatus('loading')
 
     // Check for empty string
-    if (string == "") {
-      setError("Input cannot be empty");
-      setStatus("idle");
-      return;
+    if (string == '') {
+      setError('Input cannot be empty')
+      setStatus('idle')
+      return
     }
     // Check for valid PGN
     if (!validPGN(string)) {
-      setError("Invalid PGN");
-      setStatus("idle");
-      await trackEventOnClient("create_course_invalid_pgn", {});
-      return;
+      setError('Invalid PGN')
+      setStatus('idle')
+      await trackEventOnClient('create_course_invalid_pgn', {})
+      return
     }
     // Final Catch
     if (error) {
-      setStatus("idle");
-      return;
+      setStatus('idle')
+      return
     }
 
-    const lines = ParsePGNtoLineData(string);
+    const lines = ParsePGNtoLineData(string)
     if (!lines) {
-      setError("Something went wrong parsing the PGN");
-      setStatus("idle");
-      return;
+      setError('Something went wrong parsing the PGN')
+      setStatus('idle')
+      return
     }
 
-    await trackEventOnClient("create_course_pgn_imported", {});
-    props.finished(lines);
-  };
+    await trackEventOnClient('create_course_pgn_imported', {})
+    props.finished(lines)
+  }
 
   return (
     <div className="flex flex-col gap-2">
@@ -72,11 +72,11 @@ export default function PgnToLinesForm(props: {
         PGNs, or a single one with all the lines and variations contained.
       </p>
       <textarea
-        className="px-4 py-2 border border-gray-300 w-full"
+        className="w-full border border-gray-300 px-4 py-2"
         rows={10}
         onChange={(e) => {
-          setString(e.target.value);
-          setError(null);
+          setString(e.target.value)
+          setError(null)
         }}
         value={string}
         placeholder={`[Event "Ruy Lopez: For White"]
@@ -93,7 +93,7 @@ export default function PgnToLinesForm(props: {
         <Button
           variant="primary"
           onClick={parse}
-          disabled={status == "loading"}
+          disabled={status == 'loading'}
         >
           Create
         </Button>
@@ -103,5 +103,5 @@ export default function PgnToLinesForm(props: {
       </div>
       {error && <p className="text-red-500">Something went wrong: {error}</p>}
     </div>
-  );
+  )
 }

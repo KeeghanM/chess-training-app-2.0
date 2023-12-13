@@ -1,12 +1,12 @@
-import CtaRow from "~/app/components/_layouts/ctaRow";
-import PageHeader from "~/app/components/_layouts/pageHeader";
+import CtaRow from '~/app/components/_layouts/ctaRow'
+import PageHeader from '~/app/components/_layouts/pageHeader'
 
 export const metadata = {
   title:
-    "Visualization & Calculation Training - Advance Your Chess Strategy at ChessTraining.app",
+    'Visualization & Calculation Training - Advance Your Chess Strategy at ChessTraining.app',
   description:
     "Refine your foresight with ChessTraining.app's Visualization & Calculation training. Tailored for players seeking to enhance their ability to foresee multiple moves ahead, this tool is crucial for long-term planning in chess. Challenge yourself with complex board scenarios and improve your decision-making skills. Perfect for those looking to deepen their tactical understanding and elevate their game to the next level.",
-};
+}
 
 export default async function Visualisation() {
   return (
@@ -15,16 +15,16 @@ export default async function Visualisation() {
         title="Visualisation & Calculation"
         subTitle="Coming soon!"
         image={{
-          src: "/images/hero.avif",
-          alt: "Hero Image",
+          src: '/images/hero.avif',
+          alt: 'Hero Image',
         }}
       />
       <CtaRow
         title="Curious?"
         background="light"
         cta={{
-          text: "View our roadmap",
-          link: "/product-roadmap",
+          text: 'View our roadmap',
+          link: '/product-roadmap',
         }}
       >
         <div className="flex flex-col gap-2">
@@ -39,5 +39,5 @@ export default async function Visualisation() {
         </div>
       </CtaRow>
     </>
-  );
+  )
 }
