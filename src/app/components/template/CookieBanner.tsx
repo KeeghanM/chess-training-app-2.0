@@ -25,15 +25,15 @@ export default function CookieBanner() {
   }
 
   const acceptCookies = async () => {
+    setShowBanner(false)
     await trackEventOnClient('cookie_opt_in', {})
     posthog.opt_in_capturing()
-    setShowBanner(false)
   }
 
   const declineCookies = async () => {
+    setShowBanner(false)
     await trackEventOnClient('cookie_opt_out', {})
     posthog.opt_out_capturing()
-    setShowBanner(false)
   }
 
   return (
