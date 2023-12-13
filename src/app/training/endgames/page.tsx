@@ -16,7 +16,7 @@ export default function Endgames() {
         subTitle="Coming soon!"
         image={{
           src: '/images/hero.avif',
-          alt: 'Hero Image',
+          alt: 'Wooden chess pieces on a chess board',
         }}
       />
       <CtaRow

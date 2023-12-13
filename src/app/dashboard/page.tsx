@@ -126,7 +126,10 @@ export default async function Dashboard() {
       <PageHeader
         title="Dashboard"
         subTitle={`Welcome back, ${user.given_name}`}
-        image={{ src: '/images/hero.avif', alt: 'Hero Image' }}
+        image={{
+          src: '/images/hero.avif',
+          alt: 'Wooden chess pieces on a chess board',
+        }}
       />
       <div className="p-4 md:p-6">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">

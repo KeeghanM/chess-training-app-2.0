@@ -1,6 +1,7 @@
 import Heading from '../_elements/heading'
 import Button from '../_elements/button'
 import Link from 'next/link'
+import Image from 'next/image'
 
 interface HeroProps {
   title: string
@@ -23,8 +24,9 @@ export default function Hero(props: HeroProps) {
   return (
     <div className="relative flex min-h-[60vh] flex-col justify-center">
       <div className="absolute inset-0">
-        <img
-          className="h-full w-full object-cover"
+        <Image
+          fill={true}
+          objectFit="cover"
           src={props.image.src}
           alt={props.image.alt}
         />

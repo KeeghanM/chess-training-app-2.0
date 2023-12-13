@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import Heading from '../_elements/heading'
 
 interface PageHeaderProps {
@@ -13,8 +14,9 @@ export default function PageHeader(props: PageHeaderProps) {
   return (
     <div className="relative">
       <div className="absolute inset-0">
-        <img
-          className="h-full w-full object-cover"
+        <Image
+          fill={true}
+          objectFit="cover"
           src={props.image.src}
           alt={props.image.alt}
         />

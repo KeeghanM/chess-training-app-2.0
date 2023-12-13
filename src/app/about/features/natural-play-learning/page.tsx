@@ -1,4 +1,6 @@
+import Link from 'next/link'
 import Heading from '~/app/components/_elements/heading'
+import BigText from '~/app/components/_layouts/bigText'
 import CtaRow from '~/app/components/_layouts/ctaRow'
 import Hero from '~/app/components/_layouts/hero'
 import ImageRowFull from '~/app/components/_layouts/imageRowFull'
@@ -27,8 +29,8 @@ export default async function NaturalPlayLearningPage() {
       </Hero>
       <ImageRowFull
         image={{
-          src: '/images/hero.avif',
-          alt: 'Wooden Chess pieces on a chess board',
+          src: '/images/man_frustrated_3.png',
+          alt: 'A man sat at a desk frustrated yet determined to improve his chess',
         }}
         imageSide="left"
         heading="Unlock Your Chess Potential"
@@ -41,11 +43,28 @@ export default async function NaturalPlayLearningPage() {
           it's mastering chess in a way that sticks. Dive into a world where
           each move becomes a part of you!
         </p>
+        <p>
+          It doesn't matter if you're a beginner or a Grandmaster; our method
+          works for everyone. Improving upon the old Spaced Repetition
+          technique, and getting to the heart of what makes chess openings so
+          challenging, we've created a method that's efficient, effective, and
+          engaging.
+        </p>
       </ImageRowFull>
+      <BigText color="secondary">
+        Start improving your chess now -{' '}
+        <Link
+          className="cursor-pointer font-bold !text-purple-500 underline hover:no-underline"
+          href="/auth/signin"
+        >
+          Sign Up
+        </Link>{' '}
+        for free!
+      </BigText>
       <ImageRowFull
         image={{
-          src: '/images/hero.avif',
-          alt: 'Wooden Chess pieces on a chess board',
+          src: '/images/man_chess_computer_3.png',
+          alt: 'A person sat at a computer studying and improving their chess',
         }}
         imageSide="right"
         heading="What Is Natural Play Learning?"
@@ -56,11 +75,19 @@ export default async function NaturalPlayLearningPage() {
           revolutionizing chess training and chess improvement. Inspired by
           Spaced Repetition, it's more than just repeating moves. It's about
           understanding and remembering them. Here's the twist: you don't just
-          re-learn moves. Once you master a move, it becomes a part of your
-          gameplay. You'll play through your openings from the start, but if you
-          recognize a position, you skip the basics. You naturally play what you
-          know and focus on learning what you don't. It's efficient, effective,
-          and engaging.
+          re-learn moves.
+        </p>
+        <p>
+          Once you master a move, it becomes a part of your gameplay. You'll
+          play through your openings from the start, but if you recognize a
+          position, you skip the basics. You naturally play what you know and
+          focus on learning what you don't. It's efficient, effective, and
+          engaging.
+        </p>
+        <p>
+          <strong>Natural Play Learning</strong> is the future of chess
+          training. It's the best way to learn chess openings, and it's
+          exclusive to ChessTraining.app.
         </p>
       </ImageRowFull>
       <TextWall title="Why choose Natural Play Learning?" background="dark">

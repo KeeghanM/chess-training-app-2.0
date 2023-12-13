@@ -36,7 +36,10 @@ export default async function CoursePage({
   return (
     <PageHeader
       title={course.courseName}
-      image={{ src: '/images/hero.avif', alt: course.courseName }}
+      image={{
+        src: '/images/hero.avif',
+        alt: 'Wooden chess pieces on a chess board',
+      }}
       subTitle={`By: ${createdBy.username}`}
     />
   )

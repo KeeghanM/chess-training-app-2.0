@@ -17,7 +17,7 @@ export default async function Home() {
           link: '/auth/signin',
         }}
         image={{
-          src: '/images/chessBackground.webp',
+          src: '/images/hero.avif',
           alt: 'Chess board with pieces set up',
         }}
       >
@@ -31,8 +31,8 @@ export default async function Home() {
         imageSide="left"
         background="light"
         image={{
-          src: '/images/hero.avif',
-          alt: 'Chess board with pieces set up',
+          src: '/images/chess_group_detailed.png',
+          alt: 'Abstract art of a varied group of people learning chess',
         }}
       >
         <p>
@@ -58,8 +58,8 @@ export default async function Home() {
         imageSide="right"
         background="light"
         image={{
-          src: '/images/hero.avif',
-          alt: 'Chess board with pieces set up',
+          src: '/images/two_women_playing_chess.png',
+          alt: 'Two women sat down studying chess surrounded by abstract art chess pieces',
         }}
       >
         <p>

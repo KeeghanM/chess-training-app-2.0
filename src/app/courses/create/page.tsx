@@ -17,7 +17,7 @@ export default async function CreateCourse() {
         title={'Create a new course'}
         image={{
           src: '/images/hero.avif',
-          alt: 'Create a new course',
+          alt: 'Wooden chess pieces on a chess board',
         }}
       />
       <CreateCourseForm />

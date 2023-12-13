@@ -17,7 +17,7 @@ export default async function Courses() {
         title="Study courses with Natural Play Learning"
         image={{
           src: '/images/hero.avif',
-          alt: 'Hero Image',
+          alt: 'Wooden chess pieces on a chess board',
         }}
         cta={{
           text: 'Start Training',
@@ -32,8 +32,8 @@ export default async function Courses() {
         heading="What are courses?"
         background="light"
         image={{
-          src: '/images/hero.avif',
-          alt: 'Hero Image',
+          src: '/images/woman_at_computer.png',
+          alt: 'A woman sat at a computer desk',
         }}
         imageSide="left"
       >
@@ -44,9 +44,14 @@ export default async function Courses() {
           ever before.
         </p>
         <p>
-          We're currently working on our first course, but you can check out our
-          Tactics Trainer below or keep reading to learn more about our Natural
-          Play Learning technique.
+          Courses can be created by you, or shared with you by other users. We
+          also regularly publish our own courses, created by our team of
+          in-house Masters as well as many other top players.
+        </p>
+        <p>
+          We're currently working on the creation of our first set of courses,
+          but you can check out our Tactics Trainer below or keep reading to
+          learn more about our Natural Play Learning technique.
         </p>
       </ImageRowFull>
       <a id="natural-play-learning" className="anchor" />
@@ -54,8 +59,8 @@ export default async function Courses() {
         heading="Natural Play Learning"
         background="light"
         image={{
-          src: '/images/hero.avif',
-          alt: 'Hero Image',
+          src: '/images/chess_group_simple.png',
+          alt: 'Abstract art of a group of people standing on a chess board',
         }}
         imageSide="right"
       >

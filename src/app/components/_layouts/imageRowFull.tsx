@@ -13,9 +13,6 @@ interface ImageRowProps {
 }
 
 export default function ImageRowFull(props: ImageRowProps) {
-  // the image should take up the full width and height of
-  // its container, so we'll use an absolute positioned
-  // image with an inset-0 class to achieve this
   return (
     <div
       className={

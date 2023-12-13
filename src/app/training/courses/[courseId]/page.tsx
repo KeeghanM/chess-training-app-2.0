@@ -24,7 +24,7 @@ export default async function CourseTrainPage({
         title={'Training Course: ' + userCourse.course.courseName}
         image={{
           src: '/images/hero.avif',
-          alt: 'Hero Image',
+          alt: 'Wooden chess pieces on a chess board',
         }}
       />
       <Container>

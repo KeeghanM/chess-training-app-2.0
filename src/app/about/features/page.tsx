@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import BigText from '~/app/components/_layouts/bigText'
 import CtaRow from '~/app/components/_layouts/ctaRow'
 import Hero from '~/app/components/_layouts/hero'
 
@@ -108,13 +109,18 @@ export default async function FeaturesPage() {
           </CtaRow>
         </>
       ))}
-      <CtaRow
-        title="Ready to transform your chess game?"
-        cta={{ text: 'Sign Up Now', link: '/auth/signin' }}
-        background="dark"
-      >
-        <p>Sign up now for free and start your journey to chess mastery.</p>
-      </CtaRow>
+      <BigText color="secondary">
+        <p>Ready to transform you chess game?</p>
+        <p>
+          <Link
+            className="cursor-pointer font-bold !text-purple-500 underline hover:no-underline"
+            href="/auth/signin"
+          >
+            Sign up now
+          </Link>{' '}
+          for free and start your journey to chess mastery.
+        </p>
+      </BigText>
     </>
   )
 }

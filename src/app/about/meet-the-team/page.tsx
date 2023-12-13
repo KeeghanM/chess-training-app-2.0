@@ -66,7 +66,7 @@ export default function MeetTheTeam() {
         title="Meet the Team"
         image={{
           src: '/images/hero.avif',
-          alt: 'Team Image',
+          alt: 'Wooden Chess pieces on a chess board',
         }}
       >
         <p>

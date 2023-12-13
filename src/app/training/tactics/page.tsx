@@ -17,7 +17,7 @@ export default async function Tactics() {
         title="Tactics Training"
         image={{
           src: '/images/hero.avif',
-          alt: 'Hero Image',
+          alt: 'Wooden chess pieces on a chess board',
         }}
         cta={{
           text: 'Start Training',
@@ -33,8 +33,8 @@ export default async function Tactics() {
         heading="What is the Woodpecker Method"
         background="light"
         image={{
-          src: '/images/hero.avif',
-          alt: 'Hero Image',
+          src: '/images/man_chess_computer.png',
+          alt: 'A man sat at a computer studying and improving his chess',
         }}
         imageSide="left"
       >
@@ -57,8 +57,8 @@ export default async function Tactics() {
         heading="How to use the Tactics Trainer"
         background="light"
         image={{
-          src: '/images/hero.avif',
-          alt: 'Hero Image',
+          src: '/images/woman_studying_2.png',
+          alt: 'A woman studying chess while sat at a desk',
         }}
         imageSide="right"
       >

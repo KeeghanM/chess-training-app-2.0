@@ -21,7 +21,7 @@ export default async function NewUserWelcome() {
         title={'Welcome to ChessTraining.app!'}
         image={{
           src: '/images/hero.avif',
-          alt: 'Welcome to ChessTraining.app!',
+          alt: 'Wooden chess pieces on a chess board',
         }}
       />
       <Container>
