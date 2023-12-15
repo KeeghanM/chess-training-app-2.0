@@ -17,23 +17,24 @@ export default async function TacticsTrainPage({
   let set: PrismaTacticsSetWithPuzzles | undefined
 
   try {
+    const url = `${process.env.API_BASE_URL}/tactics/user/${params.setId}`
+    const AuthToken = `Bearer ${user.id}`
     Sentry.captureEvent({
       message: 'TacticsTrainPage',
       extra: {
         user,
         params,
+        url,
+        AuthToken,
       },
     })
-    const resp = await fetch(
-      `${process.env.API_BASE_URL}/tactics/user/${params.setId}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.id}`,
-        },
+    const resp = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: AuthToken,
       },
-    )
+    })
     const json = (await resp.json()) as ResponseJson
     if (json.message != 'Set found') {
       throw new Error(json.message)
