@@ -13,6 +13,7 @@ export default async function CoursePage({
   let course: Course | null = null
   let createdBy: UserProfile | null = null
 
+  // TODO: Move the prisma query from API to here
   try {
     const response = await fetch(
       `${process.env.API_BASE_URL}/courses/single/${courseId}`,

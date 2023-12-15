@@ -3,8 +3,8 @@ import Container from '~/app/components/_elements/container'
 import TacticsTrainer from '~/app/components/training/tactics/TacticsTrainer'
 import { redirect } from 'next/navigation'
 import { getUserServer } from '~/app/_util/getUserServer'
-import type { PrismaTacticsSetWithPuzzles } from '~/app/_util/GetTacticSets'
-import type { ResponseJson } from '~/app/api/responses'
+import { prisma } from '~/server/db'
+import { PrismaTacticsSetWithPuzzles } from '~/app/_util/GetTacticSets'
 
 export default async function TacticsTrainPage({
   params,
@@ -14,49 +14,17 @@ export default async function TacticsTrainPage({
   const { user } = await getUserServer()
   if (!user) redirect('/auth/signin')
 
-  let set: PrismaTacticsSetWithPuzzles | undefined
+  const set = (await prisma.tacticsSet.findUnique({
+    where: { id: params.setId, userId: user.id },
+    include: { puzzles: true },
+  })) as PrismaTacticsSetWithPuzzles | null
 
-  try {
-    const url = `${process.env.API_BASE_URL}/tactics/user/${params.setId}`
-    const AuthToken = 'Bearer ' + user.id
+  if (!set) {
     Sentry.captureEvent({
-      message: 'TacticsTrainPage',
-      extra: {
-        user,
-        params,
-        url,
-        AuthToken,
-      },
+      message: `User tried to access set but not found`,
+      extra: { userId: user.id, setId: params.setId },
     })
-    const resp = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: AuthToken,
-      },
-    })
-    const json = (await resp.json()) as ResponseJson
-    if (json.message != 'Set found') {
-      throw new Error(json.message)
-    }
-
-    set = json.data!.set as PrismaTacticsSetWithPuzzles
-    set.puzzles.sort((a, b) => {
-      return a.id.localeCompare(b.id)
-    })
-  } catch (e) {
-    console.log(
-      {
-        message: 'TacticsTrainPage',
-        extra: {
-          user,
-          params,
-        },
-      },
-      { e },
-    )
-    Sentry.captureException(e)
-    redirect('/global-error')
+    return redirect('/training/tactics')
   }
 
   return (

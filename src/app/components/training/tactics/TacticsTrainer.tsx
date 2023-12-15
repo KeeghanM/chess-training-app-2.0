@@ -138,7 +138,6 @@ export default function TacticsTrainer(props: {
     setLoading(true)
     const newTime = Date.now()
     const timeTaken = (newTime - startTime) / 1000
-    console.log(timeTaken)
     try {
       await fetch('/api/tactics/stats/increaseTimeTaken', {
         method: 'POST',
