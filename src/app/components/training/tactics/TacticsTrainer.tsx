@@ -435,7 +435,15 @@ export default function TacticsTrainer(props: {
       throw new Error('Unable to load puzzle')
     })
 
-    return
+    return () => {
+      // On unmount, log the stats
+      ;(async () => {
+        await increaseTimeTaken()
+      })().catch((e) => {
+        Sentry.captureException(e)
+        throw new Error('Unable to log stats')
+      })
+    }
   }, [])
 
   useEffect(() => {

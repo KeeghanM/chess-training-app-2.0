@@ -16,7 +16,7 @@ export default async function TacticsTrainPage({
 
   const set = (await prisma.tacticsSet.findUnique({
     where: { id: params.setId, userId: user.id },
-    include: { puzzles: true },
+    include: { puzzles: true, rounds: true },
   })) as PrismaTacticsSetWithPuzzles | null
 
   if (!set) {
