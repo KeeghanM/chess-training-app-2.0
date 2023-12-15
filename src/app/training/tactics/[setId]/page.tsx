@@ -3,7 +3,7 @@ import { GetSetPuzzles } from '~/app/_util/GetTacticSets'
 import { getUserServer } from '~/app/_util/getUserServer'
 import Container from '~/app/components/_elements/container'
 import TacticsTrainer from '~/app/components/training/tactics/TacticsTrainer'
-import Error from 'next/error'
+import * as Sentry from '@sentry/nextjs'
 
 export default async function TacticsTrainPage({
   params,
@@ -14,7 +14,10 @@ export default async function TacticsTrainPage({
   if (!user) redirect('/auth/signin')
 
   const set = await GetSetPuzzles(params.setId)
-  if (!set) return <Error statusCode={500} />
+  if (!set) {
+    Sentry.captureMessage(`TacticsTrainPage: set not found: ${params.setId}`)
+    redirect('/training/tactics')
+  }
 
   return (
     <Container>
