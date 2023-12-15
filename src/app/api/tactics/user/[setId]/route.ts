@@ -6,17 +6,14 @@ export async function GET(
   request: Request,
   { params }: { params: { setId: string } },
 ) {
-  Sentry.captureMessage('GET /api/tactics/user/[setId]')
-  Sentry.captureMessage(request.headers.get('Authorization') ?? 'No auth')
   const userId = request.headers.get('Authorization')?.split(' ')[1]
-  Sentry.captureMessage(`User ${userId} requested set ${params.setId}`)
   if (!userId) return errorResponse('Unauthorized', 401)
   const { setId } = params
   if (!setId) return errorResponse('Missing courseId', 400)
 
   try {
     const set = await prisma.tacticsSet.findUnique({
-      where: { id: setId },
+      where: { id: setId, userId },
       include: { rounds: true, puzzles: true },
     })
 
