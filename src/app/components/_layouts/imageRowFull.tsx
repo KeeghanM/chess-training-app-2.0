@@ -28,7 +28,7 @@ export default function ImageRowFull(props: ImageRowProps) {
         }
       >
         <img
-          className="h-full max-h-[350px] w-full object-cover md:max-h-full"
+          className="mx-auto h-full max-h-[350px] w-full max-w-[750px] object-cover object-[50%_25%] md:max-h-full"
           src={props.image.src}
           alt={props.image.alt}
         />
