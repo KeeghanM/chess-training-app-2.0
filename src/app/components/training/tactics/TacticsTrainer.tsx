@@ -230,7 +230,7 @@ export default function TacticsTrainer(props: {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${user?.id}`,
+            Authorization: 'Bearer ' + user!.id,
           },
           body: JSON.stringify({
             setId: props.set.id,

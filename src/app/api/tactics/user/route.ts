@@ -4,6 +4,10 @@ import * as Sentry from '@sentry/nextjs'
 
 export async function GET(request: Request) {
   const userId = request.headers.get('Authorization')?.split(' ')[1]
+  Sentry.captureEvent({
+    message: 'GET /api/tactics/user',
+    extra: { userId, headers: request.headers },
+  })
   if (!userId) return errorResponse('Unauthorized', 401)
   try {
     const sets = await prisma.tacticsSet.findMany({

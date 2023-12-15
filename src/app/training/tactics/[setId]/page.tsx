@@ -18,7 +18,7 @@ export default async function TacticsTrainPage({
 
   try {
     const url = `${process.env.API_BASE_URL}/tactics/user/${params.setId}`
-    const AuthToken = `Bearer ${user.id}`
+    const AuthToken = 'Bearer ' + user.id
     Sentry.captureEvent({
       message: 'TacticsTrainPage',
       extra: {
@@ -32,7 +32,7 @@ export default async function TacticsTrainPage({
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: AuthToken,
+        authorization: AuthToken,
       },
     })
     const json = (await resp.json()) as ResponseJson
@@ -45,6 +45,16 @@ export default async function TacticsTrainPage({
       return a.id.localeCompare(b.id)
     })
   } catch (e) {
+    console.log(
+      {
+        message: 'TacticsTrainPage',
+        extra: {
+          user,
+          params,
+        },
+      },
+      { e },
+    )
     Sentry.captureException(e)
     redirect('/global-error')
   }

@@ -23,7 +23,7 @@ export async function GetUserCourses() {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.id}`,
+        authorization: 'Bearer ' + user.id,
       },
     })
     const json = (await resp.json()) as ResponseJson
@@ -48,7 +48,7 @@ export async function GetUserCourse(courseId: string) {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.id}`,
+          authorization: 'Bearer ' + user.id,
         },
       },
     )
@@ -63,7 +63,7 @@ export async function GetUserCourse(courseId: string) {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${user.id}`,
+          authorization: 'Bearer ' + user.id,
         },
       },
     )
