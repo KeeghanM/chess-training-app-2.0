@@ -1,30 +1,30 @@
-import { redirect } from "next/navigation";
-import { GetUserCourse } from "~/app/_util/GetUserCourse";
-import CourseTrainer from "~/app/components/training/courses/CourseTrainer";
-import Container from "~/app/components/_elements/container";
-import PageHeader from "~/app/components/_layouts/pageHeader";
-import { getUserServer } from "~/app/_util/getUserServer";
+import { redirect } from 'next/navigation'
+import { GetUserCourse } from '~/app/_util/GetUserCourse'
+import CourseTrainer from '~/app/components/training/courses/CourseTrainer'
+import Container from '~/app/components/_elements/container'
+import PageHeader from '~/app/components/_layouts/pageHeader'
+import { getUserServer } from '~/app/_util/getUserServer'
 
 export default async function CourseTrainPage({
   params,
 }: {
-  params: { courseId: string };
+  params: { courseId: string }
 }) {
-  const { user } = await getUserServer();
-  if (!user) redirect("/auth/signin");
+  const { user } = await getUserServer()
+  if (!user) redirect('/auth/signin')
 
   const { userCourse, userLines, userFens } = await GetUserCourse(
     params.courseId,
-  );
-  if (!userCourse || !userLines) return;
+  )
+  if (!userCourse || !userLines) return
 
   return (
     <>
       <PageHeader
-        title={"Training Course: " + userCourse.course.courseName}
+        title={'Training Course: ' + userCourse.course.courseName}
         image={{
-          src: "/images/hero.avif",
-          alt: "Hero Image",
+          src: '/images/hero.avif',
+          alt: 'Wooden chess pieces on a chess board',
         }}
       />
       <Container>
@@ -37,5 +37,5 @@ export default async function CourseTrainPage({
         )}
       </Container>
     </>
-  );
+  )
 }

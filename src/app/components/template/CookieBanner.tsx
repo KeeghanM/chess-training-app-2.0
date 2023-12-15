@@ -1,54 +1,54 @@
-"use client";
-import Button from "../_elements/button";
-import Heading from "../_elements/heading";
-import trackEventOnClient from "~/app/_util/trackEventOnClient";
-import { useEffect, useState } from "react";
-import { usePostHog } from "posthog-js/react";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
+'use client'
+import Button from '../_elements/button'
+import Heading from '../_elements/heading'
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+import { useEffect, useState } from 'react'
+import { usePostHog } from 'posthog-js/react'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 export default function CookieBanner() {
-  const [showBanner, setShowBanner] = useState(false);
-  const [readMore, setReadMore] = useState(false);
-  const posthog = usePostHog();
-  const [parent] = useAutoAnimate();
+  const [showBanner, setShowBanner] = useState(false)
+  const [readMore, setReadMore] = useState(false)
+  const posthog = usePostHog()
+  const [parent] = useAutoAnimate()
 
   useEffect(() => {
     if (
       !(posthog.has_opted_in_capturing() || posthog.has_opted_out_capturing())
     ) {
-      setShowBanner(true);
+      setShowBanner(true)
     }
-  }, []);
+  }, [])
 
   if (!showBanner) {
-    return null;
+    return null
   }
 
   const acceptCookies = async () => {
-    await trackEventOnClient("cookie_opt_in", {});
-    posthog.opt_in_capturing();
-    setShowBanner(false);
-  };
+    setShowBanner(false)
+    await trackEventOnClient('cookie_opt_in', {})
+    posthog.opt_in_capturing()
+  }
 
   const declineCookies = async () => {
-    await trackEventOnClient("cookie_opt_out", {});
-    posthog.opt_out_capturing();
-    setShowBanner(false);
-  };
+    setShowBanner(false)
+    await trackEventOnClient('cookie_opt_out', {})
+    posthog.opt_out_capturing()
+  }
 
   return (
     <>
-      <div className="fixed z-[5000] inset-0 grid place-items-center">
+      <div className="fixed inset-0 z-[5000] grid place-items-center">
         <div
           onClick={acceptCookies}
           className="fixed inset-0 bg-[rgba(0,0,0,0.5)] "
         ></div>
-        <div className="p-4 z-[9999] md:p-6 lg:px-24 text-sm text-white shadow-md bg-slate-800 w-[850px] max-w-[90vw] max-h-[90vh] flex flex-col gap-4 items-center">
+        <div className="z-[9999] flex max-h-[90vh] w-[850px] max-w-[90vw] flex-col items-center gap-4 bg-slate-800 p-4 text-sm text-white shadow-md md:p-6 lg:px-24">
           <Heading as="h3">
             We're all about the 🍪cookies🍪, but only the good kind! 🎉
           </Heading>
           <div
-            className="overflow-y-scroll flex flex-col gap-2 items-center"
+            className="flex flex-col items-center gap-2 overflow-y-scroll"
             ref={parent}
           >
             <p>
@@ -60,7 +60,7 @@ export default function CookieBanner() {
             </p>
             {!readMore && (
               <p
-                className="text-sm underline cursor-pointer text-orange-500"
+                className="cursor-pointer text-sm text-orange-500 underline"
                 onClick={() => setReadMore(true)}
               >
                 Read More
@@ -82,7 +82,7 @@ export default function CookieBanner() {
                   unexpected ads!
                 </p>
                 <p
-                  className="text-sm underline cursor-pointer text-orange-500"
+                  className="cursor-pointer text-sm text-orange-500 underline"
                   onClick={() => setReadMore(false)}
                 >
                   Hide
@@ -90,7 +90,7 @@ export default function CookieBanner() {
               </>
             )}
           </div>
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col gap-4 md:flex-row">
             <Button variant="success" onClick={acceptCookies}>
               Accept cookies
             </Button>
@@ -101,5 +101,5 @@ export default function CookieBanner() {
         </div>
       </div>
     </>
-  );
+  )
 }

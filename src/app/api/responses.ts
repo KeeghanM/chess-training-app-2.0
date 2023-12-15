@@ -5,10 +5,10 @@ export const errorResponse = (message: string, status: number) => {
     }),
     {
       status,
-      headers: { "content-type": "application/json" },
+      headers: { 'content-type': 'application/json' },
     },
-  );
-};
+  )
+}
 
 export const successResponse = (
   message: string,
@@ -22,12 +22,12 @@ export const successResponse = (
     }),
     {
       status,
-      headers: { "content-type": "application/json" },
+      headers: { 'content-type': 'application/json' },
     },
-  );
-};
+  )
+}
 
 export type ResponseJson = {
-  message: string;
-  data?: Record<string, unknown>;
-};
+  message: string
+  data?: Record<string, unknown>
+}

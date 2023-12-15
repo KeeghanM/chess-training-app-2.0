@@ -1,87 +1,87 @@
-"use client";
-import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import type { PrismaTacticsSet } from "~/app/_util/GetTacticSets";
-import Button from "~/app/components/_elements/button";
-import Spinner from "~/app/components/general/Spinner";
-import { getUserClient } from "~/app/_util/getUserClient";
-import trackEventOnClient from "~/app/_util/trackEventOnClient";
-import { useState } from "react";
-import type { ResponseJson } from "~/app/api/responses";
-import * as Sentry from "@sentry/nextjs";
+'use client'
+import * as AlertDialog from '@radix-ui/react-alert-dialog'
+import type { PrismaTacticsSet } from '~/app/_util/GetTacticSets'
+import Button from '~/app/components/_elements/button'
+import Spinner from '~/app/components/general/Spinner'
+import { getUserClient } from '~/app/_util/getUserClient'
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+import { useState } from 'react'
+import type { ResponseJson } from '~/app/api/responses'
+import * as Sentry from '@sentry/nextjs'
 
 export default function SetListEdit(props: {
-  set: PrismaTacticsSet;
-  onFinished: () => void;
+  set: PrismaTacticsSet
+  onFinished: () => void
 }) {
-  const { set } = props;
-  const { user } = getUserClient();
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const { set } = props
+  const { user } = getUserClient()
+  const [open, setOpen] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   // Form Values
-  const [name, setName] = useState(set.name);
+  const [name, setName] = useState(set.name)
 
   const close = () => {
-    setOpen(false);
-  };
+    setOpen(false)
+  }
 
   const deleteSet = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      await trackEventOnClient("tactics_set_delete", {});
-      if (!user) throw new Error("Not logged in");
-      await fetch("/api/tactics/delete", {
-        method: "POST",
+      await trackEventOnClient('tactics_set_delete', {})
+      if (!user) throw new Error('Not logged in')
+      await fetch('/api/tactics/delete', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          authorization: "Bearer " + user.id,
+          'Content-Type': 'application/json',
+          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           setId: set.id,
         }),
-      });
+      })
 
-      props.onFinished();
-      close();
+      props.onFinished()
+      close()
     } catch (e) {
-      Sentry.captureException(e);
+      Sentry.captureException(e)
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   const updateSet = async () => {
-    setLoading(true);
+    setLoading(true)
     try {
-      await trackEventOnClient("tactics_set_updated", {});
-      if (!user) throw new Error("Not logged in");
-      const resp = await fetch("/api/tactics/delete", {
-        method: "POST",
+      await trackEventOnClient('tactics_set_updated', {})
+      if (!user) throw new Error('Not logged in')
+      const resp = await fetch('/api/tactics/delete', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          authorization: "Bearer " + user.id,
+          'Content-Type': 'application/json',
+          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           setId: set.id,
           name,
         }),
-      });
+      })
 
-      const json = (await resp.json()) as ResponseJson;
+      const json = (await resp.json()) as ResponseJson
 
-      if (json.message != "Set Created") {
-        setError("Oops! Something went wrong: " + json?.message);
-        close();
-        return;
+      if (json.message != 'Set Created') {
+        setError('Oops! Something went wrong: ' + json?.message)
+        close()
+        return
       }
 
-      props.onFinished();
-      close();
+      props.onFinished()
+      close()
     } catch (e) {
-      Sentry.captureException(e);
+      Sentry.captureException(e)
     }
-    setLoading(false);
-  };
+    setLoading(false)
+  }
 
   const DeleteButton = () => {
     return (
@@ -91,11 +91,11 @@ export default function SetListEdit(props: {
         </AlertDialog.Trigger>
         <AlertDialog.Portal>
           <AlertDialog.Overlay
-            className="fixed inset-0 bg-[rgba(0,0,0,0.5)] z-20"
+            className="fixed inset-0 z-20 bg-[rgba(0,0,0,0.5)]"
             onClick={close}
           />
-          <AlertDialog.Content className="bg-white p-4 md:p-6 shadow-md fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-lg max-h-[75vh] z-50 overflow-y-auto">
-            <AlertDialog.Title className="text-purple-700 text-lg font-bold">
+          <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[75vh] w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto bg-white p-4 shadow-md md:p-6">
+            <AlertDialog.Title className="text-lg font-bold text-purple-700">
               Are you sure you want to delete this?
             </AlertDialog.Title>
             <p>
@@ -110,7 +110,7 @@ export default function SetListEdit(props: {
                       Deleting <Spinner />
                     </>
                   ) : (
-                    "Delete"
+                    'Delete'
                   )}
                 </Button>
               </AlertDialog.Action>
@@ -123,8 +123,8 @@ export default function SetListEdit(props: {
           </AlertDialog.Content>
         </AlertDialog.Portal>
       </AlertDialog.Root>
-    );
-  };
+    )
+  }
 
   return (
     <AlertDialog.Root open={open} onOpenChange={setOpen}>
@@ -133,11 +133,11 @@ export default function SetListEdit(props: {
       </AlertDialog.Trigger>
       <AlertDialog.Portal>
         <AlertDialog.Overlay
-          className="fixed inset-0 bg-[rgba(0,0,0,0.5)] z-50"
+          className="fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)]"
           onClick={close}
         />
-        <AlertDialog.Content className="bg-white p-4 md:p-6 shadow-md fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90vw] max-w-lg max-h-[75vh] z-50 overflow-y-auto">
-          <AlertDialog.Title className="text-purple-700 text-lg font-bold">
+        <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[75vh] w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto bg-white p-4 shadow-md md:p-6">
+          <AlertDialog.Title className="text-lg font-bold text-purple-700">
             Editing "{set.name}"
           </AlertDialog.Title>
           <div className="flex flex-col gap-2">
@@ -145,10 +145,10 @@ export default function SetListEdit(props: {
               <label>Set Name</label>
               <input
                 type="text"
-                className="px-4 py-2 border border-gray-300 w-full"
+                className="w-full border border-gray-300 px-4 py-2"
                 value={name}
                 onInput={(e) => {
-                  setName(e.currentTarget.value);
+                  setName(e.currentTarget.value)
                 }}
               />
             </div>
@@ -159,7 +159,7 @@ export default function SetListEdit(props: {
                     Saving <Spinner />
                   </>
                 ) : (
-                  "Save"
+                  'Save'
                 )}
               </Button>
               <Button variant="secondary" onClick={close}>
@@ -172,5 +172,5 @@ export default function SetListEdit(props: {
         </AlertDialog.Content>
       </AlertDialog.Portal>
     </AlertDialog.Root>
-  );
+  )
 }

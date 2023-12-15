@@ -10,7 +10,8 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "format": "prettier --loglevel warn --write \"{<file-path>}/**/*.{jsx,js,tsx,ts}\""
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.8.1",
@@ -27,7 +28,7 @@
     "@uidotdev/usehooks": "^2.4.1",
     "chess.js": "^1.0.0-beta.6",
     "javascript-time-ago": "^2.5.9",
-    "next": "^14.0.3",
+    "next": "^14.0.4",
     "nodemailer": "^6.9.7",
     "posthog-js": "^1.93.6",
     "posthog-node": "^3.2.0",
@@ -57,7 +58,8 @@
     "autoprefixer": "^10.4.16",
     "eslint": "^8.54.0",
     "postcss": "^8.4.31",
-    "prettier": "^3.1.0",
+    "prettier": "^3.1.1",
+    "prettier-plugin-tailwindcss": "^0.5.9",
     "prisma": "^5.6.0",
     "tailwindcss": "^3.3.5",
     "typescript": "^5.1.6"

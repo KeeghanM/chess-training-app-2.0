@@ -2,13 +2,13 @@ export default function NumberIcon(props: { number: number; active: boolean }) {
   return (
     <div
       className={
-        "bg-none flex items-center justify-center w-8 h-8 text-lg font-bold border-2" +
+        'flex h-8 w-8 items-center justify-center border-2 bg-none text-lg font-bold' +
         (props.active
-          ? " border-purple-700 text-purple-700"
-          : " border-gray-300 text-gray-300")
+          ? ' border-purple-700 text-purple-700'
+          : ' border-gray-300 text-gray-300')
       }
     >
       {props.number}
     </div>
-  );
+  )
 }

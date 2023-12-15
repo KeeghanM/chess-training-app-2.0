@@ -1,11 +1,11 @@
-import CtaRow from "~/app/components/_layouts/ctaRow";
-import PageHeader from "~/app/components/_layouts/pageHeader";
+import CtaRow from '~/app/components/_layouts/ctaRow'
+import PageHeader from '~/app/components/_layouts/pageHeader'
 
 export const metadata = {
-  title: "Knight Vision: Enhance Your Chess Board Vision - ChessTraining.app",
+  title: 'Knight Vision: Enhance Your Chess Board Vision - ChessTraining.app',
   description:
     "Develop unparalleled board vision with ChessTraining.app's Knight Vision feature. Designed for players at all levels, our innovative tool helps improve your spatial understanding and tactical foresight in chess. Engage in a dynamic, fun, and fast-paced training method to elevate your game. Whether you're a beginner or an experienced player, Knight Vision is your key to mastering the chessboard.",
-};
+}
 
 export default function KnightVision() {
   return (
@@ -14,16 +14,16 @@ export default function KnightVision() {
         title="Knight Vision"
         subTitle="Coming soon!"
         image={{
-          src: "/images/hero.avif",
-          alt: "Hero Image",
+          src: '/images/hero.avif',
+          alt: 'Wooden chess pieces on a chess board',
         }}
       />
       <CtaRow
         title="Curious?"
         background="light"
         cta={{
-          text: "View our roadmap",
-          link: "/product-roadmap",
+          text: 'View our roadmap',
+          link: '/product-roadmap',
         }}
       >
         <div className="flex flex-col gap-2">
@@ -38,5 +38,5 @@ export default function KnightVision() {
         </div>
       </CtaRow>
     </>
-  );
+  )
 }

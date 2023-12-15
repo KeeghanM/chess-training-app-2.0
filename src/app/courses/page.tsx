@@ -1,14 +1,14 @@
-import Heading from "../components/_elements/heading";
-import CtaRow from "../components/_layouts/ctaRow";
-import Hero from "../components/_layouts/hero";
-import ImageRowFull from "../components/_layouts/imageRowFull";
+import Heading from '../components/_elements/heading'
+import CtaRow from '../components/_layouts/ctaRow'
+import Hero from '../components/_layouts/hero'
+import ImageRowFull from '../components/_layouts/imageRowFull'
 
 export const metadata = {
   title:
-    "Master Chess Openings with Courses Using Natural Play Learning - ChessTraining.app",
+    'Master Chess Openings with Courses Using Natural Play Learning - ChessTraining.app',
   description:
     "Embark on a chess learning adventure with ChessTraining.app's courses, featuring our unique Natural Play Learning method. Our courses are designed to help you learn and remember chess openings more effectively and enjoyably. Utilizing spaced repetition with a creative twist, we ensure you grasp every move without tedious repetition. While our own courses are in development, there's nothing stopping you creating your own. Stay updated with our upcoming courses and feature releases to enhance your chess journey!",
-};
+}
 
 export default async function Courses() {
   return (
@@ -16,12 +16,12 @@ export default async function Courses() {
       <Hero
         title="Study courses with Natural Play Learning"
         image={{
-          src: "/images/hero.avif",
-          alt: "Hero Image",
+          src: '/images/hero.avif',
+          alt: 'Wooden chess pieces on a chess board',
         }}
         cta={{
-          text: "Start Training",
-          link: "/training/tactics/list",
+          text: 'Start Training',
+          link: '/training/tactics/list',
         }}
       >
         <Heading as="h2">
@@ -32,8 +32,8 @@ export default async function Courses() {
         heading="What are courses?"
         background="light"
         image={{
-          src: "/images/hero.avif",
-          alt: "Hero Image",
+          src: '/images/woman_at_computer.png',
+          alt: 'A woman sat at a computer desk',
         }}
         imageSide="left"
       >
@@ -44,9 +44,14 @@ export default async function Courses() {
           ever before.
         </p>
         <p>
-          We're currently working on our first course, but you can check out our
-          Tactics Trainer below or keep reading to learn more about our Natural
-          Play Learning technique.
+          Courses can be created by you, or shared with you by other users. We
+          also regularly publish our own courses, created by our team of
+          in-house Masters as well as many other top players.
+        </p>
+        <p>
+          We're currently working on the creation of our first set of courses,
+          but you can check out our Tactics Trainer below or keep reading to
+          learn more about our Natural Play Learning technique.
         </p>
       </ImageRowFull>
       <a id="natural-play-learning" className="anchor" />
@@ -54,8 +59,8 @@ export default async function Courses() {
         heading="Natural Play Learning"
         background="light"
         image={{
-          src: "/images/hero.avif",
-          alt: "Hero Image",
+          src: '/images/chess_group_simple.png',
+          alt: 'Abstract art of a group of people standing on a chess board',
         }}
         imageSide="right"
       >
@@ -78,8 +83,8 @@ export default async function Courses() {
       <CtaRow
         title="Check out our tactics trainer"
         cta={{
-          text: "Check it out",
-          link: "/training/tactics",
+          text: 'Check it out',
+          link: '/training/tactics',
         }}
         background="dark"
       >
@@ -92,8 +97,8 @@ export default async function Courses() {
         title="Sounds great, how do I get started?"
         background="light"
         cta={{
-          text: "View our roadmap",
-          link: "/product-roadmap",
+          text: 'View our roadmap',
+          link: '/product-roadmap',
         }}
       >
         <div className="flex flex-col gap-2">
@@ -108,5 +113,5 @@ export default async function Courses() {
         </div>
       </CtaRow>
     </>
-  );
+  )
 }

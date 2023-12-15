@@ -1,27 +1,27 @@
-import * as AlertDialog from "@radix-ui/react-alert-dialog";
-import type { Line } from "./parse/ParsePGNtoLineData";
-import { useState } from "react";
-import PrettyPrintLine from "~/app/components/general/PrettyPrintLine";
-import trackEventOnClient from "~/app/_util/trackEventOnClient";
-import Button from "~/app/components/_elements/button";
-import Heading from "~/app/components/_elements/heading";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
+import * as AlertDialog from '@radix-ui/react-alert-dialog'
+import type { Line } from './parse/ParsePGNtoLineData'
+import { useState } from 'react'
+import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 
 export function GroupItem(props: {
-  lines: Line[];
-  selectedGroup: string;
-  groupKey: string;
-  count: number;
+  lines: Line[]
+  selectedGroup: string
+  groupKey: string
+  count: number
 }) {
-  const { lines, selectedGroup, groupKey, count } = props;
-  const [open, setOpen] = useState<boolean>(false);
-  const [linesToShow, setLinesToShow] = useState<Line[]>(lines);
-  const [parent] = useAutoAnimate();
+  const { lines, selectedGroup, groupKey, count } = props
+  const [open, setOpen] = useState<boolean>(false)
+  const [linesToShow, setLinesToShow] = useState<Line[]>(lines)
+  const [parent] = useAutoAnimate()
 
   return (
     <div
       ref={parent}
-      className="flex flex-col gap-2 justify-center p-4 md:p-6 lg:p-12 bg-gray-100"
+      className="flex flex-col justify-center gap-2 bg-gray-100 p-4 md:p-6 lg:p-12"
     >
       <div className="flex items-center gap-2">
         <p className="font-bold">{count} x</p>
@@ -51,22 +51,22 @@ export function GroupItem(props: {
             .map((line) => {
               return (
                 <div
-                  className="flex flex-col gap-2 justify-center p-4 md:p-6 lg:p-12 bg-gray-200"
-                  key={line.moves.join("")}
+                  className="flex flex-col justify-center gap-2 bg-gray-200 p-4 md:p-6 lg:p-12"
+                  key={line.moves.join('')}
                 >
                   <div className="flex items-center gap-2">
                     <PrettyPrintLine line={line} />
-                    <div className="flex items-center gap-2 p-2 ml-auto">
+                    <div className="ml-auto flex items-center gap-2 p-2">
                       <select
-                        className="p-2 border border-gray-300"
+                        className="border border-gray-300 p-2"
                         defaultValue={line.tags.Colour}
                         onChange={async (e) => {
-                          const v = e.target.value;
+                          const v = e.target.value
                           await trackEventOnClient(
-                            "create_course_change_line_colour",
+                            'create_course_change_line_colour',
                             {},
-                          );
-                          line.tags.Colour = v;
+                          )
+                          line.tags.Colour = v
                         }}
                       >
                         <option value="White">White</option>
@@ -77,10 +77,10 @@ export function GroupItem(props: {
                           <Button variant="danger">Delete</Button>
                         </AlertDialog.Trigger>
                         <AlertDialog.Content>
-                          <div className="fixed inset-0 z-10 bg-[rgba(0,0,0,0.5)] grid place-items-center">
+                          <div className="fixed inset-0 z-10 grid place-items-center bg-[rgba(0,0,0,0.5)]">
                             <div className="max-w-screen-sm bg-white p-4 md:p-6 lg:p-12">
-                              <div className="flex flex-col gap-4 mb-4">
-                                <Heading as={"h3"}>
+                              <div className="mb-4 flex flex-col gap-4">
+                                <Heading as={'h3'}>
                                   Are you sure you want to delete this line?
                                 </Heading>
                                 <p>
@@ -95,13 +95,13 @@ export function GroupItem(props: {
                                     variant="danger"
                                     onClick={async () => {
                                       await trackEventOnClient(
-                                        "create_course_delete_line",
+                                        'create_course_delete_line',
                                         {},
-                                      );
+                                      )
                                       lines.splice(lines.indexOf(line), 1),
                                         setLinesToShow(
                                           linesToShow.filter((l) => l !== line),
-                                        );
+                                        )
                                     }}
                                   >
                                     Delete
@@ -120,10 +120,10 @@ export function GroupItem(props: {
                     </div>
                   </div>
                 </div>
-              );
+              )
             })}
         </div>
       )}
     </div>
-  );
+  )
 }

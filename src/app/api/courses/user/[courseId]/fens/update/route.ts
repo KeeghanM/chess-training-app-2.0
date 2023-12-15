@@ -1,25 +1,25 @@
-import { getUserServer } from "~/app/_util/getUserServer";
-import { errorResponse, successResponse } from "~/app/api/responses";
-import { prisma } from "~/server/db";
-import * as Sentry from "@sentry/nextjs";
+import { getUserServer } from '~/app/_util/getUserServer'
+import { errorResponse, successResponse } from '~/app/api/responses'
+import { prisma } from '~/server/db'
+import * as Sentry from '@sentry/nextjs'
 
 export async function POST(
   request: Request,
   { params }: { params: { courseId: string } },
 ) {
   // Check if user is authenticated and reject request if not
-  const { user } = await getUserServer();
+  const { user } = await getUserServer()
 
-  const authToken = request.headers.get("Authorization")?.split(" ")[1];
-  if (!user || user.id !== authToken) return errorResponse("Unauthorized", 401);
+  const authToken = request.headers.get('Authorization')?.split(' ')[1]
+  if (!user || user.id !== authToken) return errorResponse('Unauthorized', 401)
 
-  const { courseId } = params;
+  const { courseId } = params
   const { fens } = (await request.json()) as {
-    fens: { fen: string; correct: boolean }[];
-  };
+    fens: { fen: string; correct: boolean }[]
+  }
 
-  if (!courseId) return errorResponse("Missing courseId", 400);
-  if (!fens) return errorResponse("Missing fens", 400);
+  if (!courseId) return errorResponse('Missing courseId', 400)
+  if (!fens) return errorResponse('Missing fens', 400)
 
   try {
     await Promise.all(
@@ -48,14 +48,14 @@ export async function POST(
                   },
                 }),
           },
-        });
+        })
       }),
-    );
+    )
 
-    return successResponse("Fens updated", {}, 200);
+    return successResponse('Fens updated', {}, 200)
   } catch (e) {
-    Sentry.captureException(e);
-    if (e instanceof Error) return errorResponse(e.message, 500);
-    else return errorResponse("Unknown error", 500);
+    Sentry.captureException(e)
+    if (e instanceof Error) return errorResponse(e.message, 500)
+    else return errorResponse('Unknown error', 500)
   }
 }
