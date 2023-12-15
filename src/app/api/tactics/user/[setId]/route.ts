@@ -6,7 +6,9 @@ export async function GET(
   request: Request,
   { params }: { params: { setId: string } },
 ) {
+  console.log('GET /api/tactics/user/[setId]')
   const userId = request.headers.get('Authorization')?.split(' ')[1]
+  console.log('userId', userId)
   if (!userId) return errorResponse('Unauthorized', 401)
   const { setId } = params
   if (!setId) return errorResponse('Missing courseId', 400)
