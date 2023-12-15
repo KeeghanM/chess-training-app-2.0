@@ -26,7 +26,6 @@ export interface TrainingPuzzle {
   themes: string[]
 }
 
-// TODO: Bug Fix - First puzzle in set loading wrong, completed jumping by two
 // TODO: Add a "show solution/not sure" button that shows the solution and marks it as incorrect
 // TODO: Add a "Show Solution" button when wrong move is played instead of auto showing it
 // TODO: Add an 'offline mode' which saves stats to localStorage and syncs when online
@@ -348,9 +347,9 @@ export default function TacticsTrainer(props: {
     if (playerMove === null) return false // illegal move
 
     // Check if the move is correct
-    const correctMove = currentPuzzle?.moves[game.history().length - 1]
+    const correctMove = currentPuzzle!.moves[game.history().length - 1]
 
-    if (correctMove !== playerMove.lan) {
+    if (correctMove !== playerMove.lan && !game.isCheckmate()) {
       // We played the wrong move
       setPuzzleStatus('incorrect')
       incorrectSound()
@@ -362,7 +361,7 @@ export default function TacticsTrainer(props: {
       setPuzzleFinished(true)
       return false
     }
-    playMoveSound(correctMove)
+    playMoveSound(correctMove!)
     setPosition(game.fen())
     makeBookMove()
     await checkEndOfLine()
@@ -425,7 +424,7 @@ export default function TacticsTrainer(props: {
     // On mount, load the first puzzle
     ;(async () => {
       const puzzleId =
-        props.set.puzzles[currentRound.correct + currentRound.incorrect + 1]!.id
+        props.set.puzzles[currentRound.correct + currentRound.incorrect]!.id
       const puzzle = await getPuzzle(puzzleId)
       if (!puzzle) return
       setCurrentPuzzle(puzzle)
@@ -628,6 +627,7 @@ export default function TacticsTrainer(props: {
                 defaultChecked={autoNext}
                 onChange={() => {
                   setAutoNext(!autoNext)
+                  if (puzzleFinished) goToNextPuzzle()
                 }}
               />
               <span>Auto Next on correct</span>
