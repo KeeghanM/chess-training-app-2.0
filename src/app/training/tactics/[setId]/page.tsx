@@ -17,6 +17,13 @@ export default async function TacticsTrainPage({
   let set: PrismaTacticsSetWithPuzzles | undefined
 
   try {
+    Sentry.captureEvent({
+      message: 'TacticsTrainPage',
+      extra: {
+        user,
+        params,
+      },
+    })
     const resp = await fetch(
       `${process.env.API_BASE_URL}/tactics/user/${params.setId}`,
       {
