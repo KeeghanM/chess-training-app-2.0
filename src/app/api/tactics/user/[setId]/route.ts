@@ -6,9 +6,10 @@ export async function GET(
   request: Request,
   { params }: { params: { setId: string } },
 ) {
-  console.log('GET /api/tactics/user/[setId]')
+  Sentry.captureMessage('GET /api/tactics/user/[setId]')
+  Sentry.captureMessage(request.headers.get('Authorization') ?? 'No auth')
   const userId = request.headers.get('Authorization')?.split(' ')[1]
-  console.log('userId', userId)
+  Sentry.captureMessage(`User ${userId} requested set ${params.setId}`)
   if (!userId) return errorResponse('Unauthorized', 401)
   const { setId } = params
   if (!setId) return errorResponse('Missing courseId', 400)
