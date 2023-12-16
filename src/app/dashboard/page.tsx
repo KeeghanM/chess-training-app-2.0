@@ -115,7 +115,7 @@ export default async function Dashboard() {
         'Modify training defaults, change your password, or update your email address.',
         'You can also delete your account here.',
       ],
-      href: '/account/settings',
+      href: '/dashboard/settings',
       buttonText: 'Open',
       active: true,
     },
