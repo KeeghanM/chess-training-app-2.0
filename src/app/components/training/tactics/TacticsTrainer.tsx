@@ -246,7 +246,7 @@ export default function TacticsTrainer(props: {
     // We haven't completed the set so we need to change the puzzle
 
     const newPuzzle = await getPuzzle(
-      props.set.puzzles[currentPuzzleIndex + 1]!.id,
+      props.set.puzzles[currentPuzzleIndex + 1]!.puzzleid,
     )
     setPuzzleStatus('none')
     setLoading(false)
@@ -424,7 +424,8 @@ export default function TacticsTrainer(props: {
     // On mount, load the first puzzle
     ;(async () => {
       const puzzleId =
-        props.set.puzzles[currentRound.correct + currentRound.incorrect]!.id
+        props.set.puzzles[currentRound.correct + currentRound.incorrect]!
+          .puzzleid
       const puzzle = await getPuzzle(puzzleId)
       if (!puzzle) return
       setCurrentPuzzle(puzzle)
