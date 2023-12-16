@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { ResponseJson } from '~/app/api/responses'
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '../_elements/button'
 import Spinner from '../general/Spinner'
 import * as Sentry from '@sentry/nextjs'

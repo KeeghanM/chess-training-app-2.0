@@ -6,10 +6,36 @@ import CtaRow from './components/_layouts/ctaRow'
 import Hero from './components/_layouts/hero'
 import ImageRowFull from './components/_layouts/imageRowFull'
 import { MultiCol, MultiColItem } from './components/_layouts/multiCol'
+import Script from 'next/script'
+import Image from 'next/image'
 
 export default async function Home() {
+  const reviews = [
+    {
+      name: 'Matthias',
+      date: '2023-12-06',
+      text: "I really think your site is great. It's a great pleasure to train with it.",
+    },
+    {
+      name: 'Chris',
+      date: '2023-05-07',
+      text: 'An excelled way to use the Woodpecker method! Thank you.',
+    },
+    {
+      name: 'W. D.',
+      date: '2023-09-27',
+      text: "Huge fan of the site ... I'm on my third time through [a tactics set]",
+    },
+    {
+      name: 'Rob',
+      date: '2022-02-16',
+      text: 'Just tried a few tactics positions.. level is not too hard, but taxing enough to make you think',
+    },
+  ]
+
   return (
     <>
+      <Script src="//widget.trustpilot.com/bootstrap/v5/tp.widget.bootstrap.min.js" />
       <Hero
         title="Elevate Your Chess Game - Where Every Move Counts!"
         cta={{
@@ -149,6 +175,39 @@ export default async function Home() {
       >
         <p>Sign up now for free and start your journey to chess mastery.</p>
       </CtaRow>
+      <div className="item flex flex-col items-center pb-6 md:pb-12">
+        <MultiCol title="What Our Members Say" background="light">
+          {reviews
+            .sort((a, b) => {
+              return new Date(b.date).getTime() - new Date(a.date).getTime()
+            })
+            .map((review) => (
+              <MultiColItem key={review.name} title={review.name}>
+                <p className="text-sm italic ">{review.date}</p>
+                <p>{review.text}</p>
+              </MultiColItem>
+            ))}
+        </MultiCol>
+        <div
+          className="trustpilot-widget"
+          data-locale="en-GB"
+          data-template-id="56278e9abfbbba0bdcd568bc"
+          data-businessunit-id="6577973a318437a64285f90c"
+          data-style-height="52px"
+          data-style-width="100%"
+        >
+          <a
+            href="https://uk.trustpilot.com/review/chesstraining.app"
+            target="_blank"
+            rel="noopener"
+          >
+            Trustpilot
+          </a>
+        </div>
+        <Link target="_blank" href="https://www.buymeacoffee.com/keeghanm">
+          <Button variant="primary">Support us with Coffee</Button>
+        </Link>
+      </div>
     </>
   )
 }
