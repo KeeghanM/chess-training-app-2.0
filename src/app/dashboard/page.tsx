@@ -62,7 +62,7 @@ export default async function Dashboard() {
         'Fundamental to the game of chess, endgames are an area of chess which many players neglect in their training.',
         'Not as exciting as openings, not as sexy as middlegame tactics, but arguably much more important than either.',
       ],
-      href: '/training/endgames',
+      href: '/training/endgames/train',
       buttonText: 'Train',
       active: await isFlagEnabledServer('endgame-trainer'),
     },
