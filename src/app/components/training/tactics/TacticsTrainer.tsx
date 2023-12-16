@@ -633,7 +633,7 @@ export default function TacticsTrainer(props: {
               <span>Auto Next on correct</span>
             </label>
             <div className="flex flex-col gap-2">
-              {puzzleFinished && !autoNext && (
+              {puzzleFinished && (!autoNext || puzzleStatus == 'incorrect') && (
                 <Button variant="accent" onClick={goToNextPuzzle}>
                   Next
                 </Button>

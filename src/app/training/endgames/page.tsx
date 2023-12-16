@@ -1,5 +1,8 @@
+import Heading from '~/app/components/_elements/heading'
+import StyledLink from '~/app/components/_elements/styledLink'
 import CtaRow from '~/app/components/_layouts/ctaRow'
-import PageHeader from '~/app/components/_layouts/pageHeader'
+import Hero from '~/app/components/_layouts/hero'
+import ImageRowFull from '~/app/components/_layouts/imageRowFull'
 
 export const metadata = {
   title:
@@ -8,35 +11,86 @@ export const metadata = {
     "Discover the key to mastering chess endgames with the Endgame Trainer feature on ChessTraining.app. Whether you're tackling queen, rook, knight, bishop, or pawn endgames, our tailored training tool guides you through each scenario with precision. Designed for chess enthusiasts of all levels, our Endgame Trainer sharpens your skills for those crucial final moments of the game. Dive into our comprehensive training and turn endgame challenges into your strategic advantage",
 }
 
-export default function Endgames() {
+export default async function Endgames() {
   return (
     <>
-      <PageHeader
+      <Hero
         title="Endgame Training"
-        subTitle="Coming soon!"
         image={{
           src: '/images/hero.avif',
-          alt: 'Wooden chess pieces on a chess board',
+          alt: 'Strategic chess endgame setup on a chess board',
         }}
-      />
-      <CtaRow
-        title="Curious?"
-        background="light"
         cta={{
-          text: 'View our roadmap',
-          link: '/product-roadmap',
+          text: 'Start Training',
+          link: '/training/endgames/train',
         }}
       >
-        <div className="flex flex-col gap-2">
-          <p>
-            We're working hard to bring you this feature as soon as possible. If
-            you want to know more about our upcoming features, check out our
-            roadmap.
-          </p>
-          <p className="italic">
-            P.s You can also see all our other upcoming feature releases.
-          </p>
-        </div>
+        <Heading as="h2">
+          Master your endgame strategy with ChessTraining.app's Endgame Trainer.
+        </Heading>
+      </Hero>
+      <ImageRowFull
+        heading="Understanding Chess Endgames"
+        background="light"
+        image={{
+          src: '/images/man_chess_1.png',
+          alt: 'A player deeply focused on a chess endgame scenario',
+        }}
+        imageSide="left"
+      >
+        <a id="about" />
+        <p>
+          Endgames are crucial in chess, where the game's fate often hangs in
+          the balance. Our Endgame Trainer provides you with scenarios that are
+          both challenging and instructive, covering queen, rook, knight,
+          bishop, and pawn endgames.
+        </p>
+        <p>
+          The training is designed to improve your precision and decision-making
+          in these vital stages of the game. By practicing different endgame
+          scenarios, you develop an intuitive understanding and strategic depth.
+        </p>
+        <p>
+          Our approach isn't just about learning moves; it's about developing a
+          deep strategic understanding of endgame principles.
+        </p>
+      </ImageRowFull>
+      <ImageRowFull
+        heading="How to Use the Endgame Trainer"
+        background="light"
+        image={{
+          src: '/images/woman_chess_4.png',
+          alt: 'A chess enthusiast analyzing endgame strategies',
+        }}
+        imageSide="right"
+      >
+        <p>
+          You can choose between queen, rook, knight, bishop, and pawn endgames.
+          You can also select the difficulty level, ranging from beginner to
+          master. The training will then provide you with a series of endgame
+          scenarios to solve.
+        </p>
+        <p>
+          In a similar way to our{' '}
+          <StyledLink href="/training/tactics" text="Tactics Trainer" />, you
+          are presented with a chess position and then must solve it. You only
+          have one chance to make the correct move, so think carefully before
+          you make your choice. If you get it wrong, you can study the correct
+          solution before moving on to the next position.
+        </p>
+      </ImageRowFull>
+      <CtaRow
+        title="Are You Ready to Master Chess Endgames?"
+        cta={{
+          text: 'Start Your Endgame Mastery',
+          link: '/training/endgames/train',
+        }}
+        background="dark"
+      >
+        <p>
+          The endgame trainer is free to use for all ChessTraining.app members.
+          No credit card required.
+        </p>
       </CtaRow>
     </>
   )
