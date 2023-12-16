@@ -14,8 +14,7 @@ import { getUserClient } from '~/app/_util/getUserClient'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 import * as Sentry from '@sentry/nextjs'
-import { TrainingPuzzle } from '../tactics/TacticsTrainer'
-import Heading from '../../_elements/heading'
+import type { TrainingPuzzle } from '../tactics/TacticsTrainer'
 
 export default function EndgameTrainer() {
   const { user } = getUserClient()
@@ -590,9 +589,9 @@ export default function EndgameTrainer() {
               <label className="ml-auto flex items-center gap-2 text-sm text-white">
                 <Toggle
                   defaultChecked={autoNext}
-                  onChange={() => {
+                  onChange={async () => {
                     setAutoNext(!autoNext)
-                    if (puzzleFinished) goToNextPuzzle()
+                    if (puzzleFinished) await goToNextPuzzle()
                   }}
                 />
                 <span>Auto Next on correct</span>

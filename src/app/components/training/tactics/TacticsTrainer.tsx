@@ -625,9 +625,9 @@ export default function TacticsTrainer(props: {
             <label className="ml-auto flex items-center gap-2 text-sm text-white">
               <Toggle
                 defaultChecked={autoNext}
-                onChange={() => {
+                onChange={async () => {
                   setAutoNext(!autoNext)
-                  if (puzzleFinished) goToNextPuzzle()
+                  if (puzzleFinished) await goToNextPuzzle()
                 }}
               />
               <span>Auto Next on correct</span>

@@ -12,7 +12,6 @@ export default function GlobalError({ error }) {
   return (
     <html>
       <body>
-        {/* This is the default Next.js error component. */}
         <Error />
       </body>
     </html>
