@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
   const { name, puzzleIds } = (await request.json()) as {
     name: string
-    puzzleIds: { id: string }[]
+    puzzleIds: { puzzleid: string }[]
   }
 
   if (!name || !puzzleIds) {

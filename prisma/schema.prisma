@@ -104,9 +104,10 @@ model TacticsSet {
 }
 
 model Puzzle {
-    id    String     @id
-    setId String
-    set   TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+    id       String     @id @default(cuid())
+    puzzleid String
+    setId    String
+    set      TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
 }
 
 model TacticsSetRound {
@@ -128,6 +129,8 @@ model UserProfile {
     description         String?
     highestOnlineRating Int?
     highestOTBRating    Int?
+    puzzleRating        Int?
+    difficulty          Int?
     createdAt           DateTime @default(now())
     updatedAt           DateTime @updatedAt
 }

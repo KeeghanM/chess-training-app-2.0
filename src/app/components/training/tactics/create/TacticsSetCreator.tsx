@@ -153,7 +153,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
     }
 
     const puzzleIds = puzzles.map((puzzle) => {
-      return { id: puzzle.puzzleid }
+      return { puzzleid: puzzle.puzzleid }
     })
 
     try {
