@@ -126,7 +126,7 @@ model UserProfile {
     id                  String   @id
     username            String   @unique
     fullName            String?
-    description         String?
+    description         String?  @db.Text
     highestOnlineRating Int?
     highestOTBRating    Int?
     puzzleRating        Int?

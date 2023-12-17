@@ -50,8 +50,12 @@ export default function SetListItem(props: {
           </p>
           <p>
             Accuracy:{' '}
-            {completedCount > 0
-              ? Math.round((currentRound?.correct ?? 0 / completedCount) * 100)
+            {currentRound!.correct + currentRound!.incorrect > 0
+              ? Math.round(
+                  (currentRound!.correct /
+                    (currentRound!.correct + currentRound!.incorrect)) *
+                    100,
+                )
               : 0}
             %
           </p>
