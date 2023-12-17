@@ -8,6 +8,7 @@ import * as Sentry from '@sentry/nextjs'
 import type { UserProfile } from '@prisma/client'
 import type { ResponseJson } from '~/app/api/responses'
 import Heading from '../_elements/heading'
+import Link from 'next/link'
 
 export default function AccountForm(props: { profile: UserProfile }) {
   const { user } = getUserClient()
@@ -97,7 +98,9 @@ export default function AccountForm(props: { profile: UserProfile }) {
         <Heading color="text-white" as={'h2'}>
           Account Settings
         </Heading>
-        <Button variant="danger">Back to dashboard</Button>
+        <Link href="/dashboard">
+          <Button variant="accent">Back to dashboard</Button>
+        </Link>
       </div>
 
       <form
