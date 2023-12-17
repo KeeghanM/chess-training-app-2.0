@@ -213,7 +213,7 @@ export default function TacticsTrainer(props: {
     if (puzzleStatus == 'incorrect') await increaseIncorrect()
 
     const currentPuzzleIndex = props.set.puzzles.findIndex(
-      (item) => item.id == currentPuzzle!.puzzleid,
+      (item) => item.puzzleid == currentPuzzle!.puzzleid,
     )
 
     if (currentPuzzleIndex + 1 >= props.set.size) {
