@@ -24,11 +24,20 @@ export async function getUserServer() {
 
 export async function createUserProfile(user: KindeUser) {
   try {
+    const profile = await prisma.userProfile.findFirst({
+      where: {
+        id: user.id,
+      },
+    })
+    if (profile) return // already exists
+
     const username =
       user.email ??
       'User' + (Math.floor(Math.random() * 90000) + 10000).toString()
+
+    const data = { id: user.id, username }
     await prisma.userProfile.create({
-      data: { id: user.id, username },
+      data: data,
     })
   } catch (e) {
     Sentry.captureException(e)

@@ -1,14 +1,17 @@
 import { redirect } from 'next/navigation'
 import { getUserServer } from '~/app/_util/getUserServer'
+import Container from '~/app/components/_elements/container'
+import PageHeader from '~/app/components/_layouts/pageHeader'
+import AccountForm from '~/app/components/dashboard/AccountForm'
 
 export default async function AccountSettingsPage() {
   const { user, profile } = await getUserServer()
   if (!user) redirect('/auth/signin')
+  if (!profile) redirect('/dashboard/new')
 
   return (
-    <div>
-      <h1>Account Settings</h1>
-      <p>Coming soon...</p>
-    </div>
+    <Container>
+      <AccountForm profile={profile} />
+    </Container>
   )
 }
