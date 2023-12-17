@@ -82,7 +82,7 @@ export default function Nav({ props }: { props: { user: KindeUser | null } }) {
           </Link>
         ))}
         <div className="hidden lg:block">|</div>
-        <div className="mt-auto px-4 lg:mt-0 lg:px-0">
+        <div className="px-4 lg:px-0">
           {props.user ? (
             <UserButtons />
           ) : (
