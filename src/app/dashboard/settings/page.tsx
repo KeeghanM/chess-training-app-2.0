@@ -10,17 +10,8 @@ export default async function AccountSettingsPage() {
   if (!profile) redirect('/dashboard/new')
 
   return (
-    <>
-      <PageHeader
-        title="Account Settings"
-        image={{
-          src: '/images/hero.avif',
-          alt: 'Wooden chess pieces on a chess board',
-        }}
-      />
-      <Container>
-        <AccountForm profile={profile} />
-      </Container>
-    </>
+    <Container>
+      <AccountForm profile={profile} />
+    </Container>
   )
 }
