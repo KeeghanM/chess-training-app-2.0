@@ -81,13 +81,6 @@ export default function MeetTheTeam() {
               {member.title}
             </Heading>
             <p>{member.bio}</p>
-            <ul className="ml-4 list-disc">
-              {member.links.map((link) => (
-                <li>
-                  <StyledLink href={link.url} text={link.text} />
-                </li>
-              ))}
-            </ul>
           </MultiColItem>
         ))}
       </MultiCol>
