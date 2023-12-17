@@ -122,7 +122,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       return false
     }
     // Regex to check for potentially risky special chars
-    const regex = /[@?#%^\-*]/g
+    const regex = /[@?#%^\*]/g
     if (regex.test(name)) {
       setMessage('Name must not include special characters')
       return false
