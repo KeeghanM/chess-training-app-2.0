@@ -30,14 +30,33 @@ export async function createUserProfile(user: KindeUser) {
       },
     })
     if (profile) return // already exists
-
     const username =
       user.email ??
       'User' + (Math.floor(Math.random() * 90000) + 10000).toString()
-
     const data = { id: user.id, username }
     await prisma.userProfile.create({
       data: data,
+    })
+
+    if (!user.email) return
+
+    const email = user.email
+    const firstName = user.given_name ?? ''
+    const lastName = user.family_name ?? ''
+    const contactResponse = await fetch('https://api.brevo.com/v3/contacts', {
+      method: 'POST',
+      // @ts-expect-error : this is a valid request
+      headers: {
+        accept: 'application/json',
+        'content-type': 'application/json',
+        'api-key': process.env.BREVO_API_KEY,
+      },
+      body: JSON.stringify({
+        attributes: { FIRSTNAME: firstName, LASTNAME: lastName },
+        listIds: [2],
+        email,
+        updateEnabled: true,
+      }),
     })
   } catch (e) {
     Sentry.captureException(e)
