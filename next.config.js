@@ -20,7 +20,7 @@ const sentryWebpackPluginOptions = {
   // Upload a larger set of source maps for prettier stack traces (increases build time)
   widenClientFileUpload: true,
   // Hides source maps from generated client bundles
-  hideSourceMaps: true,
+  hideSourceMaps: false,
   // Automatically tree-shake Sentry logger statements to reduce bundle size
   disableLogger: true,
   // Enables automatic instrumentation of Vercel Cron Monitors.
