@@ -93,6 +93,7 @@ export default function TacticsTrainer(props: {
   }
 
   const playMoveSound = (move: string) => {
+    if (!soundEnabled) return
     if (move.includes('+')) {
       checkSound()
     } else if (move.includes('x')) {
