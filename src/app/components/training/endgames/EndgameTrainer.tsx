@@ -17,9 +17,6 @@ import * as Sentry from '@sentry/nextjs'
 import type { TrainingPuzzle } from '../tactics/TacticsTrainer'
 
 export default function EndgameTrainer() {
-  const { user } = getUserClient()
-  const router = useRouter()
-
   // Setup main state for the game/puzzles
   const [currentPuzzle, setCurrentPuzzle] = useState<TrainingPuzzle>()
   const [game, setGame] = useState(new Chess())
@@ -160,7 +157,7 @@ export default function EndgameTrainer() {
   const checkEndOfLine = async () => {
     if (game.history().length >= currentPuzzle!.moves.length) {
       // We have reached the end of the line
-      correctSound()
+      if (soundEnabled) correctSound()
       setPuzzleStatus('correct')
       setPuzzleFinished(true)
 
@@ -255,7 +252,7 @@ export default function EndgameTrainer() {
     if (correctMove !== playerMove.lan && !game.isCheckmate()) {
       // We played the wrong move
       setPuzzleStatus('incorrect')
-      incorrectSound()
+      if (soundEnabled) incorrectSound()
       game.undo()
       setReadyForInput(false)
       await showIncorrectSequence()
@@ -264,7 +261,7 @@ export default function EndgameTrainer() {
       setPuzzleFinished(true)
       return false
     }
-    playMoveSound(correctMove!)
+    playMoveSound(playerMove.san!)
     setPosition(game.fen())
     makeBookMove()
     await checkEndOfLine()
@@ -610,7 +607,7 @@ export default function EndgameTrainer() {
                 <span>Auto Next on correct</span>
               </label>
               <div className="flex flex-col gap-2">
-                {puzzleFinished &&
+                {puzzleFinished ? (
                   (!autoNext || puzzleStatus == 'incorrect') && (
                     <Button
                       variant="accent"
@@ -618,7 +615,21 @@ export default function EndgameTrainer() {
                     >
                       Next
                     </Button>
-                  )}
+                  )
+                ) : (
+                  <Button
+                    variant="secondary"
+                    onClick={async () => {
+                      setPuzzleStatus('incorrect')
+                      setReadyForInput(false)
+                      await showIncorrectSequence()
+                      setReadyForInput(true)
+                      setPuzzleFinished(true)
+                    }}
+                  >
+                    Skip/Show Solution
+                  </Button>
+                )}
 
                 <Button variant="danger" onClick={exit}>
                   Exit
