@@ -259,7 +259,7 @@ export default function TacticsTrainer(props: {
   const checkEndOfLine = async () => {
     if (game.history().length >= currentPuzzle!.moves.length) {
       // We have reached the end of the line
-      correctSound()
+      if (soundEnabled) correctSound()
       setPuzzleStatus('correct')
       setPuzzleFinished(true)
 
@@ -354,7 +354,7 @@ export default function TacticsTrainer(props: {
     if (correctMove !== playerMove.lan && !game.isCheckmate()) {
       // We played the wrong move
       setPuzzleStatus('incorrect')
-      incorrectSound()
+      if (soundEnabled) incorrectSound()
       game.undo()
       setReadyForInput(false)
       await showIncorrectSequence()
@@ -363,7 +363,7 @@ export default function TacticsTrainer(props: {
       setPuzzleFinished(true)
       return false
     }
-    playMoveSound(correctMove!)
+    playMoveSound(playerMove.san!)
     setPosition(game.fen())
     makeBookMove()
     await checkEndOfLine()
