@@ -27,7 +27,6 @@ export interface TrainingPuzzle {
   themes: string[]
 }
 
-// TODO: Add a "show solution/not sure" button that shows the solution and marks it as incorrect
 // TODO: Add a "Show Solution" button when wrong move is played instead of auto showing it
 // TODO: Add an 'offline mode' which saves stats to localStorage and syncs when online
 
@@ -659,13 +658,30 @@ export default function TacticsTrainer(props: {
               <span>Auto Next on correct</span>
             </label>
             <div className="flex flex-col gap-2">
-              {puzzleFinished && (!autoNext || puzzleStatus == 'incorrect') && (
-                <Button
-                  variant="accent"
-                  onClick={() => goToNextPuzzle(puzzleStatus)}
-                >
-                  Next
-                </Button>
+              {puzzleFinished ? (
+                (!autoNext || puzzleStatus == 'incorrect') && (
+                  <Button
+                    variant="accent"
+                    onClick={() => goToNextPuzzle(puzzleStatus)}
+                  >
+                    Next
+                  </Button>
+                )
+              ) : (
+                <>
+                  <Button
+                    variant="secondary"
+                    onClick={async () => {
+                      setPuzzleStatus('incorrect')
+                      setReadyForInput(false)
+                      await showIncorrectSequence()
+                      setReadyForInput(true)
+                      setPuzzleFinished(true)
+                    }}
+                  >
+                    Skip/Show Solution
+                  </Button>
+                </>
               )}
 
               <Button variant="danger" onClick={exit}>
