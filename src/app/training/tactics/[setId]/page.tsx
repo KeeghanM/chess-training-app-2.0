@@ -13,18 +13,24 @@ export default async function TacticsTrainPage({
 }) {
   const { user } = await getUserServer()
   if (!user) redirect('/auth/signin')
+  let set: PrismaTacticsSetWithPuzzles | null = null
 
-  const set = (await prisma.tacticsSet.findUnique({
-    where: { id: params.setId, userId: user.id },
-    include: { puzzles: true, rounds: true },
-  })) as PrismaTacticsSetWithPuzzles | null
+  try {
+    set = (await prisma.tacticsSet.findUnique({
+      where: { id: params.setId, userId: user.id },
+      include: { puzzles: true, rounds: true },
+    })) as PrismaTacticsSetWithPuzzles | null
+  } catch (e) {
+    Sentry.captureException(e)
+    return redirect('/training/tactics/list')
+  }
 
   if (!set) {
     Sentry.captureEvent({
       message: `User tried to access set but not found`,
       extra: { userId: user.id, setId: params.setId },
     })
-    return redirect('/training/tactics')
+    return redirect('/training/tactics/list')
   }
 
   return (

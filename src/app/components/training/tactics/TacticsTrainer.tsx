@@ -202,15 +202,15 @@ export default function TacticsTrainer(props: {
     setLoading(false)
   }
 
-  const goToNextPuzzle = async () => {
+  const goToNextPuzzle = async (status: string) => {
     // First log all the stats re:current puzzle
     // Check if we've completed the set, in which case we need to create a new round & exit
     // If we haven't then load the next puzzle
     setLoading(true)
 
     await increaseTimeTaken()
-    if (puzzleStatus == 'correct') await increaseCorrect()
-    if (puzzleStatus == 'incorrect') await increaseIncorrect()
+    if (status == 'correct') await increaseCorrect()
+    if (status == 'incorrect') await increaseIncorrect()
 
     const currentPuzzleIndex = props.set.puzzles.findIndex(
       (item) => item.puzzleid == currentPuzzle!.puzzleid,
@@ -262,7 +262,7 @@ export default function TacticsTrainer(props: {
       setPuzzleFinished(true)
 
       if (autoNext && puzzleStatus != 'incorrect') {
-        await goToNextPuzzle()
+        await goToNextPuzzle('correct')
       }
       return true
     }
@@ -628,14 +628,17 @@ export default function TacticsTrainer(props: {
                 defaultChecked={autoNext}
                 onChange={async () => {
                   setAutoNext(!autoNext)
-                  if (puzzleFinished) await goToNextPuzzle()
+                  if (puzzleFinished) await goToNextPuzzle(puzzleStatus)
                 }}
               />
               <span>Auto Next on correct</span>
             </label>
             <div className="flex flex-col gap-2">
               {puzzleFinished && (!autoNext || puzzleStatus == 'incorrect') && (
-                <Button variant="accent" onClick={goToNextPuzzle}>
+                <Button
+                  variant="accent"
+                  onClick={() => goToNextPuzzle(puzzleStatus)}
+                >
                   Next
                 </Button>
               )}

@@ -26,6 +26,10 @@ export default function Footer() {
           url: '/about/features/natural-play-learning',
         },
         {
+          text: 'Woodpecker Method',
+          url: '/about/features/woodpecker-method',
+        },
+        {
           text: 'Course Trainer',
           url: '/courses',
         },
