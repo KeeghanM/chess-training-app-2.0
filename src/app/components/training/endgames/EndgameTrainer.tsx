@@ -142,7 +142,12 @@ export default function EndgameTrainer() {
     return timeoutId
   }
 
-  const goToNextPuzzle = async () => {
+  const goToNextPuzzle = async (status: string) => {
+    if (status == 'correct') {
+      await trackEventOnClient('endgame_correct', {})
+    } else if (status == 'incorrect') {
+      await trackEventOnClient('endgame_incorrect', {})
+    }
     setLoading(true)
     const newPuzzle = await getPuzzle()
     setPuzzleStatus('none')
@@ -158,7 +163,7 @@ export default function EndgameTrainer() {
       setPuzzleFinished(true)
 
       if (autoNext && puzzleStatus != 'incorrect') {
-        await goToNextPuzzle()
+        await goToNextPuzzle('correct')
       }
       return true
     }
@@ -446,7 +451,13 @@ export default function EndgameTrainer() {
             </Button>
           </div>
         </div>
-        <Button variant="success" onClick={() => setMode('training')}>
+        <Button
+          variant="success"
+          onClick={() => {
+            setMode('training')
+            trackEventOnClient('endgame_start', {})
+          }}
+        >
           Start Training
         </Button>
       </div>
@@ -591,7 +602,7 @@ export default function EndgameTrainer() {
                   defaultChecked={autoNext}
                   onChange={async () => {
                     setAutoNext(!autoNext)
-                    if (puzzleFinished) await goToNextPuzzle()
+                    if (puzzleFinished) await goToNextPuzzle(puzzleStatus)
                   }}
                 />
                 <span>Auto Next on correct</span>
@@ -599,7 +610,10 @@ export default function EndgameTrainer() {
               <div className="flex flex-col gap-2">
                 {puzzleFinished &&
                   (!autoNext || puzzleStatus == 'incorrect') && (
-                    <Button variant="accent" onClick={goToNextPuzzle}>
+                    <Button
+                      variant="accent"
+                      onClick={() => goToNextPuzzle(puzzleStatus)}
+                    >
                       Next
                     </Button>
                   )}
