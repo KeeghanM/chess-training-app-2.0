@@ -101,6 +101,8 @@ export default function EndgameTrainer() {
   }
 
   const playMoveSound = (move: string) => {
+    if (!soundEnabled) return
+
     if (move.includes('+')) {
       checkSound()
     } else if (move.includes('x')) {
