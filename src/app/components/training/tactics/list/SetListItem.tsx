@@ -50,12 +50,14 @@ export default function SetListItem(props: {
           </p>
           <p>
             Accuracy:{' '}
-            {currentRound!.correct + currentRound!.incorrect > 0
-              ? Math.round(
-                  (currentRound!.correct /
-                    (currentRound!.correct + currentRound!.incorrect)) *
-                    100,
-                )
+            {currentRound
+              ? currentRound.correct + currentRound.incorrect > 0
+                ? Math.round(
+                    (currentRound.correct /
+                      (currentRound.correct + currentRound.incorrect)) *
+                      100,
+                  )
+                : 0
               : 0}
             %
           </p>
