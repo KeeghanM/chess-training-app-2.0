@@ -16,6 +16,7 @@ import 'react-toggle/style.css'
 import TimeSince from '../../general/TimeSince'
 import type { PrismaTacticsSetWithPuzzles } from '~/app/_util/GetTacticSets'
 import * as Sentry from '@sentry/nextjs'
+import Link from 'next/link'
 
 export interface TrainingPuzzle {
   puzzleid: string
@@ -616,6 +617,29 @@ export default function TacticsTrainer(props: {
                   />
                 </svg>
                 <p>Incorrect!</p>
+                <Link
+                  href={`https://lichess.org/training/${currentPuzzle?.puzzleid}`}
+                  target="_blank"
+                >
+                  <span className="flex flex-row items-center gap-1 text-sm text-white underline">
+                    Lichess
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
+                      />
+                    </svg>
+                  </span>
+                </Link>
               </div>
             )}
           </div>
