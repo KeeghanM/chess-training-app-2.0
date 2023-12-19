@@ -22,6 +22,7 @@ export default function CreateCourseForm() {
   const [courseName, setCourseName] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [lines, setLines] = useState<Line[]>([])
+  const { user } = getUserClient()
 
   const upload = async (
     courseName: string,
@@ -29,7 +30,6 @@ export default function CreateCourseForm() {
     group: string,
     lines: Line[],
   ) => {
-    const { user } = getUserClient()
     if (!user) return
 
     try {
