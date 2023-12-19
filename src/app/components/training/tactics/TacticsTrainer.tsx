@@ -133,6 +133,10 @@ export default function TacticsTrainer(props: {
   }
 
   const increaseTimeTaken = async () => {
+    if (!user) {
+      Sentry.captureException(new Error('No user'))
+      return
+    }
     setLoading(true)
     const newTime = Date.now()
     const timeTaken = (newTime - startTime) / 1000
@@ -141,7 +145,7 @@ export default function TacticsTrainer(props: {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user!.id,
+          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -157,6 +161,10 @@ export default function TacticsTrainer(props: {
   }
 
   const increaseCorrect = async () => {
+    if (!user) {
+      Sentry.captureException(new Error('No user'))
+      return
+    }
     setLoading(true)
     try {
       await trackEventOnClient('tactics_set_puzzle_correct', {
@@ -166,7 +174,7 @@ export default function TacticsTrainer(props: {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user!.id,
+          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -179,6 +187,10 @@ export default function TacticsTrainer(props: {
     setLoading(false)
   }
   const increaseIncorrect = async () => {
+    if (!user) {
+      Sentry.captureException(new Error('No user'))
+      return
+    }
     setLoading(true)
     try {
       await trackEventOnClient('tactics_set_puzzle_incorrect', {
@@ -188,7 +200,7 @@ export default function TacticsTrainer(props: {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user!.id,
+          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -217,26 +229,32 @@ export default function TacticsTrainer(props: {
 
     if (currentPuzzleIndex + 1 >= props.set.size) {
       // We have completed the set
-      try {
-        await trackEventOnClient('tactics_set_round_completed', {
-          roundNumber: currentRound.roundNumber.toString(),
-          correct: currentRound.correct.toString(),
-          incorrect: currentRound.incorrect.toString(),
-        })
-        await fetch('/api/tactics/createRound', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + user!.id,
-          },
-          body: JSON.stringify({
-            setId: props.set.id,
-            roundNumber: currentRound.roundNumber + 1,
-          }),
-        })
-      } catch (e) {
-        Sentry.captureException(e)
+
+      if (!user) {
+        Sentry.captureException(new Error('No user'))
+      } else {
+        try {
+          await trackEventOnClient('tactics_set_round_completed', {
+            roundNumber: currentRound.roundNumber.toString(),
+            correct: currentRound.correct.toString(),
+            incorrect: currentRound.incorrect.toString(),
+          })
+          await fetch('/api/tactics/createRound', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: 'Bearer ' + user!.id,
+            },
+            body: JSON.stringify({
+              setId: props.set.id,
+              roundNumber: currentRound.roundNumber + 1,
+            }),
+          })
+        } catch (e) {
+          Sentry.captureException(e)
+        }
       }
+
       // Return to the main lister
       await exit()
       return
@@ -411,6 +429,7 @@ export default function TacticsTrainer(props: {
 
   const exit = async () => {
     setLoading(true)
+    await increaseTimeTaken()
     await trackEventOnClient('tactics_set_closed', {})
     router.push('/training/tactics/list')
     return
