@@ -63,7 +63,7 @@ export default async function Tactics() {
         imageSide="right"
       >
         <p>
-          Using the Tactics Trainer, you can build a set of between 200-500
+          Using the Tactics Trainer, you can build a set of between 150-500
           puzzles. Each one tailored to your chess rating. We will automatically
           track the time spent on each puzzle, and the overall set. As well as
           your accuracy throughout your training.
