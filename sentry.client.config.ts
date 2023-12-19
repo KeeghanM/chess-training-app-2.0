@@ -8,7 +8,7 @@ Sentry.init({
   dsn: 'https://275dbc75cb4545c76f5b115c0fa503c1@o4505267872071680.ingest.sentry.io/4506384559112192',
 
   // Adjust this value in production, or use tracesSampler for greater control
-  tracesSampleRate: process.env.NODE_ENV === 'production' ? 0.01 : 1.0,
+  tracesSampleRate: process.env.NODE_ENV === 'development' ? 1 : 0.01,
 
   // Setting this option to true will print useful information to the console while you're setting up Sentry.
   debug: false,
@@ -17,7 +17,7 @@ Sentry.init({
 
   // This sets the sample rate to be 10%. You may want this to be 100% while
   // in development and sample at a lower rate in production
-  replaysSessionSampleRate: process.env.NODE_ENV === 'production' ? 0.1 : 1.0,
+  replaysSessionSampleRate: process.env.NODE_ENV === 'development' ? 1 : 0.1,
 
   // You can remove this option if you're not planning to use the Sentry Session Replay feature:
   integrations: [
