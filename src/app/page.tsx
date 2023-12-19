@@ -7,7 +7,13 @@ import Hero from './components/_layouts/hero'
 import ImageRowFull from './components/_layouts/imageRowFull'
 import { MultiCol, MultiColItem } from './components/_layouts/multiCol'
 import Script from 'next/script'
-import Image from 'next/image'
+
+export const metadata = {
+  title:
+    'ChessTraining.app: Revolutionize Your Chess Game with Innovative Learning Methods',
+  description:
+    'Improve your chess skills using the Woodpecker Method and our innovative Natural Play Learning. With a variety of training tools including tactics, courses, and endgames training. Learn chess in an intuitive, efficient, and enjoyable way, backed by a community of chess enthusiasts and professionals. Designed for those looking to elevate their chess game through science-backed, personalized training.',
+}
 
 export default async function Home() {
   const reviews = [
