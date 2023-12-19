@@ -20,7 +20,7 @@ export default async function TacticsTrainPage({
     if (!userId) return redirect('/auth/signin')
 
     set = (await prisma.tacticsSet.findUnique({
-      where: { id: params.setId, userId: user.id },
+      where: { id: params.setId, userId },
       include: { puzzles: true, rounds: true },
     })) as PrismaTacticsSetWithPuzzles | null
   } catch (e) {
