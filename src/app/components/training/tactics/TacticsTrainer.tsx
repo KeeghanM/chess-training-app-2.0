@@ -27,9 +27,6 @@ export interface TrainingPuzzle {
   themes: string[]
 }
 
-// TODO: Add a "Show Solution" button when wrong move is played instead of auto showing it
-// TODO: Add an 'offline mode' which saves stats to localStorage and syncs when online
-
 export default function TacticsTrainer(props: {
   set: PrismaTacticsSetWithPuzzles
 }) {
@@ -60,6 +57,7 @@ export default function TacticsTrainer(props: {
   const [incorrectSound] = useSound('/sfx/incorrect.mp3')
 
   // Setup state for the settings/general
+  const windowSize = useWindowSize() as { width: number; height: number }
   const [autoNext, setAutoNext] = useState(false)
   const [loading, setLoading] = useState(true)
   const [readyForInput, setReadyForInput] = useState(false)
@@ -418,8 +416,6 @@ export default function TacticsTrainer(props: {
     return
   }
 
-  const windowSize = useWindowSize() as { width: number; height: number }
-
   // Here are all our useEffect functions
   useEffect(() => {
     // On mount, load the first puzzle
@@ -472,6 +468,9 @@ export default function TacticsTrainer(props: {
       return () => clearTimeout(timeoutId)
     }
   }, [gameReady, game, currentPuzzle])
+
+  // Last check to ensure we have a user
+  if (!user) return null
 
   return (
     <div className="relative bg-purple-700 p-4">

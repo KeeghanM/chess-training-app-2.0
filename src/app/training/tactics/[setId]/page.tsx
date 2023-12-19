@@ -11,13 +11,16 @@ export default async function TacticsTrainPage({
 }: {
   params: { setId: string }
 }) {
-  const { user } = await getUserServer()
+  const { user, profile } = await getUserServer()
   if (!user) redirect('/auth/signin')
   let set: PrismaTacticsSetWithPuzzles | null = null
 
   try {
+    const userId = user.id ?? profile?.id ?? ''
+    if (!userId) return redirect('/auth/signin')
+
     set = (await prisma.tacticsSet.findUnique({
-      where: { id: params.setId, userId: user.id },
+      where: { id: params.setId, userId },
       include: { puzzles: true, rounds: true },
     })) as PrismaTacticsSetWithPuzzles | null
   } catch (e) {
