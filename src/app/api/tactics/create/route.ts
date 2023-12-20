@@ -23,6 +23,10 @@ export async function POST(request: Request) {
     return errorResponse('Invalid name', 400)
   }
 
+  if (puzzleIds.length < 20 || puzzleIds.length > 500) {
+    return errorResponse('Invalid size of puzzle set', 400)
+  }
+
   try {
     const set = await prisma.tacticsSet.create({
       data: {

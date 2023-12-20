@@ -25,7 +25,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
   const [message, setMessage] = useState('')
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
-  const [size, setSize] = useState(500)
+  const [size, setSize] = useState(300)
   const [themesList, setThemesList] = useState<string[]>([])
   const [difficulty, setDifficulty] = useState(1)
   const [rating, setRating] = useState(1500)
@@ -131,8 +131,8 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       setMessage('Rating must be between 500 & 3000')
       return false
     }
-    if (size < 150 || size > 500) {
-      setMessage('Set must be between 150 & 500 Puzzles')
+    if (size < 20 || size > 500) {
+      setMessage('Set must be between 20 & 500 Puzzles')
       return false
     }
 
@@ -255,7 +255,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                 <input
                   type="number"
                   className="w-full border border-gray-300 px-4 py-2"
-                  min={'150'}
+                  min={'20'}
                   max={'500'}
                   value={size}
                   onChange={(e) => {
@@ -263,7 +263,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   }}
                 />
                 <p className="text-sm italic">
-                  500 is recommended for maximal effect, but lower numbers will
+                  300 is recommended for maximal effect, but lower numbers will
                   make for faster training
                 </p>
               </div>

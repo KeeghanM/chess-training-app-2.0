@@ -44,7 +44,7 @@ export default async function Tactics() {
           solving the same puzzles again and again, only faster.
         </p>
         <p>
-          The puzzles should be difficult but not impossible, in the 3-7 minute
+          The puzzles should be difficult but not impossible, in the 2-5 minute
           range to solve. Not 30 seconds. By repeating the set over and over,
           you will get faster and more accurate.
         </p>
