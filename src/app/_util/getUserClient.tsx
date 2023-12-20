@@ -3,6 +3,6 @@
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 export function getUserClient() {
-  const { user } = useKindeBrowserClient()
-  return { user }
+  const { user, permissions } = useKindeBrowserClient()
+  return { user, permissions: permissions?.permissions }
 }

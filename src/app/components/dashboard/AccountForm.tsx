@@ -3,15 +3,15 @@
 import Button from '../_elements/button'
 import Spinner from '../general/Spinner'
 import { useState } from 'react'
-import { getUserClient } from '~/app/_util/getUserClient'
 import * as Sentry from '@sentry/nextjs'
 import type { UserProfile } from '@prisma/client'
 import type { ResponseJson } from '~/app/api/responses'
 import Heading from '../_elements/heading'
 import Link from 'next/link'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 export default function AccountForm(props: { profile: UserProfile }) {
-  const { user } = getUserClient()
+  const { user } = useKindeBrowserClient()
 
   const [username, setUsernameame] = useState(
     props.profile.username ?? user?.email ?? '',

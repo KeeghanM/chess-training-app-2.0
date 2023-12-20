@@ -10,13 +10,13 @@ import Spinner from '../../general/Spinner'
 import useSound from 'use-sound'
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import Button from '../../_elements/button'
-import { getUserClient } from '~/app/_util/getUserClient'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 import TimeSince from '../../general/TimeSince'
 import type { PrismaTacticsSetWithPuzzles } from '~/app/_util/GetTacticSets'
 import * as Sentry from '@sentry/nextjs'
 import Link from 'next/link'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 export interface TrainingPuzzle {
   puzzleid: string
@@ -30,7 +30,7 @@ export interface TrainingPuzzle {
 export default function TacticsTrainer(props: {
   set: PrismaTacticsSetWithPuzzles
 }) {
-  const { user } = getUserClient()
+  const { user } = useKindeBrowserClient()
   const router = useRouter()
 
   // Setup main state for the game/puzzles

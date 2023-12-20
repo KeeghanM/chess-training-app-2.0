@@ -6,19 +6,22 @@ import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import { useState } from 'react'
-import { getUserClient } from '~/app/_util/getUserClient'
+import { useEffect, useState } from 'react'
 import type { PrismaTacticsSet } from '~/app/_util/GetTacticSets'
 import type { ResponseJson } from '~/app/api/responses'
 import type { TrainingPuzzle } from '../TacticsTrainer'
 import * as Sentry from '@sentry/nextjs'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 interface TacticsSetCreatorProps {
   setCount: number
   maxSets: number
   setCreated: (set: PrismaTacticsSet) => void
 }
 export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
-  const { user } = getUserClient()
+  const { user, permissions } = useKindeBrowserClient()
+  const [hasUnlimitedSets, setHasUnlimitedSets] = useState(
+    permissions?.permissions?.includes('unlimited-sets') ?? false,
+  )
   const { setCount, maxSets, setCreated } = props
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
@@ -202,13 +205,23 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
     setOpen(false)
   }
 
+  useEffect(() => {
+    console.log(permissions)
+    if (permissions?.permissions?.includes('unlimited-sets')) {
+      setHasUnlimitedSets(true)
+    }
+  }, [permissions])
+
   return (
     <div className="flex flex-col items-center gap-1 md:flex-row md:gap-4">
       <Heading as={'h3'}>
-        {setCount}/{maxSets} Sets Created
+        {setCount}
+        {!hasUnlimitedSets ? <>/{maxSets}</> : ''} Sets Created
       </Heading>
       <AlertDialog.Root open={open} onOpenChange={setOpen}>
-        <AlertDialog.Trigger className={setCount < maxSets ? '' : 'hidden'}>
+        <AlertDialog.Trigger
+          className={setCount < maxSets || hasUnlimitedSets ? '' : 'hidden'}
+        >
           <div
             onClick={async () =>
               await trackEventOnClient('create_tactics_set_opened', {})

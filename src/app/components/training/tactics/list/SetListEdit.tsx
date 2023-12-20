@@ -3,24 +3,30 @@ import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import type { PrismaTacticsSet } from '~/app/_util/GetTacticSets'
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
-import { getUserClient } from '~/app/_util/getUserClient'
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { ResponseJson } from '~/app/api/responses'
 import * as Sentry from '@sentry/nextjs'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 
 export default function SetListEdit(props: {
   set: PrismaTacticsSet
+  user: KindeUser | null
   onFinished: () => void
 }) {
   const { set } = props
-  const { user } = getUserClient()
+  const user = props.user
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-
-  // Form Values
   const [name, setName] = useState(set.name)
+
+  useEffect(() => {
+    setName(set.name)
+    setLoading(false)
+    setError('')
+  }, [open])
 
   const close = () => {
     setOpen(false)
@@ -29,9 +35,8 @@ export default function SetListEdit(props: {
   const deleteSet = async () => {
     setLoading(true)
     try {
-      await trackEventOnClient('tactics_set_delete', {})
       if (!user) throw new Error('Not logged in')
-      await fetch('/api/tactics/delete', {
+      const resp = await fetch('/api/tactics/delete', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,10 +47,18 @@ export default function SetListEdit(props: {
         }),
       })
 
+      const json = (await resp.json()) as ResponseJson
+
+      if (json.message != 'Set Deleted')
+        throw new Error(json?.message ?? 'Unknown error')
+
+      await trackEventOnClient('tactics_set_delete', {})
       props.onFinished()
       close()
     } catch (e) {
       Sentry.captureException(e)
+      if (e instanceof Error) setError(e.message)
+      else setError('Unknown error')
     }
     setLoading(false)
   }
@@ -53,9 +66,8 @@ export default function SetListEdit(props: {
   const updateSet = async () => {
     setLoading(true)
     try {
-      await trackEventOnClient('tactics_set_updated', {})
       if (!user) throw new Error('Not logged in')
-      const resp = await fetch('/api/tactics/delete', {
+      const resp = await fetch('/api/tactics/update', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -69,16 +81,16 @@ export default function SetListEdit(props: {
 
       const json = (await resp.json()) as ResponseJson
 
-      if (json.message != 'Set Created') {
-        setError('Oops! Something went wrong: ' + json?.message)
-        close()
-        return
-      }
+      if (json.message != 'Set Updated')
+        throw new Error(json?.message ?? 'Unknown error')
 
+      await trackEventOnClient('tactics_set_updated', {})
       props.onFinished()
       close()
     } catch (e) {
       Sentry.captureException(e)
+      if (e instanceof Error) setError(e.message)
+      else setError('Unknown error')
     }
     setLoading(false)
   }

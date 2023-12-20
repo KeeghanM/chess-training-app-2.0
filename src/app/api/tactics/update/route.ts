@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       },
     })
 
-    return successResponse('Set Deleted', { setId }, 200)
+    return successResponse('Set Updated', { setId }, 200)
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)

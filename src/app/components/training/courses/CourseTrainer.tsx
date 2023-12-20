@@ -10,7 +10,6 @@ import { useEffect, useState } from 'react'
 import { Chessboard } from 'react-chessboard'
 import { Chess } from 'chess.js'
 import { useRouter } from 'next/navigation'
-import { getUserClient } from '~/app/_util/getUserClient'
 import type { UserFen } from '@prisma/client'
 import type { Square } from 'chess.js'
 import type { ResponseJson } from '~/app/api/responses'
@@ -19,6 +18,7 @@ import type {
   PrismaUserLine,
 } from '~/app/_util/GetUserCourse'
 import * as Sentry from '@sentry/nextjs'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 // TODO: BugFix - Weird jumping between lines, doesn't seem to be in order + showing "next line" after teaching moves finished instead of jumping to start for repeat
 // TODO: BugFix - last line in course isn't being logged
@@ -33,7 +33,7 @@ export default function CourseTrainer(props: {
   userFens: UserFen[]
 }) {
   const router = useRouter()
-  const { user } = getUserClient()
+  const { user } = useKindeBrowserClient()
 
   const [game, setGame] = useState(new Chess())
   const [currentLine, setCurrentLine] = useState<PrismaUserLine>(

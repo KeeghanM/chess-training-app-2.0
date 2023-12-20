@@ -11,8 +11,8 @@ import Heading from '~/app/components/_elements/heading'
 import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
 import type { ResponseJson } from '~/app/api/responses'
-import { getUserClient } from '~/app/_util/getUserClient'
 import * as Sentry from '@sentry/nextjs'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 export default function CreateCourseForm() {
   const router = useRouter()
@@ -22,7 +22,7 @@ export default function CreateCourseForm() {
   const [courseName, setCourseName] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [lines, setLines] = useState<Line[]>([])
-  const { user } = getUserClient()
+  const { user } = useKindeBrowserClient()
 
   const upload = async (
     courseName: string,

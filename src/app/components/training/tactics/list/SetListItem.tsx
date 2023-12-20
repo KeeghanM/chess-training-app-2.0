@@ -8,12 +8,14 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import SetListEdit from './SetListEdit'
 import SetListStats from './SetListStats'
 import toHHMMSS from '~/app/_util/toHHMMSS'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 export default function SetListItem(props: {
   set: PrismaTacticsSet
   updated: () => void
 }) {
   const { set } = props
+  const { user } = useKindeBrowserClient()
   const currentRound = set.rounds
     ? set.rounds[set.rounds.length - 1]
     : undefined
@@ -63,11 +65,15 @@ export default function SetListItem(props: {
           </p>
           <p>Time Spent: {toHHMMSS(currentRound?.timeSpent ?? 0)}</p>
         </div>
-        <div className="ml-auto flex flex-col gap-2 md:flex-row">
-          <Button onClick={trainSet} variant="primary">
+        <div className="mx-auto flex flex-col gap-2 md:ml-auto md:flex-row">
+          <Button
+            disabled={set.rounds?.length >= 8}
+            onClick={trainSet}
+            variant="primary"
+          >
             Train
           </Button>
-          <SetListEdit set={set} onFinished={props.updated} />
+          <SetListEdit set={set} onFinished={props.updated} user={user} />
           <SetListStats set={set} />
         </div>
       </div>
