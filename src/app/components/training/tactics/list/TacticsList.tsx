@@ -41,7 +41,6 @@ export default function TacticsList() {
   }
 
   const updateList = () => {
-    console.log('Updating list')
     setSets([])
     getSets()
       .then((sets) => setSets(sets ?? []))

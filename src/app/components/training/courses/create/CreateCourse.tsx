@@ -38,15 +38,18 @@ export default function CreateCourseForm() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({ ...courseData, description }),
       })
       const json = (await response.json()) as ResponseJson
 
-      if (json.message != 'Course created') {
-        throw new Error(json.message)
+      if (json?.message == 'Course name is not available') {
+        // TODO: Show name field with error
+        return
       }
+
+      if (json?.message != 'Course created')
+        throw new Error(json?.message ?? 'Unknown error')
 
       await trackEventOnClient('create_course_success', {})
       const courseSlug = json.data!.slug as string
@@ -86,6 +89,9 @@ export default function CreateCourseForm() {
       {currentStep == 'group' && (
         <GroupSelector
           lines={lines}
+          back={() => {
+            setCurrentStep('import')
+          }}
           finished={async (group, sortedLines) => {
             await upload(courseName, description, group, sortedLines)
           }}
@@ -138,7 +144,7 @@ function transformCourseData(courseName: string, group: string, lines: Line[]) {
   const processedLines = lines.map((line) => {
     const groupName = line.tags[group]!
     const colour = line.tags.Colour!
-    const moves = line.moves.map((move) => move.notation).join(',')
+    const moves = line.moves
     return {
       groupName,
       colour,

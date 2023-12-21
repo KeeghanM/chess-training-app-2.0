@@ -27,7 +27,7 @@ model Course {
 }
 
 model Group {
-    id        String   @id @default(cuid())
+    id        Int      @id @default(autoincrement())
     courseId  String
     groupName String
     createdAt DateTime @default(now())
@@ -52,11 +52,11 @@ model UserCourse {
 }
 
 model Line {
-    id        String     @id @default(cuid())
+    id        Int        @id @default(autoincrement())
     courseId  String
     lineName  String?
     colour    String
-    groupId   String
+    groupId   Int
     createdAt DateTime   @default(now())
     updatedAt DateTime   @updatedAt
     course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -67,7 +67,7 @@ model Line {
 
 model Moves {
     id         String   @id @default(cuid())
-    lineId     String
+    lineId     Int
     move       String
     moveNumber Int
     colour     Boolean
@@ -78,10 +78,10 @@ model Moves {
 }
 
 model UserLine {
-    id            String     @id @default(cuid())
+    id            Int        @id @default(autoincrement())
     userId        String
     userCourseId  String
-    lineId        String
+    lineId        Int
     revisionDate  DateTime?
     lastTrained   DateTime?
     lastStatus    Boolean?
@@ -94,7 +94,7 @@ model UserLine {
 }
 
 model UserFen {
-    id           String     @id @default(cuid())
+    id           Int        @id @default(autoincrement())
     userCourseId String
     fen          String
     timesTrained Int        @default(0)
@@ -117,14 +117,14 @@ model TacticsSet {
 }
 
 model Puzzle {
-    id       String     @id @default(cuid())
+    id       Int        @id @default(autoincrement())
     puzzleid String
     setId    String
     set      TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
 }
 
 model TacticsSetRound {
-    id          String     @id @default(cuid())
+    id          Int        @id @default(autoincrement())
     roundNumber Int
     timeSpent   Int        @default(0)
     correct     Int        @default(0)

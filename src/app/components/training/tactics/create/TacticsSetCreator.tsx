@@ -208,7 +208,6 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
   }
 
   useEffect(() => {
-    console.log(permissions)
     if (permissions?.permissions?.includes('unlimited-sets')) {
       setHasUnlimitedSets(true)
     }
