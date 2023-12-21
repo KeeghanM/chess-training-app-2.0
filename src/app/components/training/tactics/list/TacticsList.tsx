@@ -1,10 +1,10 @@
 'use client'
 
 import TacticsSetCreator from '../create/TacticsSetCreator'
+import type { PrismaTacticsSet } from '../create/TacticsSetCreator'
 import Container from '~/app/components/_elements/container'
 import { useEffect, useState } from 'react'
 import SetListItem from './SetListItem'
-import type { PrismaTacticsSet } from '~/app/_util/GetTacticSets'
 import type { ResponseJson } from '~/app/api/responses'
 import * as Sentry from '@sentry/nextjs'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'

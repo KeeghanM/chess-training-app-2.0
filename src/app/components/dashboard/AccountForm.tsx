@@ -80,6 +80,8 @@ export default function AccountForm(props: { profile: UserProfile }) {
       })
       const json = (await res.json()) as ResponseJson
 
+      if (json.message != 'Profile Updated') throw new Error(json.message)
+
       setLoading(false)
       setSuccess(true)
       const timeout = setTimeout(() => setSuccess(false), 3000)

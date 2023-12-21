@@ -10,13 +10,16 @@ import { useEffect, useState } from 'react'
 import { Chessboard } from 'react-chessboard'
 import { Chess } from 'chess.js'
 import { useRouter } from 'next/navigation'
-import type { UserFen } from '@prisma/client'
+import type {
+  Course,
+  Group,
+  Line,
+  UserCourse,
+  UserFen,
+  UserLine,
+} from '@prisma/client'
 import type { Square } from 'chess.js'
 import type { ResponseJson } from '~/app/api/responses'
-import type {
-  PrismaUserCourse,
-  PrismaUserLine,
-} from '~/app/_util/GetUserCourse'
 import * as Sentry from '@sentry/nextjs'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
@@ -26,6 +29,9 @@ import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 // TODO: Repeat full line if there were any teaching moves
 // TODO: Add comments/notes viewer that shows in teaching mode
 // TODO: Handle alternate moves (probably do this on the FEN level)
+
+export type PrismaUserCourse = UserCourse & { course: Course }
+export type PrismaUserLine = UserLine & { line: Line & { group: Group } }
 
 export default function CourseTrainer(props: {
   userCourse: PrismaUserCourse

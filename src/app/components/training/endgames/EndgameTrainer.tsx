@@ -259,7 +259,7 @@ export default function EndgameTrainer() {
       setPuzzleFinished(true)
       return false
     }
-    playMoveSound(playerMove.san!)
+    playMoveSound(playerMove.san)
     setPosition(game.fen())
     makeBookMove()
     await checkEndOfLine()
@@ -450,9 +450,9 @@ export default function EndgameTrainer() {
         </div>
         <Button
           variant="success"
-          onClick={() => {
+          onClick={async () => {
             setMode('training')
-            trackEventOnClient('endgame_start', {})
+            await trackEventOnClient('endgame_start', {})
           }}
         >
           Start Training

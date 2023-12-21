@@ -7,11 +7,13 @@ import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import { useEffect, useState } from 'react'
-import type { PrismaTacticsSet } from '~/app/_util/GetTacticSets'
-import type { ResponseJson } from '~/app/api/responses'
-import type { TrainingPuzzle } from '../TacticsTrainer'
 import * as Sentry from '@sentry/nextjs'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import type { ResponseJson } from '~/app/api/responses'
+import type { TrainingPuzzle } from '../TacticsTrainer'
+import type { TacticsSet, TacticsSetRound } from '@prisma/client'
+
+export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] }
 interface TacticsSetCreatorProps {
   setCount: number
   maxSets: number

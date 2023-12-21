@@ -1,9 +1,9 @@
 'use client'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
-import type { PrismaTacticsSet } from '~/app/_util/GetTacticSets'
 import Button from '~/app/components/_elements/button'
 import { useState } from 'react'
 import toHHMMSS from '~/app/_util/toHHMMSS'
+import { PrismaTacticsSet } from '../create/TacticsSetCreator'
 
 export default function SetListStats(props: { set: PrismaTacticsSet }) {
   const { set } = props

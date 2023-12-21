@@ -1,22 +1,39 @@
 import { redirect } from 'next/navigation'
 import CourseListItem from '~/app/components/training/courses/list/CourseListItem'
-import { GetUserCourses } from '~/app/_util/GetUserCourse'
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
-import { getUserServer } from '~/app/_util/getUserServer'
+import * as Sentry from '@sentry/nextjs'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { prisma } from '~/server/db'
+import type { PrismaUserCourse } from '~/app/components/training/courses/CourseTrainer'
 
 export const metadata = {
   title: 'Your Courses - ChessTraining.app',
 }
 
 export default async function Courses() {
-  const { user } = await getUserServer()
+  const { getUser } = getKindeServerSession()
+  const user = await getUser()
+
   if (!user) redirect('/auth/signin')
 
-  const courses = await GetUserCourses()
-  if (!courses) return
+  const courses = await (async () => {
+    try {
+      return await prisma.userCourse.findMany({
+        include: {
+          course: true,
+        },
+        where: {
+          userId: user.id,
+        },
+      })
+    } catch (e) {
+      Sentry.captureException(e)
+      return [] as PrismaUserCourse[]
+    }
+  })()
 
   return (
     <>

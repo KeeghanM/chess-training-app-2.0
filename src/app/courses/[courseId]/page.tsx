@@ -1,8 +1,7 @@
-import type { Course, UserProfile } from '@prisma/client'
 import { redirect } from 'next/navigation'
-import type { ResponseJson } from '~/app/api/responses'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import * as Sentry from '@sentry/nextjs'
+import { prisma } from '~/server/db'
 
 export default async function CoursePage({
   params,
@@ -10,25 +9,36 @@ export default async function CoursePage({
   params: { courseId: string }
 }) {
   const { courseId } = params
-  let course: Course | null = null
-  let createdBy: UserProfile | null = null
+  const { course, createdBy } = await (async () => {
+    try {
+      const course = courseId.includes('-')
+        ? await prisma.course.findUnique({
+            where: {
+              slug: courseId,
+            },
+          })
+        : await prisma.course.findUnique({
+            where: {
+              id: courseId,
+            },
+          })
 
-  // TODO: Move the prisma query from API to here
-  try {
-    const response = await fetch(
-      `${process.env.API_BASE_URL}/courses/single/${courseId}`,
-    )
-    const json = (await response.json()) as ResponseJson
-    course = json.data!.course as Course
-    createdBy = json.data!.user as UserProfile
+      if (!course) throw new Error('Course not found')
 
-    if (!course || json.message != 'Course found') {
-      throw new Error(json.message)
+      const createdBy = await prisma.userProfile.findUnique({
+        where: {
+          id: course.createdBy,
+        },
+      })
+
+      if (!createdBy) throw new Error('Course creator not found')
+
+      return { course, createdBy }
+    } catch (e) {
+      Sentry.captureException(e)
+      return { course: undefined, createdBy: undefined }
     }
-  } catch (e) {
-    Sentry.captureException(e)
-    redirect('/404')
-  }
+  })()
 
   if (!course || !createdBy) {
     redirect('/404')
