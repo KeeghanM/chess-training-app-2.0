@@ -3,11 +3,12 @@
 import * as HoverCard from '@radix-ui/react-hover-card'
 import type { UserCourse, Course } from '@prisma/client'
 import { useRouter } from 'next/navigation'
-import type { PrismaUserCourse } from '~/app/_util/GetUserCourse'
 import TimeSince from '~/app/components/general/TimeSince'
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import Heading from '~/app/components/_elements/heading'
 import Button from '~/app/components/_elements/button'
+import { PrismaUserCourse } from '../CourseTrainer'
+import Link from 'next/link'
 
 export default function CourseListItem(props: {
   userCourse: PrismaUserCourse
@@ -16,9 +17,13 @@ export default function CourseListItem(props: {
   const { userCourse } = props
   const conicGradient = GenerateConicGradient(userCourse)
 
-  const openCourse = async () => {
+  const openCourse = async (mode: 'learn' | 'revise') => {
     await trackEventOnClient('open_course', {})
-    router.push('/training/courses/' + userCourse.id)
+    router.push(
+      '/training/courses/' +
+        userCourse.id +
+        (mode == 'learn' ? '?mode=newOnly' : ''),
+    )
   }
 
   return (
@@ -26,11 +31,10 @@ export default function CourseListItem(props: {
       className="flex flex-col items-center gap-6 bg-gray-100 p-2 px-5 md:flex-row"
       key={userCourse.id}
     >
-      <div
-        className="mr-auto flex cursor-pointer flex-col"
-        onClick={openCourse}
-      >
-        <Heading as={'h3'}>{userCourse.course.courseName}</Heading>
+      <div className="mr-auto flex cursor-pointer flex-col">
+        <Link href={'/courses/' + userCourse.course.slug}>
+          <Heading as={'h3'}>{userCourse.course.courseName}</Heading>
+        </Link>
         <p className="text-sm italic text-gray-600">
           Last trained{' '}
           {userCourse.lastTrained ? (
@@ -68,13 +72,12 @@ export default function CourseListItem(props: {
         </HoverCard.Content>
       </HoverCard.Root>
       <div className="flex flex-col gap-2 md:flex-row">
-        <Button variant="primary" onClick={openCourse}>
-          Study
+        <Button variant="primary" onClick={() => openCourse('revise')}>
+          Study Course
         </Button>
-        <Button variant="secondary">Settings</Button>
-        {userCourse.userId == userCourse.course.createdBy && (
-          <Button variant="accent">Admin Panel</Button>
-        )}
+        <Button variant="secondary" onClick={() => openCourse('learn')}>
+          Learn New Only
+        </Button>
       </div>
     </div>
   )

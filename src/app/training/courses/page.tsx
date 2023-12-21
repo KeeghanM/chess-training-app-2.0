@@ -44,7 +44,7 @@ export default async function Courses() {
           alt: 'Wooden chess pieces on a chess board',
         }}
       />
-      <Container>
+      <Container size="wide">
         <div className="flex flex-col gap-4">
           {courses.length > 0 ? (
             courses.map((course) => <CourseListItem userCourse={course} />)
