@@ -24,11 +24,6 @@ import type { ResponseJson } from '~/app/api/responses'
 import * as Sentry from '@sentry/nextjs'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
-// TODO: BugFix - Last move is always a teaching move, are we not logging the FEN?
-// TODO: Repeat full line if there were any teaching moves
-// TODO: Add comments/notes viewer that shows in teaching mode
-// TODO: Handle alternate moves (probably do this on the FEN level)
-
 export type PrismaUserCourse = UserCourse & { course: Course } & {
   lines?: PrismaUserLine[]
 }
@@ -64,7 +59,7 @@ export default function CourseTrainer(props: {
   )
   const [trainedFens, setTrainedFens] = useState<string[]>([])
   const [wrongFens, setWrongFens] = useState<string[]>([])
-  const [lineFinished, setLineFinished] = useState(false)
+  const [hadTeachingMove, setHadTeachingMove] = useState(false)
   const [lineCorrect, setLineCorrect] = useState(true)
   const [loading, setLoading] = useState(false)
   const [interactive, setInteractive] = useState(true)
@@ -112,8 +107,10 @@ export default function CourseTrainer(props: {
       if (
         !existingFens.includes(game.fen()) &&
         !trainedFens.includes(game.fen())
-      )
+      ) {
         makeTeachingMove()
+        setHadTeachingMove(true)
+      }
     }, 500)
     return timeoutId
   }
@@ -144,8 +141,8 @@ export default function CourseTrainer(props: {
 
   const checkEndOfLine = async () => {
     if (game.history().length < moveList.length && mode != 'recap') return
-    // We've reached the end of the line
 
+    // We've reached the end of the line
     if (wrongMoves.length > 0) {
       // We got some moves wrong, so we need to go back over them
       setMode('recap')
@@ -156,8 +153,21 @@ export default function CourseTrainer(props: {
       return
     }
 
-    // All the moves have now been gotten right so we can move on
-    // first, update & log the stats
+    if (hadTeachingMove) {
+      // If we had a teaching move, we want to go over the entire line again
+      // to make sure we've got it all right. We don't want to do this if we
+      // didn't have a teaching move as it must be a repeat of a learned lined.
+      setMode('normal')
+      setHadTeachingMove(false)
+      setCurrentWrongMove(0)
+      const newGame = new Chess()
+      setPosition(newGame.fen())
+      setGame(newGame)
+      return
+    }
+
+    // All the moves have now been gotten right and we've reviewed the line if needed
+    // Now we want to log all the stats
     setLoading(true)
     await processNewFens()
     const updatedLines = await processStats()
@@ -480,21 +490,14 @@ export default function CourseTrainer(props: {
     // Now, whenever any of the elements associated with the game/line
     // change we can update the game and check if we need to make a teachingMove
     if (gameReady && currentLine) {
-      setLineFinished(false)
       setPosition(game.fen())
       setOrientation(game.turn() == 'w' ? 'white' : 'black')
-      console.log({
-        trainedFens,
-        existingFens,
-        fen: game.fen(),
-        existingIncludes: existingFens.includes(game.fen()),
-        trainedIncludes: trainedFens.includes(game.fen()),
-      })
       if (
         !trainedFens.includes(game.fen()) &&
         !existingFens.includes(game.fen())
       ) {
         makeTeachingMove()
+        setHadTeachingMove(true)
       }
     }
   }, [gameReady, game, currentLine])
