@@ -31,8 +31,6 @@ export type PrismaUserLine = UserLine & {
   line: Line & { group: Group } & { moves: Move[] }
 }
 
-// TODO: BUG: First teach move doesn't show the move, just the "Got it!" button
-// TODO: Add a delay between final move, and the "Reshow" of a line if it had a teaching move
 // TODO: Add feedback to correct/incorrect moves - particularly incorrect
 
 export default function CourseTrainer(props: {
@@ -126,6 +124,7 @@ export default function CourseTrainer(props: {
       mode == 'normal'
         ? moveList[game.history().length]?.move
         : wrongMoves[currentWrongMove]?.move
+
     if (!currentMove) return
 
     const timeoutId = setTimeout(() => {
@@ -161,12 +160,14 @@ export default function CourseTrainer(props: {
       // If we had a teaching move, we want to go over the entire line again
       // to make sure we've got it all right. We don't want to do this if we
       // didn't have a teaching move as it must be a repeat of a learned lined.
-      setMode('normal')
-      setHadTeachingMove(false)
-      setCurrentWrongMove(0)
-      const newGame = new Chess()
-      setPosition(newGame.fen())
-      setGame(newGame)
+      setTimeout(() => {
+        setMode('normal')
+        setHadTeachingMove(false)
+        setCurrentWrongMove(0)
+        const newGame = new Chess()
+        setPosition(newGame.fen())
+        setGame(newGame)
+      }, 500)
       return
     }
 
@@ -261,8 +262,6 @@ export default function CourseTrainer(props: {
     })()
 
     const fensToUpload = seenFens.filter((fen) => !existingFens.includes(fen))
-
-    console.log(fensToUpload)
 
     const allSeenFens = [...existingFens, ...fensToUpload]
     setExistingFens(allSeenFens)
@@ -506,8 +505,11 @@ export default function CourseTrainer(props: {
         !trainedFens.includes(game.fen()) &&
         !existingFens.includes(game.fen())
       ) {
-        makeTeachingMove()
+        const timeoutId = makeTeachingMove()
         setHadTeachingMove(true)
+        return () => {
+          clearTimeout(timeoutId)
+        }
       }
     }
   }, [gameReady, game, currentLine])

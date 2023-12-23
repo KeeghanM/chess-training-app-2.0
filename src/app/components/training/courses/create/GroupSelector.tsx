@@ -68,8 +68,7 @@ export default function GroupSelector(props: {
               <span>White Lines:</span>{' '}
               <span className="font-bold">
                 {lines.reduce(
-                  (prev, curr) =>
-                    prev + (curr.tags['Colour'] == 'White' ? 1 : 0),
+                  (prev, curr) => prev + (curr.tags.Colour == 'White' ? 1 : 0),
                   0,
                 )}
               </span>
@@ -79,8 +78,7 @@ export default function GroupSelector(props: {
               <span>Black Lines:</span>{' '}
               <span className="font-bold">
                 {lines.reduce(
-                  (prev, curr) =>
-                    prev + (curr.tags['Colour'] == 'Black' ? 1 : 0),
+                  (prev, curr) => prev + (curr.tags.Colour == 'Black' ? 1 : 0),
                   0,
                 )}
               </span>

@@ -49,7 +49,10 @@ export default function CourseListItem(props: {
         Sentry.captureException(e)
         console.error(e)
       }
-    })()
+    })().catch((e) => {
+      Sentry.captureException(e)
+      console.error(e)
+    })
   }, [])
 
   return loading ? (
