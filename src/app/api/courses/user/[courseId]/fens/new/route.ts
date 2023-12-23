@@ -1,17 +1,16 @@
-import { getUserServer } from '~/app/_util/getUserServer'
 import { errorResponse, successResponse } from '~/app/api/responses'
 import { prisma } from '~/server/db'
 import * as Sentry from '@sentry/nextjs'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 
 export async function POST(
   request: Request,
   { params }: { params: { courseId: string } },
 ) {
-  // Check if user is authenticated and reject request if not
-  const { user } = await getUserServer()
-
-  const authToken = request.headers.get('Authorization')?.split(' ')[1]
-  if (!user || user.id !== authToken) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request)
+  if (!session) return errorResponse('Unauthorized', 401)
+  const user = session.getUser()
+  if (!user) return errorResponse('Unauthorized', 401)
 
   const { courseId } = params
   const { fens } = (await request.json()) as { fens: string[] }

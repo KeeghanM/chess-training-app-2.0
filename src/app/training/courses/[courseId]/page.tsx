@@ -38,6 +38,7 @@ export default async function CourseTrainPage({
           line: {
             include: {
               group: true,
+              moves: true,
             },
           },
         },
@@ -70,7 +71,7 @@ export default async function CourseTrainPage({
   return (
     <>
       <PageHeader
-        title={'Training Course: ' + userCourse.course.courseName}
+        title={userCourse.course.courseName}
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
