@@ -167,7 +167,6 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           name: name,

@@ -8,7 +8,7 @@ import SetListEdit from './SetListEdit'
 import SetListStats from './SetListStats'
 import toHHMMSS from '~/app/_util/toHHMMSS'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import { PrismaTacticsSet } from '../create/TacticsSetCreator'
+import type { PrismaTacticsSet } from '../create/TacticsSetCreator'
 
 export default function SetListItem(props: {
   set: PrismaTacticsSet

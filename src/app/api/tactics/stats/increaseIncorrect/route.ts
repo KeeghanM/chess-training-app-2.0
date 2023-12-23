@@ -1,13 +1,17 @@
 import { errorResponse, successResponse } from '~/app/api/responses'
 import { prisma } from '~/server/db'
 import * as Sentry from '@sentry/nextjs'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/dist/types/server'
 
 export async function POST(request: Request) {
-  const userId = request.headers.get('Authorization')?.split(' ')[1]
-  if (!userId) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request)
+  if (!session) return errorResponse('Unauthorized', 401)
+
+  const user = await session.getUser()
+  if (!user) return errorResponse('Unauthorized', 401)
 
   const { roundId } = (await request.json()) as {
-    roundId: string
+    roundId: number
   }
   if (!roundId) return errorResponse('Missing fields', 400)
 
@@ -16,7 +20,7 @@ export async function POST(request: Request) {
       where: {
         id: roundId,
         set: {
-          userId,
+          userId: user.id,
         },
       },
       data: {

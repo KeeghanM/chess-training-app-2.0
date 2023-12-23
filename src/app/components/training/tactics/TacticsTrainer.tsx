@@ -150,7 +150,6 @@ export default function TacticsTrainer(props: {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -179,7 +178,6 @@ export default function TacticsTrainer(props: {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -205,7 +203,6 @@ export default function TacticsTrainer(props: {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -248,7 +245,6 @@ export default function TacticsTrainer(props: {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: 'Bearer ' + user.id,
             },
             body: JSON.stringify({
               setId: props.set.id,

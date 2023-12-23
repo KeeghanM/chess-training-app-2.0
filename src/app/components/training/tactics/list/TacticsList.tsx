@@ -21,7 +21,6 @@ export default function TacticsList() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user.id,
         },
       })
       const json = (await resp.json()) as ResponseJson

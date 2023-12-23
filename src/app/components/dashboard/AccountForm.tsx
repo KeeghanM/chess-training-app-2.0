@@ -66,7 +66,6 @@ export default function AccountForm(props: { profile: UserProfile }) {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          authorization: `Bearer ${user.id}`,
         },
         body: JSON.stringify({
           username,
