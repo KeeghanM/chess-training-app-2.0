@@ -7,7 +7,6 @@ import StyledLink from '~/app/components/_elements/styledLink'
 import * as Sentry from '@sentry/nextjs'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { prisma } from '~/server/db'
-import type { PrismaUserCourse } from '~/app/components/training/courses/CourseTrainer'
 
 export const metadata = {
   title: 'Your Courses - ChessTraining.app',
@@ -19,33 +18,21 @@ export default async function Courses() {
 
   if (!user) redirect('/auth/signin')
 
-  const courses = (await (async () => {
+  const courses = await (async () => {
     try {
       return await prisma.userCourse.findMany({
-        include: {
-          course: true,
-          lines: {
-            where: {
-              OR: [
-                {
-                  revisionDate: {
-                    lte: new Date(),
-                  },
-                },
-                { revisionDate: null },
-              ],
-            },
-          },
-        },
         where: {
           userId: user.id,
+        },
+        include: {
+          course: true,
         },
       })
     } catch (e) {
       Sentry.captureException(e)
       return []
     }
-  })()) as PrismaUserCourse[]
+  })()
 
   return (
     <>
@@ -60,7 +47,11 @@ export default async function Courses() {
         <div className="flex flex-col gap-4">
           {courses.length > 0 ? (
             courses.map((course, index) => (
-              <CourseListItem key={index} userCourse={course} />
+              <CourseListItem
+                key={index}
+                courseId={course.id}
+                courseName={course.course.courseName}
+              />
             ))
           ) : (
             <div>

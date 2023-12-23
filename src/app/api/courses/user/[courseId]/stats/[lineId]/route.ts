@@ -77,7 +77,7 @@ export async function POST(
         linesLearning: allLines.filter(
           (line) =>
             line.currentStreak <= 4 &&
-            line.currentStreak > 0 &&
+            line.timesTrained > 0 &&
             line.timesCorrect >= line.timesWrong,
         ).length,
         linesHard: allLines.filter(

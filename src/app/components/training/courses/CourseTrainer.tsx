@@ -31,6 +31,10 @@ export type PrismaUserLine = UserLine & {
   line: Line & { group: Group } & { moves: Move[] }
 }
 
+// TODO: BUG: First teach move doesn't show the move, just the "Got it!" button
+// TODO: Add a delay between final move, and the "Reshow" of a line if it had a teaching move
+// TODO: Add feedback to correct/incorrect moves - particularly incorrect
+
 export default function CourseTrainer(props: {
   userCourse: PrismaUserCourse
   userLines: PrismaUserLine[]
@@ -243,16 +247,22 @@ export default function CourseTrainer(props: {
     // Reconstruct all the FENs we saw as the trainedFens state isn't updated
     // it misses the last move out due to the update sequence of State
     const seenFens = (() => {
+      const currentColour = orientation == 'white' ? true : false
       const newGame = new Chess()
       const fens = [] as string[]
       fens.push(newGame.fen())
       moveList.forEach((move) => {
         newGame.move(move.move)
+        // Only add the fen if it's the other colour
+        // as that's the position we know the response to
+        if (move.colour != currentColour) fens.push(newGame.fen())
       })
       return fens
     })()
 
     const fensToUpload = seenFens.filter((fen) => !existingFens.includes(fen))
+
+    console.log(fensToUpload)
 
     const allSeenFens = [...existingFens, ...fensToUpload]
     setExistingFens(allSeenFens)
