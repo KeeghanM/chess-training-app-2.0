@@ -19,11 +19,23 @@ export default async function Courses() {
 
   if (!user) redirect('/auth/signin')
 
-  const courses = await (async () => {
+  const courses = (await (async () => {
     try {
       return await prisma.userCourse.findMany({
         include: {
           course: true,
+          lines: {
+            where: {
+              OR: [
+                {
+                  revisionDate: {
+                    lte: new Date(),
+                  },
+                },
+                { revisionDate: null },
+              ],
+            },
+          },
         },
         where: {
           userId: user.id,
@@ -31,9 +43,9 @@ export default async function Courses() {
       })
     } catch (e) {
       Sentry.captureException(e)
-      return [] as PrismaUserCourse[]
+      return []
     }
-  })()
+  })()) as PrismaUserCourse[]
 
   return (
     <>
@@ -47,7 +59,9 @@ export default async function Courses() {
       <Container size="wide">
         <div className="flex flex-col gap-4">
           {courses.length > 0 ? (
-            courses.map((course) => <CourseListItem userCourse={course} />)
+            courses.map((course, index) => (
+              <CourseListItem key={index} userCourse={course} />
+            ))
           ) : (
             <div>
               <Heading as="h3">You haven't got any courses yet</Heading>

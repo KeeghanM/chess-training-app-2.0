@@ -62,10 +62,10 @@ model Line {
     course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
     group     Group      @relation(fields: [groupId], references: [id], onDelete: Cascade)
     userLines UserLine[]
-    moves     Moves[]
+    moves     Move[]
 }
 
-model Moves {
+model Move {
     id         String   @id @default(cuid())
     lineId     Int
     move       String
@@ -84,7 +84,6 @@ model UserLine {
     lineId        Int
     revisionDate  DateTime?
     lastTrained   DateTime?
-    lastStatus    Boolean?
     timesTrained  Int        @default(0)
     timesCorrect  Int        @default(0)
     timesWrong    Int        @default(0)

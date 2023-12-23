@@ -31,7 +31,7 @@ export default function CourseListItem(props: {
       className="flex flex-col items-center gap-6 bg-gray-100 p-2 px-5 md:flex-row"
       key={userCourse.id}
     >
-      <div className="mr-auto flex cursor-pointer flex-col">
+      <div className="mr-auto flex flex-col">
         <Link href={'/courses/' + userCourse.course.slug}>
           <Heading as={'h3'}>{userCourse.course.courseName}</Heading>
         </Link>
@@ -43,6 +43,10 @@ export default function CourseListItem(props: {
             'never'
           )}
           .
+        </p>
+        <p className="text-sm italic text-gray-600">
+          {userCourse.lines?.length}{' '}
+          {userCourse.lines?.length == 1 ? 'line is due' : 'lines are due'}.
         </p>
       </div>
       <HoverCard.Root>
@@ -72,8 +76,12 @@ export default function CourseListItem(props: {
         </HoverCard.Content>
       </HoverCard.Root>
       <div className="flex flex-col gap-2 md:flex-row">
-        <Button variant="primary" onClick={() => openCourse('revise')}>
-          Study Course
+        <Button
+          variant="primary"
+          onClick={() => openCourse('revise')}
+          disabled={userCourse.lines?.length == 0}
+        >
+          Study Course ({userCourse.lines ? userCourse.lines.length : '0'} due)
         </Button>
         <Button variant="secondary" onClick={() => openCourse('learn')}>
           Learn New Only

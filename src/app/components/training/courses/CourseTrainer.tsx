@@ -14,7 +14,7 @@ import type {
   Course,
   Group,
   Line,
-  Moves,
+  Move,
   UserCourse,
   UserFen,
   UserLine,
@@ -29,9 +29,11 @@ import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 // TODO: Add comments/notes viewer that shows in teaching mode
 // TODO: Handle alternate moves (probably do this on the FEN level)
 
-export type PrismaUserCourse = UserCourse & { course: Course }
+export type PrismaUserCourse = UserCourse & { course: Course } & {
+  lines?: PrismaUserLine[]
+}
 export type PrismaUserLine = UserLine & {
-  line: Line & { group: Group } & { moves: Moves[] }
+  line: Line & { group: Group } & { moves: Move[] }
 }
 
 export default function CourseTrainer(props: {
@@ -44,10 +46,10 @@ export default function CourseTrainer(props: {
 
   const [lines, setLines] = useState<PrismaUserLine[]>(props.userLines)
   const [game, setGame] = useState(new Chess())
-  const [currentMove, setCurrentMove] = useState<Moves>()
+  const [currentMove, setCurrentMove] = useState<Move>()
   const [gameReady, setGameReady] = useState(false)
   const [currentLine, setCurrentLine] = useState<PrismaUserLine>()
-  const [moveList, setMoveList] = useState<Moves[]>([])
+  const [moveList, setMoveList] = useState<Move[]>([])
   const [orientation, setOrientation] = useState<'white' | 'black'>('white')
   const [position, setPosition] = useState(game.fen())
   const [teaching, setTeaching] = useState(false)
@@ -228,10 +230,20 @@ export default function CourseTrainer(props: {
 
   const processNewFens = async () => {
     if (!user) return
-    // Add new fens to the server
-    const fensToUpload = trainedFens.filter(
-      (fen) => !existingFens.includes(fen),
-    )
+    // Reconstruct all the FENs we saw as the trainedFens state isn't updated
+    // it misses the last move out due to the update sequence of State
+    const seenFens = (() => {
+      const newGame = new Chess()
+      const fens = [] as string[]
+      fens.push(newGame.fen())
+      moveList.forEach((move) => {
+        newGame.move(move.move)
+      })
+      return fens
+    })()
+
+    const fensToUpload = seenFens.filter((fen) => !existingFens.includes(fen))
+
     const allSeenFens = [...existingFens, ...fensToUpload]
     setExistingFens(allSeenFens)
 
@@ -261,7 +273,7 @@ export default function CourseTrainer(props: {
     // Now we need to update the fens that we've trained
     // with the correct/incorrect status
     try {
-      const fensWithStats = trainedFens.map((fen) => {
+      const fensWithStats = seenFens.map((fen) => {
         return {
           fen: fen,
           correct: !wrongFens.includes(fen),
@@ -471,6 +483,13 @@ export default function CourseTrainer(props: {
       setLineFinished(false)
       setPosition(game.fen())
       setOrientation(game.turn() == 'w' ? 'white' : 'black')
+      console.log({
+        trainedFens,
+        existingFens,
+        fen: game.fen(),
+        existingIncludes: existingFens.includes(game.fen()),
+        trainedIncludes: trainedFens.includes(game.fen()),
+      })
       if (
         !trainedFens.includes(game.fen()) &&
         !existingFens.includes(game.fen())
@@ -481,7 +500,7 @@ export default function CourseTrainer(props: {
   }, [gameReady, game, currentLine])
 
   useEffect(() => {
-    setCurrentMove(moveList[game.history().length])
+    setCurrentMove(moveList[game.history().length - 1])
   }, [game.history().length])
 
   // Last check to ensure we have a user
@@ -513,14 +532,14 @@ export default function CourseTrainer(props: {
           />
         </div>
         <div className="flex flex-1 flex-col gap-2">
-          <div className="flex h-full flex-wrap content-start gap-1 bg-purple-600 p-2">
-            {PgnDisplay.map((item) => item)}
-          </div>
           {(teaching || nextLine) && currentMove?.comment && (
-            <div className="bg-purple-600 p-2">
+            <div className="max-h-[40%] overflow-y-auto bg-purple-900 p-2">
               <p className="text-white">{currentMove.comment}</p>
             </div>
           )}
+          <div className="flex flex-1 flex-wrap content-start gap-1 overflow-y-auto bg-purple-600 p-2">
+            {PgnDisplay.map((item) => item)}
+          </div>
           {teaching && (
             <Button variant="accent" onClick={resetTeachingMove}>
               Got it!
@@ -540,6 +559,12 @@ export default function CourseTrainer(props: {
               Next Line {status == 'loading' && <Spinner />}
             </Button>
           )}
+          <Button
+            variant="danger"
+            onClick={() => router.push('/training/courses/')} //TODO: Add confirmation modal
+          >
+            Exit
+          </Button>
         </div>
       </div>
     </div>

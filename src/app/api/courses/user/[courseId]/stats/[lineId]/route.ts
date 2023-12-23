@@ -18,8 +18,6 @@ export async function POST(
     revisionDate: Date
   }
 
-  console.log({ lineCorrect, revisionDate, courseId, lineId })
-
   if (
     courseId === undefined ||
     lineId === undefined ||
@@ -36,7 +34,6 @@ export async function POST(
       },
       data: {
         lastTrained: new Date(),
-        lastStatus: lineCorrect,
         timesTrained: {
           increment: 1,
         },
@@ -59,8 +56,13 @@ export async function POST(
       },
     })
 
-    // TODO: updated the linesLearned etc counters
-    // maybe not here? maybe in a cron job?
+    const allLines = await prisma.userLine.findMany({
+      where: {
+        userCourseId: courseId,
+        userId: user.id,
+      },
+    })
+
     await prisma.userCourse.update({
       where: {
         id: courseId,
@@ -68,6 +70,20 @@ export async function POST(
       },
       data: {
         lastTrained: new Date(),
+        linesLearned: allLines.filter(
+          (line) =>
+            line.currentStreak > 4 && line.timesCorrect >= line.timesWrong,
+        ).length,
+        linesLearning: allLines.filter(
+          (line) =>
+            line.currentStreak <= 4 &&
+            line.currentStreak > 0 &&
+            line.timesCorrect >= line.timesWrong,
+        ).length,
+        linesHard: allLines.filter(
+          (line) => line.timesWrong > line.timesCorrect,
+        ).length,
+        linesUnseen: allLines.filter((line) => line.timesTrained == 0).length,
       },
     })
 

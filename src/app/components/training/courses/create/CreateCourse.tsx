@@ -53,7 +53,7 @@ export default function CreateCourseForm() {
 
       await trackEventOnClient('create_course_success', {})
       const courseSlug = json.data!.slug as string
-      router.push('/courses/' + courseSlug)
+      router.push('/courses/' + courseSlug) // TODO: This ends up in a 404
     } catch (e) {
       Sentry.captureException(e)
       setCurrentStep('error')
