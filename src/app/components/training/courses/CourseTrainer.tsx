@@ -85,7 +85,7 @@ export default function CourseTrainer(props: {
 
     const unseenLines = lines
       .filter((line) => !line.revisionDate)
-      .sort((a, b) => a.id - b.id)
+      .sort((a, b) => a.id.localeCompare(b.id))
     if (unseenLines.length > 0) return unseenLines[0]
 
     return null
