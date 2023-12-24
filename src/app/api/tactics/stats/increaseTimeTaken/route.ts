@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
   const { roundId, timeTaken, setId } = (await request.json()) as {
     timeTaken: number
-    roundId: number
+    roundId: string
     setId: string
   }
   if (!roundId || !timeTaken) return errorResponse('Missing fields', 400)

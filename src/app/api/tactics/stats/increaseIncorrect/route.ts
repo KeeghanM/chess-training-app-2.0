@@ -11,7 +11,7 @@ export async function POST(request: Request) {
   if (!user) return errorResponse('Unauthorized', 401)
 
   const { roundId } = (await request.json()) as {
-    roundId: number
+    roundId: string
   }
   if (!roundId) return errorResponse('Missing fields', 400)
 
