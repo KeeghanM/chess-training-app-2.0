@@ -10,22 +10,28 @@ import { useEffect, useState } from 'react'
 import { Chessboard } from 'react-chessboard'
 import { Chess } from 'chess.js'
 import { useRouter } from 'next/navigation'
-import type { UserFen } from '@prisma/client'
+import type {
+  Course,
+  Group,
+  Line,
+  Move,
+  UserCourse,
+  UserFen,
+  UserLine,
+} from '@prisma/client'
 import type { Square } from 'chess.js'
 import type { ResponseJson } from '~/app/api/responses'
-import type {
-  PrismaUserCourse,
-  PrismaUserLine,
-} from '~/app/_util/GetUserCourse'
 import * as Sentry from '@sentry/nextjs'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
-// TODO: BugFix - Weird jumping between lines, doesn't seem to be in order + showing "next line" after teaching moves finished instead of jumping to start for repeat
-// TODO: BugFix - last line in course isn't being logged
-// TODO: BugBix - random error on saving stats, maybe just retry/ignore?
-// TODO: Repeat full line if there were any teaching moves
-// TODO: Add comments/notes viewer that shows in teaching mode
-// TODO: Handle alternate moves (probably do this on the FEN level)
+export type PrismaUserCourse = UserCourse & { course: Course } & {
+  lines?: PrismaUserLine[]
+}
+export type PrismaUserLine = UserLine & {
+  line: Line & { group: Group } & { moves: Move[] }
+}
+
+// TODO: Add feedback to correct/incorrect moves - particularly incorrect
 
 export default function CourseTrainer(props: {
   userCourse: PrismaUserCourse
@@ -35,10 +41,13 @@ export default function CourseTrainer(props: {
   const router = useRouter()
   const { user } = useKindeBrowserClient()
 
+  const [lines, setLines] = useState<PrismaUserLine[]>(props.userLines)
   const [game, setGame] = useState(new Chess())
-  const [currentLine, setCurrentLine] = useState<PrismaUserLine>(
-    props.userLines[0]!,
-  )
+  const [currentMove, setCurrentMove] = useState<Move>()
+  const [gameReady, setGameReady] = useState(false)
+  const [currentLine, setCurrentLine] = useState<PrismaUserLine>()
+  const [moveList, setMoveList] = useState<Move[]>([])
+  const [orientation, setOrientation] = useState<'white' | 'black'>('white')
   const [position, setPosition] = useState(game.fen())
   const [teaching, setTeaching] = useState(false)
   const [nextLine, setNextLine] = useState<PrismaUserLine | null>(null)
@@ -52,18 +61,35 @@ export default function CourseTrainer(props: {
   )
   const [trainedFens, setTrainedFens] = useState<string[]>([])
   const [wrongFens, setWrongFens] = useState<string[]>([])
+  const [hadTeachingMove, setHadTeachingMove] = useState(false)
   const [lineCorrect, setLineCorrect] = useState(true)
-  const [status, setStatus] = useState<'idle' | 'loading'>('idle')
+  const [loading, setLoading] = useState(false)
   const [interactive, setInteractive] = useState(true)
-  const [checkSound] = useSound('/sfx/check.mp3')
-  const [captureSound] = useSound('/sfx/capture.mp3')
-  const [promotionSound] = useSound('/sfx/promote.mp3')
-  const [castleSound] = useSound('/sfx/castle.mp3')
-  const [moveSound] = useSound('/sfx/move.mp3')
+  const [checkSound] = useSound('/sfx/check.mp3') as [() => void]
+  const [captureSound] = useSound('/sfx/capture.mp3') as [() => void]
+  const [promotionSound] = useSound('/sfx/promote.mp3') as [() => void]
+  const [castleSound] = useSound('/sfx/castle.mp3') as [() => void]
+  const [moveSound] = useSound('/sfx/move.mp3') as [() => void]
+  const windowSize = useWindowSize() as { width: number; height: number }
 
-  // Get all the data for the current line
-  const moveList = currentLine.line.moves.split(',')
-  const orientation = currentLine.line.colour.toLowerCase() as 'white' | 'black'
+  const getNextLine = (lines: PrismaUserLine[]) => {
+    // Sorts the lines in order or priority
+    // 1. Lines with a "revisionDate" in the past, sorted by date (oldest first)
+    // 2. Lines with no "revisionDate", sorted by id (order they were added)
+    const now = new Date()
+
+    const dueLines = lines
+      .filter((line) => line.revisionDate && line.revisionDate < now)
+      .sort((a, b) => a.revisionDate!.getTime() - b.revisionDate!.getTime())
+    if (dueLines.length > 0) return dueLines[0]
+
+    const unseenLines = lines
+      .filter((line) => !line.revisionDate)
+      .sort((a, b) => a.id - b.id)
+    if (unseenLines.length > 0) return unseenLines[0]
+
+    return null
+  }
 
   const makeMove = (move: string) => {
     game.move(move)
@@ -73,7 +99,7 @@ export default function CourseTrainer(props: {
 
   // Makes a move for the "opponent"
   const makeBookMove = () => {
-    const currentMove = moveList[game.history().length]
+    const currentMove = moveList[game.history().length]?.move
     if (!currentMove) return
 
     const timeoutId = setTimeout(() => {
@@ -83,8 +109,10 @@ export default function CourseTrainer(props: {
       if (
         !existingFens.includes(game.fen()) &&
         !trainedFens.includes(game.fen())
-      )
+      ) {
         makeTeachingMove()
+        setHadTeachingMove(true)
+      }
     }, 500)
     return timeoutId
   }
@@ -94,12 +122,14 @@ export default function CourseTrainer(props: {
   const makeTeachingMove = () => {
     const currentMove =
       mode == 'normal'
-        ? moveList[game.history().length]
+        ? moveList[game.history().length]?.move
         : wrongMoves[currentWrongMove]?.move
+
     if (!currentMove) return
 
     const timeoutId = setTimeout(() => {
       setTeaching(true)
+      setInteractive(false)
       makeMove(currentMove)
     }, 500)
     return timeoutId
@@ -108,74 +138,93 @@ export default function CourseTrainer(props: {
   const resetTeachingMove = () => {
     game.undo()
     setTeaching(false)
+    setInteractive(true)
     setPosition(game.fen())
   }
 
   const checkEndOfLine = async () => {
-    if (game.history().length === moveList.length || mode == 'recap') {
-      // We've reached the end of the line
-      // so we need to check if we got any wrong
-      // if we have, we need to go back over them
-      // if not, we need to move on to the next line
-      if (wrongMoves.length > 0) {
-        // We got some wrong, so we need to go back over them
-        setMode('recap')
-        setCurrentWrongMove(0)
-        const fen = wrongMoves[currentWrongMove]!.fen
-        game.load(fen)
-        setPosition(fen)
-      } else {
-        // We got them all right, so we need to move on
-        // to the next line
-        const currentLineIndex = props.userLines.indexOf(currentLine)
-        const nextLine = props.userLines[currentLineIndex + 1]
-        if (!nextLine) {
-          // We've reached the end of the course
-          setStatus('loading')
-          await trackEventOnClient('course_completed', {
-            courseName: props.userCourse.course.courseName,
-          })
+    if (game.history().length < moveList.length && mode != 'recap') return
 
-          await processNewFens()
-          await processStats()
-          router.push('/training/courses')
-          return
-        }
-
-        if (nextLine.line.groupId !== currentLine.line.groupId) {
-          // We've reached the end of the group
-          // TODO: Add a nice modal popup here
-          await trackEventOnClient('course_group_completed', {
-            courseName: props.userCourse.course.courseName,
-          })
-        }
-
-        // To display the PGN we need to reset after the recaps
-        game.reset()
-        moveList.forEach((move) => game.move(move))
-        setPosition(game.fen())
-        setGame(game)
-
-        // Setup for the next line
-        setNextLine(nextLine)
-        setInteractive(false)
-      }
+    // We've reached the end of the line
+    if (wrongMoves.length > 0) {
+      // We got some moves wrong, so we need to go back over them
+      setMode('recap')
+      setCurrentWrongMove(0)
+      const fen = wrongMoves[currentWrongMove]!.fen
+      game.load(fen)
+      setPosition(fen)
+      return
     }
+
+    if (hadTeachingMove) {
+      // If we had a teaching move, we want to go over the entire line again
+      // to make sure we've got it all right. We don't want to do this if we
+      // didn't have a teaching move as it must be a repeat of a learned lined.
+      setTimeout(() => {
+        setMode('normal')
+        setHadTeachingMove(false)
+        setCurrentWrongMove(0)
+        const newGame = new Chess()
+        setPosition(newGame.fen())
+        setGame(newGame)
+      }, 500)
+      return
+    }
+
+    // All the moves have now been gotten right and we've reviewed the line if needed
+    // Now we want to log all the stats
+    setLoading(true)
+    await processNewFens()
+    const updatedLines = await processStats()
+
+    // Now we need to get the next line
+    const nextLine = getNextLine(updatedLines ?? lines)
+    if (!nextLine) {
+      // Nothing left to review/learn
+      // TODO: Check if this is the first time completing the course
+      // if so, show a nice modal popup and track event
+      // For now, just redirect to the course page
+      await trackEventOnClient('course_completed', {
+        courseName: props.userCourse.course.courseName,
+      })
+      router.push('/training/courses/')
+      return
+    }
+
+    if (nextLine.line.groupId !== currentLine?.line.groupId) {
+      // We've reached the end of the group
+      // TODO: Add a nice modal popup here
+      await trackEventOnClient('course_group_completed', {
+        courseName: props.userCourse.course.courseName,
+      })
+    }
+
+    // Because we may have had to go back over some moves
+    // we need to reset the game to the start of the line
+    // and then make all the moves up to the current point
+    // to show the moves in the navigator
+    game.reset()
+    moveList.forEach((move) => game.move(move.move))
+    setPosition(game.fen())
+    setGame(game)
+
+    // Setup for the next line
+    setNextLine(nextLine)
+    setLineCorrect(true)
+    setLoading(false)
+    setInteractive(false)
   }
 
   const startNextLine = async () => {
     if (!nextLine) return
 
-    setStatus('loading')
-    await processNewFens()
-    await processStats()
     setNextLine(null)
     setCurrentLine(nextLine)
+    setMoveList(nextLine.line.moves)
     setMode('normal')
     setWrongMoves([])
     setTrainedFens([])
     game.reset()
-    setStatus('idle')
     setInteractive(true)
     setPosition(game.fen())
   }
@@ -196,10 +245,24 @@ export default function CourseTrainer(props: {
 
   const processNewFens = async () => {
     if (!user) return
-    // Add new fens to the server
-    const fensToUpload = trainedFens.filter(
-      (fen) => !existingFens.includes(fen),
-    )
+    // Reconstruct all the FENs we saw as the trainedFens state isn't updated
+    // it misses the last move out due to the update sequence of State
+    const seenFens = (() => {
+      const currentColour = orientation == 'white' ? true : false
+      const newGame = new Chess()
+      const fens = [] as string[]
+      fens.push(newGame.fen())
+      moveList.forEach((move) => {
+        newGame.move(move.move)
+        // Only add the fen if it's the other colour
+        // as that's the position we know the response to
+        if (move.colour != currentColour) fens.push(newGame.fen())
+      })
+      return fens
+    })()
+
+    const fensToUpload = seenFens.filter((fen) => !existingFens.includes(fen))
+
     const allSeenFens = [...existingFens, ...fensToUpload]
     setExistingFens(allSeenFens)
 
@@ -211,7 +274,6 @@ export default function CourseTrainer(props: {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              authorization: 'Bearer ' + user.id,
             },
             body: JSON.stringify({
               fens: fensToUpload,
@@ -230,7 +292,7 @@ export default function CourseTrainer(props: {
     // Now we need to update the fens that we've trained
     // with the correct/incorrect status
     try {
-      const fensWithStats = trainedFens.map((fen) => {
+      const fensWithStats = seenFens.map((fen) => {
         return {
           fen: fen,
           correct: !wrongFens.includes(fen),
@@ -243,7 +305,6 @@ export default function CourseTrainer(props: {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            authorization: 'Bearer ' + user.id,
           },
           body: JSON.stringify({
             fens: fensWithStats,
@@ -261,8 +322,38 @@ export default function CourseTrainer(props: {
   }
 
   const processStats = async () => {
-    if (!user) return
+    if (!user || !currentLine) return
 
+    // find the review date for the line
+    const now = new Date()
+    const tenMinutes = 10 * 60 * 1000
+    const fourHours = 4 * 60 * 60 * 1000
+    const oneDay = 24 * 60 * 60 * 1000
+    const threeDays = oneDay * 3
+    const oneWeek = oneDay * 7
+    const oneMonth = oneDay * 30
+    const timeToAdd = lineCorrect
+      ? (() => {
+          switch (currentLine.currentStreak) {
+            case 0:
+              return tenMinutes
+            case 1:
+              return fourHours
+            case 2:
+              return oneDay
+            case 3:
+              return threeDays
+            case 4:
+              return oneWeek
+            default:
+              return oneMonth
+          }
+        })()
+      : tenMinutes
+
+    const revisionDate = new Date(now.getTime() + timeToAdd)
+
+    // Update the line stats on the server
     try {
       const resp = await fetch(
         `/api/courses/user/${props.userCourse.id}/stats/${currentLine.id}`,
@@ -270,10 +361,10 @@ export default function CourseTrainer(props: {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            authorization: 'Bearer ' + user.id,
           },
           body: JSON.stringify({
             lineCorrect,
+            revisionDate,
           }),
         },
       )
@@ -282,8 +373,15 @@ export default function CourseTrainer(props: {
       if (json.message != 'Stats updated') {
         throw new Error(json.message)
       }
+      const updatedLine = json.data!.line as PrismaUserLine
+      const updatedLines = lines.map((line) =>
+        line.id === updatedLine.id ? updatedLine : line,
+      )
+      setLines(updatedLines)
+      return updatedLines
     } catch (e) {
       Sentry.captureException(e)
+      //TODO; This should probably kill the session and make the user restart (re-login?)
     }
   }
 
@@ -303,7 +401,7 @@ export default function CourseTrainer(props: {
     // Check if the move is correct
     const correctMove =
       mode == 'normal'
-        ? moveList[game.history().length - 1]!
+        ? moveList[game.history().length - 1]!.move
         : wrongMoves[currentWrongMove]!.move
 
     if (correctMove !== playerMove.san) {
@@ -337,25 +435,6 @@ export default function CourseTrainer(props: {
     return true
   }
 
-  useEffect(() => {
-    // If we're playing black, we need the first
-    // white move to be made automatically
-    // if we're playing white then we need to check
-    // if we've seen the first move before
-    let timeoutId: NodeJS.Timeout | undefined
-    if (orientation === 'white') {
-      if (!existingFens.includes(game.fen())) {
-        timeoutId = makeTeachingMove()
-      }
-    } else {
-      timeoutId = makeBookMove()
-    }
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId)
-    }
-  }, [])
-
   const PgnDisplay = game.history().map((move, index) => {
     const moveNumber = Math.floor(index / 2) + 1
     const moveColour = index % 2 === 0 ? 'White' : 'Black'
@@ -368,50 +447,91 @@ export default function CourseTrainer(props: {
       </p>
     )
 
-    if (nextLine) {
-      return (
-        <button
-          className="h-max max-h-fit bg-none px-1 py-1 text-white hover:bg-purple-800"
-          onClick={async () => {
-            await trackEventOnClient('course_jump_to_move', {
-              courseName: props.userCourse.course.courseName,
-            })
-
-            const newGame = new Chess()
-            for (let i = 0; i <= index; i++) {
-              newGame.move(game.history()[i]!)
-            }
-            setPosition(newGame.fen())
-          }}
-        >
-          <FlexText />
-        </button>
-      )
-    } else {
-      return (
-        <div className="px-1 py-1 text-white">
-          <FlexText />
-        </div>
-      )
-    }
+    return nextLine ? (
+      <button
+        className="h-max max-h-fit bg-none px-1 py-1 text-white hover:bg-purple-800"
+        onClick={() => {
+          const newGame = new Chess()
+          for (let i = 0; i <= index; i++) {
+            newGame.move(game.history()[i]!)
+          }
+          setPosition(newGame.fen())
+          setCurrentMove(moveList[index])
+        }}
+      >
+        <FlexText />
+      </button>
+    ) : (
+      <div className="px-1 py-1 text-white">
+        <FlexText />
+      </div>
+    )
   })
 
-  const windowSize = useWindowSize() as { width: number; height: number }
+  // Here are all our useEffect functions
+  useEffect(() => {
+    // On mount, we need to get the first line
+    const nextLine = getNextLine(lines)
+    if (!nextLine) {
+      // Nothing left to review/learn
+      router.push('/training/courses/')
+      return
+    }
+    setCurrentLine(nextLine)
+  }, [])
+
+  useEffect(() => {
+    // Create a new game when the line changes
+    if (!currentLine) return
+    const newGame = new Chess()
+    setGame(newGame)
+    setGameReady(false)
+    setMoveList(currentLine.line.moves)
+    setWrongMoves([])
+  }, [currentLine])
+
+  useEffect(() => {
+    // We need to ensure the game is set before we can make a move
+    setGameReady(true)
+  }, [game])
+
+  useEffect(() => {
+    // Now, whenever any of the elements associated with the game/line
+    // change we can update the game and check if we need to make a teachingMove
+    if (gameReady && currentLine) {
+      setPosition(game.fen())
+      setOrientation(game.turn() == 'w' ? 'white' : 'black')
+      if (
+        !trainedFens.includes(game.fen()) &&
+        !existingFens.includes(game.fen())
+      ) {
+        const timeoutId = makeTeachingMove()
+        setHadTeachingMove(true)
+        return () => {
+          clearTimeout(timeoutId)
+        }
+      }
+    }
+  }, [gameReady, game, currentLine])
+
+  useEffect(() => {
+    setCurrentMove(moveList[game.history().length - 1])
+  }, [game.history().length])
+
+  // Last check to ensure we have a user
+  if (!user) return null
+
   return (
-    <div className=" bg-purple-700 p-4">
+    <div className="relative bg-purple-700 p-4">
+      {loading && (
+        <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
+          <Spinner />
+        </div>
+      )}
       <p className="text-lg font-bold text-white">
-        Current Group: {currentLine.line.group.groupName}
+        Current Group: {currentLine?.line.group.groupName}
       </p>
-      <p className="font-bold text-white">
-        Line: {props.userLines.indexOf(currentLine) + 1}/
-        {props.userLines.length} (
-        {Math.round(
-          ((props.userLines.indexOf(currentLine) + 1) /
-            props.userLines.length) *
-            100,
-        )}
-        %) {currentLine.line.lineName ?? ''}
-      </p>
+      <p className="font-bold text-white">Line id: {currentLine?.id}</p>
       <div className="flex flex-col gap-4 md:flex-row">
         <div>
           <Chessboard
@@ -427,7 +547,12 @@ export default function CourseTrainer(props: {
           />
         </div>
         <div className="flex flex-1 flex-col gap-2">
-          <div className="flex h-full flex-wrap content-start gap-1 bg-purple-600 p-2">
+          {(teaching || nextLine) && currentMove?.comment && (
+            <div className="max-h-[40%] overflow-y-auto bg-purple-900 p-2">
+              <p className="text-white">{currentMove.comment}</p>
+            </div>
+          )}
+          <div className="flex flex-1 flex-wrap content-start gap-1 overflow-y-auto bg-purple-600 p-2">
             {PgnDisplay.map((item) => item)}
           </div>
           {teaching && (
@@ -449,6 +574,12 @@ export default function CourseTrainer(props: {
               Next Line {status == 'loading' && <Spinner />}
             </Button>
           )}
+          <Button
+            variant="danger"
+            onClick={() => router.push('/training/courses/')} //TODO: Add confirmation modal
+          >
+            Exit
+          </Button>
         </div>
       </div>
     </div>

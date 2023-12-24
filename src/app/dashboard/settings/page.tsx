@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import { getUserServer } from '~/app/_util/getUserServer'
 import Container from '~/app/components/_elements/container'
-import PageHeader from '~/app/components/_layouts/pageHeader'
 import AccountForm from '~/app/components/dashboard/AccountForm'
 
 export default async function AccountSettingsPage() {

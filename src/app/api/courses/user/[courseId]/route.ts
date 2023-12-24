@@ -1,49 +1,48 @@
-import { getUserServer } from '~/app/_util/getUserServer'
 import { errorResponse, successResponse } from '~/app/api/responses'
 import { prisma } from '~/server/db'
 import * as Sentry from '@sentry/nextjs'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 
 export async function GET(
   request: Request,
   { params }: { params: { courseId: string } },
 ) {
-  // Check if user is authenticated and reject request if not
-  const { user } = await getUserServer()
+  const session = getKindeServerSession(request)
+  if (!session) return errorResponse('Unauthorized', 401)
+  const user = await session.getUser()
+  if (!user) return errorResponse('Unauthorized', 401)
 
-  const authToken = request.headers.get('Authorization')?.split(' ')[1]
-  if (!user || user.id !== authToken) return errorResponse('Unauthorized', 401)
+  const { courseId } = params as { courseId: string }
 
-  const { courseId } = params
-  if (!courseId) return errorResponse('Missing courseId', 400)
+  if (courseId === undefined) return errorResponse('Missing fields', 400)
+
   try {
-    const userCourse = await prisma.userCourse.findFirst({
+    const course = await prisma.userCourse.findUnique({
       where: {
         id: courseId,
-        userId: user.id,
       },
       include: {
         course: true,
-      },
-    })
-
-    const userLines = await prisma.userLine.findMany({
-      where: {
-        userCourseId: courseId,
-      },
-      include: {
-        line: {
-          include: {
-            group: true,
+        lines: {
+          where: {
+            OR: [
+              {
+                revisionDate: {
+                  lte: new Date(),
+                },
+              },
+              { revisionDate: null },
+            ],
           },
         },
       },
     })
 
-    if (!userCourse) return errorResponse('Course not found', 404)
-    return successResponse('Course found', { userCourse, userLines }, 200)
+    if (!course) return errorResponse('Course not found', 404)
+
+    return successResponse('Course Fetched', { course }, 200)
   } catch (e) {
     Sentry.captureException(e)
-    if (e instanceof Error) return errorResponse(e.message, 500)
-    else return errorResponse('Unknown error', 500)
+    return errorResponse('Internal Server Error', 500)
   }
 }

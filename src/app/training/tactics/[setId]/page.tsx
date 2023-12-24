@@ -4,7 +4,7 @@ import TacticsTrainer from '~/app/components/training/tactics/TacticsTrainer'
 import { redirect } from 'next/navigation'
 import { getUserServer } from '~/app/_util/getUserServer'
 import { prisma } from '~/server/db'
-import { PrismaTacticsSetWithPuzzles } from '~/app/_util/GetTacticSets'
+import type { PrismaTacticsSetWithPuzzles } from '~/app/components/training/tactics/TacticsTrainer'
 
 export default async function TacticsTrainPage({
   params,

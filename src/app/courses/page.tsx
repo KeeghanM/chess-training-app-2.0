@@ -21,7 +21,7 @@ export default async function Courses() {
         }}
         cta={{
           text: 'Start Training',
-          link: '/training/tactics/list',
+          link: '/dashboard',
         }}
       >
         <Heading as="h2">

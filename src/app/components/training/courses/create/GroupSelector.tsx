@@ -7,16 +7,17 @@ import { GroupItem } from './GroupItem'
 import Spinner from '~/app/components/general/Spinner'
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
 import Button from '~/app/components/_elements/button'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
+import Heading from '~/app/components/_elements/heading'
 
 export default function GroupSelector(props: {
   lines: Line[]
+  back: () => void
   finished: (group: string, lines: Line[]) => void
 }) {
-  const { lines } = props
   const [parent] = useAutoAnimate()
+  const [lines, setLines] = useState<Line[]>(props.lines)
   const [groupOptions] = useState<string[]>(getGroupOptions(lines))
   const [selectedGroup, setSelectedGroup] = useState<string>('')
   const [groupedLineCounts, setGroupedLineCounts] = useState<
@@ -28,6 +29,11 @@ export default function GroupSelector(props: {
     setSelectedGroup(groupOptions[0]!)
     countLines(groupOptions[0]!)
   }, [groupOptions])
+
+  const updateLines = (lines: Line[]) => {
+    setLines(lines)
+    countLines(selectedGroup)
+  }
 
   // Count the number of lines which have each tag
   const countLines = (group: string) => {
@@ -52,7 +58,32 @@ export default function GroupSelector(props: {
     <Container>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <Heading as={'h2'}>Select Grouping</Heading>
+          <div className="flex flex-row flex-wrap items-baseline gap-2 text-sm">
+            <Heading as={'h4'}>Stats:</Heading>
+            <p>
+              <span>Total Lines:</span>{' '}
+              <span className="font-bold">{lines.length}</span>
+            </p>
+            <p>
+              <span>White Lines:</span>{' '}
+              <span className="font-bold">
+                {lines.reduce(
+                  (prev, curr) => prev + (curr.tags.Colour == 'White' ? 1 : 0),
+                  0,
+                )}
+              </span>
+              ,
+            </p>
+            <p>
+              <span>Black Lines:</span>{' '}
+              <span className="font-bold">
+                {lines.reduce(
+                  (prev, curr) => prev + (curr.tags.Colour == 'Black' ? 1 : 0),
+                  0,
+                )}
+              </span>
+            </p>
+          </div>
           <Tabs.Root
             defaultValue={groupOptions[0]}
             onValueChange={async (x) => {
@@ -65,6 +96,7 @@ export default function GroupSelector(props: {
             <Tabs.List className="flex gap-2">
               {groupOptions.map((group) => (
                 <Tabs.Trigger
+                  key={group}
                   className={
                     'border-b-2 px-2 py-1 hover:border-purple-700 hover:bg-purple-200 md:px-4 md:py-2 ' +
                     (selectedGroup == group
@@ -86,10 +118,11 @@ export default function GroupSelector(props: {
                 selectedGroup={selectedGroup}
                 groupKey={key}
                 count={groupedLineCounts[key]!}
+                updateLines={updateLines}
               />
             ))}
           </div>
-          <div>
+          <div className="flex flex-col gap-2 md:flex-row">
             <Button
               disabled={status == 'loading'}
               variant="primary"
@@ -104,6 +137,10 @@ export default function GroupSelector(props: {
                 </span>
                 {status == 'loading' && <Spinner />}
               </div>
+            </Button>
+
+            <Button variant="secondary" onClick={props.back}>
+              Go Back
             </Button>
           </div>
         </div>

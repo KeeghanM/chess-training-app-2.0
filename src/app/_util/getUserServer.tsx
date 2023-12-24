@@ -2,24 +2,26 @@ import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { prisma } from '~/server/db'
 import * as Sentry from '@sentry/nextjs'
+
 export async function getUserServer() {
-  const { getUser, isAuthenticated } = getKindeServerSession()
+  const { getUser, isAuthenticated, getPermissions } = getKindeServerSession()
   const user = await getUser()
-  const hasAuth = await isAuthenticated()
 
   if (user) {
+    const hasAuth = await isAuthenticated()
+    const permissions = await getPermissions()
     try {
       const profile = await prisma.userProfile.findFirst({
         where: {
           id: user.id,
         },
       })
-      return { user, hasAuth, profile }
+      return { user, hasAuth, profile, permissions }
     } catch (e) {
       Sentry.captureException(e)
     }
   }
-  return { user, hasAuth, profile: null }
+  return { user, hasAuth: false, profile: null, permissions: null }
 }
 
 export async function createUserProfile(user: KindeUser) {
@@ -43,7 +45,9 @@ export async function createUserProfile(user: KindeUser) {
     const email = user.email
     const firstName = user.given_name ?? ''
     const lastName = user.family_name ?? ''
-    const contactResponse = await fetch('https://api.brevo.com/v3/contacts', {
+
+    // create contact in Brevo
+    await fetch('https://api.brevo.com/v3/contacts', {
       method: 'POST',
       // @ts-expect-error : this is a valid request
       headers: {

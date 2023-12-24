@@ -1,14 +1,13 @@
 'use client'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
-import type { PrismaTacticsSet } from '~/app/_util/GetTacticSets'
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import { useEffect, useState } from 'react'
 import type { ResponseJson } from '~/app/api/responses'
 import * as Sentry from '@sentry/nextjs'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
+import type { PrismaTacticsSet } from '../create/TacticsSetCreator'
 
 export default function SetListEdit(props: {
   set: PrismaTacticsSet
@@ -40,7 +39,6 @@ export default function SetListEdit(props: {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           setId: set.id,
@@ -71,7 +69,6 @@ export default function SetListEdit(props: {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           setId: set.id,

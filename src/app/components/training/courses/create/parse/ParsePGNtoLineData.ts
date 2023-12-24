@@ -1,9 +1,11 @@
+'use client'
 import { parse, type ParseTree } from '@mliebelt/pgn-parser'
 import ECO from './ecoCodes'
 
-interface CleanMove {
+export interface CleanMove {
   notation: string
   turn: string
+  comment?: string
 }
 type Tags = Record<string, string>
 
@@ -58,19 +60,6 @@ export function ParsePGNtoLineData(pgnString: string) {
     }
   }
 
-  // Sort lines alphabetically by move, and then by number of moves (shortest first)
-  // This is so that the lines are in a predictable order
-  lines.sort((a, b) => {
-    const aMove = a.moves[a.moves.length - 1]
-    const bMove = b.moves[b.moves.length - 1]
-    if (aMove && bMove) {
-      const aMoveNotation = aMove.notation
-      const bMoveNotation = bMove.notation
-      return aMoveNotation.localeCompare(bMoveNotation)
-    }
-    return a.moves.length - b.moves.length
-  })
-
   return lines
 }
 
@@ -90,6 +79,7 @@ function recursiveParse(
     const cleanMove: CleanMove = {
       notation: move.notation.notation,
       turn: move.turn,
+      comment: move.commentAfter ?? undefined,
     }
     movesList.push(cleanMove)
   }

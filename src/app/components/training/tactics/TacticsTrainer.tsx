@@ -13,10 +13,15 @@ import Button from '../../_elements/button'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 import TimeSince from '../../general/TimeSince'
-import type { PrismaTacticsSetWithPuzzles } from '~/app/_util/GetTacticSets'
 import * as Sentry from '@sentry/nextjs'
 import Link from 'next/link'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import type { PrismaTacticsSet } from './create/TacticsSetCreator'
+import type { Puzzle } from '@prisma/client'
+
+export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
+  puzzles: Puzzle[]
+}
 
 export interface TrainingPuzzle {
   puzzleid: string
@@ -145,7 +150,6 @@ export default function TacticsTrainer(props: {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -174,7 +178,6 @@ export default function TacticsTrainer(props: {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -200,7 +203,6 @@ export default function TacticsTrainer(props: {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user.id,
         },
         body: JSON.stringify({
           roundId: currentRound.id,
@@ -243,7 +245,6 @@ export default function TacticsTrainer(props: {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              Authorization: 'Bearer ' + user!.id,
             },
             body: JSON.stringify({
               setId: props.set.id,
@@ -378,7 +379,7 @@ export default function TacticsTrainer(props: {
       setPuzzleFinished(true)
       return false
     }
-    playMoveSound(playerMove.san!)
+    playMoveSound(playerMove.san)
     setPosition(game.fen())
     makeBookMove()
     await checkEndOfLine()

@@ -1,10 +1,10 @@
 'use client'
 
 import TacticsSetCreator from '../create/TacticsSetCreator'
+import type { PrismaTacticsSet } from '../create/TacticsSetCreator'
 import Container from '~/app/components/_elements/container'
 import { useEffect, useState } from 'react'
 import SetListItem from './SetListItem'
-import type { PrismaTacticsSet } from '~/app/_util/GetTacticSets'
 import type { ResponseJson } from '~/app/api/responses'
 import * as Sentry from '@sentry/nextjs'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
@@ -21,7 +21,6 @@ export default function TacticsList() {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          authorization: 'Bearer ' + user.id,
         },
       })
       const json = (await resp.json()) as ResponseJson
@@ -41,7 +40,6 @@ export default function TacticsList() {
   }
 
   const updateList = () => {
-    console.log('Updating list')
     setSets([])
     getSets()
       .then((sets) => setSets(sets ?? []))

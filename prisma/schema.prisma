@@ -27,7 +27,7 @@ model Course {
 }
 
 model Group {
-    id        String   @id @default(cuid())
+    id        Int      @id @default(autoincrement())
     courseId  String
     groupName String
     createdAt DateTime @default(now())
@@ -52,36 +52,48 @@ model UserCourse {
 }
 
 model Line {
-    id        String     @id @default(cuid())
+    id        Int        @id @default(autoincrement())
     courseId  String
     lineName  String?
     colour    String
-    groupId   String
-    moves     String
+    groupId   Int
     createdAt DateTime   @default(now())
     updatedAt DateTime   @updatedAt
     course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
     group     Group      @relation(fields: [groupId], references: [id], onDelete: Cascade)
     userLines UserLine[]
+    moves     Move[]
+}
+
+model Move {
+    id         String   @id @default(cuid())
+    lineId     Int
+    move       String
+    moveNumber Int
+    colour     Boolean
+    comment    String?  @db.Text
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+    line       Line     @relation(fields: [lineId], references: [id], onDelete: Cascade)
 }
 
 model UserLine {
-    id           String     @id @default(cuid())
-    courseId     String
-    userId       String
-    userCourseId String
-    lineId       String
-    lastTrained  DateTime?
-    lastStatus   Boolean?
-    timesTrained Int        @default(0)
-    timesCorrect Int        @default(0)
-    timesWrong   Int        @default(0)
-    course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
-    line         Line       @relation(fields: [lineId], references: [id], onDelete: Cascade)
+    id            Int        @id @default(autoincrement())
+    userId        String
+    userCourseId  String
+    lineId        Int
+    revisionDate  DateTime?
+    lastTrained   DateTime?
+    timesTrained  Int        @default(0)
+    timesCorrect  Int        @default(0)
+    timesWrong    Int        @default(0)
+    currentStreak Int        @default(0)
+    course        UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
+    line          Line       @relation(fields: [lineId], references: [id], onDelete: Cascade)
 }
 
 model UserFen {
-    id           String     @id @default(cuid())
+    id           Int        @id @default(autoincrement())
     userCourseId String
     fen          String
     timesTrained Int        @default(0)
@@ -104,14 +116,14 @@ model TacticsSet {
 }
 
 model Puzzle {
-    id       String     @id @default(cuid())
+    id       Int        @id @default(autoincrement())
     puzzleid String
     setId    String
     set      TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
 }
 
 model TacticsSetRound {
-    id          String     @id @default(cuid())
+    id          Int        @id @default(autoincrement())
     roundNumber Int
     timeSpent   Int        @default(0)
     correct     Int        @default(0)
@@ -127,10 +139,11 @@ model UserProfile {
     username            String   @unique
     fullName            String?
     description         String?  @db.Text
+    puzzleRating        Int      @default(1500)
+    difficulty          Int      @default(1)
+    experience          Int      @default(0)
     highestOnlineRating Int?
     highestOTBRating    Int?
-    puzzleRating        Int?
-    difficulty          Int?
     createdAt           DateTime @default(now())
     updatedAt           DateTime @updatedAt
 }

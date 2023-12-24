@@ -1,14 +1,15 @@
 import type { Course, Group as PrismaGroup } from '@prisma/client'
 import { errorResponse, successResponse } from '../../../responses'
 import { prisma } from '~/server/db'
-import { getUserServer } from '~/app/_util/getUserServer'
 import * as Sentry from '@sentry/nextjs'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import type { CleanMove } from '~/app/components/training/courses/create/parse/ParsePGNtoLineData'
 export async function POST(request: Request) {
-  // Check if user is authenticated and reject request if not
-  const { user } = await getUserServer()
+  const session = getKindeServerSession(request)
+  if (!session) return errorResponse('Unauthorized', 401)
 
-  const authToken = request.headers.get('Authorization')?.split(' ')[1]
-  if (!user || user.id !== authToken) return errorResponse('Unauthorized', 401)
+  const user = await session.getUser()
+  if (!user) return errorResponse('Unauthorized', 401)
 
   const { courseName, description, groupNames, lines, slug } =
     (await request.json()) as {
@@ -21,7 +22,7 @@ export async function POST(request: Request) {
       lines: {
         groupName: string
         colour: string
-        moves: string
+        moves: CleanMove[]
       }[]
     }
 
@@ -79,18 +80,26 @@ export async function POST(request: Request) {
         )
         if (!matchingGroup) throw new Error('Group not found')
 
+        const transformedMoves = line.moves.map((move, index) => ({
+          move: move.notation,
+          moveNumber: Math.ceil((index + 1) / 2),
+          colour: index % 2 === 0 ? true : false, // True for white, false for black
+          comment: move.comment ?? null,
+        }))
+
         const dbLine = await prisma.line.create({
           data: {
             colour: line.colour,
-            moves: line.moves,
             groupId: matchingGroup.id,
             courseId: course.id,
+            moves: {
+              create: transformedMoves,
+            },
           },
         })
 
         await prisma.userLine.create({
           data: {
-            courseId: course.id,
             userId: user.id,
             userCourseId: userCourse.id,
             lineId: dbLine.id,

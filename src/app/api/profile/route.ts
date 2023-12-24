@@ -1,10 +1,14 @@
 import { prisma } from '~/server/db'
 import { errorResponse, successResponse } from '../responses'
 import * as Sentry from '@sentry/nextjs'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 
 export async function PUT(request: Request) {
-  const userId = request.headers.get('Authorization')?.split(' ')[1]
-  if (!userId) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request)
+  if (!session) return errorResponse('Unauthorized', 401)
+
+  const user = await session.getUser()
+  if (!user) return errorResponse('Unauthorized', 401)
 
   const {
     username,
@@ -71,12 +75,12 @@ export async function PUT(request: Request) {
         username,
       },
     })
-    if (existingUsername && existingUsername.id !== userId)
+    if (existingUsername && existingUsername.id !== user.id)
       return errorResponse('Username already exists', 400)
 
     const profile = await prisma.userProfile.update({
       where: {
-        id: userId,
+        id: user.id,
       },
       data: {
         username,

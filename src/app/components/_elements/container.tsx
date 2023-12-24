@@ -1,6 +1,19 @@
-export default function Container({ children }: { children: React.ReactNode }) {
+export default function Container({
+  children,
+  size,
+}: {
+  children: React.ReactNode
+  size?: 'default' | 'wide'
+}) {
   return (
-    <div className="relative mx-auto max-w-[min(calc(100vw-2rem),90ch)] p-4 md:p-6 lg:p-8">
+    <div
+      className={
+        'relative mx-auto p-4 md:p-6 lg:p-8' +
+        (size == 'default' || size == undefined
+          ? '  max-w-[min(calc(100vw-2rem),90ch)]'
+          : ' max-w-[min(calc(100vw-2rem),120ch)]')
+      }
+    >
       {children}
     </div>
   )

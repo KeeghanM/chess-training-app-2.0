@@ -12,6 +12,7 @@ export function GroupItem(props: {
   selectedGroup: string
   groupKey: string
   count: number
+  updateLines: (lines: Line[]) => void
 }) {
   const { lines, selectedGroup, groupKey, count } = props
   const [open, setOpen] = useState<boolean>(false)
@@ -21,7 +22,7 @@ export function GroupItem(props: {
   return (
     <div
       ref={parent}
-      className="flex flex-col justify-center gap-2 bg-gray-100 p-4 md:p-6 lg:p-12"
+      className="flex flex-col justify-center gap-2 bg-gray-100 p-2 md:p-4"
     >
       <div className="flex items-center gap-2">
         <p className="font-bold">{count} x</p>
@@ -48,15 +49,15 @@ export function GroupItem(props: {
         <div className="flex flex-col gap-2">
           {linesToShow
             .filter((line) => line.tags[selectedGroup] === groupKey)
-            .map((line) => {
+            .map((line, index) => {
               return (
                 <div
-                  className="flex flex-col justify-center gap-2 bg-gray-200 p-4 md:p-6 lg:p-12"
-                  key={line.moves.join('')}
+                  className="flex flex-col justify-center gap-2 bg-gray-200 p-2"
+                  key={groupKey + index.toString()}
                 >
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 text-sm">
                     <PrettyPrintLine line={line} />
-                    <div className="ml-auto flex items-center gap-2 p-2">
+                    <div className="ml-auto flex flex-col gap-1">
                       <select
                         className="border border-gray-300 p-2"
                         defaultValue={line.tags.Colour}
@@ -67,6 +68,7 @@ export function GroupItem(props: {
                             {},
                           )
                           line.tags.Colour = v
+                          props.updateLines(lines)
                         }}
                       >
                         <option value="White">White</option>
@@ -98,10 +100,11 @@ export function GroupItem(props: {
                                         'create_course_delete_line',
                                         {},
                                       )
-                                      lines.splice(lines.indexOf(line), 1),
-                                        setLinesToShow(
-                                          linesToShow.filter((l) => l !== line),
-                                        )
+                                      lines.splice(lines.indexOf(line), 1)
+                                      setLinesToShow(
+                                        linesToShow.filter((l) => l !== line),
+                                      )
+                                      props.updateLines(lines)
                                     }}
                                   >
                                     Delete

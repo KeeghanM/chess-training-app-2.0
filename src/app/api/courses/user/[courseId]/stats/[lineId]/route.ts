@@ -1,38 +1,49 @@
-import { getUserServer } from '~/app/_util/getUserServer'
 import { errorResponse, successResponse } from '~/app/api/responses'
 import { prisma } from '~/server/db'
 import * as Sentry from '@sentry/nextjs'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 
 export async function POST(
   request: Request,
   { params }: { params: { courseId: string; lineId: string } },
 ) {
-  // Check if user is authenticated and reject request if not
-  const { user } = await getUserServer()
-
-  const authToken = request.headers.get('Authorization')?.split(' ')[1]
-  if (!user || user.id !== authToken) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request)
+  if (!session) return errorResponse('Unauthorized', 401)
+  const user = await session.getUser()
+  if (!user) return errorResponse('Unauthorized', 401)
 
   const { courseId, lineId } = params
-  const { lineCorrect } = (await request.json()) as { lineCorrect: boolean }
+  const { lineCorrect, revisionDate } = (await request.json()) as {
+    lineCorrect: boolean
+    revisionDate: Date
+  }
 
-  if (!courseId || !lineId || !lineCorrect)
+  if (
+    courseId === undefined ||
+    lineId === undefined ||
+    lineCorrect === undefined ||
+    revisionDate === undefined
+  )
     return errorResponse('Missing fields', 400)
 
   try {
-    await prisma.userLine.update({
+    const line = await prisma.userLine.update({
       where: {
-        id: lineId,
+        id: parseInt(lineId),
+        userId: user.id,
       },
       data: {
         lastTrained: new Date(),
-        lastStatus: lineCorrect,
         timesTrained: {
           increment: 1,
         },
+        revisionDate,
         ...(lineCorrect
           ? {
               timesCorrect: {
+                increment: 1,
+              },
+              currentStreak: {
                 increment: 1,
               },
             }
@@ -40,22 +51,43 @@ export async function POST(
               timesWrong: {
                 increment: 1,
               },
+              currentStreak: 0,
             }),
       },
     })
 
-    // TODO: updated the linesLearned etc counters
-    // maybe not here? maybe in a cron job?
-    await prisma.userCourse.update({
+    const allLines = await prisma.userLine.findMany({
       where: {
-        id: courseId,
-      },
-      data: {
-        lastTrained: new Date(),
+        userCourseId: courseId,
+        userId: user.id,
       },
     })
 
-    return successResponse('Stats updated', {}, 200)
+    await prisma.userCourse.update({
+      where: {
+        id: courseId,
+        userId: user.id,
+      },
+      data: {
+        lastTrained: new Date(),
+        linesLearned: allLines.filter(
+          (line) =>
+            line.currentStreak > 4 && line.timesCorrect >= line.timesWrong,
+        ).length,
+        linesLearning: allLines.filter(
+          (line) =>
+            line.currentStreak <= 4 &&
+            line.timesTrained > 0 &&
+            line.timesCorrect >= line.timesWrong,
+        ).length,
+        linesHard: allLines.filter(
+          (line) => line.timesWrong > line.timesCorrect,
+        ).length,
+        linesUnseen: allLines.filter((line) => line.timesTrained == 0).length,
+      },
+    })
+
+    return successResponse('Stats updated', { line }, 200)
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)

@@ -4,6 +4,7 @@ import PageHeader from '../components/_layouts/pageHeader'
 import { isFlagEnabledServer } from '../_util/isFlagEnabledServer'
 import { getUserServer } from '../_util/getUserServer'
 import { PostHogClient } from '../_util/trackEventOnServer'
+import Heading from '../components/_elements/heading'
 
 export type Tool = {
   name: string
@@ -18,8 +19,10 @@ export const metadata = {
 }
 
 export default async function Dashboard() {
-  const { user, profile } = await getUserServer()
+  const { user, profile, permissions } = await getUserServer()
   if (!user) redirect('/auth/signin')
+
+  const override = process.env.NODE_ENV === 'development'
 
   // Identify the user immediately upon signin
   const posthog = PostHogClient()
@@ -53,7 +56,7 @@ export default async function Dashboard() {
       ],
       href: '/training/courses',
       buttonText: 'Train',
-      active: await isFlagEnabledServer('course-trainer'),
+      active: (await isFlagEnabledServer('course-trainer')) || override,
     },
     {
       name: 'Endgame Training',
@@ -64,7 +67,7 @@ export default async function Dashboard() {
       ],
       href: '/training/endgames/train',
       buttonText: 'Train',
-      active: await isFlagEnabledServer('endgame-trainer'),
+      active: (await isFlagEnabledServer('endgame-trainer')) || override,
     },
     {
       name: 'Visualisation & Calculation',
@@ -75,7 +78,7 @@ export default async function Dashboard() {
       ],
       href: '/training/visualisation',
       buttonText: 'Train',
-      active: await isFlagEnabledServer('visualisation-trainer'),
+      active: (await isFlagEnabledServer('visualisation-trainer')) || override,
     },
     {
       name: 'Knight Vision',
@@ -86,7 +89,7 @@ export default async function Dashboard() {
       ],
       href: '/training/knight-vision',
       buttonText: 'Train',
-      active: await isFlagEnabledServer('knight-vision'),
+      active: (await isFlagEnabledServer('knight-vision')) || override,
     },
     {
       name: 'Find Courses',
@@ -96,7 +99,7 @@ export default async function Dashboard() {
       ],
       href: '/courses',
       buttonText: 'Find',
-      active: await isFlagEnabledServer('course-trainer'),
+      active: (await isFlagEnabledServer('course-browser')) || override,
     },
     {
       name: 'Create a Course',
@@ -107,7 +110,7 @@ export default async function Dashboard() {
       ],
       href: '/courses/create',
       buttonText: 'Create',
-      active: await isFlagEnabledServer('create-a-course'),
+      active: (await isFlagEnabledServer('course-trainer')) || override,
     },
     {
       name: 'Account Settings',
@@ -118,6 +121,18 @@ export default async function Dashboard() {
       href: '/dashboard/settings',
       buttonText: 'Open',
       active: true,
+    },
+  ]
+
+  const staffTools: Tool[] = [
+    {
+      name: 'Curated Set Creator',
+      description: [
+        'Browse our library of puzzles, and add them to curated sets.',
+      ],
+      href: '/admin/curated-sets',
+      buttonText: 'Open',
+      active: false,
     },
   ]
 
@@ -132,6 +147,16 @@ export default async function Dashboard() {
         }}
       />
       <div className="p-4 md:p-6">
+        {permissions?.permissions?.includes('staff-member') && (
+          <>
+            <Heading as={'h2'}>Staff Tools</Heading>
+            <div className="mb-2 grid grid-cols-1 gap-4 border-b border-gray-500 pb-2 md:grid-cols-3 lg:grid-cols-4">
+              {staffTools.map((tool) => (
+                <ToolGrid tool={tool} key={tool.name} />
+              ))}
+            </div>
+          </>
+        )}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {tools
             .sort((a, b) => {

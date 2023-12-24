@@ -66,7 +66,6 @@ export default function AccountForm(props: { profile: UserProfile }) {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          authorization: `Bearer ${user.id}`,
         },
         body: JSON.stringify({
           username,
@@ -79,6 +78,8 @@ export default function AccountForm(props: { profile: UserProfile }) {
         }),
       })
       const json = (await res.json()) as ResponseJson
+
+      if (json.message != 'Profile Updated') throw new Error(json.message)
 
       setLoading(false)
       setSuccess(true)
