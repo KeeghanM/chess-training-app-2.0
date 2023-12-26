@@ -1,3 +1,5 @@
+import { StreakBadges } from '~/app/about/ranks-and-badges/page'
+
 interface StreakDisplayProps {
   currentStreak: number
 }
@@ -20,42 +22,3 @@ export default function StreakDisplay(props: StreakDisplayProps) {
     </div>
   )
 }
-
-export const StreakBadges = [
-  {
-    name: '2 Day',
-    streak: 2,
-  },
-  {
-    name: '5 Day',
-    streak: 5,
-  },
-  {
-    name: '7 Day',
-    streak: 7,
-  },
-  {
-    name: '14 Day',
-    streak: 14,
-  },
-  {
-    name: '30 Day',
-    streak: 30,
-  },
-  {
-    name: '3 Month',
-    streak: 90,
-  },
-  {
-    name: '6 Month',
-    streak: 180,
-  },
-  {
-    name: 'One Year',
-    streak: 365,
-  },
-  {
-    name: 'Two Year',
-    streak: 730,
-  },
-]

@@ -5,8 +5,8 @@ interface XpDisplayProps {
 }
 export default function XpDisplay(props: XpDisplayProps) {
   const { currentXp } = props
-  const rank = ranks.reverse().find((rank) => currentXp >= rank.xp)
-  const nextRank = ranks.reverse().find((rank) => currentXp < rank.xp)
+  const rank = XpRanks.reverse().find((rank) => currentXp >= rank.xp)
+  const nextRank = XpRanks.reverse().find((rank) => currentXp < rank.xp)
 
   return (
     <div className="flex flex-row items-center justify-center gap-2 md:gap-4">
@@ -44,7 +44,7 @@ export default function XpDisplay(props: XpDisplayProps) {
   )
 }
 
-export const ranks = [
+export const XpRanks = [
   {
     rank: 'Pawn',
     name: 'Starter',

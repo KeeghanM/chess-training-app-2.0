@@ -49,6 +49,7 @@ export default function EndgameTrainer() {
   const [mode, setMode] = useState<'training' | 'settings'>('settings')
 
   const [xpCounter, setXpCounter] = useState(0)
+  const [currentStreak, setCurrentStreak] = useState(0)
 
   const difficultyAdjuster = (d: number) => {
     return d == 0 ? 0.9 : d == 1 ? 1 : 1.2
@@ -145,6 +146,11 @@ export default function EndgameTrainer() {
   const goToNextPuzzle = async (status: string) => {
     if (status == 'correct') {
       await trackEventOnClient('endgame_correct', {})
+      await fetch('/api/endgames/streak', {
+        method: 'POST',
+        body: JSON.stringify({ currentStreak: currentStreak + 1 }),
+      })
+      setCurrentStreak(currentStreak + 1)
     } else if (status == 'incorrect') {
       await trackEventOnClient('endgame_incorrect', {})
     }

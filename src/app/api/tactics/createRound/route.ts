@@ -2,6 +2,7 @@ import { errorResponse, successResponse } from '~/app/api/responses'
 import { prisma } from '~/server/db'
 import * as Sentry from '@sentry/nextjs'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { TacticStreakBadges } from '~/app/about/ranks-and-badges/page'
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request)
@@ -10,19 +11,40 @@ export async function POST(request: Request) {
   const user = await session.getUser()
   if (!user) return errorResponse('Unauthorized', 401)
 
-  const { setId, roundNumber } = (await request.json()) as {
+  const { setId, roundNumber, puzzleRating } = (await request.json()) as {
     setId: string
     roundNumber: number
+    puzzleRating: number
   }
   if (!setId || !roundNumber) return errorResponse('Missing fields', 400)
 
   try {
-    await prisma.tacticsSetRound.create({
-      data: {
-        setId,
-        roundNumber,
-      },
-    })
+    if (roundNumber <= 8) {
+      await prisma.tacticsSetRound.create({
+        data: {
+          setId,
+          roundNumber,
+        },
+      })
+    }
+
+    if (puzzleRating) {
+      const badge = TacticStreakBadges.find(
+        (badge) =>
+          badge.level &&
+          puzzleRating >= badge.level &&
+          badge.streak == roundNumber,
+      )
+
+      if (badge) {
+        await prisma.userBadge.create({
+          data: {
+            badgeName: badge.name,
+            userId: user.id,
+          },
+        })
+      }
+    }
 
     return successResponse('Round created', {}, 200)
   } catch (e) {

@@ -110,6 +110,7 @@ model TacticsSet {
     createdAt   DateTime          @default(now())
     updatedAt   DateTime          @updatedAt
     size        Int
+    rating      Int?
     lastTrained DateTime?
     puzzles     Puzzle[]
     rounds      TacticsSetRound[]
@@ -149,6 +150,7 @@ model UserProfile {
     createdAt           DateTime     @default(now())
     updatedAt           DateTime     @updatedAt
     daysTrained         DayTrained[]
+    badges              UserBadge[]
 }
 
 model DayTrained {
@@ -157,4 +159,23 @@ model DayTrained {
     date       String
     experience Int         @default(0)
     user       UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Badge {
+    name        String      @id
+    imageUrl    String
+    description String      @db.Text
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+    users       UserBadge[]
+}
+
+model UserBadge {
+    id        String      @id @default(cuid())
+    userId    String
+    badgeName String
+    createdAt DateTime    @default(now())
+    updatedAt DateTime    @updatedAt
+    user      UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+    badge     Badge       @relation(fields: [badgeName], references: [name], onDelete: Cascade)
 }

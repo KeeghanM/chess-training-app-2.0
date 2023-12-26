@@ -19,6 +19,7 @@ import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { PrismaTacticsSet } from './create/TacticsSetCreator'
 import type { Puzzle } from '@prisma/client'
 import XpTracker from '../../general/XpTracker'
+import { TacticStreakBadges } from '~/app/about/ranks-and-badges/page'
 
 export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
   puzzles: Puzzle[]
@@ -74,6 +75,7 @@ export default function TacticsTrainer(props: {
     'none' | 'correct' | 'incorrect'
   >('none')
   const [xpCounter, setXpCounter] = useState(0)
+  const [currentStreak, setCurrentStreak] = useState(0)
 
   const getPuzzle = async (id: string) => {
     try {
@@ -183,11 +185,14 @@ export default function TacticsTrainer(props: {
         },
         body: JSON.stringify({
           roundId: currentRound.id,
+          currentStreak: currentStreak + 1,
         }),
       })
     } catch (e) {
       Sentry.captureException(e)
     }
+
+    setCurrentStreak(currentStreak + 1)
     setCurrentRound({ ...currentRound, correct: currentRound.correct + 1 })
     setLoading(false)
   }
@@ -213,6 +218,7 @@ export default function TacticsTrainer(props: {
     } catch (e) {
       Sentry.captureException(e)
     }
+    setCurrentStreak(0)
     setCurrentRound({ ...currentRound, incorrect: currentRound.incorrect + 1 })
     setLoading(false)
   }

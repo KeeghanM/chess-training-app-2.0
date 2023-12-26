@@ -11,28 +11,12 @@ export async function POST(request: Request) {
   const user = await session.getUser()
   if (!user) return errorResponse('Unauthorized', 401)
 
-  const { roundId, currentStreak } = (await request.json()) as {
-    roundId: string
+  const { currentStreak } = (await request.json()) as {
     currentStreak: number
   }
-  if (!roundId || currentStreak == undefined)
-    return errorResponse('Missing fields', 400)
+  if (currentStreak == undefined) return errorResponse('Missing fields', 400)
 
   try {
-    await prisma.tacticsSetRound.update({
-      where: {
-        id: roundId,
-        set: {
-          userId: user.id,
-        },
-      },
-      data: {
-        correct: {
-          increment: 1,
-        },
-      },
-    })
-
     const badge = TacticStreakBadges.find(
       (badge) => badge.streak === currentStreak && badge.level == undefined,
     )
@@ -44,9 +28,10 @@ export async function POST(request: Request) {
           userId: user.id,
         },
       })
+      return successResponse('Badge Added', {}, 200)
     }
 
-    return successResponse('Time taken updated', {}, 200)
+    return successResponse('No badge to add', {}, 200)
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
