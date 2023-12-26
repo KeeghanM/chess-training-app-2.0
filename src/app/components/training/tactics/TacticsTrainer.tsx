@@ -18,6 +18,7 @@ import Link from 'next/link'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { PrismaTacticsSet } from './create/TacticsSetCreator'
 import type { Puzzle } from '@prisma/client'
+import XpTracker from '../../general/XpTracker'
 
 export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
   puzzles: Puzzle[]
@@ -72,6 +73,7 @@ export default function TacticsTrainer(props: {
   const [puzzleStatus, setPuzzleStatus] = useState<
     'none' | 'correct' | 'incorrect'
   >('none')
+  const [xpCounter, setXpCounter] = useState(0)
 
   const getPuzzle = async (id: string) => {
     try {
@@ -278,6 +280,7 @@ export default function TacticsTrainer(props: {
       if (soundEnabled) correctSound()
       setPuzzleStatus('correct')
       setPuzzleFinished(true)
+      setXpCounter(xpCounter + 1)
 
       if (autoNext && puzzleStatus != 'incorrect') {
         await goToNextPuzzle('correct')
@@ -516,9 +519,9 @@ export default function TacticsTrainer(props: {
               <path
                 fill="none"
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
                 d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
               />
             </svg>
@@ -532,9 +535,9 @@ export default function TacticsTrainer(props: {
               <path
                 fill="none"
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
                 d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
               />
             </svg>
@@ -571,6 +574,7 @@ export default function TacticsTrainer(props: {
             <TimeSince date={sessionTimeStarted} />
           </span>
         </p>
+        <XpTracker counter={xpCounter} type={'tactic'} />
       </div>
       <div className="flex flex-col gap-4 md:flex-row">
         <div>
@@ -651,9 +655,9 @@ export default function TacticsTrainer(props: {
                       <path
                         fill="none"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
                       />
                     </svg>

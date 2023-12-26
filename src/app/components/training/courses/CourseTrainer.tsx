@@ -23,6 +23,7 @@ import type { Square } from 'chess.js'
 import type { ResponseJson } from '~/app/api/responses'
 import * as Sentry from '@sentry/nextjs'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import XpTracker from '../../general/XpTracker'
 
 export type PrismaUserCourse = UserCourse & { course: Course } & {
   lines?: PrismaUserLine[]
@@ -71,6 +72,8 @@ export default function CourseTrainer(props: {
   const [castleSound] = useSound('/sfx/castle.mp3') as [() => void]
   const [moveSound] = useSound('/sfx/move.mp3') as [() => void]
   const windowSize = useWindowSize() as { width: number; height: number }
+  const [xpCounter, setXpCounter] = useState(0)
+  const [soundEnabled, setSoundEnabled] = useState(true)
 
   const getNextLine = (lines: PrismaUserLine[]) => {
     // Sorts the lines in order or priority
@@ -173,6 +176,7 @@ export default function CourseTrainer(props: {
 
     // All the moves have now been gotten right and we've reviewed the line if needed
     // Now we want to log all the stats
+    setXpCounter(xpCounter + 1)
     setLoading(true)
     await processNewFens()
     const updatedLines = await processStats()
@@ -230,6 +234,8 @@ export default function CourseTrainer(props: {
   }
 
   const playMoveSound = (move: string) => {
+    if (!soundEnabled) return
+
     if (move.includes('+')) {
       checkSound()
     } else if (move.includes('x')) {
@@ -528,10 +534,51 @@ export default function CourseTrainer(props: {
           <Spinner />
         </div>
       )}
-      <p className="text-lg font-bold text-white">
-        Current Group: {currentLine?.line.group.groupName}
-      </p>
-      <p className="font-bold text-white">Line id: {currentLine?.id}</p>
+      <div className="flex flex-row items-center justify-between text-white">
+        <p className="text-lg font-bold text-white">
+          Current Group: {currentLine?.line.group.groupName}
+        </p>
+        <div
+          className="flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
+          onClick={() => setSoundEnabled(!soundEnabled)}
+        >
+          <p>Sound {soundEnabled ? 'On' : 'Off'}</p>
+          {soundEnabled ? (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
+              />
+            </svg>
+          ) : (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill="none"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
+              />
+            </svg>
+          )}
+        </div>
+      </div>
+      <XpTracker counter={xpCounter} type={'tactic'} />
       <div className="flex flex-col gap-4 md:flex-row">
         <div>
           <Chessboard

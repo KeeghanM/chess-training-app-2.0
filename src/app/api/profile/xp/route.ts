@@ -1,0 +1,99 @@
+import { prisma } from '~/server/db'
+import * as Sentry from '@sentry/nextjs'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { errorResponse, successResponse } from '../../responses'
+import type { availableTypes } from '~/app/components/general/XpTracker'
+
+export async function PUT(request: Request) {
+  const session = getKindeServerSession(request)
+  if (!session) return errorResponse('Unauthorized', 401)
+
+  const user = await session.getUser()
+  if (!user) return errorResponse('Unauthorized', 401)
+
+  const { xp, type } = (await request.json()) as {
+    xp: number
+    type: availableTypes
+  }
+
+  const calculateXp = (type: availableTypes) => {
+    switch (type) {
+      case 'line':
+        return 15
+      case 'tactic':
+        return 5
+      default:
+        return 5
+    }
+  }
+
+  const xpToAdd = calculateXp(type)
+
+  if (xpToAdd !== xp) return errorResponse('Invalid XP', 401)
+
+  try {
+    const profile = await prisma.userProfile.findUnique({
+      where: { id: user.id },
+    })
+    if (!profile) return errorResponse('User not found', 404)
+
+    const timeSinceLastTrained = profile.lastTrained
+      ? new Date().getTime() - profile.lastTrained.getTime()
+      : 0
+    const oneDay = 1000 * 60 * 60 * 24
+
+    const currentStreak =
+      timeSinceLastTrained < oneDay
+        ? profile.currentStreak
+        : timeSinceLastTrained > oneDay && timeSinceLastTrained < oneDay * 2
+          ? profile.currentStreak + 1
+          : 1
+
+    await prisma.userProfile.update({
+      where: { id: user.id },
+      data: {
+        experience: {
+          increment: xpToAdd,
+        },
+        lastTrained: new Date(),
+        currentStreak,
+      },
+    })
+
+    const dateString = new Date().toISOString().split('T')[0]!
+
+    const dayTrained = await prisma.dayTrained.findFirst({
+      where: {
+        userId: user.id,
+        date: dateString,
+      },
+    })
+
+    if (!dayTrained) {
+      await prisma.dayTrained.create({
+        data: {
+          date: dateString,
+          userId: user.id,
+          experience: xpToAdd,
+        },
+      })
+    } else {
+      await prisma.dayTrained.update({
+        where: {
+          id: dayTrained.id,
+        },
+        data: {
+          experience: {
+            increment: xpToAdd,
+          },
+        },
+      })
+    }
+
+    return successResponse('XP added', { xp: xpToAdd }, 200)
+  } catch (e) {
+    Sentry.captureException(e)
+    if (e instanceof Error) return errorResponse(e.message, 500)
+    return errorResponse('Unknown error', 500)
+  }
+}

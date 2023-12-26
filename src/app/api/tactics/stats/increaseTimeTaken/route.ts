@@ -18,6 +18,31 @@ export async function POST(request: Request) {
   if (!roundId || !timeTaken) return errorResponse('Missing fields', 400)
 
   try {
+    const profile = await prisma.userProfile.findUnique({
+      where: { id: user.id },
+    })
+    if (!profile) return errorResponse('User not found', 404)
+
+    const timeSinceLastTrained = profile.lastTrained
+      ? new Date().getTime() - profile.lastTrained.getTime()
+      : 0
+    const oneDay = 1000 * 60 * 60 * 24
+
+    const currentStreak =
+      timeSinceLastTrained < oneDay
+        ? profile.currentStreak
+        : timeSinceLastTrained > oneDay && timeSinceLastTrained < oneDay * 2
+          ? profile.currentStreak + 1
+          : 1
+
+    await prisma.userProfile.update({
+      where: { id: user.id },
+      data: {
+        lastTrained: new Date(),
+        currentStreak,
+      },
+    })
+
     await prisma.tacticsSetRound.update({
       where: {
         id: roundId,

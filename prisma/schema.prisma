@@ -135,15 +135,26 @@ model TacticsSetRound {
 }
 
 model UserProfile {
-    id                  String   @id
-    username            String   @unique
+    id                  String       @id
+    username            String       @unique
     fullName            String?
-    description         String?  @db.Text
-    puzzleRating        Int      @default(1500)
-    difficulty          Int      @default(1)
-    experience          Int      @default(0)
+    description         String?      @db.Text
+    puzzleRating        Int          @default(1500)
+    difficulty          Int          @default(1)
+    experience          Int          @default(0)
+    currentStreak       Int          @default(0)
+    lastTrained         DateTime?
     highestOnlineRating Int?
     highestOTBRating    Int?
-    createdAt           DateTime @default(now())
-    updatedAt           DateTime @updatedAt
+    createdAt           DateTime     @default(now())
+    updatedAt           DateTime     @updatedAt
+    daysTrained         DayTrained[]
+}
+
+model DayTrained {
+    id         String      @id @default(cuid())
+    userId     String
+    date       String
+    experience Int         @default(0)
+    user       UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

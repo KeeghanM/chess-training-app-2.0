@@ -13,6 +13,7 @@ import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 import * as Sentry from '@sentry/nextjs'
 import type { TrainingPuzzle } from '../tactics/TacticsTrainer'
+import XpTracker from '../../general/XpTracker'
 
 export default function EndgameTrainer() {
   // Setup main state for the game/puzzles
@@ -46,6 +47,8 @@ export default function EndgameTrainer() {
     'none' | 'correct' | 'incorrect'
   >('none')
   const [mode, setMode] = useState<'training' | 'settings'>('settings')
+
+  const [xpCounter, setXpCounter] = useState(0)
 
   const difficultyAdjuster = (d: number) => {
     return d == 0 ? 0.9 : d == 1 ? 1 : 1.2
@@ -158,6 +161,7 @@ export default function EndgameTrainer() {
       if (soundEnabled) correctSound()
       setPuzzleStatus('correct')
       setPuzzleFinished(true)
+      setXpCounter(xpCounter + 1)
 
       if (autoNext && puzzleStatus != 'incorrect') {
         await goToNextPuzzle('correct')
@@ -461,7 +465,7 @@ export default function EndgameTrainer() {
     </>
   ) : (
     <>
-      <div className="relative bg-purple-700 p-4">
+      <div className="relative flex flex-col gap-2 bg-purple-700 p-4">
         {loading && (
           <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
             <Spinner />
@@ -480,6 +484,7 @@ export default function EndgameTrainer() {
             <span className="font-bold">Difficulty:</span>
             <span>{getDifficulty()}</span>
           </p>
+          <XpTracker counter={xpCounter} type={'tactic'} />
           <div
             className="ml-auto flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
             onClick={() => setSoundEnabled(!soundEnabled)}
@@ -495,9 +500,9 @@ export default function EndgameTrainer() {
                 <path
                   fill="none"
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
                   d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
                 />
               </svg>
@@ -511,9 +516,9 @@ export default function EndgameTrainer() {
                 <path
                   fill="none"
                   stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
                   d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
                 />
               </svg>
