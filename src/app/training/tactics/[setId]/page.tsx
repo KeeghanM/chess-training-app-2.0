@@ -21,7 +21,12 @@ export default async function TacticsTrainPage({
 
     set = (await prisma.tacticsSet.findUnique({
       where: { id: params.setId, userId },
-      include: { puzzles: true, rounds: true },
+      include: {
+        puzzles: {
+          orderBy: { puzzleid: 'asc' },
+        },
+        rounds: true,
+      },
     })) as PrismaTacticsSetWithPuzzles | null
   } catch (e) {
     Sentry.captureException(e)

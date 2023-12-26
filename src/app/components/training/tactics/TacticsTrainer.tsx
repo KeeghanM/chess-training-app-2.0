@@ -231,7 +231,10 @@ export default function TacticsTrainer(props: {
       (item) => item.puzzleid == currentPuzzle!.puzzleid,
     )
 
-    if (currentPuzzleIndex + 1 >= props.set.size) {
+    if (
+      currentPuzzleIndex + 1 >= props.set.size ||
+      CompletedPuzzles >= props.set.size
+    ) {
       // We have completed the set
 
       if (!user) {
@@ -443,9 +446,11 @@ export default function TacticsTrainer(props: {
   useEffect(() => {
     // On mount, load the first puzzle
     ;(async () => {
+      const startingRound = props.set.rounds[props.set.rounds.length - 1]!
       const puzzleId =
-        props.set.puzzles[currentRound.correct + currentRound.incorrect]!
+        props.set.puzzles[startingRound.correct + startingRound.incorrect]!
           .puzzleid
+      console.log({ startingRound, puzzles: props.set.puzzles, puzzleId })
       const puzzle = await getPuzzle(puzzleId)
       if (!puzzle) return
       setCurrentPuzzle(puzzle)
@@ -592,22 +597,24 @@ export default function TacticsTrainer(props: {
         </div>
         <div className="flex w-full flex-col gap-2">
           <div className="flex flex-row items-center gap-2">
-            <p className="flex items-center gap-2 text-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                className={
-                  orientation === 'white'
-                    ? 'text-white'
-                    : 'rotate-180 transform text-black'
-                }
-              >
-                <path fill="currentColor" d="M1 21h22L12 2" />
-              </svg>
-              {orientation === 'white' ? 'White' : 'Black'} to move
-            </p>
+            {!puzzleFinished && (
+              <p className="flex items-center gap-2 text-white">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  className={
+                    orientation === 'white'
+                      ? 'text-white'
+                      : 'rotate-180 transform text-black'
+                  }
+                >
+                  <path fill="currentColor" d="M1 21h22L12 2" />
+                </svg>
+                {orientation === 'white' ? 'White' : 'Black'} to move
+              </p>
+            )}
             {puzzleStatus === 'correct' && (
               <div className="z-50 flex items-center gap-2 text-white">
                 <svg
@@ -626,7 +633,7 @@ export default function TacticsTrainer(props: {
               </div>
             )}
             {puzzleStatus === 'incorrect' && (
-              <div className="z-50 flex items-center gap-2 text-white">
+              <div className="z-50 flex flex-wrap items-center gap-2 text-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
