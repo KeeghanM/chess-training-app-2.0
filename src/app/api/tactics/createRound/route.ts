@@ -26,23 +26,21 @@ export async function POST(request: Request) {
           roundNumber,
         },
       })
-    }
+    } else {
+      if (puzzleRating) {
+        const badge = TacticStreakBadges.find(
+          (badge) => badge.level && puzzleRating <= badge.level,
+        )
+        console.log({ badge })
 
-    if (puzzleRating) {
-      const badge = TacticStreakBadges.find(
-        (badge) =>
-          badge.level &&
-          puzzleRating >= badge.level &&
-          badge.streak == roundNumber,
-      )
-
-      if (badge) {
-        await prisma.userBadge.create({
-          data: {
-            badgeName: badge.name,
-            userId: user.id,
-          },
-        })
+        if (badge) {
+          await prisma.userBadge.create({
+            data: {
+              badgeName: badge.name,
+              userId: user.id,
+            },
+          })
+        }
       }
     }
 

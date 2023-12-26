@@ -67,7 +67,7 @@ export default function SetListItem(props: {
         </div>
         <div className="mx-auto flex flex-col gap-2 md:ml-auto md:flex-row">
           <Button
-            disabled={set.rounds?.length >= 8}
+            disabled={set.rounds?.length >= 8 && completedCount >= set.size}
             onClick={trainSet}
             variant="primary"
           >

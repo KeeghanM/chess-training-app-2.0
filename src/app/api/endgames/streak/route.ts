@@ -20,18 +20,24 @@ export async function POST(request: Request) {
     const badge = TacticStreakBadges.find(
       (badge) => badge.streak === currentStreak && badge.level == undefined,
     )
+    if (!badge) return successResponse('No badge to add', {}, 200)
 
-    if (badge) {
-      await prisma.userBadge.create({
-        data: {
-          badgeName: badge.name,
-          userId: user.id,
-        },
-      })
-      return successResponse('Badge Added', {}, 200)
-    }
+    const existingBadge = await prisma.userBadge.findFirst({
+      where: {
+        badgeName: badge.name,
+        userId: user.id,
+      },
+    })
 
-    return successResponse('No badge to add', {}, 200)
+    if (!existingBadge) return successResponse('No badge to add', {}, 200)
+
+    await prisma.userBadge.create({
+      data: {
+        badgeName: badge.name,
+        userId: user.id,
+      },
+    })
+    return successResponse('Badge Added', {}, 200)
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)

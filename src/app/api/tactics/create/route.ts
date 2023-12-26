@@ -10,12 +10,13 @@ export async function POST(request: Request) {
   const user = await session.getUser()
   if (!user) return errorResponse('Unauthorized', 401)
 
-  const { name, puzzleIds } = (await request.json()) as {
+  const { name, puzzleIds, rating } = (await request.json()) as {
     name: string
     puzzleIds: { puzzleid: string }[]
+    rating: number
   }
 
-  if (!name || !puzzleIds) {
+  if (!name || !puzzleIds || rating == undefined) {
     return errorResponse('Missing required fields', 400)
   }
 
@@ -34,6 +35,7 @@ export async function POST(request: Request) {
         userId: user.id,
         name: name,
         size: puzzleIds.length,
+        rating: rating,
         puzzles: {
           createMany: {
             data: puzzleIds,

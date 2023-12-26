@@ -260,6 +260,7 @@ export default function TacticsTrainer(props: {
             body: JSON.stringify({
               setId: props.set.id,
               roundNumber: currentRound.roundNumber + 1,
+              puzzleRating: props.set.rating,
             }),
           })
         } catch (e) {
