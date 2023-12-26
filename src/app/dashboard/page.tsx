@@ -5,6 +5,9 @@ import { isFlagEnabledServer } from '../_util/isFlagEnabledServer'
 import { getUserServer } from '../_util/getUserServer'
 import { PostHogClient } from '../_util/trackEventOnServer'
 import Heading from '../components/_elements/heading'
+import Container from '../components/_elements/container'
+import XpDisplay from '../components/dashboard/XpDisplay'
+import StreakDisplay from '../components/dashboard/StreakDisplay'
 
 export type Tool = {
   name: string
@@ -136,6 +139,8 @@ export default async function Dashboard() {
     },
   ]
 
+  // TODO: Add a "time to keep streak" display
+
   return (
     <>
       <PageHeader
@@ -146,17 +151,13 @@ export default async function Dashboard() {
           alt: 'Wooden chess pieces on a chess board',
         }}
       />
+      <Container>
+        <Heading as={'h2'}>Your Stats</Heading>
+        <StreakDisplay currentStreak={profile?.currentStreak ?? 0} />
+        <p>Train again in ...</p>
+        <XpDisplay currentXp={profile?.experience ?? 0} />
+      </Container>
       <div className="p-4 md:p-6">
-        {permissions?.permissions?.includes('staff-member') && (
-          <>
-            <Heading as={'h2'}>Staff Tools</Heading>
-            <div className="mb-2 grid grid-cols-1 gap-4 border-b border-gray-500 pb-2 md:grid-cols-3 lg:grid-cols-4">
-              {staffTools.map((tool) => (
-                <ToolGrid tool={tool} key={tool.name} />
-              ))}
-            </div>
-          </>
-        )}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {tools
             .sort((a, b) => {
@@ -168,6 +169,16 @@ export default async function Dashboard() {
               <ToolGrid tool={tool} key={tool.name} />
             ))}
         </div>
+        {permissions?.permissions?.includes('staff-member') && (
+          <div>
+            <Heading as={'h2'}>Staff Tools</Heading>
+            <div className="mb-2 grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+              {staffTools.map((tool) => (
+                <ToolGrid tool={tool} key={tool.name} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </>
   )
