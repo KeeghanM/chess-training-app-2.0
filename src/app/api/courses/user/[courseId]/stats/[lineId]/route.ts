@@ -44,11 +44,15 @@ export async function POST(
           ? profile.currentStreak + 1
           : 1
 
+    const bestStreak =
+      currentStreak > profile.bestStreak ? currentStreak : profile.bestStreak
+
     await prisma.userProfile.update({
       where: { id: user.id },
       data: {
         lastTrained: new Date(),
         currentStreak,
+        bestStreak,
       },
     })
 

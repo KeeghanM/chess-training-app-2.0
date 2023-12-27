@@ -144,6 +144,15 @@ export default function EndgameTrainer() {
   }
 
   const goToNextPuzzle = async (status: string) => {
+    setLoading(true)
+
+    // Increase the "Last Trained" on the profile
+    await fetch('/api/profile/streak', {
+      method: 'POST',
+    })
+
+    // Increase the streak if correct
+    // and send it to the server incase a badge needs adding
     if (status == 'correct') {
       await trackEventOnClient('endgame_correct', {})
       await fetch('/api/endgames/streak', {
@@ -154,7 +163,6 @@ export default function EndgameTrainer() {
     } else if (status == 'incorrect') {
       await trackEventOnClient('endgame_incorrect', {})
     }
-    setLoading(true)
     const newPuzzle = await getPuzzle()
     setPuzzleStatus('none')
     setLoading(false)

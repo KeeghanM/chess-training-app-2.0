@@ -3,19 +3,13 @@ import { prisma } from '~/server/db'
 import * as Sentry from '@sentry/nextjs'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 
+// TODO: Make this the generic streak endpoint that all others use, rather than duplicating the code all over
+
 export async function POST(request: Request) {
   const session = getKindeServerSession(request)
   if (!session) return errorResponse('Unauthorized', 401)
-
   const user = await session.getUser()
   if (!user) return errorResponse('Unauthorized', 401)
-
-  const { roundId, timeTaken, setId } = (await request.json()) as {
-    timeTaken: number
-    roundId: string
-    setId: string
-  }
-  if (!roundId || !timeTaken) return errorResponse('Missing fields', 400)
 
   try {
     const profile = await prisma.userProfile.findUnique({
@@ -47,32 +41,7 @@ export async function POST(request: Request) {
       },
     })
 
-    await prisma.tacticsSetRound.update({
-      where: {
-        id: roundId,
-        set: {
-          userId: user.id,
-        },
-      },
-      data: {
-        timeSpent: {
-          increment: timeTaken,
-        },
-      },
-    })
-
-    const date = new Date()
-    await prisma.tacticsSet.update({
-      where: {
-        id: setId,
-        userId: user.id,
-      },
-      data: {
-        lastTrained: date,
-      },
-    })
-
-    return successResponse('Time taken updated', {}, 200)
+    return successResponse('Training Streak Updated', {}, 200)
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)

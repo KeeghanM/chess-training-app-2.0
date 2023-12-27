@@ -139,23 +139,16 @@ export default async function Dashboard() {
     },
   ]
 
-  // TODO: Add a "time to keep streak" display
-
   return (
     <>
-      <PageHeader
-        title="Dashboard"
-        subTitle={`Welcome back, ${user.given_name}`}
-        image={{
-          src: '/images/hero.avif',
-          alt: 'Wooden chess pieces on a chess board',
-        }}
-      />
-      <Container>
-        <Heading as={'h2'}>Your Stats</Heading>
-        <StreakDisplay currentStreak={profile?.currentStreak ?? 0} />
-        <p>Train again in ...</p>
-        <XpDisplay currentXp={profile?.experience ?? 0} />
+      <Container size="wide">
+        <Heading as={'h1'}>
+          Welcome back, {user.given_name ?? profile.username ?? user.email}
+        </Heading>
+        <div className="flex flex-col flex-wrap gap-2 md:flex-row">
+          <StreakDisplay profile={profile} />
+          <XpDisplay currentXp={profile?.experience ?? 0} />
+        </div>
       </Container>
       <div className="p-4 md:p-6">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">

@@ -25,6 +25,7 @@
     "@radix-ui/react-tabs": "^1.0.4",
     "@sentry/nextjs": "^7.88.0",
     "@t3-oss/env-nextjs": "^0.7.1",
+    "@tippyjs/react": "^4.2.6",
     "@uidotdev/usehooks": "^2.4.1",
     "chess.js": "^1.0.0-beta.6",
     "javascript-time-ago": "^2.5.9",

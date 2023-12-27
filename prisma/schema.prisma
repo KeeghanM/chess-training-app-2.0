@@ -144,6 +144,7 @@ model UserProfile {
     difficulty          Int          @default(1)
     experience          Int          @default(0)
     currentStreak       Int          @default(0)
+    bestStreak          Int          @default(0)
     lastTrained         DateTime?
     highestOnlineRating Int?
     highestOTBRating    Int?

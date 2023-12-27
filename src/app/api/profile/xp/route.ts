@@ -49,6 +49,9 @@ export async function PUT(request: Request) {
           ? profile.currentStreak + 1
           : 1
 
+    const bestStreak =
+      currentStreak > profile.bestStreak ? currentStreak : profile.bestStreak
+
     await prisma.userProfile.update({
       where: { id: user.id },
       data: {
@@ -57,6 +60,7 @@ export async function PUT(request: Request) {
         },
         lastTrained: new Date(),
         currentStreak,
+        bestStreak,
       },
     })
 
