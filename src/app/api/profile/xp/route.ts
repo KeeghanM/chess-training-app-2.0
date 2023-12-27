@@ -3,6 +3,7 @@ import * as Sentry from '@sentry/nextjs'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { errorResponse, successResponse } from '../../responses'
 import type { availableTypes } from '~/app/components/general/XpTracker'
+import { UpdateStreak } from '~/app/_util/UpdateStreak'
 
 export async function PUT(request: Request) {
   const session = getKindeServerSession(request)
@@ -32,37 +33,7 @@ export async function PUT(request: Request) {
   if (xpToAdd !== xp) return errorResponse('Invalid XP', 401)
 
   try {
-    const profile = await prisma.userProfile.findUnique({
-      where: { id: user.id },
-    })
-    if (!profile) return errorResponse('User not found', 404)
-
-    const timeSinceLastTrained = profile.lastTrained
-      ? new Date().getTime() - profile.lastTrained.getTime()
-      : 0
-    const oneDay = 1000 * 60 * 60 * 24
-
-    const currentStreak =
-      timeSinceLastTrained < oneDay
-        ? profile.currentStreak
-        : timeSinceLastTrained > oneDay && timeSinceLastTrained < oneDay * 2
-          ? profile.currentStreak + 1
-          : 1
-
-    const bestStreak =
-      currentStreak > profile.bestStreak ? currentStreak : profile.bestStreak
-
-    await prisma.userProfile.update({
-      where: { id: user.id },
-      data: {
-        experience: {
-          increment: xpToAdd,
-        },
-        lastTrained: new Date(),
-        currentStreak,
-        bestStreak,
-      },
-    })
+    await UpdateStreak(request)
 
     const dateString = new Date().toISOString().split('T')[0]!
 

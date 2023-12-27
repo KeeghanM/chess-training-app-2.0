@@ -229,10 +229,6 @@ export default function TacticsTrainer(props: {
     // If we haven't then load the next puzzle
     setLoading(true)
 
-    await increaseTimeTaken()
-    if (status == 'correct') await increaseCorrect()
-    if (status == 'incorrect') await increaseIncorrect()
-
     const currentPuzzleIndex = props.set.puzzles.findIndex(
       (item) => item.puzzleid == currentPuzzle!.puzzleid,
     )
@@ -291,6 +287,9 @@ export default function TacticsTrainer(props: {
       setPuzzleStatus('correct')
       setPuzzleFinished(true)
       setXpCounter(xpCounter + 1)
+
+      await increaseTimeTaken()
+      await increaseCorrect()
 
       if (autoNext && puzzleStatus != 'incorrect') {
         await goToNextPuzzle('correct')
@@ -387,7 +386,7 @@ export default function TacticsTrainer(props: {
       game.undo()
       setReadyForInput(false)
       await showIncorrectSequence()
-
+      await increaseIncorrect()
       setReadyForInput(true)
       setPuzzleFinished(true)
       return false

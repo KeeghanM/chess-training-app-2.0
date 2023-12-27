@@ -2,6 +2,7 @@ import { errorResponse, successResponse } from '~/app/api/responses'
 import { prisma } from '~/server/db'
 import * as Sentry from '@sentry/nextjs'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { UpdateStreak } from '~/app/_util/UpdateStreak'
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request)
@@ -18,34 +19,7 @@ export async function POST(request: Request) {
   if (!roundId || !timeTaken) return errorResponse('Missing fields', 400)
 
   try {
-    const profile = await prisma.userProfile.findUnique({
-      where: { id: user.id },
-    })
-    if (!profile) return errorResponse('User not found', 404)
-
-    const timeSinceLastTrained = profile.lastTrained
-      ? new Date().getTime() - profile.lastTrained.getTime()
-      : 0
-    const oneDay = 1000 * 60 * 60 * 24
-
-    const currentStreak =
-      timeSinceLastTrained < oneDay
-        ? profile.currentStreak
-        : timeSinceLastTrained > oneDay && timeSinceLastTrained < oneDay * 2
-          ? profile.currentStreak + 1
-          : 1
-
-    const bestStreak =
-      currentStreak > profile.bestStreak ? currentStreak : profile.bestStreak
-
-    await prisma.userProfile.update({
-      where: { id: user.id },
-      data: {
-        lastTrained: new Date(),
-        currentStreak,
-        bestStreak,
-      },
-    })
+    await UpdateStreak(request)
 
     await prisma.tacticsSetRound.update({
       where: {
