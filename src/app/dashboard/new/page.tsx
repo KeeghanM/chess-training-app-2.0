@@ -44,7 +44,7 @@ export default async function NewUserWelcome() {
             to do everything except actually play chess (maybe one day?). I'm
             constantly working to improve the site and add new features. If you
             have any feedback, please don't hesitate to{' '}
-            <StyledLink href={'/contact'} text="contact me" />.
+            <StyledLink href={'/contact'}>contact me</StyledLink>.
           </p>
           <Image
             className="mx-auto"

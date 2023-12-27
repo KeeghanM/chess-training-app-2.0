@@ -1,6 +1,5 @@
 import { redirect } from 'next/navigation'
 import ToolGrid from '../components/dashboard/ToolGrid'
-import PageHeader from '../components/_layouts/pageHeader'
 import { isFlagEnabledServer } from '../_util/isFlagEnabledServer'
 import { getUserServer } from '../_util/getUserServer'
 import { PostHogClient } from '../_util/trackEventOnServer'
@@ -22,7 +21,7 @@ export const metadata = {
 }
 
 export default async function Dashboard() {
-  const { user, profile, permissions } = await getUserServer()
+  const { user, profile, permissions, badges } = await getUserServer()
   if (!user) redirect('/auth/signin')
 
   const override = process.env.NODE_ENV === 'development'
@@ -146,7 +145,7 @@ export default async function Dashboard() {
           Welcome back, {user.given_name ?? profile.username ?? user.email}
         </Heading>
         <div className="flex flex-col flex-wrap gap-2 md:flex-row">
-          <StreakDisplay profile={profile} />
+          <StreakDisplay profile={profile} badges={badges} />
           <XpDisplay currentXp={profile?.experience ?? 0} />
         </div>
       </Container>

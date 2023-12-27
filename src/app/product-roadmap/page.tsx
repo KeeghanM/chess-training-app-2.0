@@ -52,7 +52,7 @@ export default async function ProductRoadmap() {
       ></iframe>
       <BigText color="accent">
         If there is anything not on here you'd like to see{' '}
-        <StyledLink href="/contact" text="get in touch" />.
+        <StyledLink href="/contact">get in touch</StyledLink>
       </BigText>
     </>
   )
