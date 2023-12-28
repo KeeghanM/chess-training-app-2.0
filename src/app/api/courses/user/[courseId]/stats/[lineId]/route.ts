@@ -28,7 +28,7 @@ export async function POST(
     return errorResponse('Missing fields', 400)
 
   try {
-    await UpdateStreak(request)
+    await UpdateStreak(user.id)
 
     const line = await prisma.userLine.update({
       where: {
