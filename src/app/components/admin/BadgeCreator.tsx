@@ -8,7 +8,7 @@ import {
   MiscBadges,
   StreakBadges,
   TacticStreakBadges,
-} from '~/app/about/ranks-and-badges/page'
+} from '~/app/_util/RanksAndBadges'
 import * as Sentry from '@sentry/nextjs'
 
 export default function BadgeCreator() {

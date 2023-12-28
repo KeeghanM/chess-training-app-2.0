@@ -1,5 +1,5 @@
 'use client'
-import { XpRanks } from '~/app/about/ranks-and-badges/page'
+import { XpRanks } from '~/app/_util/RanksAndBadges'
 import StyledLink from '../_elements/styledLink'
 import Tippy from '@tippyjs/react'
 

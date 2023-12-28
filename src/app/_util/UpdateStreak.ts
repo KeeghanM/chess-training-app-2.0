@@ -1,6 +1,6 @@
 import { prisma } from '~/server/db'
 import * as Sentry from '@sentry/nextjs'
-import { StreakBadges } from '~/app/about/ranks-and-badges/page'
+import { StreakBadges } from '~/app/_util/RanksAndBadges'
 import { AddBadgeToUser } from './AddBadge'
 
 export async function UpdateStreak(userId: string) {

@@ -1,7 +1,7 @@
 import { errorResponse, successResponse } from '~/app/api/responses'
 import * as Sentry from '@sentry/nextjs'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import { TacticStreakBadges } from '~/app/about/ranks-and-badges/page'
+import { TacticStreakBadges } from '~/app/_util/RanksAndBadges'
 import { AddBadgeToUser } from '~/app/_util/AddBadge'
 
 export async function POST(request: Request) {
