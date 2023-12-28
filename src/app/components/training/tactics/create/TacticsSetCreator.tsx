@@ -171,6 +171,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
         body: JSON.stringify({
           name: name,
           puzzleIds,
+          rating,
         }),
       })
       const json = (await resp.json()) as ResponseJson

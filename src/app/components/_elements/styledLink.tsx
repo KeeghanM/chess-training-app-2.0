@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 interface LinkProps {
   href: string
-  text: string
+  children: React.ReactNode
 }
 export default function StyledLink(props: LinkProps) {
   return (
@@ -12,7 +12,7 @@ export default function StyledLink(props: LinkProps) {
         'font-bold text-purple-700 underline hover:text-purple-600 hover:no-underline'
       }
     >
-      {props.text}
+      {props.children}
     </Link>
   )
 }

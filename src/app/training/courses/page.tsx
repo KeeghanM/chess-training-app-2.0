@@ -58,8 +58,11 @@ export default async function Courses() {
               <Heading as="h3">You haven't got any courses yet</Heading>
               <p className="text-gray-500">
                 You can browse courses from the{' '}
-                <StyledLink href="/courses" text="courses list" /> or try{' '}
-                <StyledLink href="/courses/create" text="creating your own" />.
+                <StyledLink href="/courses">courses list</StyledLink> or try{' '}
+                <StyledLink href="/courses/create">
+                  creating your own
+                </StyledLink>
+                .
               </p>
             </div>
           )}

@@ -1,10 +1,14 @@
 import { redirect } from 'next/navigation'
 import ToolGrid from '../components/dashboard/ToolGrid'
-import PageHeader from '../components/_layouts/pageHeader'
 import { isFlagEnabledServer } from '../_util/isFlagEnabledServer'
-import { getUserServer } from '../_util/getUserServer'
 import { PostHogClient } from '../_util/trackEventOnServer'
 import Heading from '../components/_elements/heading'
+import Container from '../components/_elements/container'
+import XpDisplay from '../components/dashboard/XpDisplay'
+import StreakDisplay from '../components/dashboard/StreakDisplay'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { prisma } from '~/server/db'
+import Image from 'next/image'
 
 export type Tool = {
   name: string
@@ -19,8 +23,22 @@ export const metadata = {
 }
 
 export default async function Dashboard() {
-  const { user, profile, permissions } = await getUserServer()
+  // const { user, profile, permissions, badges } = await getUserServer()
+  const { getUser, getPermissions } = getKindeServerSession()
+  const user = await getUser()
   if (!user) redirect('/auth/signin')
+
+  const permissions = await getPermissions()
+  const profile = await prisma.userProfile.findFirst({
+    where: {
+      id: user.id,
+    },
+  })
+  const badges = await prisma.userBadge.findMany({
+    where: {
+      userId: user.id,
+    },
+  })
 
   const override = process.env.NODE_ENV === 'development'
 
@@ -134,29 +152,45 @@ export default async function Dashboard() {
       buttonText: 'Open',
       active: false,
     },
+    {
+      name: 'Badge Creator',
+      description: ['Create and manage badges'],
+      href: '/admin/badges',
+      buttonText: 'Open',
+      active: true,
+    },
   ]
 
   return (
     <>
-      <PageHeader
-        title="Dashboard"
-        subTitle={`Welcome back, ${user.given_name}`}
-        image={{
-          src: '/images/hero.avif',
-          alt: 'Wooden chess pieces on a chess board',
-        }}
-      />
+      <div className="relative">
+        <div className="absolute inset-0">
+          <Image
+            fill={true}
+            objectFit="cover"
+            src="/images/hero.avif"
+            alt="Chess board with pieces set up"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(90deg, #ffe9da 0%, rgba(249,115,22,0.5) 100%)',
+            }}
+            aria-hidden="true"
+          />
+        </div>
+        <Container size="wide">
+          <Heading as={'h1'}>
+            Welcome back, {user.given_name ?? profile.username ?? user.email}
+          </Heading>
+          <div className="flex flex-col flex-wrap gap-2 md:flex-row">
+            <StreakDisplay profile={profile} badges={badges} />
+            <XpDisplay currentXp={profile?.experience ?? 0} />
+          </div>
+        </Container>
+      </div>
       <div className="p-4 md:p-6">
-        {permissions?.permissions?.includes('staff-member') && (
-          <>
-            <Heading as={'h2'}>Staff Tools</Heading>
-            <div className="mb-2 grid grid-cols-1 gap-4 border-b border-gray-500 pb-2 md:grid-cols-3 lg:grid-cols-4">
-              {staffTools.map((tool) => (
-                <ToolGrid tool={tool} key={tool.name} />
-              ))}
-            </div>
-          </>
-        )}
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {tools
             .sort((a, b) => {
@@ -168,6 +202,16 @@ export default async function Dashboard() {
               <ToolGrid tool={tool} key={tool.name} />
             ))}
         </div>
+        {permissions?.permissions?.includes('staff-member') && (
+          <div>
+            <Heading as={'h2'}>Staff Tools</Heading>
+            <div className="mb-2 grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
+              {staffTools.map((tool) => (
+                <ToolGrid tool={tool} key={tool.name} />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </>
   )

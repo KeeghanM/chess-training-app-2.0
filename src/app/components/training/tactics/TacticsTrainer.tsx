@@ -18,6 +18,7 @@ import Link from 'next/link'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { PrismaTacticsSet } from './create/TacticsSetCreator'
 import type { Puzzle } from '@prisma/client'
+import XpTracker from '../../general/XpTracker'
 
 export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
   puzzles: Puzzle[]
@@ -72,6 +73,8 @@ export default function TacticsTrainer(props: {
   const [puzzleStatus, setPuzzleStatus] = useState<
     'none' | 'correct' | 'incorrect'
   >('none')
+  const [xpCounter, setXpCounter] = useState(0)
+  const [currentStreak, setCurrentStreak] = useState(0)
 
   const getPuzzle = async (id: string) => {
     try {
@@ -181,11 +184,14 @@ export default function TacticsTrainer(props: {
         },
         body: JSON.stringify({
           roundId: currentRound.id,
+          currentStreak: currentStreak + 1,
         }),
       })
     } catch (e) {
       Sentry.captureException(e)
     }
+
+    setCurrentStreak(currentStreak + 1)
     setCurrentRound({ ...currentRound, correct: currentRound.correct + 1 })
     setLoading(false)
   }
@@ -211,25 +217,25 @@ export default function TacticsTrainer(props: {
     } catch (e) {
       Sentry.captureException(e)
     }
+    setCurrentStreak(0)
     setCurrentRound({ ...currentRound, incorrect: currentRound.incorrect + 1 })
     setLoading(false)
   }
 
-  const goToNextPuzzle = async (status: string) => {
+  const goToNextPuzzle = async () => {
     // First log all the stats re:current puzzle
     // Check if we've completed the set, in which case we need to create a new round & exit
     // If we haven't then load the next puzzle
     setLoading(true)
 
-    await increaseTimeTaken()
-    if (status == 'correct') await increaseCorrect()
-    if (status == 'incorrect') await increaseIncorrect()
-
     const currentPuzzleIndex = props.set.puzzles.findIndex(
       (item) => item.puzzleid == currentPuzzle!.puzzleid,
     )
 
-    if (currentPuzzleIndex + 1 >= props.set.size) {
+    if (
+      currentPuzzleIndex + 1 >= props.set.size ||
+      CompletedPuzzles >= props.set.size
+    ) {
       // We have completed the set
 
       if (!user) {
@@ -249,6 +255,7 @@ export default function TacticsTrainer(props: {
             body: JSON.stringify({
               setId: props.set.id,
               roundNumber: currentRound.roundNumber + 1,
+              puzzleRating: props.set.rating,
             }),
           })
         } catch (e) {
@@ -278,9 +285,13 @@ export default function TacticsTrainer(props: {
       if (soundEnabled) correctSound()
       setPuzzleStatus('correct')
       setPuzzleFinished(true)
+      setXpCounter(xpCounter + 1)
+
+      await increaseTimeTaken()
+      await increaseCorrect()
 
       if (autoNext && puzzleStatus != 'incorrect') {
-        await goToNextPuzzle('correct')
+        await goToNextPuzzle()
       }
       return true
     }
@@ -319,9 +330,7 @@ export default function TacticsTrainer(props: {
     // CHECK IF LAST POSITION, BASED ON SOURCE SQUARE, IS A PAWN
     // This works because we haven't actually made the move yet
     const lastMovePiece = game.get(sourceSquare)
-    const sourceCol = sourceSquare.split('')[0]
     const sourceRank = sourceSquare.split('')[1]
-    const targetCol = targetSquare.split('')[0]
     const targetRank = targetSquare.split('')[1]
     const pieceString = piece as unknown as string // Hacky cause Chess.js types are wrong
     const pieceColor = pieceString.split('')[0]
@@ -329,14 +338,8 @@ export default function TacticsTrainer(props: {
 
     if (
       lastMovePiece?.type === 'p' &&
-      ((pieceColor == 'w' &&
-        sourceRank === '7' &&
-        targetRank === '8' &&
-        sourceCol == targetCol) ||
-        (pieceColor == 'b' &&
-          sourceRank === '2' &&
-          targetRank === '1' &&
-          sourceCol == targetCol))
+      ((pieceColor == 'w' && sourceRank === '7' && targetRank === '8') ||
+        (pieceColor == 'b' && sourceRank === '2' && targetRank === '1'))
     ) {
       return pieceType?.toLowerCase()
     }
@@ -374,7 +377,7 @@ export default function TacticsTrainer(props: {
       game.undo()
       setReadyForInput(false)
       await showIncorrectSequence()
-
+      await increaseIncorrect()
       setReadyForInput(true)
       setPuzzleFinished(true)
       return false
@@ -440,8 +443,9 @@ export default function TacticsTrainer(props: {
   useEffect(() => {
     // On mount, load the first puzzle
     ;(async () => {
+      const startingRound = props.set.rounds[props.set.rounds.length - 1]!
       const puzzleId =
-        props.set.puzzles[currentRound.correct + currentRound.incorrect]!
+        props.set.puzzles[startingRound.correct + startingRound.incorrect]!
           .puzzleid
       const puzzle = await getPuzzle(puzzleId)
       if (!puzzle) return
@@ -516,9 +520,9 @@ export default function TacticsTrainer(props: {
               <path
                 fill="none"
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
                 d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
               />
             </svg>
@@ -532,9 +536,9 @@ export default function TacticsTrainer(props: {
               <path
                 fill="none"
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
                 d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
               />
             </svg>
@@ -571,6 +575,7 @@ export default function TacticsTrainer(props: {
             <TimeSince date={sessionTimeStarted} />
           </span>
         </p>
+        <XpTracker counter={xpCounter} type={'tactic'} />
       </div>
       <div className="flex flex-col gap-4 md:flex-row">
         <div>
@@ -588,22 +593,24 @@ export default function TacticsTrainer(props: {
         </div>
         <div className="flex w-full flex-col gap-2">
           <div className="flex flex-row items-center gap-2">
-            <p className="flex items-center gap-2 text-white">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                className={
-                  orientation === 'white'
-                    ? 'text-white'
-                    : 'rotate-180 transform text-black'
-                }
-              >
-                <path fill="currentColor" d="M1 21h22L12 2" />
-              </svg>
-              {orientation === 'white' ? 'White' : 'Black'} to move
-            </p>
+            {!puzzleFinished && (
+              <p className="flex items-center gap-2 text-white">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  className={
+                    orientation === 'white'
+                      ? 'text-white'
+                      : 'rotate-180 transform text-black'
+                  }
+                >
+                  <path fill="currentColor" d="M1 21h22L12 2" />
+                </svg>
+                {orientation === 'white' ? 'White' : 'Black'} to move
+              </p>
+            )}
             {puzzleStatus === 'correct' && (
               <div className="z-50 flex items-center gap-2 text-white">
                 <svg
@@ -622,7 +629,7 @@ export default function TacticsTrainer(props: {
               </div>
             )}
             {puzzleStatus === 'incorrect' && (
-              <div className="z-50 flex items-center gap-2 text-white">
+              <div className="z-50 flex flex-wrap items-center gap-2 text-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -651,9 +658,9 @@ export default function TacticsTrainer(props: {
                       <path
                         fill="none"
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
                       />
                     </svg>
@@ -671,7 +678,7 @@ export default function TacticsTrainer(props: {
                 defaultChecked={autoNext}
                 onChange={async () => {
                   setAutoNext(!autoNext)
-                  if (puzzleFinished) await goToNextPuzzle(puzzleStatus)
+                  if (puzzleFinished) await goToNextPuzzle()
                 }}
               />
               <span>Auto Next on correct</span>
@@ -679,10 +686,7 @@ export default function TacticsTrainer(props: {
             <div className="flex flex-col gap-2">
               {puzzleFinished ? (
                 (!autoNext || puzzleStatus == 'incorrect') && (
-                  <Button
-                    variant="accent"
-                    onClick={() => goToNextPuzzle(puzzleStatus)}
-                  >
+                  <Button variant="accent" onClick={() => goToNextPuzzle()}>
                     Next
                   </Button>
                 )

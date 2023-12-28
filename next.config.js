@@ -9,6 +9,17 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  headers: async () => [
+    {
+      source: '/dashboard',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'no-store',
+        },
+      ],
+    },
+  ],
 }
 
 // Sentry configuration options

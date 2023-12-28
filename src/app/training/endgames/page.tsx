@@ -72,7 +72,7 @@ export default async function Endgames() {
         </p>
         <p>
           In a similar way to our{' '}
-          <StyledLink href="/training/tactics" text="Tactics Trainer" />, you
+          <StyledLink href="/training/tactics">Tactics Trainer</StyledLink>, you
           are presented with a chess position and then must solve it. You only
           have one chance to make the correct move, so think carefully before
           you make your choice. If you get it wrong, you can study the correct

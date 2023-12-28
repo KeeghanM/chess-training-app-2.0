@@ -76,7 +76,9 @@ export default function AboutUsPage() {
           has something to contribute, and together, we can create the best
           possible chess training tool. Meet the passionate individuals behind
           our platform by visiting our{' '}
-          <StyledLink href="/about/meet-the-team" text="Meet the Team page." />
+          <StyledLink href="/about/meet-the-team">
+            Meet the Team page.
+          </StyledLink>
         </p>
       </TextWall>
       <a id="our-story" className="anchor" />

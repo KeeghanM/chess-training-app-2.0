@@ -49,6 +49,10 @@ export default function Footer() {
           text: 'Visualisation & Calculation',
           url: '/training/visualisation',
         },
+        {
+          text: 'Ranks & Badges',
+          url: '/about/ranks-and-badges',
+        },
       ],
     },
     {

@@ -16,12 +16,17 @@ export async function getUserServer() {
           id: user.id,
         },
       })
-      return { user, hasAuth, profile, permissions }
+      const badges = await prisma.userBadge.findMany({
+        where: {
+          userId: user.id,
+        },
+      })
+      return { user, hasAuth, profile, permissions, badges }
     } catch (e) {
       Sentry.captureException(e)
     }
   }
-  return { user, hasAuth: false, profile: null, permissions: null }
+  return { user, hasAuth: false, profile: null, permissions: null, badges: [] }
 }
 
 export async function createUserProfile(user: KindeUser) {
