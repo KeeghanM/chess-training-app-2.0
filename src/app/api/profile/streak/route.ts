@@ -12,7 +12,7 @@ export async function POST(request: Request) {
   if (!user) return errorResponse('Unauthorized', 401)
 
   try {
-    await UpdateStreak(request)
+    await UpdateStreak(user.id)
     return successResponse('Streak updated', {}, 200)
   } catch (e) {
     Sentry.captureException(e)

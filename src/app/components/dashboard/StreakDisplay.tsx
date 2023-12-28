@@ -55,7 +55,9 @@ export default function StreakDisplay(props: StreakDisplayProps) {
             </svg>
           </Tippy>
           <Tippy content="Current Streak">
-            <p>{currentStreak} days</p>
+            <p>
+              {currentStreak} day{currentStreak > 1 && 's'}
+            </p>
           </Tippy>
         </div>
         <Tippy content="Your best training streak badge">

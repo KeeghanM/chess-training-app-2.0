@@ -2,6 +2,7 @@ import { prisma } from '~/server/db'
 import { errorResponse, successResponse } from '../responses'
 import * as Sentry from '@sentry/nextjs'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { AddBadgeToUser } from '~/app/_util/AddBadge'
 
 export async function PUT(request: Request) {
   const session = getKindeServerSession(request)
@@ -92,6 +93,10 @@ export async function PUT(request: Request) {
         difficulty,
       },
     })
+
+    if (highestOTBRating > 0) await AddBadgeToUser(user.id, 'OTB Player')
+    if (highestOnlineRating > 0) await AddBadgeToUser(user.id, 'Online Player')
+    if (description.length > 0) await AddBadgeToUser(user.id, 'Well Known')
 
     return successResponse('Profile Updated', { profile }, 200)
   } catch (e) {

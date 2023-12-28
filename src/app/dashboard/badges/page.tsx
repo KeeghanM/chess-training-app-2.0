@@ -43,16 +43,18 @@ export default async function BadgesPage() {
                 .map((badge) => (
                   <div
                     className={
-                      'flex flex-col items-center justify-center gap-1 p-2 text-white' +
+                      'flex flex-col items-center justify-start gap-1 p-2 text-white' +
                       (badges.filter((b) => b.badgeName === badge.name).length >
                       0
-                        ? ' bg-purple-700'
-                        : ' bg-gray-700')
+                        ? ' border-4 border-orange-500 bg-purple-700'
+                        : ' bg-gray-600')
                     }
                     key={badge.name}
                   >
-                    <p className="font-bold text-orange-500">{badge.name}</p>
-                    <p className="text-xs">{badge.description}</p>
+                    <p className={'text-center font-bold text-white'}>
+                      {badge.name}
+                    </p>
+                    <p className="text-center text-xs">{badge.description}</p>
                   </div>
                 ))}
             </div>

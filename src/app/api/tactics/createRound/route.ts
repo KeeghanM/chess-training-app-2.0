@@ -3,6 +3,7 @@ import { prisma } from '~/server/db'
 import * as Sentry from '@sentry/nextjs'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { TacticStreakBadges } from '~/app/about/ranks-and-badges/page'
+import { AddBadgeToUser } from '~/app/_util/AddBadge'
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request)
@@ -31,16 +32,7 @@ export async function POST(request: Request) {
         const badge = TacticStreakBadges.find(
           (badge) => badge.level && puzzleRating <= badge.level,
         )
-        console.log({ badge })
-
-        if (badge) {
-          await prisma.userBadge.create({
-            data: {
-              badgeName: badge.name,
-              userId: user.id,
-            },
-          })
-        }
+        if (badge) await AddBadgeToUser(user.id, badge.name)
       }
     }
 

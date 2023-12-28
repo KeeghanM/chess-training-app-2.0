@@ -33,7 +33,18 @@ export async function PUT(request: Request) {
   if (xpToAdd !== xp) return errorResponse('Invalid XP', 401)
 
   try {
-    await UpdateStreak(request)
+    await UpdateStreak(user.id)
+
+    await prisma.userProfile.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        experience: {
+          increment: xpToAdd,
+        },
+      },
+    })
 
     const dateString = new Date().toISOString().split('T')[0]!
 
