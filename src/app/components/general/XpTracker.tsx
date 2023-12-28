@@ -1,6 +1,7 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { ResponseJson } from '~/app/api/responses'
+import type { ResponseJson } from '~/app/api/responses'
+import * as Sentry from '@sentry/nextjs'
 
 export type availableTypes = 'line' | 'tactic'
 export default function XpTracker(props: {
@@ -42,7 +43,9 @@ export default function XpTracker(props: {
       })
       const json = (await resp.json()) as ResponseJson
       if (json.message != 'XP added') throw new Error(json.message)
-    })().catch((e) => {})
+    })().catch((e) => {
+      Sentry.captureException(e)
+    })
   }, [props.counter])
 
   return (

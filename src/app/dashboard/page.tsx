@@ -1,7 +1,6 @@
 import { redirect } from 'next/navigation'
 import ToolGrid from '../components/dashboard/ToolGrid'
 import { isFlagEnabledServer } from '../_util/isFlagEnabledServer'
-import { getUserServer } from '../_util/getUserServer'
 import { PostHogClient } from '../_util/trackEventOnServer'
 import Heading from '../components/_elements/heading'
 import Container from '../components/_elements/container'

@@ -2,17 +2,21 @@
 
 import Heading from '../_elements/heading'
 import Button from '../_elements/button'
-import { ResponseJson } from '~/app/api/responses'
+import type { ResponseJson } from '~/app/api/responses'
 import { useState } from 'react'
 import {
   MiscBadges,
   StreakBadges,
   TacticStreakBadges,
 } from '~/app/about/ranks-and-badges/page'
-import * as Sentry from '@sentry/node'
+import * as Sentry from '@sentry/nextjs'
 
 export default function BadgeCreator() {
   const [open, setOpen] = useState(false)
+  const [name, setName] = useState('')
+  const [description, setDescription] = useState('')
+  const [category, setCategory] = useState('')
+  const [error, setError] = useState('')
 
   const createBadge = async (
     name: string,
@@ -40,9 +44,10 @@ export default function BadgeCreator() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    const name = (e.target as any).name.value
-    const description = (e.target as any).description.value
-    const category = (e.target as any).category.value
+    setError('')
+    if (!name || !description || !category)
+      return setError('All fields are required')
+
     const newBadge = await createBadge(name, description, category)
     if (newBadge) {
       // reload page
@@ -100,6 +105,8 @@ export default function BadgeCreator() {
             id="name"
             name="name"
             placeholder="Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </div>
         <div>
@@ -110,6 +117,8 @@ export default function BadgeCreator() {
             id="description"
             name="description"
             placeholder="Description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
           />
         </div>
         <div>
@@ -120,10 +129,13 @@ export default function BadgeCreator() {
             id="category"
             name="category"
             placeholder="category"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
           />
         </div>
         <Button variant="primary">Create</Button>
       </form>
+      {error && <p className="text-red-500">{error}</p>}
       <div className="mt-4 flex flex-col gap-2">
         <Button onClick={() => setOpen(!open)} variant="danger">
           Load Code Badges

@@ -1,5 +1,4 @@
 import { errorResponse, successResponse } from '~/app/api/responses'
-import { prisma } from '~/server/db'
 import * as Sentry from '@sentry/nextjs'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { UpdateStreak } from '~/app/_util/UpdateStreak'

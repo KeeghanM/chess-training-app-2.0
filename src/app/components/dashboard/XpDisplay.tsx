@@ -2,7 +2,6 @@
 import { XpRanks } from '~/app/about/ranks-and-badges/page'
 import StyledLink from '../_elements/styledLink'
 import Tippy from '@tippyjs/react'
-import Link from 'next/link'
 
 interface XpDisplayProps {
   currentXp: number

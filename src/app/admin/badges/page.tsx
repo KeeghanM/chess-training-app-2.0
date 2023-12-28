@@ -4,7 +4,6 @@ import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import BadgeCreator from '~/app/components/admin/BadgeCreator'
 import { prisma } from '~/server/db'
-import Heading from '~/app/components/_elements/heading'
 import ExistingBadges from '~/app/components/admin/ExistingBadges'
 
 export default async function AdminBadgePage() {

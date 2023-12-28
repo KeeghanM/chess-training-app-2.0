@@ -19,7 +19,6 @@ import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { PrismaTacticsSet } from './create/TacticsSetCreator'
 import type { Puzzle } from '@prisma/client'
 import XpTracker from '../../general/XpTracker'
-import { TacticStreakBadges } from '~/app/about/ranks-and-badges/page'
 
 export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
   puzzles: Puzzle[]
@@ -223,7 +222,7 @@ export default function TacticsTrainer(props: {
     setLoading(false)
   }
 
-  const goToNextPuzzle = async (status: string) => {
+  const goToNextPuzzle = async () => {
     // First log all the stats re:current puzzle
     // Check if we've completed the set, in which case we need to create a new round & exit
     // If we haven't then load the next puzzle
@@ -292,7 +291,7 @@ export default function TacticsTrainer(props: {
       await increaseCorrect()
 
       if (autoNext && puzzleStatus != 'incorrect') {
-        await goToNextPuzzle('correct')
+        await goToNextPuzzle()
       }
       return true
     }
@@ -679,7 +678,7 @@ export default function TacticsTrainer(props: {
                 defaultChecked={autoNext}
                 onChange={async () => {
                   setAutoNext(!autoNext)
-                  if (puzzleFinished) await goToNextPuzzle(puzzleStatus)
+                  if (puzzleFinished) await goToNextPuzzle()
                 }}
               />
               <span>Auto Next on correct</span>
@@ -687,10 +686,7 @@ export default function TacticsTrainer(props: {
             <div className="flex flex-col gap-2">
               {puzzleFinished ? (
                 (!autoNext || puzzleStatus == 'incorrect') && (
-                  <Button
-                    variant="accent"
-                    onClick={() => goToNextPuzzle(puzzleStatus)}
-                  >
+                  <Button variant="accent" onClick={() => goToNextPuzzle()}>
                     Next
                   </Button>
                 )

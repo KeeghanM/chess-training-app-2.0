@@ -1,7 +1,8 @@
 'use client'
 
-import { Badge } from '@prisma/client'
+import type { Badge } from '@prisma/client'
 import Heading from '../_elements/heading'
+import type { DragEndEvent } from '@dnd-kit/core'
 import {
   DndContext,
   KeyboardSensor,
@@ -17,7 +18,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import SortableItem from '~/app/_util/SortableItem'
-import * as Sentry from '@sentry/node'
+import * as Sentry from '@sentry/nextjs'
 import { useEffect, useState } from 'react'
 
 export default function ExistingBadges(props: { existingBadges: Badge[] }) {
@@ -32,7 +33,7 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
 
   useEffect(() => {
     const newOrderBadges = items.map((name) => {
-      return existingBadges.find((badge) => badge.name === name) as Badge
+      return existingBadges.find((badge) => badge.name === name)!
     })
     setExistingBadges(newOrderBadges)
   }, [items])
@@ -41,11 +42,11 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
     new Set(existingBadges.map((badge) => badge.category)),
   )
 
-  const handleDragEnd = async (event: any) => {
+  const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
-    if (active.id !== over.id) {
-      const oldIndex = items.indexOf(active.id)
-      const newIndex = items.indexOf(over.id)
+    if (active && over && active.id !== over.id) {
+      const oldIndex = items.indexOf(active.id as string)
+      const newIndex = items.indexOf(over.id as string)
       setItems((items) => {
         return arrayMove(items, oldIndex, newIndex)
       })
