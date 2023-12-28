@@ -15,7 +15,16 @@ export default async function BadgesPage() {
 
   const categories = Array.from(
     new Set(allBadges.map((badge) => badge.category)),
-  )
+  ) // sort by category: daily, tactics, misc, then the rest
+    .sort((a, b) => {
+      if (a === 'Daily Streaks') return -1
+      if (b === 'Daily Streaks') return 1
+      if (a === 'Tactics Streaks') return -1
+      if (b === 'Tactics Streaks') return 1
+      if (a === 'Miscellaneous') return -1
+      if (b === 'Miscellaneous') return 1
+      return 0
+    })
 
   return (
     <>

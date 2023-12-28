@@ -14,7 +14,7 @@ export default function XpDisplay(props: XpDisplayProps) {
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <div className="flex h-fit w-fit  flex-row items-center border-2 border-purple-700">
+      <div className="flex h-fit w-fit  flex-row items-center border-2 border-purple-700 bg-white">
         <Tippy
           content={`Experience gained from training puzzles, and studying courses.`}
         >
@@ -44,7 +44,7 @@ export default function XpDisplay(props: XpDisplayProps) {
         </Tippy>
       </div>
 
-      <StyledLink href="/about/ranks-and-badges#ranks">
+      <StyledLink href="/about/ranks-and-badges">
         <p className="text-sm">View All Ranks</p>
       </StyledLink>
     </div>

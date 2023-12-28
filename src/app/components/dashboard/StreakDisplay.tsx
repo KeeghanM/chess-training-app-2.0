@@ -28,7 +28,7 @@ export default function StreakDisplay(props: StreakDisplayProps) {
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <div className="flex h-fit w-fit  flex-row items-center border-2 border-purple-700">
+      <div className="flex h-fit w-fit  flex-row items-center border-2 border-purple-700 bg-white">
         <div className="flex flex-row items-center gap-1 p-2">
           <Tippy
             content={

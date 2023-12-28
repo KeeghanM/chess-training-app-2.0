@@ -8,6 +8,7 @@ import XpDisplay from '../components/dashboard/XpDisplay'
 import StreakDisplay from '../components/dashboard/StreakDisplay'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { prisma } from '~/server/db'
+import Image from 'next/image'
 
 export type Tool = {
   name: string
@@ -162,15 +163,33 @@ export default async function Dashboard() {
 
   return (
     <>
-      <Container size="wide">
-        <Heading as={'h1'}>
-          Welcome back, {user.given_name ?? profile.username ?? user.email}
-        </Heading>
-        <div className="flex flex-col flex-wrap gap-2 md:flex-row">
-          <StreakDisplay profile={profile} badges={badges} />
-          <XpDisplay currentXp={profile?.experience ?? 0} />
+      <div className="relative">
+        <div className="absolute inset-0">
+          <Image
+            fill={true}
+            objectFit="cover"
+            src="/images/hero.avif"
+            alt="Chess board with pieces set up"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(90deg, #ffe9da 0%, rgba(249,115,22,0.5) 100%)',
+            }}
+            aria-hidden="true"
+          />
         </div>
-      </Container>
+        <Container size="wide">
+          <Heading as={'h1'}>
+            Welcome back, {user.given_name ?? profile.username ?? user.email}
+          </Heading>
+          <div className="flex flex-col flex-wrap gap-2 md:flex-row">
+            <StreakDisplay profile={profile} badges={badges} />
+            <XpDisplay currentXp={profile?.experience ?? 0} />
+          </div>
+        </Container>
+      </div>
       <div className="p-4 md:p-6">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {tools
