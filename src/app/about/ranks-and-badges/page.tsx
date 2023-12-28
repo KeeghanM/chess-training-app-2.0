@@ -5,6 +5,17 @@ import { TextWall } from '~/app/components/_layouts/textWall'
 export default async function RankAndBadgesPage() {
   const ranks = Array.from(new Set(XpRanks.map((rank) => rank.rank)))
 
+  const BadgeElem = (name: string, description: string) => {
+    return (
+      <div key={name}>
+        <p className="border border-black bg-purple-700 p-2 font-bold  text-white">
+          {name}
+        </p>
+        <p className="border border-black p-2">{description}</p>
+      </div>
+    )
+  }
+
   return (
     <>
       <PageHeader
@@ -30,8 +41,8 @@ export default async function RankAndBadgesPage() {
       <a className="anchor" id="ranks" />
       <TextWall title="Ranks" background="dark">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          {ranks.map((rank) => (
-            <div>
+          {ranks.map((rank, index) => (
+            <div key={index}>
               <p className="border border-black bg-purple-700 p-2 font-bold  text-white">
                 {rank}
               </p>
@@ -49,33 +60,48 @@ export default async function RankAndBadgesPage() {
           <a className="anchor" id="badges" />
           <Heading as={'h3'}>Daily Streaks</Heading>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {StreakBadges.map((badge) => (
-              <div>
-                <p className="border border-black bg-purple-700 p-2 font-bold  text-white">
-                  {badge.name}
-                </p>
-                <p className="border border-black p-2">{badge.description}</p>
-              </div>
-            ))}
+            {StreakBadges.map((b) => BadgeElem(b.name, b.description))}
           </div>
           <Heading as={'h3'}>Tactics Streaks</Heading>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-            {TacticStreakBadges.map((badge) => (
-              <div className="">
-                <p className="border border-black bg-purple-700 p-2 font-bold  text-white">
-                  {badge.name}
-                </p>
-                <p className="h-full border border-black p-2">
-                  {badge.description}
-                </p>
-              </div>
-            ))}
+            {TacticStreakBadges.map((b) => BadgeElem(b.name, b.description))}
+          </div>
+          <Heading as={'h3'}>Miscellaneous</Heading>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+            {MiscBadges.map((b) => BadgeElem(b.name, b.description))}
           </div>
         </div>
       </TextWall>
     </>
   )
 }
+
+export const MiscBadges = [
+  {
+    name: 'Here from the beginning',
+    description: 'Have an account from christmas 2020 when we launched',
+  },
+  {
+    name: 'Early Adopter',
+    description: 'Have an account from 2021',
+  },
+  {
+    name: 'Christmas Present',
+    description: 'Have an account when we launched badges in Christmas 2023',
+  },
+  {
+    name: 'Online Player',
+    description: 'Set your highest online rating',
+  },
+  {
+    name: 'OTB Player',
+    description: 'Set your highest OTB rating',
+  },
+  {
+    name: 'Well Known',
+    description: 'Fill in your profile bio',
+  },
+]
 
 export const StreakBadges = [
   {
@@ -161,28 +187,28 @@ export const TacticStreakBadges = [
     streak: 8,
     level: 1000,
     description:
-      'Complete a full set of 8 rounds, with a puzzle rating set to 1000',
+      'Complete a full set of 8 rounds, with a puzzle rating of at least 1000',
   },
   {
     name: 'WoodPecker: Bishop',
     streak: 8,
     level: 1500,
     description:
-      'Complete a full set of 8 rounds, with a puzzle rating set to 1500',
+      'Complete a full set of 8 rounds, with a puzzle rating of at least 1500',
   },
   {
     name: 'WoodPecker: Queen',
     streak: 8,
     level: 2000,
     description:
-      'Complete a full set of 8 rounds, with a puzzle rating set to 2000',
+      'Complete a full set of 8 rounds, with a puzzle rating of at least 2000',
   },
   {
     name: 'WoodPecker: King',
     streak: 8,
     level: 2500,
     description:
-      'Complete a full set of 8 rounds, with a puzzle rating set to 2500',
+      'Complete a full set of 8 rounds, with a puzzle rating of at least 2500',
   },
 ]
 

@@ -136,6 +136,13 @@ export default async function Dashboard() {
       buttonText: 'Open',
       active: false,
     },
+    {
+      name: 'Badge Creator',
+      description: ['Create and manage badges'],
+      href: '/admin/badges',
+      buttonText: 'Open',
+      active: true,
+    },
   ]
 
   return (

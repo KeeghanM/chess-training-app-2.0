@@ -23,13 +23,22 @@ export default function StreakDisplay(props: StreakDisplayProps) {
     ? new Date().getTime() - profile.lastTrained.getTime()
     : 0
   const oneDay = 1000 * 60 * 60 * 24
-  const trainedToday = timeSinceLastTrained < oneDay
+  const trainedToday = timeSinceLastTrained < oneDay && timeSinceLastTrained > 0
+  const lastTrained = profile.lastTrained?.toUTCString()
 
   return (
     <div className="flex flex-col items-center gap-1">
       <div className="flex h-fit w-fit  flex-row items-center border-2 border-purple-700">
         <div className="flex flex-row items-center gap-1 p-2">
-          <Tippy content={trainedToday ? 'Trained Today' : 'Not Trained Today'}>
+          <Tippy
+            content={
+              lastTrained
+                ? lastTrained
+                : trainedToday
+                  ? 'Trained Today'
+                  : 'Not Trained Today'
+            }
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="25"

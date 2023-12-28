@@ -1,0 +1,64 @@
+import { getUserServer } from '~/app/_util/getUserServer'
+import Container from '~/app/components/_elements/container'
+import Heading from '~/app/components/_elements/heading'
+import PageHeader from '~/app/components/_layouts/pageHeader'
+import { prisma } from '~/server/db'
+
+export default async function BadgesPage() {
+  const { badges } = await getUserServer()
+  const allBadges = await prisma.badge.findMany()
+
+  allBadges.sort((a, b) => {
+    if (badges.find((badge) => badge.badgeName === a.name)) return -1
+    return 1
+  })
+
+  const categories = Array.from(
+    new Set(allBadges.map((badge) => badge.category)),
+  )
+
+  return (
+    <>
+      <PageHeader
+        title="Your Badges"
+        subTitle={`
+          You have ${badges.length} out of ${allBadges.length} possible badges`}
+        image={{
+          src: '/images/hero.avif',
+          alt: 'Chess board with pieces set up',
+        }}
+      />
+      <Container>
+        <p>
+          Badges are awarded for completing certain tasks on the site. They are
+          a fun way to track your progress and show off your achievements.
+        </p>
+        {categories.map((category) => (
+          <div key={category}>
+            <Heading as={'h2'}>{category}</Heading>
+            <div className="grid grid-cols-2 gap-1 md:grid-cols-4 lg:grid-cols-6">
+              {allBadges
+                .filter((badge) => badge.category === category)
+                .sort((a, b) => a.sort - b.sort)
+                .map((badge) => (
+                  <div
+                    className={
+                      'flex flex-col items-center justify-center gap-1 p-2 text-white' +
+                      (badges.filter((b) => b.badgeName === badge.name).length >
+                      0
+                        ? ' bg-purple-700'
+                        : ' bg-gray-700')
+                    }
+                    key={badge.name}
+                  >
+                    <p className="font-bold text-orange-500">{badge.name}</p>
+                    <p className="text-xs">{badge.description}</p>
+                  </div>
+                ))}
+            </div>
+          </div>
+        ))}
+      </Container>
+    </>
+  )
+}
