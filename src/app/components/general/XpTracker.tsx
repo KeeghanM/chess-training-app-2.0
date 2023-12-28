@@ -42,9 +42,7 @@ export default function XpTracker(props: {
       })
       const json = (await resp.json()) as ResponseJson
       if (json.message != 'XP added') throw new Error(json.message)
-    })().catch((e) => {
-      console.error(e)
-    })
+    })().catch((e) => {})
   }, [props.counter])
 
   return (

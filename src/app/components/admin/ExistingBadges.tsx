@@ -17,6 +17,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import SortableItem from '~/app/_util/SortableItem'
+import * as Sentry from '@sentry/node'
 import { useEffect, useState } from 'react'
 
 export default function ExistingBadges(props: { existingBadges: Badge[] }) {
@@ -68,7 +69,7 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
           }),
         })
       } catch (e) {
-        console.error(e)
+        Sentry.captureException(e)
       }
     }
   }

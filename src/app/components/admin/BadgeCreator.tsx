@@ -9,6 +9,7 @@ import {
   StreakBadges,
   TacticStreakBadges,
 } from '~/app/about/ranks-and-badges/page'
+import * as Sentry from '@sentry/node'
 
 export default function BadgeCreator() {
   const [open, setOpen] = useState(false)
@@ -32,7 +33,7 @@ export default function BadgeCreator() {
       if (json.message != 'Badge created') throw new Error(json.message)
       return true
     } catch (e) {
-      console.error(e)
+      Sentry.captureException(e)
       return false
     }
   }

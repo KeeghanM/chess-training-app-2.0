@@ -7,6 +7,8 @@ import Heading from '../components/_elements/heading'
 import Container from '../components/_elements/container'
 import XpDisplay from '../components/dashboard/XpDisplay'
 import StreakDisplay from '../components/dashboard/StreakDisplay'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { prisma } from '~/server/db'
 
 export type Tool = {
   name: string
@@ -21,8 +23,22 @@ export const metadata = {
 }
 
 export default async function Dashboard() {
-  const { user, profile, permissions, badges } = await getUserServer()
+  // const { user, profile, permissions, badges } = await getUserServer()
+  const { getUser, getPermissions } = getKindeServerSession()
+  const user = await getUser()
   if (!user) redirect('/auth/signin')
+
+  const permissions = await getPermissions()
+  const profile = await prisma.userProfile.findFirst({
+    where: {
+      id: user.id,
+    },
+  })
+  const badges = await prisma.userBadge.findMany({
+    where: {
+      userId: user.id,
+    },
+  })
 
   const override = process.env.NODE_ENV === 'development'
 

@@ -331,9 +331,7 @@ export default function TacticsTrainer(props: {
     // CHECK IF LAST POSITION, BASED ON SOURCE SQUARE, IS A PAWN
     // This works because we haven't actually made the move yet
     const lastMovePiece = game.get(sourceSquare)
-    const sourceCol = sourceSquare.split('')[0]
     const sourceRank = sourceSquare.split('')[1]
-    const targetCol = targetSquare.split('')[0]
     const targetRank = targetSquare.split('')[1]
     const pieceString = piece as unknown as string // Hacky cause Chess.js types are wrong
     const pieceColor = pieceString.split('')[0]
@@ -341,14 +339,8 @@ export default function TacticsTrainer(props: {
 
     if (
       lastMovePiece?.type === 'p' &&
-      ((pieceColor == 'w' &&
-        sourceRank === '7' &&
-        targetRank === '8' &&
-        sourceCol == targetCol) ||
-        (pieceColor == 'b' &&
-          sourceRank === '2' &&
-          targetRank === '1' &&
-          sourceCol == targetCol))
+      ((pieceColor == 'w' && sourceRank === '7' && targetRank === '8') ||
+        (pieceColor == 'b' && sourceRank === '2' && targetRank === '1'))
     ) {
       return pieceType?.toLowerCase()
     }
@@ -456,7 +448,6 @@ export default function TacticsTrainer(props: {
       const puzzleId =
         props.set.puzzles[startingRound.correct + startingRound.incorrect]!
           .puzzleid
-      console.log({ startingRound, puzzles: props.set.puzzles, puzzleId })
       const puzzle = await getPuzzle(puzzleId)
       if (!puzzle) return
       setCurrentPuzzle(puzzle)
