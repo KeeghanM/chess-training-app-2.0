@@ -110,8 +110,8 @@ model TacticsSet {
     createdAt   DateTime          @default(now())
     updatedAt   DateTime          @updatedAt
     size        Int
-    rating      Int?
     lastTrained DateTime?
+    rating      Int?
     puzzles     Puzzle[]
     rounds      TacticsSetRound[]
 }

@@ -79,15 +79,11 @@ export default async function RankAndBadgesPage() {
 export const MiscBadges = [
   {
     name: 'Here from the beginning',
-    description: 'Have an account from christmas 2020 when we launched',
-  },
-  {
-    name: 'Early Adopter',
-    description: 'Have an account from 2021',
+    description: 'You signed up during our first month Post Launch (Jan 2022)',
   },
   {
     name: 'Christmas Present',
-    description: 'Have an account when we launched badges in Christmas 2023',
+    description: 'You had an account when we launched badges in Christmas 2023',
   },
   {
     name: 'Online Player',
