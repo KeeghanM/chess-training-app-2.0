@@ -11,37 +11,55 @@ export async function UpdateStreak(userId: string) {
     })
     if (!profile) throw new Error('Profile not found')
 
-    const timeSinceLastTrained = profile.lastTrained
-      ? new Date().getTime() - profile.lastTrained.getTime()
-      : 0
+    const currentDate = new Date()
+    const lastTrained = profile.lastTrained ? profile.lastTrained : new Date()
+    const timeSinceLastIncrement = currentDate.getTime() - lastTrained.getTime()
     const oneDay = 1000 * 60 * 60 * 24
 
-    const currentStreak =
-      timeSinceLastTrained < oneDay && profile.currentStreak > 0
-        ? profile.currentStreak
-        : timeSinceLastTrained > oneDay && timeSinceLastTrained < oneDay * 2
-          ? profile.currentStreak + 1
-          : 1
+    let currentStreak = profile.currentStreak
 
-    const bestStreak =
-      currentStreak > profile.bestStreak ? currentStreak : profile.bestStreak
+    const yesterday = new Date(currentDate)
+    yesterday.setDate(yesterday.getDate() - 1)
+    const isTrainingYesterday =
+      lastTrained.toDateString() === yesterday.toDateString()
 
-    await prisma.userProfile.update({
-      where: { id: userId },
-      data: {
-        lastTrained: new Date(),
-        currentStreak,
-        bestStreak,
-      },
+    console.log({
+      currentTime: currentDate,
+      lastTrainedTime: lastTrained,
+      timeSinceLastIncrement,
+      oneDay,
+      currentStreak,
+      yesterday,
+      isTrainingYesterday,
     })
 
-    // If the best streak has been updated
-    if (bestStreak > profile.bestStreak) {
-      // Find the badge that matches the best streak
-      const badge = StreakBadges.find((badge) => badge.streak === currentStreak)
-      if (!badge) return
-      // Add the badge to the user
-      await AddBadgeToUser(userId, badge.name)
+    if (
+      (timeSinceLastIncrement >= oneDay &&
+        timeSinceLastIncrement < oneDay * 2) ||
+      isTrainingYesterday
+    ) {
+      currentStreak++
+      const bestStreak = Math.max(currentStreak, profile.bestStreak)
+
+      await prisma.userProfile.update({
+        where: { id: userId },
+        data: {
+          lastTrained: new Date(),
+          currentStreak,
+          bestStreak,
+        },
+      })
+
+      // If the best streak has been updated
+      if (bestStreak > profile.bestStreak) {
+        // Find the badge that matches the best streak
+        const badge = StreakBadges.find(
+          (badge) => badge.streak === currentStreak,
+        )
+        if (!badge) return
+        // Add the badge to the user
+        await AddBadgeToUser(userId, badge.name)
+      }
     }
 
     return
