@@ -121,6 +121,8 @@ model Puzzle {
     puzzleid String
     setId    String
     set      TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+
+    @@index([setId])
 }
 
 model TacticsSetRound {
