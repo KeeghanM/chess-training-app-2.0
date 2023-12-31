@@ -23,16 +23,6 @@ export async function UpdateStreak(userId: string) {
     const isTrainingYesterday =
       lastTrained.toDateString() === yesterday.toDateString()
 
-    console.log({
-      currentTime: currentDate,
-      lastTrainedTime: lastTrained,
-      timeSinceLastIncrement,
-      oneDay,
-      currentStreak,
-      yesterday,
-      isTrainingYesterday,
-    })
-
     if (
       (timeSinceLastIncrement >= oneDay &&
         timeSinceLastIncrement < oneDay * 2) ||

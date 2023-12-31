@@ -13,6 +13,7 @@ import Container from '~/app/components/_elements/container'
 import type { ResponseJson } from '~/app/api/responses'
 import * as Sentry from '@sentry/nextjs'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import GenerateSlug from '~/app/_util/GenerateSlug'
 
 export default function CreateCourseForm() {
   const router = useRouter()
@@ -134,12 +135,7 @@ function transformCourseData(courseName: string, group: string, lines: Line[]) {
   }, [])
 
   // Get the slug for the course name
-  const slug = courseName
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+  const slug = GenerateSlug(courseName)
 
   const processedLines = lines.map((line) => {
     const groupName = line.tags[group]!
