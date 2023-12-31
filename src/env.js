@@ -31,6 +31,7 @@ export const env = createEnv({
     SMTP_PASS: z.string(),
     BREVO_API_KEY: z.string(),
     SENTRY_AUTH_TOKEN: z.string(),
+    RAPIDAPI_KEY: z.string(),
   },
 
   /**
@@ -40,7 +41,6 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
-    NEXT_PUBLIC_RAPIDAPI_KEY: z.string(),
     NEXT_PUBLIC_POSTHOG_KEY: z.string(),
     NEXT_PUBLIC_POSTHOG_HOST: z.string(),
   },
@@ -67,8 +67,8 @@ export const env = createEnv({
     SMTP_PASS: process.env.SMTP_PASS,
     BREVO_API_KEY: process.env.BREVO_API_KEY,
     SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
+    RAPIDAPI_KEY: process.env.RAPIDAPI_KEY,
     // CLIENT
-    NEXT_PUBLIC_RAPIDAPI_KEY: process.env.NEXT_PUBLIC_RAPIDAPI_KEY,
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
   },

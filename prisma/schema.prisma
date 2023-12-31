@@ -126,9 +126,10 @@ model Puzzle {
 }
 
 model CustomPuzzle {
-    id    Int    @id @default(autoincrement())
-    fen   String
-    moves String
+    id     String @id
+    fen    String
+    rating Int
+    moves  String
 }
 
 model CuratedSet {

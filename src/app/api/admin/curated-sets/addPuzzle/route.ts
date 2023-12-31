@@ -2,6 +2,7 @@ import { prisma } from '~/server/db'
 import * as Sentry from '@sentry/nextjs'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { errorResponse, successResponse } from '~/app/api/responses'
+import { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request)
@@ -14,11 +15,11 @@ export async function POST(request: Request) {
   if (!permissions?.permissions.includes('staff-member'))
     return errorResponse('Unauthorized', 401)
 
-  const { setId, puzzleId } = (await request.json()) as {
+  const { setId, puzzle } = (await request.json()) as {
     setId: number
-    puzzleId: string
+    puzzle: TrainingPuzzle
   }
-  if (!setId || !puzzleId) return errorResponse('Missing required fields', 400)
+  if (!setId || !puzzle) return errorResponse('Missing required fields', 400)
 
   try {
     const set = await prisma.curatedSet.findFirst({
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
 
     const existingPuzzle = await prisma.curatedSetPuzzle.findFirst({
       where: {
-        puzzleid: puzzleId,
+        puzzleid: puzzle.puzzleid,
         setId,
       },
     })
@@ -40,10 +41,28 @@ export async function POST(request: Request) {
 
     await prisma.curatedSetPuzzle.create({
       data: {
-        puzzleid: puzzleId,
+        puzzleid: puzzle.puzzleid,
         setId: setId,
       },
     })
+
+    // Add custom puzzle to database if it doesn't exist
+    if (puzzle.puzzleid.startsWith('cta_')) {
+      const existingCustomPuzzle = await prisma.customPuzzle.findFirst({
+        where: {
+          id: puzzle.puzzleid,
+        },
+      })
+      if (!existingCustomPuzzle)
+        await prisma.customPuzzle.create({
+          data: {
+            id: puzzle.puzzleid,
+            fen: puzzle.fen,
+            rating: puzzle.rating,
+            moves: puzzle.moves.join(','),
+          },
+        })
+    }
 
     const updatedSet = await prisma.curatedSet.update({
       where: {

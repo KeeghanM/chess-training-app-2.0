@@ -78,19 +78,21 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
     if (themes.length > 0) {
       params.themes = JSON.stringify(themes)
     }
-    const paramsString = new URLSearchParams(params).toString()
-    const queryUrl = 'https://chess-puzzles.p.rapidapi.com/?' + paramsString
+
     try {
-      const resp = await fetch(queryUrl, {
-        method: 'GET',
+      const resp = await fetch('/api/puzzles/getPuzzles', {
+        method: 'POST',
         headers: {
-          'x-rapidapi-host': 'chess-puzzles.p.rapidapi.com',
-          'x-rapidapi-key': process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify(params),
       })
-      const json = (await resp.json()) as { puzzles: TrainingPuzzle[] }
-      const puzzles = json?.puzzles
-      if (!puzzles) throw new Error('No Puzzles Returned')
+
+      const json = (await resp.json()) as ResponseJson
+      if (json.message != 'Puzzles found') throw new Error(json.message)
+
+      const puzzles = json.data?.puzzles as TrainingPuzzle[]
+      if (!puzzles || puzzles.length == 0) throw new Error('No puzzles found')
 
       return puzzles as {
         puzzleid: string
