@@ -28,7 +28,7 @@ export interface TrainingPuzzle {
   puzzleid: string
   fen: string
   rating: number
-  ratingDeviation: number
+  ratingdeviation: number
   moves: string[]
   themes: string[]
 }

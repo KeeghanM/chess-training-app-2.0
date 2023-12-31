@@ -1,0 +1,124 @@
+"filename", "language", "JavaScript", "TypeScript", "TypeScript JSX", "CSS", "JavaScript JSX", "comment", "blank", "total"
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\_util\AddBadge.ts", "TypeScript", 0, 51, 0, 0, 0, 4, 9, 64
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\_util\RanksAndBadges.ts", "TypeScript", 0, 311, 0, 0, 0, 0, 4, 315
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\_util\SortableItem.tsx", "TypeScript JSX", 0, 0, 18, 0, 0, 0, 3, 21
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\_util\UpdateStreak.ts", "TypeScript", 0, 57, 0, 0, 0, 3, 10, 70
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\_util\_providers.tsx", "TypeScript JSX", 0, 0, 30, 0, 0, 0, 6, 36
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\_util\getDistinctId.tsx", "TypeScript JSX", 0, 0, 15, 0, 0, 3, 4, 22
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\_util\getUserServer.tsx", "TypeScript JSX", 0, 0, 65, 0, 0, 2, 7, 74
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\_util\isFlagEnabledServer.tsx", "TypeScript JSX", 0, 0, 16, 0, 0, 0, 5, 21
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\_util\toHHMMSS.ts", "TypeScript", 0, 7, 0, 0, 0, 0, 3, 10
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\_util\trackEventOnClient.ts", "TypeScript", 0, 20, 0, 0, 0, 0, 2, 22
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\_util\trackEventOnServer.ts", "TypeScript", 0, 24, 0, 0, 0, 0, 3, 27
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\about\features\natural-play-learning\page.tsx", "TypeScript JSX", 0, 0, 119, 0, 0, 0, 3, 122
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\about\features\page.tsx", "TypeScript JSX", 0, 0, 123, 0, 0, 0, 4, 127
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\about\features\woodpecker-method\page.tsx", "TypeScript JSX", 0, 0, 124, 0, 0, 0, 3, 127
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\about\meet-the-team\page.tsx", "TypeScript JSX", 0, 0, 85, 0, 0, 0, 4, 89
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\about\page.tsx", "TypeScript JSX", 0, 0, 98, 0, 0, 0, 3, 101
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\about\ranks-and-badges\page.tsx", "TypeScript JSX", 0, 0, 80, 0, 0, 0, 4, 84
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\admin\badges\page.tsx", "TypeScript JSX", 0, 0, 30, 0, 0, 0, 4, 34
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\admin\curated-sets\page.tsx", "TypeScript JSX", 0, 0, 12, 0, 0, 0, 3, 15
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\admin\badges\route.ts", "TypeScript", 0, 72, 0, 0, 0, 0, 15, 87
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\auth\[kindeAuth]\route.ts", "TypeScript", 0, 2, 0, 0, 0, 0, 2, 4
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\auth\cookies\route.ts", "TypeScript", 0, 16, 0, 0, 0, 0, 4, 20
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\courses\create\checkName\route.ts", "TypeScript", 0, 34, 0, 0, 0, 0, 5, 39
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\courses\create\upload\route.ts", "TypeScript", 0, 105, 0, 0, 0, 5, 14, 124
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\courses\user\[courseId]\fens\new\route.ts", "TypeScript", 0, 30, 0, 0, 0, 0, 6, 36
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\courses\user\[courseId]\fens\update\route.ts", "TypeScript", 0, 52, 0, 0, 0, 3, 6, 61
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\courses\user\[courseId]\route.ts", "TypeScript", 0, 42, 0, 0, 0, 0, 7, 49
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\courses\user\[courseId]\stats\[lineId]\route.ts", "TypeScript", 0, 91, 0, 0, 0, 0, 9, 100
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\endgames\streak\route.ts", "TypeScript", 0, 27, 0, 0, 0, 0, 7, 34
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\logEvent\route.ts", "TypeScript", 0, 19, 0, 0, 0, 0, 4, 23
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\mail\contactForm\route.ts", "TypeScript", 0, 38, 0, 0, 0, 1, 5, 44
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\mail\reportIssue\route.ts", "TypeScript", 0, 39, 0, 0, 0, 1, 5, 45
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\profile\route.ts", "TypeScript", 0, 92, 0, 0, 0, 0, 16, 108
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\profile\streak\route.ts", "TypeScript", 0, 18, 0, 0, 0, 0, 4, 22
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\profile\xp\route.ts", "TypeScript", 0, 73, 0, 0, 0, 0, 13, 86
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\responses.ts", "TypeScript", 0, 31, 0, 0, 0, 0, 3, 34
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\tactics\createRound\route.ts", "TypeScript", 0, 40, 0, 0, 0, 0, 6, 46
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\tactics\create\route.ts", "TypeScript", 0, 53, 0, 0, 0, 0, 9, 62
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\tactics\delete\route.ts", "TypeScript", 0, 29, 0, 0, 0, 0, 7, 36
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\tactics\stats\increaseCorrect\route.ts", "TypeScript", 0, 44, 0, 0, 0, 0, 8, 52
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\tactics\stats\increaseIncorrect\route.ts", "TypeScript", 0, 34, 0, 0, 0, 0, 6, 40
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\tactics\stats\increaseTimeTaken\route.ts", "TypeScript", 0, 48, 0, 0, 0, 0, 8, 56
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\tactics\update\route.ts", "TypeScript", 0, 37, 0, 0, 0, 0, 8, 45
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\api\tactics\user\route.ts", "TypeScript", 0, 25, 0, 0, 0, 0, 5, 30
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\auth\signin\page.tsx", "TypeScript JSX", 0, 0, 35, 0, 0, 0, 4, 39
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\_elements\button.tsx", "TypeScript JSX", 0, 0, 46, 0, 0, 0, 3, 49
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\_elements\container.tsx", "TypeScript JSX", 0, 0, 20, 0, 0, 0, 1, 21
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\_elements\heading.tsx", "TypeScript JSX", 0, 0, 52, 0, 0, 0, 1, 53
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\_elements\styledLink.tsx", "TypeScript JSX", 0, 0, 17, 0, 0, 0, 2, 19
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\_layouts\bigText.tsx", "TypeScript JSX", 0, 0, 22, 0, 0, 0, 2, 24
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\_layouts\ctaRow.tsx", "TypeScript JSX", 0, 0, 41, 0, 0, 0, 3, 44
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\_layouts\hero.tsx", "TypeScript JSX", 0, 0, 58, 0, 0, 0, 3, 61
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\_layouts\imageRowFull.tsx", "TypeScript JSX", 0, 0, 47, 0, 0, 0, 3, 50
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\_layouts\multiCol.tsx", "TypeScript JSX", 0, 0, 47, 0, 0, 0, 5, 52
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\_layouts\pageHeader.tsx", "TypeScript JSX", 0, 0, 36, 0, 0, 0, 3, 39
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\_layouts\textWall.tsx", "TypeScript JSX", 0, 0, 24, 0, 0, 0, 3, 27
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\admin\BadgeCreator.tsx", "TypeScript JSX", 0, 0, 146, 0, 0, 2, 10, 158
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\admin\ExistingBadges.tsx", "TypeScript JSX", 0, 0, 110, 0, 0, 1, 8, 119
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\admin\curatedSets\CuratedSetsBrowser.tsx", "TypeScript JSX", 0, 0, 34, 0, 0, 0, 5, 39
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\admin\curatedSets\themes.ts", "TypeScript", 0, 328, 0, 0, 0, 0, 2, 330
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\contact\ContactForm.tsx", "TypeScript JSX", 0, 0, 167, 0, 0, 1, 13, 181
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\contact\ReportIssue.tsx", "TypeScript JSX", 0, 0, 197, 0, 0, 1, 16, 214
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\dashboard\AccountForm.tsx", "TypeScript JSX", 0, 0, 228, 0, 0, 0, 12, 240
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\dashboard\StreakDisplay.tsx", "TypeScript JSX", 0, 0, 61, 0, 0, 0, 6, 67
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\dashboard\ToolGrid.tsx", "TypeScript JSX", 0, 0, 55, 0, 0, 2, 4, 61
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\dashboard\XpDisplay.tsx", "TypeScript JSX", 0, 0, 50, 0, 0, 0, 4, 54
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\general\NumberIcon.tsx", "TypeScript JSX", 0, 0, 14, 0, 0, 0, 1, 15
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\general\PrettyPrintLine.tsx", "TypeScript JSX", 0, 0, 25, 0, 0, 3, 6, 34
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\general\Spinner.tsx", "TypeScript JSX", 0, 0, 27, 0, 0, 0, 1, 28
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\general\TimeSince.tsx", "TypeScript JSX", 0, 0, 11, 0, 0, 0, 4, 15
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\general\XpTracker.tsx", "TypeScript JSX", 0, 0, 55, 0, 0, 3, 5, 63
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\template\CookieBanner.tsx", "TypeScript JSX", 0, 0, 99, 0, 0, 0, 7, 106
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\template\footer\Footer.tsx", "TypeScript JSX", 0, 0, 128, 0, 0, 0, 3, 131
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\template\header\Header.tsx", "TypeScript JSX", 0, 0, 32, 0, 0, 0, 3, 35
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\template\header\Nav.tsx", "TypeScript JSX", 0, 0, 93, 0, 0, 0, 5, 98
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\template\header\UserButtons.tsx", "TypeScript JSX", 0, 0, 17, 0, 0, 0, 3, 20
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\courses\CourseTrainer.tsx", "TypeScript JSX", 0, 0, 523, 0, 0, 56, 56, 635
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\courses\create\CreateCourse.tsx", "TypeScript JSX", 0, 0, 146, 0, 0, 4, 12, 162
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\courses\create\DetailsForm.tsx", "TypeScript JSX", 0, 0, 84, 0, 0, 0, 7, 91
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\courses\create\GroupItem.tsx", "TypeScript JSX", 0, 0, 129, 0, 0, 0, 4, 133
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\courses\create\GroupSelector.tsx", "TypeScript JSX", 0, 0, 160, 0, 0, 4, 9, 173
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\courses\create\PgnToLinesForm.tsx", "TypeScript JSX", 0, 0, 95, 0, 0, 3, 10, 108
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\courses\create\Steps.tsx", "TypeScript JSX", 0, 0, 22, 0, 0, 0, 3, 25
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\courses\create\parse\ParsePGNtoLineData.ts", "TypeScript", 0, 75, 0, 0, 0, 6, 11, 92
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\courses\create\parse\ecoCodes.ts", "TypeScript", 0, 5012, 0, 0, 0, 0, 2, 5014
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\courses\list\CourseListItem.tsx", "TypeScript JSX", 0, 0, 141, 0, 0, 0, 11, 152
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\endgames\EndgameTrainer.tsx", "TypeScript JSX", 0, 0, 601, 0, 0, 20, 41, 662
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\tactics\TacticsTrainer.tsx", "TypeScript JSX", 0, 0, 646, 0, 0, 26, 48, 720
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\tactics\create\TacticsSetCreator.tsx", "TypeScript JSX", 0, 0, 349, 0, 0, 2, 16, 367
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\tactics\list\SetListEdit.tsx", "TypeScript JSX", 0, 0, 172, 0, 0, 0, 14, 186
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\tactics\list\SetListItem.tsx", "TypeScript JSX", 0, 0, 80, 0, 0, 0, 3, 83
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\tactics\list\SetListStats.tsx", "TypeScript JSX", 0, 0, 66, 0, 0, 0, 4, 70
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\components\training\tactics\list\TacticsList.tsx", "TypeScript JSX", 0, 0, 80, 0, 0, 1, 9, 90
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\contact\page.tsx", "TypeScript JSX", 0, 0, 20, 0, 0, 0, 3, 23
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\contact\report-an-issue\page.tsx", "TypeScript JSX", 0, 0, 18, 0, 0, 0, 3, 21
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\courses\[slug]\page.tsx", "TypeScript JSX", 0, 0, 69, 0, 0, 0, 11, 80
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\courses\create\page.tsx", "TypeScript JSX", 0, 0, 23, 0, 0, 0, 4, 27
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\courses\page.tsx", "TypeScript JSX", 0, 0, 115, 0, 0, 0, 3, 118
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\dashboard\badges\page.tsx", "TypeScript JSX", 0, 0, 71, 0, 0, 0, 5, 76
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\dashboard\new\page.tsx", "TypeScript JSX", 0, 0, 68, 0, 0, 0, 3, 71
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\dashboard\page.tsx", "TypeScript JSX", 0, 0, 205, 0, 0, 3, 11, 219
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\dashboard\settings\page.tsx", "TypeScript JSX", 0, 0, 14, 0, 0, 0, 3, 17
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\global-error.jsx", "JavaScript JSX", 0, 0, 0, 0, 16, 0, 4, 20
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\globals.css", "CSS", 0, 0, 0, 53, 0, 1, 7, 61
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\layout.tsx", "TypeScript JSX", 0, 0, 49, 0, 0, 0, 4, 53
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\not-found.tsx", "TypeScript JSX", 0, 0, 25, 0, 0, 0, 2, 27
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\page.tsx", "TypeScript JSX", 0, 0, 216, 0, 0, 0, 4, 220
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\product-roadmap\page.tsx", "TypeScript JSX", 0, 0, 57, 0, 0, 0, 3, 60
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\sitemap.ts", "TypeScript", 0, 99, 0, 0, 0, 1, 4, 104
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\training\courses\[courseId]\page.tsx", "TypeScript JSX", 0, 0, 82, 0, 0, 0, 10, 92
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\training\courses\page.tsx", "TypeScript JSX", 0, 0, 68, 0, 0, 0, 6, 74
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\training\endgames\page.tsx", "TypeScript JSX", 0, 0, 95, 0, 0, 0, 3, 98
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\training\endgames\train\page.tsx", "TypeScript JSX", 0, 0, 23, 0, 0, 0, 3, 26
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\training\knight-vision\page.tsx", "TypeScript JSX", 0, 0, 40, 0, 0, 0, 3, 43
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\training\page.tsx", "TypeScript JSX", 0, 0, 4, 0, 0, 0, 1, 5
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\training\tactics\[setId]\page.tsx", "TypeScript JSX", 0, 0, 44, 0, 0, 0, 6, 50
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\training\tactics\list\page.tsx", "TypeScript JSX", 0, 0, 21, 0, 0, 0, 3, 24
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\training\tactics\page.tsx", "TypeScript JSX", 0, 0, 89, 0, 0, 0, 3, 92
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\app\training\visualisation\page.tsx", "TypeScript JSX", 0, 0, 41, 0, 0, 0, 3, 44
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\env.js", "JavaScript", 58, 0, 0, 0, 0, 24, 4, 86
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\middleware.ts", "TypeScript", 0, 10, 0, 0, 0, 0, 3, 13
+"c:\Users\user\Documents\Programming\chess-trainer-2\src\server\db.ts", "TypeScript", 0, 11, 0, 0, 0, 0, 5, 16
+"Total", "-", 58, 7096, 7560, 53, 16, 186, 804, 15773

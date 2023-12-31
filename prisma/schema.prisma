@@ -121,6 +121,37 @@ model Puzzle {
     puzzleid String
     setId    String
     set      TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+
+    @@index([setId])
+}
+
+model CustomPuzzle {
+    id    Int    @id @default(autoincrement())
+    fen   String
+    moves String
+}
+
+model CuratedSet {
+    id          Int                @id @default(autoincrement())
+    name        String
+    slug        String             @unique
+    description String?            @db.Text
+    rating      Int
+    size        Int
+    published   Boolean            @default(false)
+    price       Int                @default(0)
+    createdAt   DateTime           @default(now())
+    updatedAt   DateTime           @updatedAt
+    puzzles     CuratedSetPuzzle[]
+}
+
+model CuratedSetPuzzle {
+    id        Int        @id @default(autoincrement())
+    puzzleid  String
+    setId     Int
+    set       CuratedSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+    createdAt DateTime   @default(now())
+    updatedAt DateTime   @updatedAt
 }
 
 model TacticsSetRound {
