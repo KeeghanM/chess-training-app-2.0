@@ -178,6 +178,7 @@ model UserProfile {
     currentStreak       Int          @default(0)
     bestStreak          Int          @default(0)
     lastTrained         DateTime?
+    lastIncrement       DateTime?
     highestOnlineRating Int?
     highestOTBRating    Int?
     createdAt           DateTime     @default(now())
