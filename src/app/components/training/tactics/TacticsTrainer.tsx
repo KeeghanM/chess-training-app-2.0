@@ -19,6 +19,7 @@ import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { PrismaTacticsSet } from './create/TacticsSetCreator'
 import type { Puzzle } from '@prisma/client'
 import XpTracker from '../../general/XpTracker'
+import { ResponseJson } from '~/app/api/responses'
 
 export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
   puzzles: Puzzle[]
@@ -28,7 +29,7 @@ export interface TrainingPuzzle {
   puzzleid: string
   fen: string
   rating: number
-  ratingDeviation: number
+  ratingdeviation: number
   moves: string[]
   themes: string[]
 }
@@ -78,19 +79,16 @@ export default function TacticsTrainer(props: {
 
   const getPuzzle = async (id: string) => {
     try {
-      const resp = await fetch(
-        `https://chess-puzzles.p.rapidapi.com/?id=${id}`,
-        {
-          method: 'GET',
-          headers: {
-            'x-rapidapi-host': 'chess-puzzles.p.rapidapi.com',
-            'x-rapidapi-key': process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
-          },
+      const resp = await fetch(`/api/puzzles/getPuzzleById/${id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
         },
-      )
-      const json = (await resp.json()) as { puzzles: TrainingPuzzle[] }
-      const puzzle = json.puzzles[0]
-      return puzzle
+      })
+      const json = (await resp.json()) as ResponseJson
+      if (json.message != 'Puzzle found') throw new Error(json.message)
+
+      return json.data!.puzzle as TrainingPuzzle
     } catch (e) {
       Sentry.captureException(e)
       return undefined

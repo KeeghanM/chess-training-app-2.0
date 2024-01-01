@@ -19,6 +19,15 @@ const nextConfig = {
         },
       ],
     },
+    {
+      source: '/training/:slug',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'no-store',
+        },
+      ],
+    },
   ],
 }
 

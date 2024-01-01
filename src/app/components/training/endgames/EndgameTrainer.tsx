@@ -14,6 +14,8 @@ import 'react-toggle/style.css'
 import * as Sentry from '@sentry/nextjs'
 import type { TrainingPuzzle } from '../tactics/TacticsTrainer'
 import XpTracker from '../../general/XpTracker'
+import { ResponseJson } from '~/app/api/responses'
+import Link from 'next/link'
 
 export default function EndgameTrainer() {
   // Setup main state for the game/puzzles
@@ -79,20 +81,15 @@ export default function EndgameTrainer() {
         themes: `["${getTheme()}"]`,
         count: '1',
       }
-      const paramsString = new URLSearchParams(params).toString()
-      const resp = await fetch(
-        'https://chess-puzzles.p.rapidapi.com/?' + paramsString,
-        {
-          method: 'GET',
-          headers: {
-            'x-rapidapi-host': 'chess-puzzles.p.rapidapi.com',
-            'x-rapidapi-key': process.env.NEXT_PUBLIC_RAPIDAPI_KEY!,
-          },
-        },
-      )
-      const json = (await resp.json()) as { puzzles: TrainingPuzzle[] }
-      const puzzle = json.puzzles[0]
-      return puzzle
+      const resp = await fetch('/api/puzzles/getPuzzles', {
+        method: 'POST',
+        body: JSON.stringify(params),
+      })
+      const json = (await resp.json()) as ResponseJson
+      if (json.message != 'Puzzles found') throw new Error('No puzzles found')
+      const puzzles = json.data!.puzzles as TrainingPuzzle[]
+
+      return puzzles[0]
     } catch (e) {
       Sentry.captureException(e)
       return undefined
@@ -592,7 +589,7 @@ export default function EndgameTrainer() {
                 </div>
               )}
               {puzzleStatus === 'incorrect' && (
-                <div className="z-50 flex items-center gap-2 text-white">
+                <div className="z-50 flex flex-wrap items-center gap-2 text-white">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -606,6 +603,29 @@ export default function EndgameTrainer() {
                     />
                   </svg>
                   <p>Incorrect!</p>
+                  <Link
+                    href={`https://lichess.org/training/${currentPuzzle?.puzzleid}`}
+                    target="_blank"
+                  >
+                    <span className="flex flex-row items-center gap-1 text-sm text-white underline">
+                      Lichess
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
+                        />
+                      </svg>
+                    </span>
+                  </Link>
                 </div>
               )}
             </div>

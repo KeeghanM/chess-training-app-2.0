@@ -150,7 +150,7 @@ export default async function Dashboard() {
       ],
       href: '/admin/curated-sets',
       buttonText: 'Open',
-      active: false,
+      active: true,
     },
     {
       name: 'Badge Creator',
