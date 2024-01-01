@@ -14,7 +14,7 @@ export async function UpdateStreak(userId: string) {
     const currentDate = new Date()
     const lastIncrement = profile.lastIncrement
       ? profile.lastIncrement
-      : new Date()
+      : currentDate
     const timeSinceLastIncrement =
       currentDate.getTime() - lastIncrement.getTime()
     const oneDay = 1000 * 60 * 60 * 24
@@ -29,7 +29,8 @@ export async function UpdateStreak(userId: string) {
     if (
       (timeSinceLastIncrement >= oneDay &&
         timeSinceLastIncrement < oneDay * 2) ||
-      didTrainYesterday
+      didTrainYesterday ||
+      !profile.lastIncrement
     ) {
       currentStreak++
       const bestStreak = Math.max(currentStreak, profile.bestStreak)
