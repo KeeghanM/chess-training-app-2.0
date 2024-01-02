@@ -1,6 +1,8 @@
-import CreateCourseForm from '~/app/components/training/courses/create/CreateCourse'
 import { redirect } from 'next/navigation'
+
 import PageHeader from '~/app/components/_layouts/pageHeader'
+import CreateCourseForm from '~/app/components/training/courses/create/CreateCourse'
+
 import { getUserServer } from '~/app/_util/getUserServer'
 
 export const metadata = {

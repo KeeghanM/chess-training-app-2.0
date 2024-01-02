@@ -1,6 +1,7 @@
-import { errorResponse, successResponse } from '~/app/api/responses'
-import { trackEventOnServer } from '~/app/_util/trackEventOnServer'
 import * as Sentry from '@sentry/nextjs'
+import { errorResponse, successResponse } from '~/app/api/responses'
+
+import { trackEventOnServer } from '~/app/_util/trackEventOnServer'
 
 export async function POST(request: Request) {
   const { eventName, data } = (await request.json()) as {

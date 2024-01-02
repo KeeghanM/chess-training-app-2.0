@@ -1,5 +1,7 @@
 'use client'
-import { parse, type ParseTree } from '@mliebelt/pgn-parser'
+
+import { type ParseTree, parse } from '@mliebelt/pgn-parser'
+
 import ECO from './ecoCodes'
 
 export interface CleanMove {

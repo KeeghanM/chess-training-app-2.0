@@ -1,17 +1,20 @@
 'use client'
 
+import { useEffect, useState } from 'react'
+
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import type { TacticsSet, TacticsSetRound } from '@prisma/client'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
+import * as Sentry from '@sentry/nextjs'
 import Select from 'react-select'
+import type { ResponseJson } from '~/app/api/responses'
+
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
+import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
+
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import { useEffect, useState } from 'react'
-import * as Sentry from '@sentry/nextjs'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import type { ResponseJson } from '~/app/api/responses'
-import type { TrainingPuzzle } from '../TacticsTrainer'
-import type { TacticsSet, TacticsSetRound } from '@prisma/client'
 
 export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] }
 interface TacticsSetCreatorProps {

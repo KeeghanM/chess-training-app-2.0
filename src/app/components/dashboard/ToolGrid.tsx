@@ -1,12 +1,15 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+import { useState } from 'react'
+
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import type { Tool } from '~/app/dashboard/page'
-import { useRouter } from 'next/navigation'
-import Heading from '../_elements/heading'
-import Button from '../_elements/button'
+
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
 
 export default function ToolGrid(props: { tool: Tool }) {
   const [showDescription, setShowDescription] = useState(false)
@@ -15,7 +18,7 @@ export default function ToolGrid(props: { tool: Tool }) {
   const tool = props.tool
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 p-4 md:p-6">
+    <div className="flex flex-col items-center bg-gray-100 p-4 dark:bg-slate-700 dark:text-white md:p-6">
       <div className="flex h-full flex-col justify-between">
         <div className="flex flex-col gap-2">
           {tool.active ? (

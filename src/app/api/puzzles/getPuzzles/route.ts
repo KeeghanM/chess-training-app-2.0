@@ -1,6 +1,7 @@
-import * as Sentry from '@sentry/nextjs'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
+
 import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
 
 export async function POST(request: Request) {
@@ -37,13 +38,6 @@ export async function POST(request: Request) {
 
   try {
     const paramsString = new URLSearchParams(params).toString()
-    console.log({
-      rating,
-      themesType,
-      themes,
-      count,
-      paramsString,
-    })
     const resp = await fetch(
       'https://chess-puzzles.p.rapidapi.com/?' + paramsString,
       {

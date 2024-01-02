@@ -1,12 +1,15 @@
 import { redirect } from 'next/navigation'
-import CourseListItem from '~/app/components/training/courses/list/CourseListItem'
+
+import { prisma } from '~/server/db'
+
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import * as Sentry from '@sentry/nextjs'
+
 import Container from '~/app/components/_elements/container'
-import PageHeader from '~/app/components/_layouts/pageHeader'
 import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
-import * as Sentry from '@sentry/nextjs'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import { prisma } from '~/server/db'
+import PageHeader from '~/app/components/_layouts/pageHeader'
+import CourseListItem from '~/app/components/training/courses/list/CourseListItem'
 
 export const metadata = {
   title: 'Your Courses - ChessTraining.app',

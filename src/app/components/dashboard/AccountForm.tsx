@@ -1,14 +1,17 @@
 'use client'
 
-import Button from '../_elements/button'
-import Spinner from '../general/Spinner'
-import { useState } from 'react'
-import * as Sentry from '@sentry/nextjs'
-import type { UserProfile } from '@prisma/client'
-import type { ResponseJson } from '~/app/api/responses'
-import Heading from '../_elements/heading'
 import Link from 'next/link'
+
+import { useState } from 'react'
+
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import type { UserProfile } from '@prisma/client'
+import * as Sentry from '@sentry/nextjs'
+import type { ResponseJson } from '~/app/api/responses'
+
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
+import Spinner from '~/app/components/general/Spinner'
 
 export default function AccountForm(props: { profile: UserProfile }) {
   const { user } = useKindeBrowserClient()
@@ -113,7 +116,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
             <label>Username</label>
             <input
               type="text"
-              className="w-full border border-gray-300 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               value={username}
               onChange={(e) => setUsernameame(e.target.value)}
             />
@@ -122,7 +125,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
             <label>Email</label>
             <input
               type="email"
-              className="w-full border border-gray-300 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               value={user.email!}
               disabled
             />
@@ -135,7 +138,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
               type="number"
               min={500}
               max={3500}
-              className="w-full border border-gray-300 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               value={puzzleRating}
               onChange={(e) => setPuzzleRating(parseInt(e.target.value))}
             />
@@ -170,7 +173,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
           </label>
           <input
             type="text"
-            className="w-full border border-gray-300 px-4 py-2 text-black"
+            className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
             value={fullname}
             onChange={(e) => setFullame(e.target.value)}
           />
@@ -185,7 +188,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
               type="number"
               min={100}
               max={3500}
-              className="w-full border border-gray-300 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               value={highestOnlineRating}
               onChange={(e) => setHighestOnlineRating(parseInt(e.target.value))}
             />
@@ -199,7 +202,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
               type="number"
               min={100}
               max={3500}
-              className="w-full border border-gray-300 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               value={highestOTBRating}
               onChange={(e) => setHighestOTBRating(parseInt(e.target.value))}
             />
@@ -211,7 +214,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
           </label>
           <textarea
             rows={5}
-            className="w-full border border-gray-300 px-4 py-2 text-black"
+            className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />

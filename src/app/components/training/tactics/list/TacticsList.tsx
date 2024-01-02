@@ -1,13 +1,16 @@
 'use client'
 
-import TacticsSetCreator from '../create/TacticsSetCreator'
-import type { PrismaTacticsSet } from '../create/TacticsSetCreator'
-import Container from '~/app/components/_elements/container'
 import { useEffect, useState } from 'react'
-import SetListItem from './SetListItem'
-import type { ResponseJson } from '~/app/api/responses'
-import * as Sentry from '@sentry/nextjs'
+
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import * as Sentry from '@sentry/nextjs'
+import type { ResponseJson } from '~/app/api/responses'
+
+import Container from '~/app/components/_elements/container'
+import type { PrismaTacticsSet } from '~/app/components/training/tactics//create/TacticsSetCreator'
+import TacticsSetCreator from '~/app/components/training/tactics//create/TacticsSetCreator'
+
+import SetListItem from './SetListItem'
 
 export default function TacticsList() {
   // TODO: Show a loading/fallback item
@@ -67,7 +70,7 @@ export default function TacticsList() {
           setCreated={addSet}
         />
         {sets.length == 0 ? (
-          <div className="grid h-24 w-full place-content-center bg-gray-100 p-4 md:p-6 lg:p-12">
+          <div className="grid h-24 w-full place-content-center bg-gray-100 p-4 dark:bg-slate-700 dark:text-white md:p-6 lg:p-12">
             <p className="text-sm italic">Your sets will appear here</p>
           </div>
         ) : (

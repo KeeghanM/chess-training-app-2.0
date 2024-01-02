@@ -1,15 +1,18 @@
 'use client'
 
-import Heading from '../_elements/heading'
-import Button from '../_elements/button'
-import type { ResponseJson } from '~/app/api/responses'
 import { useState } from 'react'
+
+import * as Sentry from '@sentry/nextjs'
+import type { ResponseJson } from '~/app/api/responses'
+
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
+
 import {
   MiscBadges,
   StreakBadges,
   TacticStreakBadges,
 } from '~/app/_util/RanksAndBadges'
-import * as Sentry from '@sentry/nextjs'
 
 export default function BadgeCreator() {
   const [open, setOpen] = useState(false)

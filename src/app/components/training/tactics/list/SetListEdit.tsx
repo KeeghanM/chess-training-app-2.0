@@ -1,13 +1,17 @@
 'use client'
+
+import { useEffect, useState } from 'react'
+
+import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
+import * as Sentry from '@sentry/nextjs'
+import type { ResponseJson } from '~/app/api/responses'
+
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
+import type { PrismaTacticsSet } from '~/app/components/training/tactics/create/TacticsSetCreator'
+
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import { useEffect, useState } from 'react'
-import type { ResponseJson } from '~/app/api/responses'
-import * as Sentry from '@sentry/nextjs'
-import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
-import type { PrismaTacticsSet } from '../create/TacticsSetCreator'
 
 export default function SetListEdit(props: {
   set: PrismaTacticsSet

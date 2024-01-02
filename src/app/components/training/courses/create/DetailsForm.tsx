@@ -1,10 +1,13 @@
 import { useState } from 'react'
-import Spinner from '~/app/components/general/Spinner'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import Heading from '~/app/components/_elements/heading'
-import Button from '~/app/components/_elements/button'
-import type { ResponseJson } from '~/app/api/responses'
+
 import * as Sentry from '@sentry/nextjs'
+import type { ResponseJson } from '~/app/api/responses'
+
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
+import Spinner from '~/app/components/general/Spinner'
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export default function DetailsForm(props: {
   finished: (name: string, description: string) => void

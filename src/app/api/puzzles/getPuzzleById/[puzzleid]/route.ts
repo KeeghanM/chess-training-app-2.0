@@ -1,8 +1,7 @@
-import { prisma } from '~/server/db'
-import * as Sentry from '@sentry/nextjs'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
-import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
+
 import getPuzzleById from '~/app/_util/GetPuzzleById'
 
 export async function GET(

@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
+
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import TacticsList from '~/app/components/training/tactics/list/TacticsList'
+
 import { getUserServer } from '~/app/_util/getUserServer'
 
 export default async function TacticsListPage() {
@@ -17,7 +19,9 @@ export default async function TacticsListPage() {
           alt: 'Wooden chess pieces on a chess board',
         }}
       />
-      <TacticsList />
+      <div className="dark:bg-slate-800">
+        <TacticsList />
+      </div>
     </>
   )
 }

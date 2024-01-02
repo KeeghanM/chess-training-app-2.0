@@ -1,17 +1,21 @@
 'use client'
 
-import * as HoverCard from '@radix-ui/react-hover-card'
-import type { UserCourse, Course } from '@prisma/client'
-import { useRouter } from 'next/navigation'
-import TimeSince from '~/app/components/general/TimeSince'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import Heading from '~/app/components/_elements/heading'
-import Button from '~/app/components/_elements/button'
-import type { PrismaUserCourse } from '../CourseTrainer'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
 import { useEffect, useState } from 'react'
-import type { ResponseJson } from '~/app/api/responses'
+
+import type { Course, UserCourse } from '@prisma/client'
+import * as HoverCard from '@radix-ui/react-hover-card'
 import * as Sentry from '@sentry/nextjs'
+import type { ResponseJson } from '~/app/api/responses'
+
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
+import TimeSince from '~/app/components/general/TimeSince'
+import type { PrismaUserCourse } from '~/app/components/training/courses/CourseTrainer'
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export default function CourseListItem(props: {
   courseId: string

@@ -1,97 +1,292 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
+
 import { useState } from 'react'
-import Button from '../../_elements/button'
-import UserButtons from './UserButtons'
+
+import { thumbs } from '@dicebear/collection'
+import { createAvatar } from '@dicebear/core'
+import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs'
 import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
+import Tippy from '@tippyjs/react'
+import 'tippy.js/dist/tippy.css'
 
-const menuItems = [
-  { name: 'Tactics Trainer', href: '/training/tactics' },
-  { name: 'Courses', href: '/courses' },
-  { name: 'All Features', href: '/about/features' },
-  { name: 'About', href: '/about' },
-]
+import { XpRanks } from '~/app/_util/RanksAndBadges'
 
-export default function Nav({ props }: { props: { user: KindeUser | null } }) {
+export default function Nav(props: {
+  user: KindeUser | null
+  experience: number
+}) {
+  const [userOpen, setUserOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [openSub, setOpenSub] = useState('')
+
+  const { user, experience } = props
+  const avatar = createAvatar(thumbs, {
+    seed: user?.email ?? 'default',
+  })
+  const avatarSvg = avatar.toString()
+  const rank = XpRanks.reverse().find((rank) => experience >= rank.xp)
+
+  const links = [
+    {
+      href: '/',
+      name: 'Home',
+    },
+    {
+      href: '/about/features/woodpecker-method',
+      name: 'Woodpecker Method',
+    },
+    {
+      name: 'Features',
+      subLinks: [
+        {
+          name: 'Tactics Trainer',
+          href: '/training/tactics',
+        },
+        {
+          name: 'Courses',
+          href: '/courses',
+        },
+        {
+          name: 'Endgame Trainer',
+          href: '/training/endgames',
+        },
+        {
+          name: 'View All Features',
+          href: '/about/features',
+        },
+      ],
+    },
+    {
+      name: 'About',
+      href: '/about',
+    },
+  ]
 
   return (
-    <>
-      <div
-        onClick={() => setMenuOpen(false)}
-        className={
-          (menuOpen
-            ? 'fixed left-0 top-0 z-10 h-screen w-screen bg-[rgba(0,0,0,0.5)]'
-            : '-z-50 hidden') + ' lg:hidden'
-        }
-      ></div>
-      <button
-        onClick={() => setMenuOpen(!menuOpen)}
-        className="block lg:hidden"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
-          height="32"
-          viewBox="0 0 32 32"
-        >
-          <path
-            fill="none"
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M5 8h22M5 16h22M5 24h22"
-          />
-        </svg>
-      </button>
-      <nav
-        className={
-          'fixed right-0 top-0 z-40 h-screen w-[50vw] max-w-sm flex-col bg-white pb-6 pt-10' +
-          (menuOpen ? ' flex' : ' hidden') +
-          ' lg:relative lg:ml-auto lg:mr-0 lg:flex lg:h-auto lg:w-auto lg:flex-row lg:items-center lg:justify-end lg:gap-4 lg:bg-transparent lg:pb-0 lg:pt-0'
-        }
-      >
-        <div className="absolute right-0 top-0 px-4 py-2 lg:hidden">
+    <header className="sticky top-0 z-10 bg-purple-700 text-white shadow-lg">
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between gap-1 px-1 py-2 lg:gap-4 lg:p-4">
+        <Link href="/">
+          <div className="flex items-center">
+            <Image
+              src="/chesstrainingapplogo.png"
+              alt="ChessTraining.app"
+              width={75}
+              height={75}
+            />
+            <div>
+              <h2 className="font-bold italic lg:text-xl">ChessTraining.app</h2>
+              <h3 className="text-xs font-light lg:text-sm">
+                The best way to improve your chess
+              </h3>
+            </div>
+          </div>
+        </Link>
+        <div className="relative flex items-center space-x-3 lg:order-2 lg:space-x-0">
+          {user && (
+            <>
+              <Tippy content="Your Profile">
+                <button
+                  type="button"
+                  className="flex overflow-hidden rounded-full bg-gray-800 text-sm focus:ring-4 focus:ring-gray-600 lg:me-0"
+                  onClick={() => setUserOpen(!userOpen)}
+                >
+                  <span className="sr-only">Open user menu</span>
+                  <div className="h-10 w-10">
+                    <div dangerouslySetInnerHTML={{ __html: avatarSvg }} />
+                  </div>
+                </button>
+              </Tippy>
+              {userOpen && (
+                <>
+                  <div
+                    className="fixed inset-0 z-10"
+                    onClick={() => setUserOpen(false)}
+                  ></div>
+                  <div className="absolute right-0 top-8 z-50 my-4 list-none divide-y divide-gray-600 bg-gray-700 text-base shadow">
+                    <div className="px-4 py-3">
+                      <span className="block text-sm  text-white">
+                        {user.given_name} {user.family_name ?? 'Welcome'}
+                      </span>
+                      <span className="block truncate text-sm  text-gray-400">
+                        {user.email}
+                      </span>
+                      <span className="block truncate text-xs text-orange-500">
+                        {experience.toLocaleString()} XP ({rank?.rank}:{' '}
+                        {rank?.name})
+                      </span>
+                    </div>
+                    <ul className="py-2" aria-labelledby="user-menu-button">
+                      <li>
+                        <Link
+                          href="/dashboard"
+                          onClick={() => setUserOpen(false)}
+                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-white"
+                        >
+                          Dashboard
+                        </Link>
+                      </li>
+                      <li>
+                        <Link
+                          href="/dashboard/settings"
+                          onClick={() => setUserOpen(false)}
+                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-white"
+                        >
+                          Settings
+                        </Link>
+                      </li>
+                      <li>
+                        <LogoutLink
+                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-white"
+                          onClick={() => setUserOpen(false)}
+                        >
+                          Sign out
+                        </LogoutLink>
+                      </li>
+                    </ul>
+                  </div>
+                </>
+              )}
+            </>
+          )}
+
           <button
+            type="button"
+            className="inline-flex h-10 w-10 items-center justify-center p-2 text-sm text-white hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-gray-200 lg:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
-            className="text-black hover:text-orange-500"
           >
+            <span className="sr-only">Open main menu</span>
             <svg
+              className="h-5 w-5"
+              aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 15 15"
+              fill="none"
+              viewBox="0 0 17 14"
             >
               <path
-                fill="currentColor"
-                d="M3.64 2.27L7.5 6.13l3.84-3.84A.92.92 0 0 1 12 2a1 1 0 0 1 1 1a.9.9 0 0 1-.27.66L8.84 7.5l3.89 3.89A.9.9 0 0 1 13 12a1 1 0 0 1-1 1a.92.92 0 0 1-.69-.27L7.5 8.87l-3.85 3.85A.92.92 0 0 1 3 13a1 1 0 0 1-1-1a.9.9 0 0 1 .27-.66L6.16 7.5L2.27 3.61A.9.9 0 0 1 2 3a1 1 0 0 1 1-1c.24.003.47.1.64.27Z"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M1 1h15M1 7h15M1 13h15"
               />
             </svg>
           </button>
         </div>
-        {menuItems.map((item) => (
-          <Link
-            key={item.name}
+        {menuOpen && (
+          <div
+            className="fixed inset-0 z-10 bg-[rgba(0,0,0,0.3)]"
             onClick={() => setMenuOpen(false)}
-            href={item.href}
-            className="block px-4 py-2 font-bold text-black hover:bg-purple-100 lg:inline-block lg:min-w-fit lg:px-0 lg:py-0 lg:text-white lg:hover:bg-transparent lg:hover:underline"
-          >
-            {item.name}
-          </Link>
-        ))}
-        <div className="hidden lg:block">|</div>
-        <div className="px-4 lg:px-0">
-          {props.user ? (
-            <UserButtons />
-          ) : (
-            <Link onClick={() => setMenuOpen(false)} href="/auth/signin">
-              <Button variant="accent">Login/Register</Button>
-            </Link>
+          ></div>
+        )}
+        <nav
+          className={
+            (menuOpen
+              ? 'absolute left-0 right-0 top-[100px] z-50 mx-auto w-screen max-w-screen-sm px-2 shadow-lg lg:p-0'
+              : 'hidden') +
+            ' items-center justify-between lg:order-1 lg:ml-auto lg:flex lg:w-auto '
+          }
+        >
+          {openSub != '' && (
+            <div
+              className="fixed inset-0 z-10 hidden lg:block"
+              onClick={() => setOpenSub('')}
+            ></div>
           )}
-        </div>
-      </nav>
-    </>
+          <ul className="relative mt-4 flex flex-col divide-y divide-gray-600 border border-gray-100 bg-gray-50 p-4 font-medium rtl:space-x-reverse lg:mt-0 lg:flex-row lg:items-center lg:divide-none lg:border-0 lg:bg-transparent lg:p-0">
+            {links.map((link) =>
+              link.subLinks ? (
+                <div key={link.name} className="relative">
+                  <button
+                    onClick={() =>
+                      setOpenSub(openSub === link.name ? '' : link.name)
+                    }
+                    className="flex w-full items-center justify-between px-4 py-2 text-gray-900 hover:bg-purple-100 lg:w-auto lg:border-0 lg:text-white lg:hover:bg-purple-600"
+                  >
+                    {link.name}{' '}
+                    <svg
+                      className="ms-2.5 h-2.5 w-2.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="m1 1 4 4 4-4"
+                      />
+                    </svg>
+                  </button>
+                  <div
+                    className={
+                      'z-50 w-full divide-y divide-gray-600 bg-gray-50 font-normal lg:w-44 lg:shadow ' +
+                      (openSub === link.name
+                        ? 'block lg:absolute lg:top-10'
+                        : 'hidden')
+                    }
+                  >
+                    <ul className="w-full divide-y divide-gray-300 py-2 text-sm text-gray-700">
+                      {link.subLinks.map((subLink) => (
+                        <Link
+                          key={subLink.name}
+                          href={subLink.href}
+                          className="block w-full px-4 py-2 hover:bg-purple-100"
+                          onClick={() => {
+                            setMenuOpen(false)
+                            setOpenSub('')
+                          }}
+                        >
+                          {subLink.name}
+                        </Link>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={link.name}
+                  className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-purple-100 lg:text-white lg:hover:bg-purple-600"
+                  href={link.href}
+                  onClick={() => {
+                    setMenuOpen(false)
+                    setOpenSub('')
+                  }}
+                >
+                  {link.name}
+                </Link>
+              ),
+            )}
+            {!user ? (
+              <Link
+                onClick={() => {
+                  setMenuOpen(false)
+                  setOpenSub('')
+                }}
+                className="block cursor-pointer bg-orange-500 px-4 py-2 text-white hover:bg-orange-400 lg:ml-2"
+                href="/auth/signin"
+              >
+                Login/Register
+              </Link>
+            ) : (
+              <Link
+                onClick={() => {
+                  setMenuOpen(false)
+                  setOpenSub('')
+                }}
+                className="block cursor-pointer bg-orange-500 px-4 py-2 text-white hover:bg-orange-400 lg:ml-2"
+                href="/dashboard"
+              >
+                Dashboard
+              </Link>
+            )}
+          </ul>
+        </nav>
+      </div>
+    </header>
   )
 }

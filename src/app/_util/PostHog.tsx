@@ -1,8 +1,11 @@
 'use client'
+
+import { usePathname, useSearchParams } from 'next/navigation'
+
+import { useEffect } from 'react'
+
 import posthog from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
-import { usePathname, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
 
 if (typeof window !== 'undefined') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
@@ -30,6 +33,6 @@ export function PostHogPageview(): JSX.Element {
   return <></>
 }
 
-export function PHProvider({ children }: { children: React.ReactNode }) {
+export function PosthogProvider({ children }: { children: React.ReactNode }) {
   return <PostHogProvider client={posthog}>{children}</PostHogProvider>
 }

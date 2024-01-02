@@ -1,7 +1,8 @@
-import Heading from '../_elements/heading'
-import Button from '../_elements/button'
-import Link from 'next/link'
 import Image from 'next/image'
+import Link from 'next/link'
+
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
 
 interface HeroProps {
   title: string

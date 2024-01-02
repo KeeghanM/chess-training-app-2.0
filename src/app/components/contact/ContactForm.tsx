@@ -1,10 +1,12 @@
 'use client'
 
-import Button from '../_elements/button'
-import Spinner from '../general/Spinner'
 import { useState } from 'react'
-import type { ResponseJson } from '~/app/api/responses'
+
 import * as Sentry from '@sentry/nextjs'
+import type { ResponseJson } from '~/app/api/responses'
+
+import Button from '~/app/components/_elements/button'
+import Spinner from '~/app/components/general/Spinner'
 
 export default function ContactForm() {
   const [sendEmail, setSendEmail] = useState(false)
