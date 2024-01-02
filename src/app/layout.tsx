@@ -1,12 +1,13 @@
 import './globals.css'
 
-import { PHProvider, PostHogPageview } from './_util/_providers'
+import { PosthogProvider, PostHogPageview } from './_util/PostHog'
 import Header from './components/template/header/Header'
 import Footer from './components/template/footer/Footer'
 import { Suspense } from 'react'
 import type { ReactNode } from 'react'
 import CookieBanner from './components/template/CookieBanner'
 import Script from 'next/script'
+import { ThemeSwitchProvider } from './_util/ThemeProvider'
 
 export const metadata = {
   title: 'ChessTraining.app - The best way to improve your chess',
@@ -34,18 +35,20 @@ export default async function RootLayout({
         if (d.head) d.head.appendChild(s);
       })(document, window, 'BrevoConversations');`}
       </Script>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <Suspense>
           <PostHogPageview />
         </Suspense>
-        <PHProvider>
+        <PosthogProvider>
           <body>
-            <Header />
-            {children}
-            <Footer />
-            <CookieBanner />
+            <ThemeSwitchProvider>
+              <Header />
+              {children}
+              <Footer />
+              <CookieBanner />
+            </ThemeSwitchProvider>
           </body>
-        </PHProvider>
+        </PosthogProvider>
       </html>
     </>
   )

@@ -42,8 +42,10 @@ export default async function TacticsTrainPage({
   }
 
   return (
-    <Container>
-      <TacticsTrainer set={set} />
-    </Container>
+    <div className="dark:bg-slate-800">
+      <Container>
+        <TacticsTrainer set={set} />
+      </Container>
+    </div>
   )
 }

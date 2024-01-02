@@ -256,7 +256,7 @@ export default function NewNav(props: {
                 </Link>
               ),
             )}
-            {!user && (
+            {!user ? (
               <Link
                 onClick={() => {
                   setMenuOpen(false)
@@ -266,6 +266,17 @@ export default function NewNav(props: {
                 href="/auth/signin"
               >
                 Login/Register
+              </Link>
+            ) : (
+              <Link
+                onClick={() => {
+                  setMenuOpen(false)
+                  setOpenSub('')
+                }}
+                className="block cursor-pointer bg-orange-500 px-4 py-2 text-white hover:bg-orange-400 lg:ml-2"
+                href="/dashboard"
+              >
+                Dashboard
               </Link>
             )}
           </ul>

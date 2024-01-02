@@ -29,12 +29,12 @@ export default function SetListItem(props: {
   }
   return (
     <div
-      className="flex flex-col items-center gap-6 bg-gray-100 p-2 md:flex-row md:p-4"
+      className="flex flex-col items-center gap-6 bg-gray-100  p-2 dark:bg-slate-900  dark:text-white md:flex-row md:p-4"
       key={set.id}
     >
       <div className="mr-auto flex cursor-pointer flex-col" onClick={trainSet}>
         <Heading as={'h3'}>{set.name}</Heading>
-        <p className="text-sm italic text-gray-600">
+        <p className="text-sm italic text-gray-600 dark:text-gray-400">
           Last trained{' '}
           {set.lastTrained ? (
             <TimeSince date={new Date(set.lastTrained)} />
@@ -45,7 +45,7 @@ export default function SetListItem(props: {
         </p>
       </div>
       <div className="flex w-full flex-col gap-2">
-        <div className="flex flex-col justify-between gap-2 bg-gray-200 p-2 md:flex-row">
+        <div className="flex flex-col justify-between gap-2 bg-gray-200  p-2 dark:bg-slate-800  dark:text-white md:flex-row">
           <p>Round: {set.rounds ? set.rounds.length : 1}/8</p>
           <p>
             Completed: {completedCount}/{set.size}

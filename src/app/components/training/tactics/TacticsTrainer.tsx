@@ -20,6 +20,7 @@ import type { PrismaTacticsSet } from './create/TacticsSetCreator'
 import type { Puzzle } from '@prisma/client'
 import XpTracker from '../../general/XpTracker'
 import { ResponseJson } from '~/app/api/responses'
+import ThemeSwitch from '../../template/header/ThemeSwitch'
 
 export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
   puzzles: Puzzle[]
@@ -503,44 +504,47 @@ export default function TacticsTrainer(props: {
       )}
       <div className="flex flex-row items-center justify-between text-white">
         <p className="text-lg font-bold">{props.set.name}</p>
-        <div
-          className="flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
-          onClick={() => setSoundEnabled(!soundEnabled)}
-        >
-          <p>Sound {soundEnabled ? 'On' : 'Off'}</p>
-          {soundEnabled ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
-              />
-            </svg>
-          )}
+        <div className="flex items-center gap-2">
+          <ThemeSwitch />
+          <div
+            className="flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
+            onClick={() => setSoundEnabled(!soundEnabled)}
+          >
+            <p>Sound {soundEnabled ? 'On' : 'Off'}</p>
+            {soundEnabled ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
+                  d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
+                  d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
+                />
+              </svg>
+            )}
+          </div>
         </div>
       </div>
       <div className="flex flex-row justify-between gap-2 text-xs md:justify-start md:text-sm">
@@ -581,7 +585,10 @@ export default function TacticsTrainer(props: {
             arePiecesDraggable={readyForInput}
             position={position}
             boardOrientation={orientation}
-            boardWidth={Math.min(windowSize.height / 2, windowSize.width - 150)}
+            boardWidth={Math.min(
+              windowSize.height / 1.75,
+              windowSize.width - 150,
+            )}
             customBoardStyle={{
               marginInline: 'auto',
             }}

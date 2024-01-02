@@ -67,7 +67,7 @@ export default function TacticsList() {
           setCreated={addSet}
         />
         {sets.length == 0 ? (
-          <div className="grid h-24 w-full place-content-center bg-gray-100 p-4 md:p-6 lg:p-12">
+          <div className="grid h-24 w-full place-content-center bg-gray-100 p-4 dark:bg-slate-700 dark:text-white md:p-6 lg:p-12">
             <p className="text-sm italic">Your sets will appear here</p>
           </div>
         ) : (
