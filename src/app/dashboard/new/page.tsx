@@ -13,7 +13,7 @@ export default async function NewUserWelcome() {
   if (!user) redirect('/auth/signin')
   if (!profile) {
     await createUserProfile(user)
-    await trackEventOnServer('new_user_registered', {})
+    await trackEventOnServer('new_user_registered', {}, 'new-menu')
   }
 
   return (
