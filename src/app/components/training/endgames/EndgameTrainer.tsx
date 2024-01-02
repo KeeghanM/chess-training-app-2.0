@@ -16,6 +16,7 @@ import type { TrainingPuzzle } from '../tactics/TacticsTrainer'
 import XpTracker from '../../general/XpTracker'
 import { ResponseJson } from '~/app/api/responses'
 import Link from 'next/link'
+import ThemeSwitch from '../../template/header/ThemeSwitch'
 
 export default function EndgameTrainer() {
   // Setup main state for the game/puzzles
@@ -384,12 +385,12 @@ export default function EndgameTrainer() {
 
   return mode == 'settings' ? (
     <>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 bg-purple-700 p-4">
         <div>
-          <label className="text-lg font-bold">Your Rating</label>
+          <label className="text-lg font-bold text-white">Your Rating</label>
           <input
             type="number"
-            className="w-full border border-gray-300 px-4 py-2"
+            className="w-full border border-gray-300 bg-gray-100 px-4 py-2"
             min={'500'}
             max={'3000'}
             step={'10'}
@@ -400,22 +401,22 @@ export default function EndgameTrainer() {
           />
         </div>
         <div>
-          <label className="text-lg font-bold">Difficulty</label>
-          <div className="flex flex-col gap-2 md:flex-row md:gap-4">
+          <label className="text-lg font-bold text-white">Difficulty</label>
+          <div className="flex flex-col gap-2 lg:flex-row lg:gap-4">
             <Button
-              variant={difficulty == 0 ? 'primary' : 'secondary'}
+              variant={difficulty == 0 ? 'accent' : 'secondary'}
               onClick={() => setDifficulty(0)}
             >
               Easy
             </Button>
             <Button
-              variant={difficulty == 1 ? 'primary' : 'secondary'}
+              variant={difficulty == 1 ? 'accent' : 'secondary'}
               onClick={() => setDifficulty(1)}
             >
               Medium
             </Button>
             <Button
-              variant={difficulty == 2 ? 'primary' : 'secondary'}
+              variant={difficulty == 2 ? 'accent' : 'secondary'}
               onClick={() => setDifficulty(2)}
             >
               Hard
@@ -423,40 +424,40 @@ export default function EndgameTrainer() {
           </div>
         </div>
         <div>
-          <label className="text-lg font-bold">Endgame Type</label>
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
+          <label className="text-lg font-bold text-white">Endgame Type</label>
+          <div className="grid grid-cols-2 gap-2 lg:grid-cols-3">
             <Button
-              variant={type == 'All' ? 'primary' : 'secondary'}
+              variant={type == 'All' ? 'accent' : 'secondary'}
               onClick={() => setType('All')}
             >
               All
             </Button>
             <Button
-              variant={type == 'Queen' ? 'primary' : 'secondary'}
+              variant={type == 'Queen' ? 'accent' : 'secondary'}
               onClick={() => setType('Queen')}
             >
               Queen
             </Button>
             <Button
-              variant={type == 'Rook' ? 'primary' : 'secondary'}
+              variant={type == 'Rook' ? 'accent' : 'secondary'}
               onClick={() => setType('Rook')}
             >
               Rook
             </Button>
             <Button
-              variant={type == 'Bishop' ? 'primary' : 'secondary'}
+              variant={type == 'Bishop' ? 'accent' : 'secondary'}
               onClick={() => setType('Bishop')}
             >
               Bishop
             </Button>
             <Button
-              variant={type == 'Knight' ? 'primary' : 'secondary'}
+              variant={type == 'Knight' ? 'accent' : 'secondary'}
               onClick={() => setType('Knight')}
             >
               Knight
             </Button>
             <Button
-              variant={type == 'Pawn' ? 'primary' : 'secondary'}
+              variant={type == 'Pawn' ? 'accent' : 'secondary'}
               onClick={() => setType('Pawn')}
             >
               Pawn
@@ -482,7 +483,7 @@ export default function EndgameTrainer() {
             <Spinner />
           </div>
         )}
-        <div className="flex flex-row justify-between gap-2 text-xs text-white md:justify-start  md:text-sm">
+        <div className="flex flex-row justify-between gap-2 text-xs text-white lg:justify-start  lg:text-sm">
           <p className="flex flex-col items-center">
             <span className="font-bold">Type:</span>
             <span>{type} Endgames</span>
@@ -496,6 +497,7 @@ export default function EndgameTrainer() {
             <span>{getDifficulty()}</span>
           </p>
           <XpTracker counter={xpCounter} type={'tactic'} />
+          <ThemeSwitch />
           <div
             className="ml-auto flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
             onClick={() => setSoundEnabled(!soundEnabled)}
@@ -536,14 +538,14 @@ export default function EndgameTrainer() {
             )}
           </div>
         </div>
-        <div className="flex flex-col gap-4 md:flex-row">
+        <div className="flex flex-col gap-4 lg:flex-row">
           <div>
             <Chessboard
               arePiecesDraggable={readyForInput}
               position={position}
               boardOrientation={orientation}
               boardWidth={Math.min(
-                windowSize.height / 2,
+                windowSize.height / 1.75,
                 windowSize.width - 150,
               )}
               customBoardStyle={{
@@ -629,7 +631,7 @@ export default function EndgameTrainer() {
                 </div>
               )}
             </div>
-            <div className="flex flex-1 flex-col-reverse gap-2 md:flex-col">
+            <div className="flex flex-1 flex-col-reverse gap-2 lg:flex-col">
               <div className="flex h-full flex-wrap content-start gap-1 bg-purple-600 p-2">
                 {PgnDisplay.map((item) => item)}
               </div>

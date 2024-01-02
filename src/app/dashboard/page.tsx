@@ -9,6 +9,7 @@ import StreakDisplay from '../components/dashboard/StreakDisplay'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { prisma } from '~/server/db'
 import Image from 'next/image'
+import ThemeSwitch from '../components/template/header/ThemeSwitch'
 
 export type Tool = {
   name: string
@@ -190,7 +191,10 @@ export default async function Dashboard() {
           </div>
         </Container>
       </div>
-      <div className="p-4 md:p-6">
+      <div className="p-4 dark:bg-slate-800 md:p-6">
+        <div className="mb-6 w-fit rounded-full border border-gray-300 p-1 text-black dark:border-slate-600 dark:text-white">
+          <ThemeSwitch />
+        </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {tools
             .sort((a, b) => {

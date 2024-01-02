@@ -24,6 +24,7 @@ import type { ResponseJson } from '~/app/api/responses'
 import * as Sentry from '@sentry/nextjs'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import XpTracker from '../../general/XpTracker'
+import ThemeSwitch from '../../template/header/ThemeSwitch'
 
 export type PrismaUserCourse = UserCourse & { course: Course } & {
   lines?: PrismaUserLine[]
@@ -538,44 +539,47 @@ export default function CourseTrainer(props: {
         <p className="text-lg font-bold text-white">
           Current Group: {currentLine?.line.group.groupName}
         </p>
-        <div
-          className="flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
-          onClick={() => setSoundEnabled(!soundEnabled)}
-        >
-          <p>Sound {soundEnabled ? 'On' : 'Off'}</p>
-          {soundEnabled ? (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
-              />
-            </svg>
-          ) : (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.5"
-                d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
-              />
-            </svg>
-          )}
+        <div className="flex items-center gap-2">
+          <ThemeSwitch />
+          <div
+            className="flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
+            onClick={() => setSoundEnabled(!soundEnabled)}
+          >
+            <p>Sound {soundEnabled ? 'On' : 'Off'}</p>
+            {soundEnabled ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
+                  d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="1.5"
+                  d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
+                />
+              </svg>
+            )}
+          </div>
         </div>
       </div>
       <XpTracker counter={xpCounter} type={'tactic'} />
@@ -587,7 +591,10 @@ export default function CourseTrainer(props: {
             // @ts-expect-error - ChessBoard doesnt expect AsyncFunction but works fine
             onPieceDrop={userDroppedPiece}
             boardOrientation={orientation}
-            boardWidth={Math.min(windowSize.height / 2, windowSize.width - 50)}
+            boardWidth={Math.min(
+              windowSize.height / 1.75,
+              windowSize.width - 50,
+            )}
             customBoardStyle={{
               marginInline: 'auto',
             }}

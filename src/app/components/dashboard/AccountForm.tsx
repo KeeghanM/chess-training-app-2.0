@@ -113,7 +113,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
             <label>Username</label>
             <input
               type="text"
-              className="w-full border border-gray-300 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               value={username}
               onChange={(e) => setUsernameame(e.target.value)}
             />
@@ -122,7 +122,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
             <label>Email</label>
             <input
               type="email"
-              className="w-full border border-gray-300 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               value={user.email!}
               disabled
             />
@@ -135,7 +135,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
               type="number"
               min={500}
               max={3500}
-              className="w-full border border-gray-300 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               value={puzzleRating}
               onChange={(e) => setPuzzleRating(parseInt(e.target.value))}
             />
@@ -170,7 +170,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
           </label>
           <input
             type="text"
-            className="w-full border border-gray-300 px-4 py-2 text-black"
+            className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
             value={fullname}
             onChange={(e) => setFullame(e.target.value)}
           />
@@ -185,7 +185,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
               type="number"
               min={100}
               max={3500}
-              className="w-full border border-gray-300 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               value={highestOnlineRating}
               onChange={(e) => setHighestOnlineRating(parseInt(e.target.value))}
             />
@@ -199,7 +199,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
               type="number"
               min={100}
               max={3500}
-              className="w-full border border-gray-300 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               value={highestOTBRating}
               onChange={(e) => setHighestOTBRating(parseInt(e.target.value))}
             />
@@ -211,7 +211,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
           </label>
           <textarea
             rows={5}
-            className="w-full border border-gray-300 px-4 py-2 text-black"
+            className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />

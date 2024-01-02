@@ -104,7 +104,7 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="flex flex-col gap-4 bg-gray-800 p-4 text-sm text-white md:px-12">
+    <footer className="flex flex-col gap-4 border-t border-slate-600 bg-slate-800 p-4 text-sm text-white md:px-12">
       <div className="flex flex-col justify-evenly gap-4 md:flex-row md:gap-6">
         {sections.map((section, i) => (
           <div key={i} className="flex flex-col gap-2">
