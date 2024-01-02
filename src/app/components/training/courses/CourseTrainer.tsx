@@ -37,10 +37,10 @@ export type PrismaUserLine = UserLine & {
   line: Line & { group: Group } & { moves: Move[] }
 }
 
-// TODO: Bug Fix: Doesn't work for Black
 // TODO: Bug Fix: Doesn't pause on opponents move with comments
 // TODO: Bug Fix: On correct, next review shouldn't be 10 mins - thats only for Wrong. It should start at 4 hours for correct.
 // TODO: Check both FEN and Comment to see if we need to pause
+// TODO: Change the import order of lines, to be something logical
 // TODO: Add arrows from the move to the comment
 // TODO: Ensure links in comments work
 // TODO: Line browser

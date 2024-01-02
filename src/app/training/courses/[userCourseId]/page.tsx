@@ -18,8 +18,9 @@ export default async function CourseTrainPage({
   const user = await getUser()
   if (!user) redirect('/auth/signin')
 
+  const { userCourseId } = params
+
   const { userCourse, userLines, userFens } = await (async () => {
-    const { userCourseId } = params
     try {
       const userCourse = await prisma.userCourse.findFirst({
         where: {
@@ -71,6 +72,7 @@ export default async function CourseTrainPage({
   if (!userCourse || !userLines || !userFens) {
     redirect('/404')
   }
+
   return (
     <>
       <PageHeader
@@ -80,15 +82,17 @@ export default async function CourseTrainPage({
           alt: 'Wooden chess pieces on a chess board',
         }}
       />
-      <Container>
-        {userCourse && (
-          <CourseTrainer
-            userCourse={userCourse}
-            userLines={userLines}
-            userFens={userFens}
-          />
-        )}
-      </Container>
+      <div className="dark:bg-slate-800">
+        <Container>
+          {userCourse && (
+            <CourseTrainer
+              userCourse={userCourse}
+              userLines={userLines}
+              userFens={userFens}
+            />
+          )}
+        </Container>
+      </div>
     </>
   )
 }
