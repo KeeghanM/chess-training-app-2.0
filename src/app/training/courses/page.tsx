@@ -44,7 +44,7 @@ export default async function Courses() {
 
   const maxCourses = 2
   const hasUnlimitedCourses =
-    permissions?.permissions.includes('unlimited-courses')
+    permissions?.permissions.includes('unlimited-courses') ?? false
   return (
     <>
       <PageHeader

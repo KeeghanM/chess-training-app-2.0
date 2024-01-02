@@ -76,7 +76,7 @@ export default function PgnToLinesForm(props: {
         PGNs, or a single one with all the lines and variations contained.
       </p>
       <textarea
-        className="w-full border border-gray-300 px-4 py-2"
+        className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
         rows={10}
         onChange={(e) => {
           setString(e.target.value)

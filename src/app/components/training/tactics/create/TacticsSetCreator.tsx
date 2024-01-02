@@ -262,7 +262,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                 <label>Set Name</label>
                 <input
                   type="text"
-                  className="w-full border border-gray-300 px-4 py-2"
+                  className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
                   value={name}
                   onInput={(e) => {
                     setName(e.currentTarget.value)
@@ -273,7 +273,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                 <label htmlFor="">Set Size</label>
                 <input
                   type="number"
-                  className="w-full border border-gray-300 px-4 py-2"
+                  className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
                   min={'20'}
                   max={'500'}
                   value={size}
@@ -290,7 +290,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                 <label>Your Rating</label>
                 <input
                   type="number"
-                  className="w-full border border-gray-300 px-4 py-2"
+                  className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
                   min={'500'}
                   max={'3000'}
                   step={'10'}

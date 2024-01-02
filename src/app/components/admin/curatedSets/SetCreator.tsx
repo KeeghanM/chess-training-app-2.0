@@ -133,7 +133,7 @@ export default function SetCreator(props: {
             <div className="">
               <label htmlFor="name">Name</label>
               <input
-                className="w-full border border-gray-300 px-4 py-2"
+                className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
                 id="name"
                 type="text"
                 value={name}
@@ -143,7 +143,7 @@ export default function SetCreator(props: {
             <div className="">
               <label htmlFor="description">Description</label>
               <textarea
-                className="w-full border border-gray-300 px-4 py-2"
+                className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -154,7 +154,7 @@ export default function SetCreator(props: {
               <div className="">
                 <label htmlFor="rating">Intended Rating</label>
                 <input
-                  className="w-full border border-gray-300 px-4 py-2"
+                  className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
                   id="rating"
                   type="number"
                   step=".01"
@@ -167,7 +167,7 @@ export default function SetCreator(props: {
               <div className="">
                 <label htmlFor="price">Price</label>
                 <input
-                  className="w-full border border-gray-300 px-4 py-2"
+                  className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
                   id="price"
                   type="number"
                   value={price}
