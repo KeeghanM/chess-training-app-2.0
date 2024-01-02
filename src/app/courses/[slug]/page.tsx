@@ -6,6 +6,7 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 
 import Container from '~/app/components/_elements/container'
+import StyledLink from '~/app/components/_elements/styledLink'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 
 export default async function CoursePage({
@@ -75,7 +76,12 @@ export default async function CoursePage({
       />
       <Container>
         <p>{course.courseDescription}</p>
-        {ownsCourse && <p>You own this course</p>}
+        {ownsCourse && (
+          <p>
+            You own this course,{' '}
+            <StyledLink href="/training/courses">train now</StyledLink>.
+          </p>
+        )}
       </Container>
     </>
   )

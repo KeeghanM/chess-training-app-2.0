@@ -25,6 +25,7 @@ export default async function Courses() {
 
   const permissions = await getPermissions()
 
+  // TODO: Move to onMount so it refreshes when the user buys a course
   const courses: PrismaUserCourse[] = await (async () => {
     try {
       return await prisma.userCourse.findMany({

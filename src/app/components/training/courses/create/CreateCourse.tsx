@@ -71,7 +71,11 @@ export default function CreateCourseForm() {
     <div className="dark:bg-slate-800">
       <Container>
         <div className="bg-gray-100 dark:bg-slate-900 p-2 md:p-4">
-          {courseName && <Heading as={'h2'}>{courseName}</Heading>}
+          {courseName && (
+            <Heading as={'h2'} color="text-orange-500">
+              {courseName}
+            </Heading>
+          )}
           <Steps currentStep={currentStep} />
           {currentStep == 'name' && (
             <DetailsForm

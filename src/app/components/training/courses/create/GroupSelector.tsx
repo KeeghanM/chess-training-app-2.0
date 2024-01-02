@@ -62,7 +62,7 @@ export default function GroupSelector(props: {
     <Container>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <div className="flex flex-row flex-wrap items-baseline gap-2 text-sm">
+          <div className="flex flex-row flex-wrap items-baseline gap-2 text-sm dark:text-white">
             <Heading as={'h4'}>Stats:</Heading>
             <p>
               <span>Total Lines:</span>{' '}
@@ -97,7 +97,8 @@ export default function GroupSelector(props: {
               })
             }}
           >
-            <Tabs.List className="flex gap-2">
+            <Heading as={'h4'}>Grouping Options:</Heading>
+            <Tabs.List className="flex gap-2 flex-wrap">
               {groupOptions.map((group) => (
                 <Tabs.Trigger
                   key={group}
@@ -105,7 +106,7 @@ export default function GroupSelector(props: {
                     'border-b-2 px-2 py-1 hover:border-purple-700 hover:bg-purple-200 md:px-4 md:py-2 ' +
                     (selectedGroup == group
                       ? 'border-purple-700 bg-purple-100'
-                      : 'border-gray-300')
+                      : 'border-gray-300 dark:bg-slate-700 dark:text-white')
                   }
                   value={group}
                 >

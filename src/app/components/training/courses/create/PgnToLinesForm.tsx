@@ -70,7 +70,7 @@ export default function PgnToLinesForm(props: {
 
   return (
     <div className="flex flex-col gap-2">
-      <p>
+      <p className="dark:text-white">
         Copy and paste your PGN into the box below. You will have a choice later
         about how to group the lines, so feel free to paste either multiple
         PGNs, or a single one with all the lines and variations contained.
