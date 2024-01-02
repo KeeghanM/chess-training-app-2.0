@@ -47,3 +47,33 @@ export async function GET(
     return errorResponse('Internal Server Error', 500)
   }
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: { params: { courseId: string } },
+) {
+  const session = getKindeServerSession(request)
+  if (!session) return errorResponse('Unauthorized', 401)
+  const user = await session.getUser()
+  if (!user) return errorResponse('Unauthorized', 401)
+
+  const { courseId } = params as { courseId: string }
+
+  if (courseId === undefined) return errorResponse('Missing fields', 400)
+
+  try {
+    await prisma.userCourse.update({
+      where: {
+        id: courseId,
+      },
+      data: {
+        active: false,
+      },
+    })
+
+    return successResponse('Course archived', {}, 200)
+  } catch (e) {
+    Sentry.captureException(e)
+    return errorResponse('Internal Server Error', 500)
+  }
+}

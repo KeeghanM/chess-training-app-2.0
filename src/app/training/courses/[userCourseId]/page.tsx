@@ -20,7 +20,7 @@ export default async function CourseTrainPage({
 
   const { userCourseId } = params
 
-  const { userCourse, userLines, userFens } = await (async () => {
+  const { userCourse, userLines, userFens,userComments } = await (async () => {
     try {
       const userCourse = await prisma.userCourse.findFirst({
         where: {
@@ -58,18 +58,27 @@ export default async function CourseTrainPage({
 
       if (!userFens) throw new Error('Fens not found')
 
-      return { userCourse, userLines, userFens }
+      const userComments = await prisma.userMoveComment.findMany({
+        where: {
+          userCourseId,
+        },
+      })
+
+      if (!userComments) throw new Error('Comments not found')
+
+      return { userCourse, userLines, userFens, userComments }
     } catch (e) {
       Sentry.captureException(e)
       return {
         userCourse: undefined,
         userLines: undefined,
         userFens: undefined,
+        userComments: undefined,
       }
     }
   })()
 
-  if (!userCourse || !userLines || !userFens) {
+  if (!userCourse || !userLines || !userFens || !userComments) {
     redirect('/404')
   }
 
@@ -89,6 +98,7 @@ export default async function CourseTrainPage({
               userCourse={userCourse}
               userLines={userLines}
               userFens={userFens}
+              userComments={userComments}
             />
           )}
         </Container>

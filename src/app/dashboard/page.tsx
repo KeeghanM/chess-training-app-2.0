@@ -72,7 +72,7 @@ export default async function Dashboard() {
       active: true,
     },
     {
-      name: 'Study Course',
+      name: 'Study a Course',
       description: [
         'Train using a course you have created, or one that has been shared with you.',
         'Built using spaced repetition, our courses are a great way to learn.',
@@ -113,37 +113,6 @@ export default async function Dashboard() {
       href: '/training/knight-vision',
       buttonText: 'Train',
       active: (await isFlagEnabledServer('knight-vision')) || override,
-    },
-    {
-      name: 'Find Courses',
-      description: [
-        'Browse our library of courses to find the perfect one for you.',
-        'Courses are created by our community, and cover a wide range of topics.',
-      ],
-      href: '/courses',
-      buttonText: 'Find',
-      active: (await isFlagEnabledServer('course-browser')) || override,
-    },
-    {
-      name: 'Create a Course',
-      description: [
-        'Create your own course, either for yourself or to share with others.',
-        'Courses can be shared with the community, or kept private.',
-        'Simply upload a PGN file, and we will take care of the rest.',
-      ],
-      href: '/courses/create',
-      buttonText: 'Create',
-      active: (await isFlagEnabledServer('course-trainer')) || override,
-    },
-    {
-      name: 'Account Settings',
-      description: [
-        'Modify training defaults, change your password, or update your email address.',
-        'You can also delete your account here.',
-      ],
-      href: '/dashboard/settings',
-      buttonText: 'Open',
-      active: true,
     },
   ]
 

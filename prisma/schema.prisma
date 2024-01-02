@@ -37,18 +37,19 @@ model Group {
 }
 
 model UserCourse {
-    id            String     @id @default(cuid())
+    id            String            @id @default(cuid())
     courseId      String
     userId        String
-    active        Boolean    @default(true)
+    active        Boolean           @default(true)
     lastTrained   DateTime?
-    linesLearned  Int        @default(0)
-    linesLearning Int        @default(0)
-    linesHard     Int        @default(0)
+    linesLearned  Int               @default(0)
+    linesLearning Int               @default(0)
+    linesHard     Int               @default(0)
     linesUnseen   Int
     lines         UserLine[]
     fens          UserFen[]
-    course        Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+    comments      UserMoveComment[]
+    course        Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
 }
 
 model Line {
@@ -99,6 +100,13 @@ model UserFen {
     timesTrained Int        @default(0)
     timesCorrect Int        @default(0)
     timesWrong   Int        @default(0)
+    course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
+}
+
+model UserMoveComment {
+    id           Int        @id @default(autoincrement())
+    userCourseId String
+    comment      String     @db.Text
     course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
 }
 

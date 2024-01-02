@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { prisma } from '~/server/db'
@@ -5,27 +6,31 @@ import { prisma } from '~/server/db'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 
+import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
-import StyledLink from '~/app/components/_elements/styledLink'
 import PageHeader from '~/app/components/_layouts/pageHeader'
-import CourseListItem from '~/app/components/training/courses/list/CourseListItem'
+import { PrismaUserCourse } from '~/app/components/training/courses/CourseTrainer'
+import CourseList from '~/app/components/training/courses/list/CoursesList'
 
 export const metadata = {
   title: 'Your Courses - ChessTraining.app',
 }
 
 export default async function Courses() {
-  const { getUser } = getKindeServerSession()
+  const { getUser, getPermissions } = getKindeServerSession()
   const user = await getUser()
 
   if (!user) redirect('/auth/signin')
 
-  const courses = await (async () => {
+  const permissions = await getPermissions()
+
+  const courses: PrismaUserCourse[] = await (async () => {
     try {
       return await prisma.userCourse.findMany({
         where: {
           userId: user.id,
+          active: true,
         },
         include: {
           course: true,
@@ -37,6 +42,9 @@ export default async function Courses() {
     }
   })()
 
+  const maxCourses = 2
+  const hasUnlimitedCourses =
+    permissions?.permissions.includes('unlimited-courses')
   return (
     <>
       <PageHeader
@@ -46,31 +54,15 @@ export default async function Courses() {
           alt: 'Wooden chess pieces on a chess board',
         }}
       />
-      <Container>
-        <div className="flex flex-col gap-4">
-          {courses.length > 0 ? (
-            courses.map((course, index) => (
-              <CourseListItem
-                key={index}
-                courseId={course.id}
-                courseName={course.course.courseName}
-              />
-            ))
-          ) : (
-            <div>
-              <Heading as="h3">You haven't got any courses yet</Heading>
-              <p className="text-gray-500">
-                You can browse courses from the{' '}
-                <StyledLink href="/courses">courses list</StyledLink> or try{' '}
-                <StyledLink href="/courses/create">
-                  creating your own
-                </StyledLink>
-                .
-              </p>
-            </div>
-          )}
-        </div>
-      </Container>
+      <div className="dark:bg-slate-800">
+        <Container>
+          <CourseList
+            courses={courses}
+            maxCourses={maxCourses}
+            hasUnlimitedCourses={hasUnlimitedCourses}
+          />
+        </Container>
+      </div>
     </>
   )
 }

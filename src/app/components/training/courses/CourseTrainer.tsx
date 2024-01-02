@@ -13,6 +13,7 @@ import type {
   UserCourse,
   UserFen,
   UserLine,
+  UserMoveComment,
 } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import { useWindowSize } from '@uidotdev/usehooks'
@@ -49,6 +50,7 @@ export default function CourseTrainer(props: {
   userCourse: PrismaUserCourse
   userLines: PrismaUserLine[]
   userFens: UserFen[]
+  userComments: UserMoveComment[]
 }) {
   const router = useRouter()
   const { user } = useKindeBrowserClient()
@@ -73,6 +75,8 @@ export default function CourseTrainer(props: {
   )
   const [trainedFens, setTrainedFens] = useState<string[]>([])
   const [wrongFens, setWrongFens] = useState<string[]>([])
+  const [existingComments, setExistingComments] = useState<string[]>([])
+  const [trainedComments, setTrainedComments] = useState<string[]>([])
   const [hadTeachingMove, setHadTeachingMove] = useState(false)
   const [lineCorrect, setLineCorrect] = useState(true)
   const [loading, setLoading] = useState(false)
@@ -113,16 +117,20 @@ export default function CourseTrainer(props: {
 
   // Makes a move for the "opponent"
   const makeBookMove = () => {
-    const currentMove = moveList[game.history().length]?.move
+    const currentMove = moveList[game.history().length]
     if (!currentMove) return
+    const currentSan = currentMove?.move
 
     const timeoutId = setTimeout(() => {
-      makeMove(currentMove)
-      // Now we need to check if we've seen this fen before
-      // if not, we need to make a teaching move
+      makeMove(currentSan)
+      // Now we need to check if it's a new FEN/Comment
+      // If it is, we need to make a teaching move
       if (
-        !existingFens.includes(game.fen()) &&
-        !trainedFens.includes(game.fen())
+        (!existingFens.includes(game.fen()) &&
+          !trainedFens.includes(game.fen())) ||
+        (currentMove.comment &&
+          !existingComments.includes(currentMove.comment) &&
+          !trainedComments.includes(currentMove.comment))
       ) {
         makeTeachingMove()
         setHadTeachingMove(true)
@@ -518,16 +526,26 @@ export default function CourseTrainer(props: {
     if (gameReady && currentLine) {
       setPosition(game.fen())
       const lineColour = currentLine.line.colour
-      setOrientation(lineColour == 'white' ? 'white' : 'black')
+      setOrientation(lineColour == 'White' ? 'white' : 'black')
+      console.log({
+        lineColour,
+        historyLength: game.history().length,
+      })
       if (
-        !trainedFens.includes(game.fen()) &&
-        !existingFens.includes(game.fen())
+        (!trainedFens.includes(game.fen()) &&
+          !existingFens.includes(game.fen())) ||
+        (currentMove?.comment &&
+          !trainedComments.includes(currentMove.comment) &&
+          !existingComments.includes(currentMove.comment)) ||
+        (lineColour == 'Black' && game.history().length == 0)
       ) {
         let timeoutId: ReturnType<typeof setTimeout> | undefined
-        if (lineColour == 'white') {
+        if (lineColour == 'White') {
           timeoutId = makeTeachingMove()
           setHadTeachingMove(true)
-        } else timeoutId = makeBookMove()
+        } else {
+          timeoutId = makeBookMove()
+        }
         return () => {
           clearTimeout(timeoutId)
         }
@@ -549,10 +567,9 @@ export default function CourseTrainer(props: {
           <Spinner />
         </div>
       )}
-      <div className="flex flex-row items-center justify-between text-white">
-        <p className="text-lg font-bold text-white">
-          Current Group: {currentLine?.line.group.groupName}
-        </p>
+      <div className="flex flex-row items-center text-white">
+        <p className="italic text-white">{currentLine?.line.group.groupName}</p>
+        <XpTracker counter={xpCounter} type={'tactic'} />
         <div className="flex items-center gap-2">
           <ThemeSwitch />
           <div
@@ -596,7 +613,6 @@ export default function CourseTrainer(props: {
           </div>
         </div>
       </div>
-      <XpTracker counter={xpCounter} type={'tactic'} />
       <div className="flex flex-col gap-4 md:flex-row">
         <div>
           <Chessboard
