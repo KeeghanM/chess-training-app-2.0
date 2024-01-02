@@ -37,7 +37,13 @@ export type PrismaUserLine = UserLine & {
   line: Line & { group: Group } & { moves: Move[] }
 }
 
-// TODO: Add feedback to correct/incorrect moves - particularly incorrect
+// TODO: Bug Fix: Doesn't work for Black
+// TODO: Bug Fix: Doesn't pause on opponents move with comments
+// TODO: Bug Fix: On correct, next review shouldn't be 10 mins - thats only for Wrong. It should start at 4 hours for correct.
+// TODO: Check both FEN and Comment to see if we need to pause
+// TODO: Add arrows from the move to the comment
+// TODO: Ensure links in comments work
+// TODO: Line browser
 
 export default function CourseTrainer(props: {
   userCourse: PrismaUserCourse
@@ -511,13 +517,17 @@ export default function CourseTrainer(props: {
     // change we can update the game and check if we need to make a teachingMove
     if (gameReady && currentLine) {
       setPosition(game.fen())
-      setOrientation(game.turn() == 'w' ? 'white' : 'black')
+      const lineColour = currentLine.line.colour
+      setOrientation(lineColour == 'white' ? 'white' : 'black')
       if (
         !trainedFens.includes(game.fen()) &&
         !existingFens.includes(game.fen())
       ) {
-        const timeoutId = makeTeachingMove()
-        setHadTeachingMove(true)
+        let timeoutId: ReturnType<typeof setTimeout> | undefined
+        if (lineColour == 'white') {
+          timeoutId = makeTeachingMove()
+          setHadTeachingMove(true)
+        } else timeoutId = makeBookMove()
         return () => {
           clearTimeout(timeoutId)
         }
