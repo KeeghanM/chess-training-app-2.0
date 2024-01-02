@@ -16,6 +16,7 @@ export default function NewNav(props: {
 }) {
   const [userOpen, setUserOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const [openSub, setOpenSub] = useState('')
 
   const { user, experience } = props
   const avatar = createAvatar(thumbs, {
@@ -31,7 +32,6 @@ export default function NewNav(props: {
     },
     {
       name: 'Features',
-      href: '/about/features',
       subLinks: [
         {
           name: 'Tactics Trainer',
@@ -55,17 +55,13 @@ export default function NewNav(props: {
       name: 'About',
       href: '/about',
     },
-    {
-      name: 'Contact',
-      href: '/contact',
-    },
   ]
 
   return (
-    <header className="sticky top-0 z-10 bg-purple-700 text-white">
-      <div className="mx-auto flex max-w-screen-xl flex-wrap items-center justify-between gap-1 px-1 py-2 md:gap-4 md:p-4">
+    <header className="sticky top-0 z-10 bg-purple-700 text-white shadow-lg">
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between gap-1 px-1 py-2 md:gap-4 md:p-4">
         <Link href="/">
-          <div className="flex items-center text-center md:text-left">
+          <div className="flex items-center">
             <Image
               src="/chesstrainingapplogo.png"
               alt="ChessTraining.app"
@@ -77,22 +73,21 @@ export default function NewNav(props: {
                 ChessTraining.app
               </h2>
               <h3 className="text-xs font-light md:text-sm">
-                The best way to
-                <br className="block md:hidden" /> improve your chess
+                The best way to improve your chess
               </h3>
             </div>
           </div>
         </Link>
         <div className="relative flex items-center space-x-3 md:order-2 md:space-x-0">
-          {user ? (
+          {user && (
             <>
               <button
                 type="button"
-                className="flex bg-gray-800 text-sm focus:ring-4 focus:ring-gray-600 md:me-0"
+                className="flex overflow-hidden rounded-full bg-gray-800 text-sm focus:ring-4 focus:ring-gray-600 md:me-0"
                 onClick={() => setUserOpen(!userOpen)}
               >
                 <span className="sr-only">Open user menu</span>
-                <div className="h-8 w-8">
+                <div className="h-10 w-10">
                   <div dangerouslySetInnerHTML={{ __html: avatarSvg }} />
                 </div>
               </button>
@@ -102,7 +97,7 @@ export default function NewNav(props: {
                     className="fixed inset-0 z-10"
                     onClick={() => setUserOpen(false)}
                   ></div>
-                  <div className="absolute top-8 z-50 my-4 list-none divide-y divide-gray-600 bg-gray-700 text-base shadow">
+                  <div className="absolute right-0 top-8 z-50 my-4 list-none divide-y divide-gray-600 bg-gray-700 text-base shadow">
                     <div className="px-4 py-3">
                       <span className="block text-sm  text-white">
                         {user.given_name} {user.family_name ?? 'Welcome'}
@@ -147,11 +142,8 @@ export default function NewNav(props: {
                 </>
               )}
             </>
-          ) : (
-            <Link href="/auth/signin">
-              <Button variant="accent">Login/Signup</Button>
-            </Link>
           )}
+
           <button
             type="button"
             className="inline-flex h-10 w-10 items-center justify-center p-2 text-sm text-white hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-gray-200 md:hidden"
@@ -189,14 +181,90 @@ export default function NewNav(props: {
             ' items-center justify-between md:order-1 md:ml-auto md:flex md:w-auto '
           }
         >
-          <ul className="mt-4 flex flex-col divide-y divide-gray-600 border border-gray-100 bg-gray-50 p-4 font-medium rtl:space-x-reverse md:mt-0 md:flex-row md:divide-none md:border-0 md:bg-transparent md:p-0">
-            {links.map((link) => (
-              <li className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-purple-600 md:text-white">
-                <Link href={link.href} onClick={() => setMenuOpen(false)}>
+          {openSub != '' && (
+            <div
+              className="fixed inset-0 z-10 hidden md:block"
+              onClick={() => setOpenSub('')}
+            ></div>
+          )}
+          <ul className="relative mt-4 flex flex-col divide-y divide-gray-600 border border-gray-100 bg-gray-50 p-4 font-medium rtl:space-x-reverse md:mt-0 md:flex-row md:divide-none md:border-0 md:bg-transparent md:p-0">
+            {links.map((link) =>
+              link.subLinks ? (
+                <div key={link.name} className="relative">
+                  <button
+                    onClick={() =>
+                      setOpenSub(openSub === link.name ? '' : link.name)
+                    }
+                    className="flex w-full items-center justify-between px-4 py-2 text-gray-900 hover:bg-purple-100 md:w-auto md:border-0 md:text-white md:hover:bg-purple-600"
+                  >
+                    {link.name}{' '}
+                    <svg
+                      className="ms-2.5 h-2.5 w-2.5"
+                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 10 6"
+                    >
+                      <path
+                        stroke="currentColor"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="m1 1 4 4 4-4"
+                      />
+                    </svg>
+                  </button>
+                  <div
+                    className={
+                      'z-50 w-full divide-y divide-gray-600 bg-gray-50 font-normal md:w-44 md:shadow ' +
+                      (openSub === link.name
+                        ? 'block md:absolute md:top-10'
+                        : 'hidden')
+                    }
+                  >
+                    <ul className="w-full divide-y divide-gray-300 py-2 text-sm text-gray-700">
+                      {link.subLinks.map((subLink) => (
+                        <Link
+                          key={subLink.name}
+                          href={subLink.href}
+                          className="block w-full px-4 py-2 hover:bg-purple-100"
+                          onClick={() => {
+                            setMenuOpen(false)
+                            setOpenSub('')
+                          }}
+                        >
+                          {subLink.name}
+                        </Link>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ) : (
+                <Link
+                  key={link.name}
+                  className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-purple-100 md:text-white md:hover:bg-purple-600"
+                  href={link.href}
+                  onClick={() => {
+                    setMenuOpen(false)
+                    setOpenSub('')
+                  }}
+                >
                   {link.name}
                 </Link>
-              </li>
-            ))}
+              ),
+            )}
+            {!user && (
+              <Link
+                onClick={() => {
+                  setMenuOpen(false)
+                  setOpenSub('')
+                }}
+                className="block cursor-pointer bg-orange-500 px-4 py-2 text-white hover:bg-orange-400 md:ml-2"
+                href="/auth/signin"
+              >
+                Login
+              </Link>
+            )}
           </ul>
         </nav>
       </div>

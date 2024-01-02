@@ -24,7 +24,7 @@ export default async function SignIn() {
           get access to every single one of our Science Backed training tools
           forever.
         </p>
-        <div className="flex flex-col gap-4 md:flex-row">
+        <div className="flex flex-wrap gap-4 md:flex-row">
           <LoginLink postLoginRedirectURL="/dashboard">
             <Button variant="primary">Sign in</Button>
           </LoginLink>
