@@ -1,8 +1,10 @@
-import Container from '~/app/components/_elements/container'
 import { redirect } from 'next/navigation'
-import { getUserServer } from '~/app/_util/getUserServer'
-import EndgameTrainer from '~/app/components/training/endgames/EndgameTrainer'
+
+import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
+import EndgameTrainer from '~/app/components/training/endgames/EndgameTrainer'
+
+import { getUserServer } from '~/app/_util/getUserServer'
 
 export default async function EndgameTrainPage() {
   const { user } = await getUserServer()

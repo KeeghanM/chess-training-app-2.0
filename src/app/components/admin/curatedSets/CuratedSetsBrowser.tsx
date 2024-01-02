@@ -1,20 +1,25 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import themes from './themes'
-import Tippy from '@tippyjs/react'
-import 'tippy.js/dist/tippy.css'
-import type { TrainingPuzzle } from '../../training/tactics/TacticsTrainer'
-import { Chessboard } from 'react-chessboard'
-import { Chess } from 'chess.js'
-import Button from '../../_elements/button'
-import { CuratedSet } from '@prisma/client'
 import Link from 'next/link'
-import SetCreator from './SetCreator'
-import type { ResponseJson } from '~/app/api/responses'
-import Spinner from '../../general/Spinner'
+
+import { useEffect, useState } from 'react'
+
+import type { CuratedSet } from '@prisma/client'
+import * as Sentry from '@sentry/nextjs'
+import Tippy from '@tippyjs/react'
+import { Chess } from 'chess.js'
+import { Chessboard } from 'react-chessboard'
+import 'tippy.js/dist/tippy.css'
 import { v4 as uuidv4 } from 'uuid'
-import Heading from '../../_elements/heading'
+import type { ResponseJson } from '~/app/api/responses'
+
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
+import Spinner from '~/app/components/general/Spinner'
+import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
+
+import SetCreator from './SetCreator'
+import themes from './themes'
 
 export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
   // Searching
@@ -68,7 +73,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
       } else {
         const themesString =
           selectedThemes.length > 0
-            ? `[${selectedThemes.map((t) => `"${t}"`)}]`
+            ? `[${selectedThemes.map((t) => `"${t}"`).join()}]`
             : undefined
         const resp = await fetch('/api/puzzles/getPuzzles', {
           method: 'POST',
@@ -243,7 +248,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
 
     // Now play through the moves to get pretty move notation
     // the puzzle comes in UCI format so we need to convert it to SAN
-    for (let move of puzzle.moves) {
+    for (const move of puzzle.moves) {
       newGame.move(move)
       if (puzzle.moves.indexOf(move) == 0) setPosition(newGame.fen()) // Set the position to after the opponents first move
     }
@@ -253,7 +258,13 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
 
   useEffect(() => {
     if (puzzle) return
-    getPuzzle()
+    ;(async () => {
+      await getPuzzle()
+    })().catch((e) => {
+      Sentry.captureException(e)
+      if (e instanceof Error) setError(e.message)
+      else setError('Something went wrong')
+    })
   }, [])
 
   return (

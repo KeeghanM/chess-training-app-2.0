@@ -1,5 +1,5 @@
-import Container from '../_elements/container'
-import Heading from '../_elements/heading'
+import Container from '~/app/components/_elements/container'
+import Heading from '~/app/components/_elements/heading'
 
 interface ImageRowProps {
   heading: string

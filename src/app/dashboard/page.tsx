@@ -1,15 +1,19 @@
-import { redirect } from 'next/navigation'
-import ToolGrid from '../components/dashboard/ToolGrid'
-import { isFlagEnabledServer } from '../_util/isFlagEnabledServer'
-import { PostHogClient } from '../_util/trackEventOnServer'
-import Heading from '../components/_elements/heading'
-import Container from '../components/_elements/container'
-import XpDisplay from '../components/dashboard/XpDisplay'
-import StreakDisplay from '../components/dashboard/StreakDisplay'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import { prisma } from '~/server/db'
 import Image from 'next/image'
-import ThemeSwitch from '../components/template/header/ThemeSwitch'
+import { redirect } from 'next/navigation'
+
+import { prisma } from '~/server/db'
+
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+
+import Container from '~/app/components/_elements/container'
+import Heading from '~/app/components/_elements/heading'
+import StreakDisplay from '~/app/components/dashboard/StreakDisplay'
+import ToolGrid from '~/app/components/dashboard/ToolGrid'
+import XpDisplay from '~/app/components/dashboard/XpDisplay'
+import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
+
+import { isFlagEnabledServer } from '~/app/_util/isFlagEnabledServer'
+import { PostHogClient } from '~/app/_util/trackEventOnServer'
 
 export type Tool = {
   name: string

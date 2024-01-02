@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
+
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import TacticsList from '~/app/components/training/tactics/list/TacticsList'
+
 import { getUserServer } from '~/app/_util/getUserServer'
 
 export default async function TacticsListPage() {

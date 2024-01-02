@@ -11,7 +11,7 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
-    "format": "prettier --loglevel warn --write \"{<file-path>}/**/*.{jsx,js,tsx,ts}\""
+    "format": "prettier --log-level warn --write \"**/*.{js,jsx,ts,tsx,json,md}\""
   },
   "dependencies": {
     "@dicebear/collection": "^5.3.5",

@@ -1,8 +1,11 @@
 'use client'
-import { XpRanks } from '~/app/_util/RanksAndBadges'
-import StyledLink from '../_elements/styledLink'
+
 import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css'
+
+import StyledLink from '~/app/components/_elements/styledLink'
+
+import { XpRanks } from '~/app/_util/RanksAndBadges'
 
 interface XpDisplayProps {
   currentXp: number

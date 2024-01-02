@@ -1,7 +1,8 @@
-import Button from '../_elements/button'
-import Container from '../_elements/container'
-import Heading from '../_elements/heading'
 import Link from 'next/link'
+
+import Button from '~/app/components/_elements/button'
+import Container from '~/app/components/_elements/container'
+import Heading from '~/app/components/_elements/heading'
 
 interface CtaRowProps {
   title: string

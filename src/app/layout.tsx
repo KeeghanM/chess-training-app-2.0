@@ -1,13 +1,16 @@
-import './globals.css'
+import Script from 'next/script'
 
-import { PosthogProvider, PostHogPageview } from './_util/PostHog'
-import Header from './components/template/header/Header'
-import Footer from './components/template/footer/Footer'
 import { Suspense } from 'react'
 import type { ReactNode } from 'react'
+
 import CookieBanner from './components/template/CookieBanner'
-import Script from 'next/script'
+import Footer from './components/template/footer/Footer'
+import Header from './components/template/header/Header'
+
+import { PostHogPageview, PosthogProvider } from './_util/PostHog'
 import { ThemeSwitchProvider } from './_util/ThemeProvider'
+
+import './globals.css'
 
 export const metadata = {
   title: 'ChessTraining.app - The best way to improve your chess',

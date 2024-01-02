@@ -1,12 +1,15 @@
-import {
-  RegisterLink,
-  LoginLink,
-} from '@kinde-oss/kinde-auth-nextjs/components'
 import { redirect } from 'next/navigation'
-import { getUserServer } from '~/app/_util/getUserServer'
+
+import {
+  LoginLink,
+  RegisterLink,
+} from '@kinde-oss/kinde-auth-nextjs/components'
+
 import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
+
+import { getUserServer } from '~/app/_util/getUserServer'
 
 export default async function SignIn() {
   const { user } = await getUserServer()

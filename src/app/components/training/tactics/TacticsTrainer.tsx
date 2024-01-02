@@ -1,26 +1,32 @@
 'use client'
-import { useWindowSize } from '@uidotdev/usehooks'
-import { useEffect, useState } from 'react'
-import { Chessboard } from 'react-chessboard'
-import { Chess } from 'chess.js'
-import type { Piece, Square } from 'chess.js'
+
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import Spinner from '../../general/Spinner'
-// @ts-expect-error - No types available
-import useSound from 'use-sound'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import Button from '../../_elements/button'
+
+import { useEffect, useState } from 'react'
+
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import type { Puzzle } from '@prisma/client'
+import * as Sentry from '@sentry/nextjs'
+import { useWindowSize } from '@uidotdev/usehooks'
+import type { Piece, Square } from 'chess.js'
+import { Chess } from 'chess.js'
+import { Chessboard } from 'react-chessboard'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
-import TimeSince from '../../general/TimeSince'
-import * as Sentry from '@sentry/nextjs'
-import Link from 'next/link'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+// @ts-expect-error - No types available
+import useSound from 'use-sound'
+import type { ResponseJson } from '~/app/api/responses'
+
+import Button from '~/app/components/_elements/button'
+import Spinner from '~/app/components/general/Spinner'
+import TimeSince from '~/app/components/general/TimeSince'
+import XpTracker from '~/app/components/general/XpTracker'
+import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+
 import type { PrismaTacticsSet } from './create/TacticsSetCreator'
-import type { Puzzle } from '@prisma/client'
-import XpTracker from '../../general/XpTracker'
-import { ResponseJson } from '~/app/api/responses'
-import ThemeSwitch from '../../template/header/ThemeSwitch'
 
 export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
   puzzles: Puzzle[]

@@ -1,19 +1,25 @@
 'use client'
-import PgnToLinesForm from './PgnToLinesForm'
-import { useState } from 'react'
-import Steps from './Steps'
-import type { Line } from './parse/ParsePGNtoLineData'
-import GroupSelector from './GroupSelector'
-import DetailsForm from './DetailsForm'
+
 import { useRouter } from 'next/navigation'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import Heading from '~/app/components/_elements/heading'
+
+import { useState } from 'react'
+
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import * as Sentry from '@sentry/nextjs'
+import type { ResponseJson } from '~/app/api/responses'
+
 import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
-import type { ResponseJson } from '~/app/api/responses'
-import * as Sentry from '@sentry/nextjs'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import Heading from '~/app/components/_elements/heading'
+
 import GenerateSlug from '~/app/_util/GenerateSlug'
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+
+import DetailsForm from './DetailsForm'
+import GroupSelector from './GroupSelector'
+import PgnToLinesForm from './PgnToLinesForm'
+import Steps from './Steps'
+import type { Line } from './parse/ParsePGNtoLineData'
 
 export default function CreateCourseForm() {
   const router = useRouter()

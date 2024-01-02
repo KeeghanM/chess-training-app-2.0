@@ -1,9 +1,12 @@
 import { redirect } from 'next/navigation'
-import PageHeader from '~/app/components/_layouts/pageHeader'
-import * as Sentry from '@sentry/nextjs'
+
 import { prisma } from '~/server/db'
+
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import * as Sentry from '@sentry/nextjs'
+
 import Container from '~/app/components/_elements/container'
+import PageHeader from '~/app/components/_layouts/pageHeader'
 
 export default async function CoursePage({
   params,

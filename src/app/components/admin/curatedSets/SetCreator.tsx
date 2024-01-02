@@ -1,12 +1,15 @@
 'use client'
 
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
-import type { CuratedSet } from '@prisma/client'
-import Button from '../../_elements/button'
 import { useState } from 'react'
+
+import type { CuratedSet } from '@prisma/client'
+import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import type { ResponseJson } from '~/app/api/responses'
-import Heading from '../../_elements/heading'
-import Spinner from '../../general/Spinner'
+
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
+import Spinner from '~/app/components/general/Spinner'
+
 import GenerateSlug from '~/app/_util/GenerateSlug'
 
 export default function SetCreator(props: {

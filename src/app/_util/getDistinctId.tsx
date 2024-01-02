@@ -1,5 +1,6 @@
-import { getUserServer } from './getUserServer'
 import * as Sentry from '@sentry/nextjs'
+
+import { getUserServer } from './getUserServer'
 
 export default async function getDistinctId() {
   // First, try to just return the userId

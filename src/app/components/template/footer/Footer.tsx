@@ -1,5 +1,6 @@
 import Link from 'next/link'
-import Heading from '../../_elements/heading'
+
+import Heading from '~/app/components/_elements/heading'
 
 export default function Footer() {
   const sections: {

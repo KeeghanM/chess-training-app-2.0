@@ -1,14 +1,19 @@
 'use client'
+
+import { useRouter } from 'next/navigation'
+
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+
+import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import TimeSince from '~/app/components/general/TimeSince'
-import Button from '~/app/components/_elements/button'
-import { useRouter } from 'next/navigation'
+import type { PrismaTacticsSet } from '~/app/components/training/tactics/create/TacticsSetCreator'
+
+import toHHMMSS from '~/app/_util/toHHMMSS'
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
+
 import SetListEdit from './SetListEdit'
 import SetListStats from './SetListStats'
-import toHHMMSS from '~/app/_util/toHHMMSS'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import type { PrismaTacticsSet } from '../create/TacticsSetCreator'
 
 export default function SetListItem(props: {
   set: PrismaTacticsSet

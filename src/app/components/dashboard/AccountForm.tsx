@@ -1,14 +1,17 @@
 'use client'
 
-import Button from '../_elements/button'
-import Spinner from '../general/Spinner'
-import { useState } from 'react'
-import * as Sentry from '@sentry/nextjs'
-import type { UserProfile } from '@prisma/client'
-import type { ResponseJson } from '~/app/api/responses'
-import Heading from '../_elements/heading'
 import Link from 'next/link'
+
+import { useState } from 'react'
+
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import type { UserProfile } from '@prisma/client'
+import * as Sentry from '@sentry/nextjs'
+import type { ResponseJson } from '~/app/api/responses'
+
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
+import Spinner from '~/app/components/general/Spinner'
 
 export default function AccountForm(props: { profile: UserProfile }) {
   const { user } = useKindeBrowserClient()

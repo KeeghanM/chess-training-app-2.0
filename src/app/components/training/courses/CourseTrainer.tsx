@@ -1,15 +1,10 @@
 'use client'
 
-// @ts-expect-error - No types available
-import useSound from 'use-sound'
-import Spinner from '../../general/Spinner'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import Button from '../../_elements/button'
-import { useWindowSize } from '@uidotdev/usehooks'
-import { useEffect, useState } from 'react'
-import { Chessboard } from 'react-chessboard'
-import { Chess } from 'chess.js'
 import { useRouter } from 'next/navigation'
+
+import { useEffect, useState } from 'react'
+
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type {
   Course,
   Group,
@@ -19,12 +14,21 @@ import type {
   UserFen,
   UserLine,
 } from '@prisma/client'
-import type { Square } from 'chess.js'
-import type { ResponseJson } from '~/app/api/responses'
 import * as Sentry from '@sentry/nextjs'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import XpTracker from '../../general/XpTracker'
-import ThemeSwitch from '../../template/header/ThemeSwitch'
+import { useWindowSize } from '@uidotdev/usehooks'
+import { Chess } from 'chess.js'
+import type { Square } from 'chess.js'
+import { Chessboard } from 'react-chessboard'
+// @ts-expect-error - No types available
+import useSound from 'use-sound'
+import type { ResponseJson } from '~/app/api/responses'
+
+import ThemeSwitch from '~/app/components//template/header/ThemeSwitch'
+import Button from '~/app/components/_elements/button'
+import Spinner from '~/app/components/general/Spinner'
+import XpTracker from '~/app/components/general/XpTracker'
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export type PrismaUserCourse = UserCourse & { course: Course } & {
   lines?: PrismaUserLine[]

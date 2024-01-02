@@ -1,22 +1,27 @@
 'use client'
-import { useWindowSize } from '@uidotdev/usehooks'
+
+import Link from 'next/link'
+
 import { useEffect, useState } from 'react'
-import { Chessboard } from 'react-chessboard'
+
+import * as Sentry from '@sentry/nextjs'
+import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
 import type { Piece, Square } from 'chess.js'
-import Spinner from '../../general/Spinner'
-// @ts-expect-error - No types available
-import useSound from 'use-sound'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import Button from '../../_elements/button'
+import { Chessboard } from 'react-chessboard'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
-import * as Sentry from '@sentry/nextjs'
-import type { TrainingPuzzle } from '../tactics/TacticsTrainer'
-import XpTracker from '../../general/XpTracker'
-import { ResponseJson } from '~/app/api/responses'
-import Link from 'next/link'
-import ThemeSwitch from '../../template/header/ThemeSwitch'
+// @ts-expect-error - No types available
+import useSound from 'use-sound'
+import type { ResponseJson } from '~/app/api/responses'
+
+import Button from '~/app/components/_elements/button'
+import Spinner from '~/app/components/general/Spinner'
+import XpTracker from '~/app/components/general/XpTracker'
+import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
+import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export default function EndgameTrainer() {
   // Setup main state for the game/puzzles

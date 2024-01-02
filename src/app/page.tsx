@@ -1,4 +1,6 @@
 import Link from 'next/link'
+import Script from 'next/script'
+
 import Button from './components/_elements/button'
 import Heading from './components/_elements/heading'
 import BigText from './components/_layouts/bigText'
@@ -6,7 +8,6 @@ import CtaRow from './components/_layouts/ctaRow'
 import Hero from './components/_layouts/hero'
 import ImageRowFull from './components/_layouts/imageRowFull'
 import { MultiCol, MultiColItem } from './components/_layouts/multiCol'
-import Script from 'next/script'
 
 export const metadata = {
   title:

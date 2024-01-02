@@ -1,6 +1,6 @@
-import nodemailer from 'nodemailer'
-import { successResponse, errorResponse } from '../../responses'
 import * as Sentry from '@sentry/nextjs'
+import nodemailer from 'nodemailer'
+import { errorResponse, successResponse } from '~/app/api/responses'
 
 export async function POST(request: Request) {
   try {

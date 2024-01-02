@@ -1,7 +1,10 @@
 'use client'
-import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components'
+
 import { useRouter } from 'next/navigation'
-import Button from '../../_elements/button'
+
+import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components'
+
+import Button from '~/app/components/_elements/button'
 
 export default function UserButtons() {
   const router = useRouter()

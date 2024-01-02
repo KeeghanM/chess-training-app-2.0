@@ -1,11 +1,15 @@
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
-import type { Line } from './parse/ParsePGNtoLineData'
 import { useState } from 'react'
-import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
+
+import { useAutoAnimate } from '@formkit/auto-animate/react'
+import * as AlertDialog from '@radix-ui/react-alert-dialog'
+
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
-import { useAutoAnimate } from '@formkit/auto-animate/react'
+import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+
+import type { Line } from './parse/ParsePGNtoLineData'
 
 export function GroupItem(props: {
   lines: Line[]

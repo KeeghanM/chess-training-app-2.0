@@ -1,9 +1,12 @@
 'use client'
+
 import type { UserBadge, UserProfile } from '@prisma/client'
-import { StreakBadges } from '~/app/_util/RanksAndBadges'
 import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css'
-import StyledLink from '../_elements/styledLink'
+
+import StyledLink from '~/app/components/_elements/styledLink'
+
+import { StreakBadges } from '~/app/_util/RanksAndBadges'
 
 interface StreakDisplayProps {
   profile: UserProfile

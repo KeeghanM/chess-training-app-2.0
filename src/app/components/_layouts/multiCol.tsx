@@ -1,6 +1,7 @@
 import Link from 'next/link'
-import Button from '../_elements/button'
-import Heading from '../_elements/heading'
+
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
 
 interface MultiColItemProps {
   title: string

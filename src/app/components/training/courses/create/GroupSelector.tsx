@@ -1,15 +1,19 @@
 'use client'
 
-import * as Tabs from '@radix-ui/react-tabs'
-import type { Line } from './parse/ParsePGNtoLineData'
-import { useState, useEffect } from 'react'
-import { GroupItem } from './GroupItem'
-import Spinner from '~/app/components/general/Spinner'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import Container from '~/app/components/_elements/container'
-import Button from '~/app/components/_elements/button'
+import { useEffect, useState } from 'react'
+
 import { useAutoAnimate } from '@formkit/auto-animate/react'
+import * as Tabs from '@radix-ui/react-tabs'
+
+import Button from '~/app/components/_elements/button'
+import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
+import Spinner from '~/app/components/general/Spinner'
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+
+import { GroupItem } from './GroupItem'
+import type { Line } from './parse/ParsePGNtoLineData'
 
 export default function GroupSelector(props: {
   lines: Line[]
