@@ -3,7 +3,6 @@
 import { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 import Image from 'next/image'
 import Link from 'next/link'
-import Button from '../../_elements/button'
 import { createAvatar } from '@dicebear/core'
 import { thumbs } from '@dicebear/collection'
 import { useState } from 'react'
@@ -29,6 +28,10 @@ export default function NewNav(props: {
     {
       href: '/',
       name: 'Home',
+    },
+    {
+      href: '/about/features/woodpecker-method',
+      name: 'Woodpecker Method',
     },
     {
       name: 'Features',
@@ -59,7 +62,7 @@ export default function NewNav(props: {
 
   return (
     <header className="sticky top-0 z-10 bg-purple-700 text-white shadow-lg">
-      <div className="mx-auto flex max-w-screen-xl items-center justify-between gap-1 px-1 py-2 md:gap-4 md:p-4">
+      <div className="mx-auto flex max-w-screen-xl items-center justify-between gap-1 px-1 py-2 lg:gap-4 lg:p-4">
         <Link href="/">
           <div className="flex items-center">
             <Image
@@ -69,21 +72,21 @@ export default function NewNav(props: {
               height={75}
             />
             <div>
-              <h2 className="font-bold italic md:text-xl lg:text-2xl">
+              <h2 className="font-bold italic lg:text-2xl lg:text-xl">
                 ChessTraining.app
               </h2>
-              <h3 className="text-xs font-light md:text-sm">
+              <h3 className="text-xs font-light lg:text-sm">
                 The best way to improve your chess
               </h3>
             </div>
           </div>
         </Link>
-        <div className="relative flex items-center space-x-3 md:order-2 md:space-x-0">
+        <div className="relative flex items-center space-x-3 lg:order-2 lg:space-x-0">
           {user && (
             <>
               <button
                 type="button"
-                className="flex overflow-hidden rounded-full bg-gray-800 text-sm focus:ring-4 focus:ring-gray-600 md:me-0"
+                className="flex overflow-hidden rounded-full bg-gray-800 text-sm focus:ring-4 focus:ring-gray-600 lg:me-0"
                 onClick={() => setUserOpen(!userOpen)}
               >
                 <span className="sr-only">Open user menu</span>
@@ -146,7 +149,7 @@ export default function NewNav(props: {
 
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center p-2 text-sm text-white hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-gray-200 md:hidden"
+            className="inline-flex h-10 w-10 items-center justify-center p-2 text-sm text-white hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-gray-200 lg:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             <span className="sr-only">Open main menu</span>
@@ -176,18 +179,18 @@ export default function NewNav(props: {
         <nav
           className={
             (menuOpen
-              ? 'absolute left-0 right-0 top-[100px] z-50 mx-auto w-screen max-w-screen-sm px-2 shadow-lg md:p-0'
+              ? 'absolute left-0 right-0 top-[100px] z-50 mx-auto w-screen max-w-screen-sm px-2 shadow-lg lg:p-0'
               : 'hidden') +
-            ' items-center justify-between md:order-1 md:ml-auto md:flex md:w-auto '
+            ' items-center justify-between lg:order-1 lg:ml-auto lg:flex lg:w-auto '
           }
         >
           {openSub != '' && (
             <div
-              className="fixed inset-0 z-10 hidden md:block"
+              className="fixed inset-0 z-10 hidden lg:block"
               onClick={() => setOpenSub('')}
             ></div>
           )}
-          <ul className="relative mt-4 flex flex-col divide-y divide-gray-600 border border-gray-100 bg-gray-50 p-4 font-medium rtl:space-x-reverse md:mt-0 md:flex-row md:divide-none md:border-0 md:bg-transparent md:p-0">
+          <ul className="relative mt-4 flex flex-col divide-y divide-gray-600 border border-gray-100 bg-gray-50 p-4 font-medium rtl:space-x-reverse lg:mt-0 lg:flex-row lg:items-center lg:divide-none lg:border-0 lg:bg-transparent lg:p-0">
             {links.map((link) =>
               link.subLinks ? (
                 <div key={link.name} className="relative">
@@ -195,7 +198,7 @@ export default function NewNav(props: {
                     onClick={() =>
                       setOpenSub(openSub === link.name ? '' : link.name)
                     }
-                    className="flex w-full items-center justify-between px-4 py-2 text-gray-900 hover:bg-purple-100 md:w-auto md:border-0 md:text-white md:hover:bg-purple-600"
+                    className="flex w-full items-center justify-between px-4 py-2 text-gray-900 hover:bg-purple-100 lg:w-auto lg:border-0 lg:text-white lg:hover:bg-purple-600"
                   >
                     {link.name}{' '}
                     <svg
@@ -216,9 +219,9 @@ export default function NewNav(props: {
                   </button>
                   <div
                     className={
-                      'z-50 w-full divide-y divide-gray-600 bg-gray-50 font-normal md:w-44 md:shadow ' +
+                      'z-50 w-full divide-y divide-gray-600 bg-gray-50 font-normal lg:w-44 lg:shadow ' +
                       (openSub === link.name
-                        ? 'block md:absolute md:top-10'
+                        ? 'block lg:absolute lg:top-10'
                         : 'hidden')
                     }
                   >
@@ -242,7 +245,7 @@ export default function NewNav(props: {
               ) : (
                 <Link
                   key={link.name}
-                  className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-purple-100 md:text-white md:hover:bg-purple-600"
+                  className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-purple-100 lg:text-white lg:hover:bg-purple-600"
                   href={link.href}
                   onClick={() => {
                     setMenuOpen(false)
@@ -259,10 +262,10 @@ export default function NewNav(props: {
                   setMenuOpen(false)
                   setOpenSub('')
                 }}
-                className="block cursor-pointer bg-orange-500 px-4 py-2 text-white hover:bg-orange-400 md:ml-2"
+                className="block cursor-pointer bg-orange-500 px-4 py-2 text-white hover:bg-orange-400 lg:ml-2"
                 href="/auth/signin"
               >
-                Login
+                Login/Register
               </Link>
             )}
           </ul>
