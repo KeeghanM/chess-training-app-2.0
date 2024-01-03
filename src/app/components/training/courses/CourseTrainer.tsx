@@ -38,7 +38,7 @@ export type PrismaUserLine = UserLine & {
   line: Line & { group: Group } & { moves: Move[] }
 }
 
-// TODO: Bug Fix: Doesn't always play our first move as black on new Lines (does on first line)
+// TODO: Bug Fix: Doesn't play our first move as black on new Lines (does on first line)
 // TODO: Bug Fix: Flashes the comment quickly on opponent move due to the way we check
 // TODO: Bug Fix: On correct, next review shouldn't be 10 mins - thats only for Wrong. It should start at 4 hours for correct.
 // TODO: Add arrows from the move to the comment
