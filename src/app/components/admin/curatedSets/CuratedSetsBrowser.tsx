@@ -156,6 +156,9 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
   })
 
   const loadCustomPuzzle = () => {
+    setError('')
+    setStatus('idle')
+
     const str = prompt(
       'Enter Full PGN from LiChess - Remember to set it to the starting position!',
     )
