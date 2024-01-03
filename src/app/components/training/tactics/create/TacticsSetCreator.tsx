@@ -326,6 +326,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
               <div className="">
                 <label>Themes to include</label>
                 <Select
+                  className=" dark:bg-gray-100"
                   defaultValue={[]}
                   isMulti
                   name={'themes'}

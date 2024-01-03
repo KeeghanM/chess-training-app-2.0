@@ -38,10 +38,9 @@ export type PrismaUserLine = UserLine & {
   line: Line & { group: Group } & { moves: Move[] }
 }
 
-// TODO: Bug Fix: Doesn't pause on opponents move with comments
+// TODO: Bug Fix: Doesn't always play our first move as black on new Lines (does on first line)
+// TODO: Bug Fix: Flashes the comment quickly on opponent move due to the way we check
 // TODO: Bug Fix: On correct, next review shouldn't be 10 mins - thats only for Wrong. It should start at 4 hours for correct.
-// TODO: Check both FEN and Comment to see if we need to pause
-// TODO: Change the import order of lines, to be something logical
 // TODO: Add arrows from the move to the comment
 // TODO: Ensure links in comments work
 // TODO: Line browser
@@ -103,7 +102,7 @@ export default function CourseTrainer(props: {
 
     const unseenLines = lines
       .filter((line) => !line.revisionDate)
-      .sort((a, b) => a.id.localeCompare(b.id))
+      .sort((a, b) => a.id - b.id)
     if (unseenLines.length > 0) return unseenLines[0]
 
     return null
@@ -115,8 +114,7 @@ export default function CourseTrainer(props: {
     setPosition(game.fen())
   }
 
-  // Makes a move for the "opponent"
-  const makeBookMove = () => {
+  const playOpponentsMove = () => {
     const currentMove = moveList[game.history().length]
     if (!currentMove) return
     const currentSan = currentMove?.move
@@ -126,11 +124,18 @@ export default function CourseTrainer(props: {
       // Now we need to check if it's a new FEN/Comment
       // If it is, we need to make a teaching move
       if (
-        (!existingFens.includes(game.fen()) &&
-          !trainedFens.includes(game.fen())) ||
-        (currentMove.comment &&
-          !existingComments.includes(currentMove.comment) &&
-          !trainedComments.includes(currentMove.comment))
+        currentMove.comment &&
+        !existingComments.includes(currentMove.comment) &&
+        !trainedComments.includes(currentMove.comment)
+      ) {
+        setTeaching(true)
+        setInteractive(false)
+        setHadTeachingMove(true)
+        // Add comments on opponents move to trained comments
+        setTrainedComments([...trainedComments, currentMove.comment])
+      } else if (
+        !existingFens.includes(game.fen()) &&
+        !trainedFens.includes(game.fen())
       ) {
         makeTeachingMove()
         setHadTeachingMove(true)
@@ -162,6 +167,10 @@ export default function CourseTrainer(props: {
     setTeaching(false)
     setInteractive(true)
     setPosition(game.fen())
+
+    if (game.turn() != currentLine!.line.colour.toLowerCase().charAt(0)) {
+      playOpponentsMove()
+    }
   }
 
   const checkEndOfLine = async () => {
@@ -346,6 +355,60 @@ export default function CourseTrainer(props: {
     }
   }
 
+  const processNewComments = async () => {
+    if (!user) return
+    // Reconstruct all the Comments we saw as the trainedComments state isn't updated
+    // it misses the last move out due to the update sequence of State
+    const seenComments = (() => {
+      const newComments = [] as string[]
+      moveList.forEach((move) => {
+        if (move.comment && !existingComments.includes(move.comment)) {
+          newComments.push(move.comment)
+        }
+      })
+      return newComments
+    })()
+
+    const commentsToUpload = seenComments.filter(
+      (comment) => !existingComments.includes(comment),
+    )
+
+    const allSeenComments = [...existingComments, ...commentsToUpload]
+    setExistingComments(allSeenComments)
+
+    console.log({
+      existingComments,
+      commentsToUpload,
+      allSeenComments,
+    })
+
+    return
+    // TODO: Implement this API endpoint
+
+    if (commentsToUpload.length > 0) {
+      try {
+        const resp = await fetch(
+          `/api/courses/user/${props.userCourse.id}/comments/new`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              comments: commentsToUpload,
+            }),
+          },
+        )
+        const json = (await resp.json()) as ResponseJson
+        if (json.message != 'Comments uploaded') {
+          throw new Error(json.message)
+        }
+      } catch (e) {
+        Sentry.captureException(e)
+      }
+    }
+  }
+
   const processStats = async () => {
     if (!user || !currentLine) return
 
@@ -448,9 +511,14 @@ export default function CourseTrainer(props: {
       setTrainedFens([...trainedFens, game.fen()])
       game.move(playerMove)
 
+      // Add any comments to the trained comments
+      if (currentMove?.comment) {
+        setTrainedComments([...trainedComments, currentMove.comment])
+      }
+
       // Update the position and continue
       setPosition(game.fen())
-      makeBookMove()
+      playOpponentsMove()
     } else {
       // Remove the move from the wrong moves
       wrongMoves.splice(currentWrongMove, 1)
@@ -527,10 +595,7 @@ export default function CourseTrainer(props: {
       setPosition(game.fen())
       const lineColour = currentLine.line.colour
       setOrientation(lineColour == 'White' ? 'white' : 'black')
-      console.log({
-        lineColour,
-        historyLength: game.history().length,
-      })
+
       if (
         (!trainedFens.includes(game.fen()) &&
           !existingFens.includes(game.fen())) ||
@@ -544,7 +609,7 @@ export default function CourseTrainer(props: {
           timeoutId = makeTeachingMove()
           setHadTeachingMove(true)
         } else {
-          timeoutId = makeBookMove()
+          timeoutId = playOpponentsMove()
         }
         return () => {
           clearTimeout(timeoutId)
@@ -636,7 +701,7 @@ export default function CourseTrainer(props: {
               <p className="text-white">{currentMove.comment}</p>
             </div>
           )}
-          <div className="flex flex-1 flex-wrap content-start gap-1 overflow-y-auto bg-purple-600 p-2">
+          <div className="flex h-full flex-wrap content-start gap-1 overflow-y-auto bg-purple-600 p-2">
             {PgnDisplay.map((item) => item)}
           </div>
           {teaching && (

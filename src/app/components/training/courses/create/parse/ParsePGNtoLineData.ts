@@ -62,6 +62,10 @@ export function ParsePGNtoLineData(pgnString: string) {
     }
   }
 
+  // because we added things recursively, the order is backwards
+  // Reversing here resets things to the original PGN Order
+  lines.reverse()
+
   return lines
 }
 

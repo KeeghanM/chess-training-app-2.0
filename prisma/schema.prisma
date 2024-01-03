@@ -24,16 +24,21 @@ model Course {
     lines             Line[]
     groups            Group[]
     userCourses       UserCourse[]
+
+    @@index([slug])
 }
 
 model Group {
     id        String   @id @default(cuid())
     courseId  String
     groupName String
+    sortOrder Int
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
     lines     Line[]
+
+    @@index([courseId])
 }
 
 model UserCourse {
@@ -50,25 +55,30 @@ model UserCourse {
     fens          UserFen[]
     comments      UserMoveComment[]
     course        Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model Line {
-    id        String     @id @default(cuid())
+    id        Int        @id @default(autoincrement())
     courseId  String
     lineName  String?
     colour    String
     groupId   String
+    sortOrder Int
     createdAt DateTime   @default(now())
     updatedAt DateTime   @updatedAt
     course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
     group     Group      @relation(fields: [groupId], references: [id], onDelete: Cascade)
     userLines UserLine[]
     moves     Move[]
+
+    @@index([courseId])
 }
 
 model Move {
-    id         String   @id @default(cuid())
-    lineId     String
+    id         Int      @id @default(autoincrement())
+    lineId     Int
     move       String
     moveNumber Int
     colour     Boolean
@@ -76,13 +86,15 @@ model Move {
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
     line       Line     @relation(fields: [lineId], references: [id], onDelete: Cascade)
+
+    @@index([lineId])
 }
 
 model UserLine {
-    id            String     @id @default(cuid())
+    id            Int        @id @default(autoincrement())
     userId        String
     userCourseId  String
-    lineId        String
+    lineId        Int
     revisionDate  DateTime?
     lastTrained   DateTime?
     timesTrained  Int        @default(0)
@@ -91,16 +103,20 @@ model UserLine {
     currentStreak Int        @default(0)
     course        UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
     line          Line       @relation(fields: [lineId], references: [id], onDelete: Cascade)
+
+    @@index([userCourseId])
 }
 
 model UserFen {
-    id           String     @id @default(cuid())
+    id           Int        @id @default(autoincrement())
     userCourseId String
     fen          String
     timesTrained Int        @default(0)
     timesCorrect Int        @default(0)
     timesWrong   Int        @default(0)
     course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
+
+    @@index([userCourseId])
 }
 
 model UserMoveComment {
@@ -108,6 +124,8 @@ model UserMoveComment {
     userCourseId String
     comment      String     @db.Text
     course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
+
+    @@index([userCourseId])
 }
 
 // Tactics Trainer
@@ -122,6 +140,8 @@ model TacticsSet {
     rating      Int?
     puzzles     Puzzle[]
     rounds      TacticsSetRound[]
+
+    @@index([userId])
 }
 
 model Puzzle {
@@ -161,6 +181,8 @@ model CuratedSetPuzzle {
     set       CuratedSet @relation(fields: [setId], references: [id], onDelete: Cascade)
     createdAt DateTime   @default(now())
     updatedAt DateTime   @updatedAt
+
+    @@index([setId])
 }
 
 model TacticsSetRound {
@@ -173,6 +195,8 @@ model TacticsSetRound {
     createdAt   DateTime   @default(now())
     updatedAt   DateTime   @updatedAt
     set         TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+
+    @@index([setId])
 }
 
 model UserProfile {
@@ -201,6 +225,8 @@ model DayTrained {
     date       String
     experience Int         @default(0)
     user       UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
 }
 
 model Badge {
@@ -222,4 +248,6 @@ model UserBadge {
     updatedAt DateTime    @updatedAt
     user      UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
     badge     Badge       @relation(fields: [badgeName], references: [name], onDelete: Cascade)
+
+    @@index([userId])
 }

@@ -57,6 +57,7 @@ export default async function Dashboard() {
   })
 
   // This will force new users into the onboarding
+  // TODO: BUG FIX: This seems to get stuck in a loop until you Ctrl-f5
   if (!profile) redirect('/dashboard/new')
 
   const tools: Tool[] = [

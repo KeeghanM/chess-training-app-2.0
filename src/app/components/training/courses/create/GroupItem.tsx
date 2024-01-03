@@ -63,7 +63,7 @@ export function GroupItem(props: {
                     <PrettyPrintLine line={line} />
                     <div className="ml-auto flex flex-col gap-1">
                       <select
-                        className="border border-gray-300 p-2"
+                        className="border border-gray-300 p-2  dark:bg-gray-100"
                         defaultValue={line.tags.Colour}
                         onChange={async (e) => {
                           const v = e.target.value

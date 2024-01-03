@@ -57,7 +57,10 @@ export async function POST(request: Request) {
         createdBy: user.id,
         slug: slug,
         groups: {
-          create: groupNames,
+          create: groupNames.map((group, index) => ({
+            groupName: group.groupName,
+            sortOrder: index,
+          })),
         },
       },
     })) as Course & { groups: PrismaGroup[] }
@@ -77,7 +80,7 @@ export async function POST(request: Request) {
 
     // Create each new line and userLine
     await Promise.all(
-      lines.map(async (line) => {
+      lines.map(async (line, index) => {
         const matchingGroup = course.groups.find(
           (group) => group.groupName === line.groupName,
         )
@@ -95,6 +98,7 @@ export async function POST(request: Request) {
             colour: line.colour,
             groupId: matchingGroup.id,
             courseId: course.id,
+            sortOrder: index,
             moves: {
               create: transformedMoves,
             },

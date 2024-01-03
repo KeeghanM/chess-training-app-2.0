@@ -59,8 +59,7 @@ export default function CreateCourseForm() {
         throw new Error(json?.message ?? 'Unknown error')
 
       await trackEventOnClient('create_course_success', {})
-      const courseSlug = json.data!.slug as string
-      router.push('/courses/' + courseSlug) // TODO: This ends up in a 404
+      router.push('/training/courses/')
     } catch (e) {
       Sentry.captureException(e)
       setCurrentStep('error')

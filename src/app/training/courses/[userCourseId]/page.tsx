@@ -20,7 +20,7 @@ export default async function CourseTrainPage({
 
   const { userCourseId } = params
 
-  const { userCourse, userLines, userFens,userComments } = await (async () => {
+  const { userCourse, userLines, userFens, userComments } = await (async () => {
     try {
       const userCourse = await prisma.userCourse.findFirst({
         where: {
@@ -65,6 +65,15 @@ export default async function CourseTrainPage({
       })
 
       if (!userComments) throw new Error('Comments not found')
+
+      // Sort lines by their groups sortOrder and then by their own sortOrder
+      userLines.sort((a, b) => {
+        if (a.line.group.sortOrder < b.line.group.sortOrder) return -1
+        if (a.line.group.sortOrder > b.line.group.sortOrder) return 1
+        if (a.line.sortOrder < b.line.sortOrder) return -1
+        if (a.line.sortOrder > b.line.sortOrder) return 1
+        return 0
+      })
 
       return { userCourse, userLines, userFens, userComments }
     } catch (e) {
