@@ -20,7 +20,7 @@ export default function CourseList(props: {
   const { maxCourses, hasUnlimitedCourses } = props
   return (
     <>
-      <div className="flex items-center gap-2">
+      <div className={'flex items-center gap-2'}>
         <Heading as={'h3'}>
           {courses.length}
           {!hasUnlimitedCourses ? <>/{maxCourses}</> : ''} courses
@@ -44,7 +44,12 @@ export default function CourseList(props: {
           </Link>
         )}
       </div>
-      <div className="flex flex-col gap-4 p-2 md:p-4">
+      <div
+        className={
+          'flex flex-col gap-4 p-2 md:p-4' +
+          (courses.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : '')
+        }
+      >
         {courses.length > 0 ? (
           courses.map((course, index) => (
             <CourseListItem

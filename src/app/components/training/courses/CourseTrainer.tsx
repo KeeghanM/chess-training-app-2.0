@@ -18,11 +18,9 @@ import * as Sentry from '@sentry/nextjs'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
 import type { Square } from 'chess.js'
-import { get } from 'http'
 import { Chessboard } from 'react-chessboard'
 // @ts-expect-error - No types available
 import useSound from 'use-sound'
-import { set } from 'zod'
 import type { ResponseJson } from '~/app/api/responses'
 
 import ThemeSwitch from '~/app/components//template/header/ThemeSwitch'

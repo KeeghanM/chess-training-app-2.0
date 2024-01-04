@@ -81,12 +81,19 @@ model Move {
     move       String
     moveNumber Int
     colour     Boolean
-    comment    String?  @db.Text
+    comment    Comment?
     createdAt  DateTime @default(now())
     updatedAt  DateTime @updatedAt
     line       Line     @relation(fields: [lineId], references: [id], onDelete: Cascade)
 
     @@index([lineId])
+}
+
+model Comment {
+    id      Int    @id @default(autoincrement())
+    comment String @db.Text
+    moveId  Int    @unique
+    move    Move   @relation(fields: [moveId], references: [id], onDelete: Cascade)
 }
 
 model UserLine {
@@ -107,14 +114,14 @@ model UserLine {
 }
 
 model UserFen {
-    id            Int        @id @default(autoincrement())
-    userCourseId  String
-    fen           String
-    commentMoveId Int?
-    timesTrained  Int        @default(0)
-    timesCorrect  Int        @default(0)
-    timesWrong    Int        @default(0)
-    course        UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
+    id           Int        @id @default(autoincrement())
+    userCourseId String
+    fen          String
+    commentId    Int?
+    timesTrained Int        @default(0)
+    timesCorrect Int        @default(0)
+    timesWrong   Int        @default(0)
+    course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
 
     @@index([userCourseId])
 }

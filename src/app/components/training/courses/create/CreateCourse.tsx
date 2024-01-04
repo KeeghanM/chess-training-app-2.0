@@ -62,6 +62,7 @@ export default function CreateCourseForm() {
       router.push('/training/courses/')
     } catch (e) {
       Sentry.captureException(e)
+      console.log(e.message)
       setCurrentStep('error')
     }
   }
@@ -111,7 +112,7 @@ export default function CreateCourseForm() {
           )}
           {currentStep == 'error' && (
             <>
-              <Heading as={'h2'} color="red">
+              <Heading as={'h2'} color="text-red-500">
                 Error: Something went wrong
               </Heading>
               <Button
