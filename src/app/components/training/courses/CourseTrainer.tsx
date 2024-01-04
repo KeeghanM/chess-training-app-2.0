@@ -14,7 +14,7 @@ import { Chessboard } from 'react-chessboard'
 // @ts-expect-error - No types available
 import useSound from 'use-sound'
 import type { ResponseJson } from '~/app/api/responses'
-import { PrismaUserLine } from '~/app/training/courses/[userCourseId]/page'
+import type { PrismaUserLine } from '~/app/training/courses/[userCourseId]/page'
 
 import ThemeSwitch from '~/app/components//template/header/ThemeSwitch'
 import Button from '~/app/components/_elements/button'
@@ -23,7 +23,7 @@ import XpTracker from '~/app/components/general/XpTracker'
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-import { PrismaUserCourse } from './list/CoursesList'
+import type { PrismaUserCourse } from './list/CoursesList'
 
 // TODO: Bug Fix: First move comment not logged
 // TODO: Bug Fix: If we get a move wrong, it then forces the whole line to be replayed.
@@ -572,7 +572,7 @@ export default function CourseTrainer(props: {
     const newGame = new Chess()
     setGame(newGame)
     setGameReady(false)
-    setCurrentLineMoves(currentLine.line.moves!)
+    setCurrentLineMoves(currentLine.line.moves)
     setWrongMoves([])
   }, [currentLine])
 

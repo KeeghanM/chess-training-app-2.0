@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import { Comment, Group, Line, Move, UserLine } from '@prisma/client'
+import type { Comment, Group, Line, Move, UserLine } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 
 import Container from '~/app/components/_elements/container'

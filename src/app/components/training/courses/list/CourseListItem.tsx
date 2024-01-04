@@ -17,7 +17,7 @@ import TimeSince from '~/app/components/general/TimeSince'
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-import { PrismaUserCourse } from './CoursesList'
+import type { PrismaUserCourse } from './CoursesList'
 
 export default function CourseListItem(props: {
   courseId: string

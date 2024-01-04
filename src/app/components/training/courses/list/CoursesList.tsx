@@ -4,9 +4,9 @@ import Link from 'next/link'
 
 import { useEffect, useState } from 'react'
 
-import { Course, Line, UserCourse } from '@prisma/client'
+import type { Course, UserCourse, UserLine } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
-import { ResponseJson } from '~/app/api/responses'
+import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
@@ -15,9 +15,9 @@ import StyledLink from '~/app/components/_elements/styledLink'
 import CourseListItem from './CourseListItem'
 
 export type PrismaUserCourse = UserCourse & {
-  course: Course & {
-    lines?: Line[]
-  }
+  course: Course
+} & {
+  lines?: UserLine[]
 }
 
 export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
