@@ -2,22 +2,52 @@
 
 import Link from 'next/link'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import { Course, UserCourse } from '@prisma/client'
+import * as Sentry from '@sentry/nextjs'
+import { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
 
-import type { PrismaUserCourse } from '../CourseTrainer'
 import CourseListItem from './CourseListItem'
 
-export default function CourseList(props: {
-  courses: PrismaUserCourse[]
-  maxCourses: number
-  hasUnlimitedCourses: boolean
-}) {
-  const [courses, setCourses] = useState<PrismaUserCourse[]>(props.courses)
-  const { maxCourses, hasUnlimitedCourses } = props
+export type PrismaUserCourse = UserCourse & {
+  course: Course
+}
+
+export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
+  const [courses, setCourses] = useState<PrismaUserCourse[]>([])
+  const [loading, setLoading] = useState(true)
+  const { hasUnlimitedCourses } = props
+  const maxCourses = 3
+
+  const fetchCourses = async () => {
+    setLoading(true)
+    try {
+      const resp = await fetch('/api/courses')
+      const data = (await resp.json()) as ResponseJson
+      if (data?.message != 'Courses found')
+        throw new Error('Failed to fetch courses')
+
+      setCourses(data.data!.courses as PrismaUserCourse[])
+    } catch (e) {
+      Sentry.captureException(e)
+      setCourses([])
+    }
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    ;(async () => {
+      await fetchCourses()
+    })().catch((e) => {
+      Sentry.captureException(e)
+    })
+  }, [])
+
   return (
     <>
       <div className={'flex items-center gap-2'}>
@@ -50,6 +80,7 @@ export default function CourseList(props: {
           (courses.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : '')
         }
       >
+        {/* TODO: Show Loading State */}
         {courses.length > 0 ? (
           courses.map((course, index) => (
             <CourseListItem

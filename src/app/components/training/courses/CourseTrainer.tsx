@@ -5,15 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import type {
-  Course,
-  Group,
-  Line,
-  Move,
-  UserCourse,
-  UserFen,
-  UserLine,
-} from '@prisma/client'
+import type { Comment, Move, UserFen } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
@@ -22,6 +14,7 @@ import { Chessboard } from 'react-chessboard'
 // @ts-expect-error - No types available
 import useSound from 'use-sound'
 import type { ResponseJson } from '~/app/api/responses'
+import { PrismaUserLine } from '~/app/training/courses/[userCourseId]/page'
 
 import ThemeSwitch from '~/app/components//template/header/ThemeSwitch'
 import Button from '~/app/components/_elements/button'
@@ -30,12 +23,7 @@ import XpTracker from '~/app/components/general/XpTracker'
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-export type PrismaUserCourse = UserCourse & { course: Course } & {
-  lines?: PrismaUserLine[]
-}
-export type PrismaUserLine = UserLine & {
-  line: Line & { group: Group } & { moves: Move[] }
-}
+import { PrismaUserCourse } from './list/CoursesList'
 
 // TODO: Bug Fix: First move comment not logged
 // TODO: Bug Fix: If we get a move wrong, it then forces the whole line to be replayed.
@@ -43,6 +31,8 @@ export type PrismaUserLine = UserLine & {
 // TODO: Add arrows from the move to the comment
 // TODO: Ensure links in comments work
 // TODO: Line browser
+
+type PrismaMove = Move & { comment?: Comment | null }
 
 export default function CourseTrainer(props: {
   userCourse: PrismaUserCourse
@@ -54,9 +44,19 @@ export default function CourseTrainer(props: {
 
   // Line/Course State
   const [lines, setLines] = useState<PrismaUserLine[]>(props.userLines)
+  const [allComments] = useState(
+    props.userLines
+      .map((line) => {
+        return line.line.moves
+          .map((move) => move.comment)
+          .filter((comment) => comment != null)
+      })
+      .flat()
+      .filter((comment) => comment != null) as Comment[],
+  )
   const [currentLine, setCurrentLine] = useState<PrismaUserLine>()
   const [nextLine, setNextLine] = useState<PrismaUserLine | null>(null)
-  const [currentLineMoves, setCurrentLineMoves] = useState<Move[]>([])
+  const [currentLineMoves, setCurrentLineMoves] = useState<PrismaMove[]>([])
 
   // Game State
   const [game, setGame] = useState(new Chess())
@@ -67,16 +67,16 @@ export default function CourseTrainer(props: {
   // Training State
   const [mode, setMode] = useState<'normal' | 'recap'>('normal')
   const [teaching, setTeaching] = useState(false)
-  const [currentMove, setCurrentMove] = useState<Move>()
+  const [currentMove, setCurrentMove] = useState<PrismaMove>()
   const [currentWrongMove, setCurrentWrongMove] = useState(0)
   const [hadTeachingMove, setHadTeachingMove] = useState(false)
   const [lineCorrect, setLineCorrect] = useState(true)
 
   // Tracking/Stats State
-  type trainingFen = { fen: string; commentMoveId?: number }
+  type trainingFen = { fen: string; commentId?: number }
   const [existingFens, setExistingFens] = useState<trainingFen[]>(
     props.userFens.map((fen) => {
-      return { fen: fen.fen, commentMoveId: fen.commentMoveId ?? undefined }
+      return { fen: fen.fen, commentId: fen.commentId ?? undefined }
     }),
   )
   const [trainedFens, setTrainedFens] = useState<trainingFen[]>([])
@@ -120,10 +120,8 @@ export default function CourseTrainer(props: {
   }
 
   const needsTeachingMove = () => {
-    console.log('begin needsTeachingMove')
     // If we haven't seen any fens, we need to teach the first move
     const allFens = [...existingFens, ...trainedFens]
-    console.log('allFens', allFens)
     if (allFens.length == 0) return true
 
     // Explaining the logic here is a bit tricky
@@ -132,15 +130,13 @@ export default function CourseTrainer(props: {
     // So we need both the current fen, the next fen, and the comment from the next move
     const currentFenString = game.fen()
     const currentFen = allFens.find((fen) => fen.fen == currentFenString)
-    console.log('currentFen', currentFen)
     if (currentFen == undefined) return true // We haven't seen this position before
 
     const nextMove = currentLineMoves[game.history().length]
-    console.log('nextMove', nextMove)
     if (!nextMove) return false // We've reached the end of the line
 
-    const nextMoveComment = nextMove.comment
-    const fenComment = getComment(currentFen.commentMoveId)
+    const nextMoveComment = nextMove.comment?.comment
+    const fenComment = getComment(currentFen.commentId)
 
     const nextFenString = (() => {
       const newGame = new Chess(currentFenString)
@@ -148,13 +144,7 @@ export default function CourseTrainer(props: {
       return newGame.fen()
     })()
     const nextFen = allFens.find((fen) => fen.fen == nextFenString)
-    const nextFenComment = getComment(nextFen?.commentMoveId)
-
-    console.log('nextMoveComment', nextMoveComment)
-    console.log('fenComment', fenComment)
-    console.log('nextFen', nextFen)
-    console.log('nextFenComment', nextFenComment)
-    console.log('currentLineMoves', currentLineMoves)
+    const nextFenComment = getComment(nextFen?.commentId)
 
     if (fenComment == nextMoveComment || nextFenComment == nextMoveComment)
       return false
@@ -173,15 +163,14 @@ export default function CourseTrainer(props: {
     const opponentsMove = currentLineMoves[game.history().length]
     if (!opponentsMove) return
     const opponentSan = opponentsMove.move
-    const commentMoveId = opponentsMove.comment ? opponentsMove.id : undefined
-    const trainedFen = { fen: game.fen(), commentMoveId }
+    const commentId = opponentsMove.comment?.id
+    const trainedFen = { fen: game.fen(), commentId }
     setTrainedFens((prevTrainedFens) => [...prevTrainedFens, trainedFen])
 
     const timeoutId = setTimeout(() => {
       makeMove(opponentSan)
-      const allFens = [...existingFens, ...trainedFens]
-      const alreadySeenComment = allFens.find(
-        (fen) => fen.commentMoveId == commentMoveId,
+      const alreadySeenComment = allComments.find(
+        (comment) => comment.id == commentId,
       )
       if (opponentsMove.comment && !alreadySeenComment) {
         setShowComment(true)
@@ -340,9 +329,9 @@ export default function CourseTrainer(props: {
     }
   }
 
-  const getComment = (moveId: number | undefined) => {
-    if (!moveId) return undefined
-    return currentLineMoves.find((move) => move.id == moveId)?.comment
+  const getComment = (commentId: number | undefined) => {
+    if (!commentId) return undefined
+    return allComments.find((comment) => comment.id == commentId)?.comment
   }
 
   const processNewFens = async () => {
@@ -354,16 +343,14 @@ export default function CourseTrainer(props: {
       const fens = [] as trainingFen[]
 
       // Add the starting position
-      const commentMoveId = currentLineMoves[0]?.comment
-        ? currentLineMoves[0].id
-        : undefined
-      fens.push({ fen: newGame.fen(), commentMoveId })
+      const commentId = currentLineMoves[0]?.comment?.id
+      fens.push({ fen: newGame.fen(), commentId })
 
       currentLineMoves.forEach((move) => {
         newGame.move(move.move)
         fens.push({
           fen: newGame.fen(),
-          commentMoveId: move.comment ? move.id : undefined,
+          commentId: move.comment?.id,
         })
       })
       return fens
@@ -373,9 +360,9 @@ export default function CourseTrainer(props: {
     // we need to check both the fen string, and the actual comment (not just the id)
     // Doing this here means we only need to store a single fen with one commentId in the DB
     const fensToUpload = seenFens.filter((seenFen) => {
-      const fenComment = getComment(seenFen.commentMoveId)
+      const fenComment = getComment(seenFen.commentId)
       const existingFen = existingFens.find((existingFen) => {
-        const existingFenComment = getComment(existingFen.commentMoveId)
+        const existingFenComment = getComment(existingFen.commentId)
         return (
           existingFen.fen == seenFen.fen && existingFenComment == fenComment
         )
@@ -510,10 +497,8 @@ export default function CourseTrainer(props: {
     if (mode == 'normal') {
       // log the previous fen as one we've seen and done right.
       game.undo()
-      const commentId = currentLineMoves[game.history().length]?.comment
-        ? currentLineMoves[game.history().length]!.id
-        : undefined
-      const trainedFen = { fen: game.fen(), commentMoveId: commentId }
+      const commentId = currentLineMoves[game.history().length]?.comment?.id
+      const trainedFen = { fen: game.fen(), commentId: commentId }
       setTrainedFens((prevTrainedFens) => [...prevTrainedFens, trainedFen])
       game.move(playerMove)
 
@@ -580,7 +565,7 @@ export default function CourseTrainer(props: {
     const newGame = new Chess()
     setGame(newGame)
     setGameReady(false)
-    setCurrentLineMoves(currentLine.line.moves)
+    setCurrentLineMoves(currentLine.line.moves!)
     setWrongMoves([])
   }, [currentLine])
 
@@ -700,7 +685,7 @@ export default function CourseTrainer(props: {
           <div className="flex flex-col flex-1 bg-purple-600">
             {showComment && (
               <div className="max-h-[50%] overflow-y-auto bg-purple-900 p-2">
-                <p className="text-white">{currentMove?.comment?.trim()}</p>
+                <p className="text-white">{currentMove?.comment?.comment}</p>
               </div>
             )}
             <div

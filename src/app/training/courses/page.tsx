@@ -7,7 +7,6 @@ import * as Sentry from '@sentry/nextjs'
 
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
-import { PrismaUserCourse } from '~/app/components/training/courses/CourseTrainer'
 import CourseList from '~/app/components/training/courses/list/CoursesList'
 
 export const metadata = {
@@ -21,26 +20,6 @@ export default async function Courses() {
   if (!user) redirect('/auth/signin')
 
   const permissions = await getPermissions()
-
-  // TODO: Move to onMount so it refreshes when the user buys a course
-  const courses: PrismaUserCourse[] = await (async () => {
-    try {
-      return await prisma.userCourse.findMany({
-        where: {
-          userId: user.id,
-          active: true,
-        },
-        include: {
-          course: true,
-        },
-      })
-    } catch (e) {
-      Sentry.captureException(e)
-      return []
-    }
-  })()
-
-  const maxCourses = 2
   const hasUnlimitedCourses =
     permissions?.permissions.includes('unlimited-courses') ?? false
   return (
@@ -54,11 +33,7 @@ export default async function Courses() {
       />
       <div className="dark:bg-slate-800">
         <Container>
-          <CourseList
-            courses={courses}
-            maxCourses={maxCourses}
-            hasUnlimitedCourses={hasUnlimitedCourses}
-          />
+          <CourseList hasUnlimitedCourses={hasUnlimitedCourses} />
         </Container>
       </div>
     </>

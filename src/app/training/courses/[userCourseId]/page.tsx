@@ -3,11 +3,19 @@ import { redirect } from 'next/navigation'
 import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { Comment, Group, Line, Move, UserLine } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import CourseTrainer from '~/app/components/training/courses/CourseTrainer'
+
+export type PrismaUserLine = UserLine & {
+  line: Line & {
+    group: Group
+    moves: (Move & { comment: Comment | null })[]
+  }
+}
 
 export default async function CourseTrainPage({
   params,
@@ -42,7 +50,11 @@ export default async function CourseTrainPage({
           line: {
             include: {
               group: true,
-              moves: true,
+              moves: {
+                include: {
+                  comment: true,
+                },
+              },
             },
           },
         },
@@ -78,7 +90,7 @@ export default async function CourseTrainPage({
     }
   })()
 
-  if (!userCourse || !userLines || !userFens ) {
+  if (!userCourse || !userLines || !userFens) {
     redirect('/404')
   }
 
