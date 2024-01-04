@@ -169,14 +169,15 @@ export default function CourseTrainer(props: {
 
     const timeoutId = setTimeout(() => {
       makeMove(opponentSan)
-      const alreadySeenComment = allComments.find(
-        (comment) => comment.id == commentId,
+      const allFens = [...existingFens, ...trainedFens]
+      const previouslySeenComment = allFens.find(
+        (fen) => fen.commentId == commentId,
       )
-      if (opponentsMove.comment && !alreadySeenComment) {
+      if (opponentsMove.comment && previouslySeenComment == undefined) {
         setShowComment(true)
         setInteractive(false)
         setTeaching(true)
-        setHadTeachingMove
+        setHadTeachingMove(true)
       } else if (needsTeachingMove()) {
         makeTeachingMove()
       }
@@ -372,6 +373,13 @@ export default function CourseTrainer(props: {
 
     const allSeenFens = [...existingFens, ...fensToUpload]
     setExistingFens(allSeenFens)
+
+    console.log({
+      seenFens,
+      fensToUpload,
+    })
+
+    return
 
     if (fensToUpload.length > 0) {
       try {
@@ -665,7 +673,7 @@ export default function CourseTrainer(props: {
         </div>
       </div>
       <div className="flex flex-col gap-4 md:flex-row">
-        <div>
+        <div className="h-fit">
           <Chessboard
             arePiecesDraggable={interactive}
             position={position}
@@ -681,23 +689,31 @@ export default function CourseTrainer(props: {
             }}
           />
         </div>
-        <div className="flex flex-1 flex-col gap-2">
-          <div className="flex flex-col flex-1 bg-purple-600">
-            {showComment && (
-              <div className="max-h-[50%] overflow-y-auto bg-purple-900 p-2">
-                <p className="text-white">{currentMove?.comment?.comment}</p>
-              </div>
-            )}
-            <div
-              className={
-                'flex flex-wrap content-start gap-1 p-2' +
-                (showComment
-                  ? ' max-h-[40%] overflow-y-auto'
-                  : ' h-full flex-1')
-              }
+        <div className="flex flex-col gap-2 flex-1">
+          {showComment && (
+            <p
+              style={{
+                maxHeight:
+                  Math.min(windowSize.height / 1.75, windowSize.width - 50) *
+                  0.5,
+              }}
+              className="text-white p-2 bg-purple-900 overflow-y-auto "
             >
-              {PgnDisplay.map((item) => item)}
-            </div>
+              {currentMove?.comment?.comment}
+            </p>
+          )}
+          <div
+            style={{
+              maxHeight: showComment
+                ? Math.min(windowSize.height / 1.75, windowSize.width - 50) *
+                  0.5
+                : '100%',
+            }}
+            className={
+              'flex bg-purple-600 flex-wrap content-start gap-1 p-2 flex-1 overflow-y-auto'
+            }
+          >
+            {PgnDisplay.map((item) => item)}
           </div>
           {teaching && (
             <Button variant="accent" onClick={resetTeachingMove}>
