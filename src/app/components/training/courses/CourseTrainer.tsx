@@ -38,9 +38,7 @@ export type PrismaUserLine = UserLine & {
   line: Line & { group: Group } & { moves: Move[] }
 }
 
-// TODO: Bug Fix: Doesn't play our first move as black on new Lines (does on first line)
 // TODO: Bug Fix: Flashes the comment quickly on opponent move due to the way we check
-// TODO: Bug Fix: On correct, next review shouldn't be 10 mins - thats only for Wrong. It should start at 4 hours for correct.
 // TODO: Add arrows from the move to the comment
 // TODO: Ensure links in comments work
 // TODO: Line browser
@@ -207,6 +205,7 @@ export default function CourseTrainer(props: {
     setXpCounter(xpCounter + 1)
     setLoading(true)
     await processNewFens()
+    await processNewComments()
     const updatedLines = await processStats()
 
     // Now we need to get the next line
@@ -376,15 +375,6 @@ export default function CourseTrainer(props: {
     const allSeenComments = [...existingComments, ...commentsToUpload]
     setExistingComments(allSeenComments)
 
-    console.log({
-      existingComments,
-      commentsToUpload,
-      allSeenComments,
-    })
-
-    return
-    // TODO: Implement this API endpoint
-
     if (commentsToUpload.length > 0) {
       try {
         const resp = await fetch(
@@ -415,16 +405,17 @@ export default function CourseTrainer(props: {
     // find the review date for the line
     const now = new Date()
     const tenMinutes = 10 * 60 * 1000
-    const fourHours = 4 * 60 * 60 * 1000
-    const oneDay = 24 * 60 * 60 * 1000
+    const oneHour = 6 * tenMinutes
+    const fourHours = 4 * oneHour
+    const oneDay = 24 * oneHour
     const threeDays = oneDay * 3
     const oneWeek = oneDay * 7
     const oneMonth = oneDay * 30
     const timeToAdd = lineCorrect
       ? (() => {
           switch (currentLine.currentStreak) {
-            case 0:
-              return tenMinutes
+            case 0: // First time ever correct, or first time since wrong
+              return oneHour
             case 1:
               return fourHours
             case 2:

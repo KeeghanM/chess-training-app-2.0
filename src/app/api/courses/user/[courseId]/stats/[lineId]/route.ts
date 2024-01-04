@@ -8,7 +8,7 @@ import { UpdateStreak } from '~/app/_util/UpdateStreak'
 
 export async function POST(
   request: Request,
-  { params }: { params: { courseId: string; lineId: string } },
+  { params }: { params: { courseId: string; lineId: number } },
 ) {
   const session = getKindeServerSession(request)
   if (!session) return errorResponse('Unauthorized', 401)
