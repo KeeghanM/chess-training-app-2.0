@@ -34,7 +34,7 @@ export async function POST(
 
     const line = await prisma.userLine.update({
       where: {
-        id: lineId,
+        id: parseInt(lineId.toString()),
         userId: user.id,
       },
       data: {

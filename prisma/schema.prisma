@@ -42,19 +42,18 @@ model Group {
 }
 
 model UserCourse {
-    id            String            @id @default(cuid())
+    id            String     @id @default(cuid())
     courseId      String
     userId        String
-    active        Boolean           @default(true)
+    active        Boolean    @default(true)
     lastTrained   DateTime?
-    linesLearned  Int               @default(0)
-    linesLearning Int               @default(0)
-    linesHard     Int               @default(0)
+    linesLearned  Int        @default(0)
+    linesLearning Int        @default(0)
+    linesHard     Int        @default(0)
     linesUnseen   Int
     lines         UserLine[]
     fens          UserFen[]
-    comments      UserMoveComment[]
-    course        Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+    course        Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
 
     @@index([userId])
 }
@@ -108,22 +107,14 @@ model UserLine {
 }
 
 model UserFen {
-    id           Int        @id @default(autoincrement())
-    userCourseId String
-    fen          String
-    timesTrained Int        @default(0)
-    timesCorrect Int        @default(0)
-    timesWrong   Int        @default(0)
-    course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
-
-    @@index([userCourseId])
-}
-
-model UserMoveComment {
-    id           Int        @id @default(autoincrement())
-    userCourseId String
-    comment      String     @db.Text
-    course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
+    id            Int        @id @default(autoincrement())
+    userCourseId  String
+    fen           String
+    commentMoveId Int?
+    timesTrained  Int        @default(0)
+    timesCorrect  Int        @default(0)
+    timesWrong    Int        @default(0)
+    course        UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
 
     @@index([userCourseId])
 }

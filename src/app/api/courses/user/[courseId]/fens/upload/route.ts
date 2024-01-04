@@ -14,20 +14,26 @@ export async function POST(
   if (!user) return errorResponse('Unauthorized', 401)
 
   const { courseId } = params
-  const { comments } = (await request.json()) as { comments: string[] }
+  const { fens } = (await request.json()) as {
+    fens: {
+      fen: string
+      commentMoveId: number
+    }[]
+  }
 
   if (!courseId) return errorResponse('Missing courseId', 400)
-  if (!comments) return errorResponse('Missing fens', 400)
+  if (!fens) return errorResponse('Missing fens', 400)
 
   try {
-    await prisma.userMoveComment.createMany({
-      data: comments.map((comment: string) => ({
-        comment,
+    await prisma.userFen.createMany({
+      data: fens.map((fen) => ({
+        fen: fen.fen,
+        commentMoveId: fen.commentMoveId,
         userCourseId: courseId,
       })),
     })
 
-    return successResponse('Comments uploaded', { count: comments.length }, 200)
+    return successResponse('Fens uploaded', { count: fens.length }, 200)
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)

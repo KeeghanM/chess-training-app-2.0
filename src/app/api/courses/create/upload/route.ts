@@ -90,7 +90,7 @@ export async function POST(request: Request) {
           move: move.notation,
           moveNumber: Math.ceil((index + 1) / 2),
           colour: index % 2 === 0 ? true : false, // True for white, false for black
-          comment: move.comment ?? null,
+          comment: move.comment?.trim() ?? null,
         }))
 
         const dbLine = await prisma.line.create({

@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { prisma } from '~/server/db'
@@ -6,9 +5,7 @@ import { prisma } from '~/server/db'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 
-import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import { PrismaUserCourse } from '~/app/components/training/courses/CourseTrainer'
 import CourseList from '~/app/components/training/courses/list/CoursesList'
