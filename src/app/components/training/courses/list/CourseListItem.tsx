@@ -110,20 +110,11 @@ export default function CourseListItem(props: {
               ago
             </p>
           </div>
-          <HoverCard.Root>
-            <HoverCard.Trigger>
-              <div
-                className="ml-auto grid h-16 w-16 place-items-center rounded-full"
-                style={{
-                  background: conicGradient,
-                }}
-              >
-                <div className="h-12 w-12 rounded-full bg-gray-100 dark:bg-slate-900"></div>
-              </div>
-            </HoverCard.Trigger>
-            <HoverCard.Content>
-              <div className="flex flex-col gap-2 border border-gray-300 bg-white p-2 shadow">
-                <p className="text-[#6b21a8]">
+          <Tippy
+            className="text-base"
+            content={
+              <div className="flex flex-col gap-2">
+                <p className="text-gray-300">
                   {userCourse?.linesUnseen} lines unseen
                 </p>
                 <p className="text-[#4ade80]">
@@ -132,12 +123,21 @@ export default function CourseListItem(props: {
                 <p className="text-[#2563eb]">
                   {userCourse?.linesLearning} lines learning
                 </p>
-                <p className="text-[#f87171]">
+                <p className="text-[#ff3030]">
                   {userCourse?.linesHard} lines hard
                 </p>
               </div>
-            </HoverCard.Content>
-          </HoverCard.Root>
+            }
+          >
+            <div
+              className="ml-auto grid h-16 w-16 place-items-center rounded-full"
+              style={{
+                background: conicGradient,
+              }}
+            >
+              <div className="h-12 w-12 rounded-full bg-gray-100 dark:bg-slate-900"></div>
+            </div>
+          </Tippy>
           <div className="flex flex-col items-center gap-2">
             <Button
               variant="primary"

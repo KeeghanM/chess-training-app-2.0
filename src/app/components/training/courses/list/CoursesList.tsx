@@ -44,7 +44,7 @@ export default function CourseList(props: {
           </Link>
         )}
       </div>
-      <div className="flex flex-col gap-4 bg-gray-100 dark:bg-slate-900 p-2 md:p-4">
+      <div className="flex flex-col gap-4 p-2 md:p-4">
         {courses.length > 0 ? (
           courses.map((course, index) => (
             <CourseListItem
