@@ -39,9 +39,26 @@ export async function GET(
       },
     })
 
+    const nextReview = await prisma.userLine.findFirst({
+      where: {
+        userId: user.id,
+        userCourseId: courseId,
+        revisionDate: {
+          gt: new Date(),
+        },
+      },
+      orderBy: {
+        revisionDate: 'asc',
+      },
+    })
+
     if (!course) return errorResponse('Course not found', 404)
 
-    return successResponse('Course Fetched', { course }, 200)
+    return successResponse(
+      'Course Fetched',
+      { course, nextReview: nextReview?.revisionDate },
+      200,
+    )
   } catch (e) {
     Sentry.captureException(e)
     return errorResponse('Internal Server Error', 500)

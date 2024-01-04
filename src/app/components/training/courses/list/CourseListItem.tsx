@@ -26,6 +26,7 @@ export default function CourseListItem(props: {
 }) {
   const router = useRouter()
   const [userCourse, setUserCourse] = useState<PrismaUserCourse | null>(null)
+  const [nextReview, setNextReview] = useState<Date | null>(null)
   const [conicGradient, setConicGradient] = useState('')
   const [loading, setLoading] = useState(true)
   const [deleting, setDeleting] = useState(false)
@@ -68,9 +69,14 @@ export default function CourseListItem(props: {
         if (json?.message != 'Course Fetched')
           throw new Error('Course not fetched')
 
-        const course = json.data?.course as PrismaUserCourse
+        const course = json.data!.course as PrismaUserCourse
+
         setUserCourse(course)
         setConicGradient(GenerateConicGradient(course))
+        if (json.data!.nextReview) {
+          setNextReview(new Date(json.data!.nextReview as string))
+        }
+
         setLoading(false)
       } catch (e) {
         Sentry.captureException(e)
@@ -146,12 +152,23 @@ export default function CourseListItem(props: {
             >
               Study Course
             </Button>
-            <p className="text-sm italic text-gray-600 dark:text-gray-400">
-              {userCourse?.lines?.length}{' '}
-              {userCourse?.lines?.length == 1
-                ? 'line is due.'
-                : 'lines are due.'}
-            </p>
+            <Tippy
+              content={
+                nextReview && (
+                  <p>
+                    Next review in <TimeSince date={nextReview} />
+                  </p>
+                )
+              }
+              disabled={!!userCourse?.lines?.length}
+            >
+              <p className="text-sm italic text-gray-600 dark:text-gray-400">
+                {userCourse?.lines?.length}{' '}
+                {userCourse?.lines?.length == 1
+                  ? 'line is due.'
+                  : 'lines are due.'}
+              </p>
+            </Tippy>
           </div>
           <Tippy content="Archive Course">
             <svg

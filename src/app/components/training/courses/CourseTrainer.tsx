@@ -25,8 +25,7 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 import type { PrismaUserCourse } from './list/CoursesList'
 
-// TODO: Bug Fix: First move comment not logged
-// TODO: Bug Fix: If we get a move wrong, it then forces the whole line to be replayed.
+// TODO: Bug Fix: Comment ID not being logged in DB
 // TODO: Show lines remaining counter
 // TODO: Add arrows from the move to the comment
 // TODO: Ensure links in comments work
