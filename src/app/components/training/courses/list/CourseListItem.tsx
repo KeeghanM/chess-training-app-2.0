@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import type { Course, UserCourse } from '@prisma/client'
-import * as HoverCard from '@radix-ui/react-hover-card'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
 import type { ResponseJson } from '~/app/api/responses'
@@ -15,9 +14,10 @@ import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
 import TimeSince from '~/app/components/general/TimeSince'
-import type { PrismaUserCourse } from '~/app/components/training/courses/CourseTrainer'
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
+
+import { PrismaUserCourse } from './CoursesList'
 
 export default function CourseListItem(props: {
   courseId: string
@@ -191,7 +191,7 @@ function GenerateConicGradient(course: UserCourse & { course: Course }) {
   const conicGradient = `conic-gradient(
             #4ade80 ${learnedPercent}%,
             #2563eb ${learnedPercent}% ${learnedPercent + learningPercent}%,
-            #f87171 ${learnedPercent + learningPercent}% ${
+            #ff3030 ${learnedPercent + learningPercent}% ${
               learnedPercent + learningPercent + hardPercent
             }%,
             #6b21a8 ${learnedPercent + learningPercent + hardPercent}% ${

@@ -164,21 +164,27 @@ export default function CourseTrainer(props: {
     if (!opponentsMove) return
     const opponentSan = opponentsMove.move
     const commentId = opponentsMove.comment?.id
+    const comment = getComment(commentId)
     const trainedFen = { fen: game.fen(), commentId }
     setTrainedFens((prevTrainedFens) => [...prevTrainedFens, trainedFen])
 
     const timeoutId = setTimeout(() => {
       makeMove(opponentSan)
+
+      // Check if we need to show a comment
       const allFens = [...existingFens, ...trainedFens]
-      const previouslySeenComment = allFens.find(
-        (fen) => fen.commentId == commentId,
-      )
+      const previouslySeenComment = allFens.find((fen) => {
+        const fenComment = getComment(fen.commentId) // compare the actual comment, not just the id
+        return fenComment == comment
+      })
       if (opponentsMove.comment && previouslySeenComment == undefined) {
         setShowComment(true)
         setInteractive(false)
         setTeaching(true)
         setHadTeachingMove(true)
-      } else if (needsTeachingMove()) {
+      }
+      // No opponent comment, but check if we need to show a teaching move
+      else if (needsTeachingMove()) {
         makeTeachingMove()
       }
     }, 500)
@@ -373,13 +379,6 @@ export default function CourseTrainer(props: {
 
     const allSeenFens = [...existingFens, ...fensToUpload]
     setExistingFens(allSeenFens)
-
-    console.log({
-      seenFens,
-      fensToUpload,
-    })
-
-    return
 
     if (fensToUpload.length > 0) {
       try {
