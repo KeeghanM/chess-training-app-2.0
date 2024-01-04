@@ -596,24 +596,24 @@ export default function CourseTrainer(props: {
       const lineColour = currentLine.line.colour
       setOrientation(lineColour == 'White' ? 'white' : 'black')
 
-      if (
-        (!trainedFens.includes(game.fen()) &&
-          !existingFens.includes(game.fen())) ||
-        (currentMove?.comment &&
-          !trainedComments.includes(currentMove.comment) &&
-          !existingComments.includes(currentMove.comment)) ||
-        (lineColour == 'Black' && game.history().length == 0)
+      let timeoutId: NodeJS.Timeout | undefined
+      if (lineColour == 'Black') {
+        // If we're Black, we always need the first move to be played automatically
+        // the playOpponentsMove function will handle the checks for what type (teaching or normal)
+        timeoutId = playOpponentsMove()
+      } else if (
+        (!existingFens.includes(game.fen()) &&
+          !trainedFens.includes(game.fen())) ||
+        (!existingComments.includes(currentMove?.comment!) &&
+          !trainedComments.includes(currentMove?.comment!))
       ) {
-        let timeoutId: ReturnType<typeof setTimeout> | undefined
-        if (lineColour == 'White') {
-          timeoutId = makeTeachingMove()
-          setHadTeachingMove(true)
-        } else {
-          timeoutId = playOpponentsMove()
-        }
-        return () => {
-          clearTimeout(timeoutId)
-        }
+        // If we're White, we only need to make a teaching move if we haven't seen
+        // the position or the comment before
+        timeoutId = makeTeachingMove()
+      }
+
+      return () => {
+        if (timeoutId) clearTimeout(timeoutId)
       }
     }
   }, [gameReady, game, currentLine])
