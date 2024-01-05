@@ -84,22 +84,30 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
       >
         {/* TODO: Show Loading State */}
         {courses.length > 0 ? (
-          courses.map((course, index) => (
-            <CourseListItem
-              key={index}
-              courseId={course.id}
-              courseName={course.course.courseName}
-              update={(userCourseId: string) => {
-                const index = courses.findIndex(
-                  (course) => course.id == userCourseId,
-                )
-                if (index == -1) return
-                const newCourses = [...courses]
-                newCourses.splice(index, 1)
-                setCourses(newCourses)
-              }}
-            />
-          ))
+          courses
+            .sort(
+              (a, b) =>
+                (a.lastTrained === null ? 0 : 1) -
+                  (b.lastTrained === null ? 0 : 1) ||
+                (b.lastTrained ? new Date(b.lastTrained).getTime() : 0) -
+                  (a.lastTrained ? new Date(a.lastTrained).getTime() : 0),
+            )
+            .map((course, index) => (
+              <CourseListItem
+                key={index}
+                courseId={course.id}
+                courseName={course.course.courseName}
+                update={(userCourseId: string) => {
+                  const index = courses.findIndex(
+                    (course) => course.id == userCourseId,
+                  )
+                  if (index == -1) return
+                  const newCourses = [...courses]
+                  newCourses.splice(index, 1)
+                  setCourses(newCourses)
+                }}
+              />
+            ))
         ) : (
           <div>
             <Heading as="h3">You haven't got any courses yet</Heading>

@@ -11,6 +11,7 @@ import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
 import type { Piece, Square } from 'chess.js'
 import { Chessboard } from 'react-chessboard'
+import { Arrow } from 'react-chessboard/dist/chessboard/types'
 // @ts-expect-error - No types available
 import useSound from 'use-sound'
 import type { ResponseJson } from '~/app/api/responses'
@@ -62,6 +63,7 @@ export default function CourseTrainer(props: {
   const [gameReady, setGameReady] = useState(false)
   const [orientation, setOrientation] = useState<'white' | 'black'>('white')
   const [position, setPosition] = useState(game.fen())
+  const [arrows, setArrows] = useState<Arrow[]>([])
 
   // Training State
   const [mode, setMode] = useState<'normal' | 'recap'>('normal')
@@ -650,6 +652,36 @@ export default function CourseTrainer(props: {
     if (!currentMove) return
     if ((teaching || nextLine) && currentMove?.comment) setShowComment(true)
     else setShowComment(false)
+
+    if (currentMove.arrows) {
+      // arrows format: "Ga1b3,Gf2b8,Ra1a8"
+      const moveArrows = currentMove.arrows.split(',')
+      const getColour = (code: string) => {
+        switch (code) {
+          case 'G':
+            return 'green'
+          case 'R':
+            return 'red'
+          case 'Y':
+            return 'yellow'
+          case 'B':
+            return 'blue'
+          case 'O':
+            return 'orange'
+          default:
+            return 'green'
+        }
+      }
+      const newArrows = moveArrows.map((arrow) => {
+        const colour = getColour(arrow.charAt(0))
+        const from = arrow.charAt(1) + arrow.charAt(2)
+        const to = arrow.charAt(3) + arrow.charAt(4)
+        return [from, to, colour] as Arrow
+      })
+      setArrows(newArrows)
+    } else {
+      setArrows([])
+    }
   }, [currentMove])
 
   // Last check to ensure we have a user
@@ -677,7 +709,7 @@ export default function CourseTrainer(props: {
           </p>
         </div>
         <XpTracker counter={xpCounter} type={'line'} />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 ml-auto">
           <ThemeSwitch />
           <div
             className="flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
@@ -735,6 +767,7 @@ export default function CourseTrainer(props: {
             customBoardStyle={{
               marginInline: 'auto',
             }}
+            customArrows={teaching ? arrows : []}
           />
         </div>
         <div className="flex flex-col gap-2 flex-1">
