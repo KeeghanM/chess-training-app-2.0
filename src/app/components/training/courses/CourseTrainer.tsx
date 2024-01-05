@@ -25,9 +25,9 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 import type { PrismaUserCourse } from './list/CoursesList'
 
-// TODO: Bug Fix: Comment ID not being logged in DB
-// TODO: Show lines remaining counter
 // TODO: Add arrows from the move to the comment
+// TODO: Modal for confirming exit
+// TODO: Show lines remaining counter
 // TODO: Ensure links in comments work
 // TODO: Line browser
 
@@ -98,6 +98,7 @@ export default function CourseTrainer(props: {
   const [promotionSound] = useSound('/sfx/promote.mp3') as [() => void]
   const [castleSound] = useSound('/sfx/castle.mp3') as [() => void]
   const [moveSound] = useSound('/sfx/move.mp3') as [() => void]
+  const [incorrectSound] = useSound('/sfx/incorrect.mp3') as [() => void]
 
   const getNextLine = (lines: PrismaUserLine[]) => {
     // Sorts the lines in order or priority
@@ -192,7 +193,7 @@ export default function CourseTrainer(props: {
 
   // Makes a move for the "player"
   // and pauses to let them make a move
-  const makeTeachingMove = () => {
+  const makeTeachingMove = (delay = 500) => {
     const currentMove =
       mode == 'normal'
         ? currentLineMoves[game.history().length]?.move
@@ -205,7 +206,7 @@ export default function CourseTrainer(props: {
       setTeaching(true)
       setInteractive(false)
       makeMove(currentMove)
-    }, 500)
+    }, delay)
     return timeoutId
   }
 
@@ -491,9 +492,13 @@ export default function CourseTrainer(props: {
       // We played the wrong move
       setLineCorrect(false)
       game.undo()
+      incorrectSound()
+      setTimeout(() => {
+        setPosition(game.fen())
+      }, 300)
       setWrongFens([...wrongFens, game.fen()])
       setWrongMoves([...wrongMoves, { move: correctMove, fen: game.fen() }])
-      makeTeachingMove()
+      makeTeachingMove(800)
       return false
     }
 
@@ -626,7 +631,7 @@ export default function CourseTrainer(props: {
       )}
       <div className="flex flex-row items-center text-white">
         <p className="italic text-white">{currentLine?.line.group.groupName}</p>
-        <XpTracker counter={xpCounter} type={'tactic'} />
+        <XpTracker counter={xpCounter} type={'line'} />
         <div className="flex items-center gap-2">
           <ThemeSwitch />
           <div

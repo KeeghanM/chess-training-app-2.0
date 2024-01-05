@@ -17,7 +17,7 @@ export async function POST(
   const { fens } = (await request.json()) as {
     fens: {
       fen: string
-      commentMoveId: number
+      commentId: number
     }[]
   }
 
@@ -28,7 +28,7 @@ export async function POST(
     await prisma.userFen.createMany({
       data: fens.map((fen) => ({
         fen: fen.fen,
-        commentMoveId: fen.commentMoveId,
+        commentId: fen.commentId,
         userCourseId: courseId,
       })),
     })
