@@ -91,6 +91,7 @@ export async function POST(request: Request) {
             move: move.notation,
             moveNumber: Math.ceil((index + 1) / 2),
             colour: index % 2 === 0 ? true : false, // True for white, false for black
+            arrows: move.arrows,
             comment: move.comment
               ? { create: { comment: move.comment.trim() } } // Create a comment in the comment table if there is one
               : undefined,
