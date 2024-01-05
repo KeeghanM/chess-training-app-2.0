@@ -27,7 +27,6 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import type { PrismaUserCourse } from './list/CoursesList'
 
 // TODO: Bug Fix: First move on mount doesn't always show (maybe a react strict mode thing)
-// TODO: Add arrows from the move to the comment
 // TODO: Modal for confirming exit
 // TODO: Ensure links in comments work
 // TODO: Line browser

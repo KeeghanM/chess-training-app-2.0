@@ -11,6 +11,7 @@ import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
+import Spinner from '~/app/components/general/Spinner'
 
 import CourseListItem from './CourseListItem'
 
@@ -76,49 +77,60 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
           </Link>
         )}
       </div>
-      <div
-        className={
-          'flex flex-col gap-4 p-2 md:p-4' +
-          (courses.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : '')
-        }
-      >
-        {/* TODO: Show Loading State */}
-        {courses.length > 0 ? (
-          courses
-            .sort(
-              (a, b) =>
-                (a.lastTrained === null ? 0 : 1) -
-                  (b.lastTrained === null ? 0 : 1) ||
-                (b.lastTrained ? new Date(b.lastTrained).getTime() : 0) -
-                  (a.lastTrained ? new Date(a.lastTrained).getTime() : 0),
-            )
-            .map((course, index) => (
-              <CourseListItem
-                key={index}
-                courseId={course.id}
-                courseName={course.course.courseName}
-                update={(userCourseId: string) => {
-                  const index = courses.findIndex(
-                    (course) => course.id == userCourseId,
-                  )
-                  if (index == -1) return
-                  const newCourses = [...courses]
-                  newCourses.splice(index, 1)
-                  setCourses(newCourses)
-                }}
-              />
-            ))
-        ) : (
-          <div>
-            <Heading as="h3">You haven't got any courses yet</Heading>
-            <p className="text-gray-500  dark:text-white">
-              You can browse courses any of our{' '}
-              <StyledLink href="/courses">amazing courses</StyledLink> or{' '}
-              <StyledLink href="/courses/create">creating your own</StyledLink>.
-            </p>
-          </div>
-        )}
-      </div>
+      {loading ? (
+        <div className="relative dark:text-white w-full h-16 flex items-center justify-center">
+          <div className="absolute inset-0 bg-gray-500 opacity-30"></div>
+          <p className="flex items-center gap-4">
+            Loading... <Spinner />
+          </p>
+        </div>
+      ) : (
+        <div
+          className={
+            'flex flex-col gap-4 ' +
+            (courses.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : '')
+          }
+        >
+          {courses.length > 0 ? (
+            courses
+              .sort(
+                (a, b) =>
+                  (a.lastTrained === null ? 0 : 1) -
+                    (b.lastTrained === null ? 0 : 1) ||
+                  (b.lastTrained ? new Date(b.lastTrained).getTime() : 0) -
+                    (a.lastTrained ? new Date(a.lastTrained).getTime() : 0),
+              )
+              .map((course, index) => (
+                <CourseListItem
+                  key={index}
+                  courseId={course.id}
+                  courseName={course.course.courseName}
+                  update={(userCourseId: string) => {
+                    const index = courses.findIndex(
+                      (course) => course.id == userCourseId,
+                    )
+                    if (index == -1) return
+                    const newCourses = [...courses]
+                    newCourses.splice(index, 1)
+                    setCourses(newCourses)
+                  }}
+                />
+              ))
+          ) : (
+            <div className="p-2">
+              <Heading as="h3">You haven't got any courses yet</Heading>
+              <p className="text-gray-500  dark:text-white">
+                You can browse courses any of our{' '}
+                <StyledLink href="/courses">amazing courses</StyledLink> or{' '}
+                <StyledLink href="/courses/create">
+                  creating your own
+                </StyledLink>
+                .
+              </p>
+            </div>
+          )}
+        </div>
+      )}
     </>
   )
 }

@@ -88,7 +88,7 @@ export default function CourseListItem(props: {
 
   return (
     <div
-      className="flex relative flex-col items-center gap-6 bg-gray-100 p-2 md:px-6 !pr-12 dark:bg-slate-900 dark:text-white md:flex-row"
+      className="flex relative flex-col items-center gap-6 bg-gray-100 p-2 md:px-6 md:!pr-12 dark:bg-slate-900 dark:text-white md:flex-row"
       key={props.courseId}
     >
       {deleting ? (
@@ -102,7 +102,7 @@ export default function CourseListItem(props: {
         </div>
       ) : (
         <>
-          <div className="mr-auto flex flex-col">
+          <div className="md:mr-auto flex flex-col md:max-w-[50%] md:w-[50%]">
             <Link href={'/courses/' + userCourse?.course.slug}>
               <Heading as={'h3'}>{props.courseName}</Heading>
             </Link>
@@ -136,7 +136,7 @@ export default function CourseListItem(props: {
             }
           >
             <div
-              className="ml-auto grid h-16 w-16 place-items-center rounded-full"
+              className="mx-auto md:ml-auto grid h-16 w-16 place-items-center rounded-full"
               style={{
                 background: conicGradient,
               }}
