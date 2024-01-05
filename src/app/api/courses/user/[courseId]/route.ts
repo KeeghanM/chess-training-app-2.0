@@ -65,7 +65,7 @@ export async function GET(
   }
 }
 
-export async function DELETE(
+export async function PUT(
   request: Request,
   { params }: { params: { courseId: string } },
 ) {
@@ -75,8 +75,10 @@ export async function DELETE(
   if (!user) return errorResponse('Unauthorized', 401)
 
   const { courseId } = params as { courseId: string }
+  const { active } = (await request.json()) as { active: boolean }
 
   if (courseId === undefined) return errorResponse('Missing fields', 400)
+  if (active === undefined) return errorResponse('Missing fields', 400)
 
   try {
     await prisma.userCourse.update({
@@ -84,7 +86,7 @@ export async function DELETE(
         id: courseId,
       },
       data: {
-        active: false,
+        active,
       },
     })
 

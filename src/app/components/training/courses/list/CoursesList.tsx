@@ -53,7 +53,7 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
 
   return (
     <>
-      <div className={'flex items-center gap-2'}>
+      <div className={'flex flex-col md:flex-row items-center gap-2'}>
         <Heading as={'h3'}>
           {courses.length}
           {!hasUnlimitedCourses ? <>/{maxCourses}</> : ''} courses
@@ -95,6 +95,7 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
             courses
               .sort(
                 (a, b) =>
+                  (b.active ? 1 : 0) - (a.active ? 1 : 0) ||
                   (a.lastTrained === null ? 0 : 1) -
                     (b.lastTrained === null ? 0 : 1) ||
                   (b.lastTrained ? new Date(b.lastTrained).getTime() : 0) -
@@ -105,15 +106,7 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
                   key={index}
                   courseId={course.id}
                   courseName={course.course.courseName}
-                  update={(userCourseId: string) => {
-                    const index = courses.findIndex(
-                      (course) => course.id == userCourseId,
-                    )
-                    if (index == -1) return
-                    const newCourses = [...courses]
-                    newCourses.splice(index, 1)
-                    setCourses(newCourses)
-                  }}
+                  update={fetchCourses}
                 />
               ))
           ) : (
