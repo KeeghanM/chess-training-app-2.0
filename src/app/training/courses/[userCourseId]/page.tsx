@@ -44,6 +44,7 @@ export default async function CourseTrainPage({
 
       const userLines = await prisma.userLine.findMany({
         where: {
+          userId: user.id,
           userCourseId,
         },
         include: {

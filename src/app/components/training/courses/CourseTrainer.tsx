@@ -9,7 +9,7 @@ import type { Comment, Move, UserFen } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
-import type { Square } from 'chess.js'
+import type { Piece, Square } from 'chess.js'
 import { Chessboard } from 'react-chessboard'
 // @ts-expect-error - No types available
 import useSound from 'use-sound'
@@ -25,9 +25,9 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 import type { PrismaUserCourse } from './list/CoursesList'
 
+// TODO: add error catch on incorrect move
 // TODO: Add arrows from the move to the comment
 // TODO: Modal for confirming exit
-// TODO: Show lines remaining counter
 // TODO: Ensure links in comments work
 // TODO: Line browser
 
@@ -469,17 +469,50 @@ export default function CourseTrainer(props: {
     }
   }
 
+  const checkPromotion = (
+    sourceSquare: Square,
+    targetSquare: Square,
+    piece: Piece,
+  ) => {
+    // CHECK IF LAST POSITION, BASED ON SOURCE SQUARE, IS A PAWN
+    // This works because we haven't actually made the move yet
+    const lastMovePiece = game.get(sourceSquare)
+    const sourceRank = sourceSquare.split('')[1]
+    const targetRank = targetSquare.split('')[1]
+    const pieceString = piece as unknown as string // Hacky cause Chess.js types are wrong
+    const pieceColor = pieceString.split('')[0]
+    const pieceType = pieceString.split('')[1]
+
+    if (
+      lastMovePiece?.type === 'p' &&
+      ((pieceColor == 'w' && sourceRank === '7' && targetRank === '8') ||
+        (pieceColor == 'b' && sourceRank === '2' && targetRank === '1'))
+    ) {
+      return pieceType?.toLowerCase()
+    }
+    return undefined
+  }
+
   // When we drop a piece, we need to check if it's a valid move
   // if it is, we then need to check if it's the correct move
   const userDroppedPiece = async (
     sourceSquare: Square,
     targetSquare: Square,
+    piece: Piece,
   ) => {
     // Make the move to see if it's legal
-    const playerMove = game.move({
-      from: sourceSquare,
-      to: targetSquare,
-    })
+    const playerMove = (() => {
+      try {
+        const move = game.move({
+          from: sourceSquare,
+          to: targetSquare,
+          promotion: checkPromotion(sourceSquare, targetSquare, piece),
+        })
+        return move
+      } catch (e) {
+        return null
+      }
+    })()
     if (playerMove === null) return false // illegal move
 
     // Check if the move is correct
@@ -630,7 +663,19 @@ export default function CourseTrainer(props: {
         </div>
       )}
       <div className="flex flex-row items-center text-white">
-        <p className="italic text-white">{currentLine?.line.group.groupName}</p>
+        <div className="flex flex-col">
+          <p className="font-bold text-white">
+            {currentLine?.line.group.groupName}
+          </p>
+          <p className="italic text-sm text-white">
+            {
+              lines.filter(
+                (line) => line.revisionDate && line.revisionDate <= new Date(),
+              ).length
+            }{' '}
+            lines remaining
+          </p>
+        </div>
         <XpTracker counter={xpCounter} type={'line'} />
         <div className="flex items-center gap-2">
           <ThemeSwitch />
