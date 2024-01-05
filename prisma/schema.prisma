@@ -212,6 +212,7 @@ model UserProfile {
     lastIncrement       DateTime?
     highestOnlineRating Int?
     highestOTBRating    Int?
+    public              Boolean      @default(false)
     createdAt           DateTime     @default(now())
     updatedAt           DateTime     @updatedAt
     daysTrained         DayTrained[]

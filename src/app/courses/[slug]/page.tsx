@@ -3,9 +3,11 @@ import { redirect } from 'next/navigation'
 import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import type { Course, UserProfile } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 
 import Container from '~/app/components/_elements/container'
+import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 
@@ -15,11 +17,28 @@ export default async function CoursePage({
   params: { slug: string }
 }) {
   const { slug } = params
-  const { course, createdBy } = await (async () => {
+  const session = getKindeServerSession()
+  const user = await session.getUser()
+
+  const {
+    course,
+    createdBy,
+  }: {
+    course: Course | undefined
+    createdBy: UserProfile | undefined
+  } = await (async () => {
     try {
       const course = await prisma.course.findUnique({
         where: {
           slug,
+          OR: [
+            {
+              published: true,
+            },
+            {
+              createdBy: user?.id,
+            },
+          ],
         },
       })
 
@@ -44,45 +63,33 @@ export default async function CoursePage({
     redirect('/404')
   }
 
-  const session = getKindeServerSession()
   let ownsCourse = false
-  if (session) {
-    try {
-      const user = await session.getUser()
-      if (!user) throw new Error('User not found')
+  if (user) {
+    const userCourse = await prisma.userCourse.findFirst({
+      where: {
+        userId: user.id,
+        courseId: course.id,
+      },
+    })
 
-      const userCourse = await prisma.userCourse.findFirst({
-        where: {
-          userId: user.id,
-          courseId: course.id,
-        },
-      })
-
-      if (userCourse) ownsCourse = true
-    } catch (e) {
-      Sentry.captureException(e)
-    }
+    if (userCourse) ownsCourse = true
   }
 
+  const publicAuthor = createdBy.public
+
   return (
-    <>
-      <PageHeader
-        title={course.courseName}
-        image={{
-          src: '/images/hero.avif',
-          alt: 'Wooden chess pieces on a chess board',
-        }}
-        subTitle={`Created By: ${createdBy.username}`}
-      />
-      <Container>
-        <p>{course.courseDescription}</p>
-        {ownsCourse && (
-          <p>
-            You own this course,{' '}
-            <StyledLink href="/training/courses">train now</StyledLink>.
-          </p>
+    <Container>
+      <Heading as={'h1'}>{course.courseName}</Heading>
+      <p>
+        Created By:{' '}
+        {publicAuthor ? (
+          <StyledLink href={`/members/${createdBy.username}`}>
+            {createdBy.username}
+          </StyledLink>
+        ) : (
+          createdBy.username
         )}
-      </Container>
-    </>
+      </p>
+    </Container>
   )
 }
