@@ -18,6 +18,7 @@ model Course {
     slug              String       @unique
     courseDescription String?      @db.Text
     createdBy         String
+    price             Decimal      @default(0)
     createdAt         DateTime     @default(now())
     updatedAt         DateTime     @updatedAt
     published         Boolean      @default(false)
