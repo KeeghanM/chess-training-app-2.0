@@ -156,6 +156,9 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
   })
 
   const loadCustomPuzzle = () => {
+    setError('')
+    setStatus('idle')
+
     const str = prompt(
       'Enter Full PGN from LiChess - Remember to set it to the starting position!',
     )
@@ -343,7 +346,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
           <div className="flex flex-row items-center gap-1">
             <label htmlFor="rating">Rating</label>
             <input
-              className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
+              className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
               type="number"
               id="rating"
               name="rating"
@@ -357,7 +360,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
               Theme Match
             </label>
             <select
-              className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
+              className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
               id="themeTypeToggle"
               name="themeTypeToggle"
               value={themeTypeToggle}
@@ -374,7 +377,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
               Themes Selected: {selectedThemes.length}
             </p>
             <input
-              className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
+              className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
               type="text"
               id="filter"
               name="filter"

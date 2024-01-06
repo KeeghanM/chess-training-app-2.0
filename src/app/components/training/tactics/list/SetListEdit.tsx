@@ -158,7 +158,7 @@ export default function SetListEdit(props: {
               <label>Set Name</label>
               <input
                 type="text"
-                className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
+                className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
                 value={name}
                 onInput={(e) => {
                   setName(e.currentTarget.value)

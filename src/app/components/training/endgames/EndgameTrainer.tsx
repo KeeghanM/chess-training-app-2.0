@@ -395,7 +395,7 @@ export default function EndgameTrainer() {
           <label className="text-lg font-bold text-white">Your Rating</label>
           <input
             type="number"
-            className="w-full border border-gray-300 bg-gray-100 px-4 py-2"
+            className="w-full border border-gray-300 bg-gray-100 px-4 py-2 bg-gray-100 text-black"
             min={'500'}
             max={'3000'}
             step={'10'}

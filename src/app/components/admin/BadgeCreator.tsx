@@ -103,7 +103,7 @@ export default function BadgeCreator() {
         <div>
           <label>Name</label>
           <input
-            className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
+            className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
             type="text"
             id="name"
             name="name"
@@ -115,7 +115,7 @@ export default function BadgeCreator() {
         <div>
           <label>Description</label>
           <input
-            className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
+            className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
             type="text"
             id="description"
             name="description"
@@ -127,7 +127,7 @@ export default function BadgeCreator() {
         <div>
           <label>Category</label>
           <input
-            className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
+            className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
             type="text"
             id="category"
             name="category"
