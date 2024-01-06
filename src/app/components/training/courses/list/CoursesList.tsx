@@ -30,7 +30,7 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
   const fetchCourses = async () => {
     setLoading(true)
     try {
-      const resp = await fetch('/api/courses/user/active')
+      const resp = await fetch(`/api/courses/user/active`)
       const data = (await resp.json()) as ResponseJson
       if (data?.message != 'Courses found')
         throw new Error('Failed to fetch courses')

@@ -4,43 +4,51 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
 
-export async function POST(request: Request) {
+export async function POST(
+  request: Request,
+  { params }: { params: { courseId: string } },
+) {
   const session = getKindeServerSession(request)
   if (!session) return errorResponse('Unauthorized', 401)
 
   const user = await session.getUser()
   if (!user) return errorResponse('Unauthorized', 401)
 
-  const { courseId } = (await request.json()) as {
-    courseId: string
-  }
+  const { courseId } = params as { courseId: string }
 
   if (!courseId) return errorResponse('Missing required fields', 400)
 
   try {
     const result = await prisma.$transaction(async (prisma) => {
-      const course = await prisma.course.findFirst({
+      const userCourse = await prisma.userCourse.findFirst({
         where: {
           id: courseId,
         },
         include: {
-          lines: true,
+          course: {
+            include: {
+              lines: true,
+            },
+          },
         },
       })
 
-      if (!course) throw new Error('Course not found')
+      if (!userCourse) throw new Error('Course not found')
 
-      const userCourse = await prisma.userCourse.create({
+      // update userCourse with line count
+      await prisma.userCourse.update({
+        where: {
+          id: courseId,
+        },
         data: {
-          userId: user.id,
-          courseId: course.id,
-          linesUnseen: course.lines.length,
+          active: true,
+          linesUnseen: userCourse.course.lines.length,
         },
       })
 
       // Create each new line and userLine
       await Promise.all(
-        course.lines.map(async (line) => {
+        userCourse.course.lines.map(async (line) => {
           await prisma.userLine.create({
             data: {
               userId: user.id,
@@ -54,7 +62,7 @@ export async function POST(request: Request) {
       return { userCourseId: userCourse.id }
     })
 
-    return successResponse('Course bought', result, 200)
+    return successResponse('Course restored', result, 200)
   } catch (e) {
     Sentry.captureException(e)
     return errorResponse('Internal server error', 500)

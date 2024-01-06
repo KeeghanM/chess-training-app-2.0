@@ -14,14 +14,23 @@ export async function GET(request: Request) {
     const courses = await prisma.userCourse.findMany({
       where: {
         userId: user.id,
-        active: false,
       },
       include: {
         course: true,
       },
     })
 
-    return successResponse('Courses found', { courses }, 200)
+    return successResponse(
+      'Courses found',
+      {
+        courses: courses.filter((course) => course.active == false),
+        activeCount: courses.reduce(
+          (acc, course) => (course.active ? acc + 1 : acc),
+          0,
+        ),
+      },
+      200,
+    )
   } catch (e) {
     Sentry.captureException(e)
     return errorResponse('Internal Server Error', 500)
