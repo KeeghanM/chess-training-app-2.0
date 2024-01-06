@@ -142,7 +142,7 @@ export default async function Dashboard() {
         <div className="absolute inset-0">
           <Image
             fill={true}
-            objectFit="cover"
+            className="object-cover object-center w-full h-full"
             src="/images/hero.avif"
             alt="Chess board with pieces set up"
           />
