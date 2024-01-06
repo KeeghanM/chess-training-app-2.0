@@ -17,6 +17,7 @@ import TimeSince from '~/app/components/general/TimeSince'
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
+import CourseSettings from './CourseSettings'
 import type { PrismaUserCourse } from './CoursesList'
 
 export default function CourseListItem(props: {
@@ -29,7 +30,6 @@ export default function CourseListItem(props: {
   const [nextReview, setNextReview] = useState<Date | null>(null)
   const [conicGradient, setConicGradient] = useState('')
   const [loading, setLoading] = useState(true)
-  const [deleting, setDeleting] = useState(false)
 
   const openCourse = async (mode: 'learn' | 'revise') => {
     if (!userCourse) return
@@ -40,33 +40,6 @@ export default function CourseListItem(props: {
         userCourse?.id +
         (mode == 'learn' ? '?mode=newOnly' : ''),
     )
-  }
-
-  const setActive = async (active: boolean) => {
-    if (!userCourse) return
-
-    setDeleting(true)
-    await trackEventOnClient('course_status_set', {
-      active: active ? 'active' : 'archived',
-    })
-    try {
-      const resp = await fetch(`/api/courses/user/${userCourse?.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          active,
-        }),
-      })
-      const json = (await resp.json()) as ResponseJson
-      if (json?.message != 'Course archived')
-        throw new Error(json.message ?? 'Course not archived')
-      props.update()
-    } catch (e) {
-      Sentry.captureException(e)
-    }
-    setDeleting(false)
   }
 
   useEffect(() => {
@@ -99,9 +72,7 @@ export default function CourseListItem(props: {
       className="flex relative flex-col items-center gap-6 bg-gray-100 p-2 md:px-6 md:!pr-12 dark:bg-slate-900 dark:text-white md:flex-row"
       key={props.courseId}
     >
-      {deleting ? (
-        <Spinner />
-      ) : loading ? (
+      {loading ? (
         <div className="mr-auto flex flex-col">
           <Heading as={'h3'}>{props.courseName}</Heading>
           <p className="text-sm italic text-gray-600 dark:text-gray-400">
@@ -153,63 +124,32 @@ export default function CourseListItem(props: {
             </div>
           </Tippy>
           <div className="flex flex-col items-center gap-2">
-            {userCourse!.active == true ? (
-              <>
-                <Button
-                  variant="primary"
-                  onClick={() => openCourse('revise')}
-                  disabled={userCourse?.lines?.length == 0}
-                >
-                  Study Course
-                </Button>
-                <Tippy
-                  content={
-                    nextReview && (
-                      <p>
-                        Next review in <TimeSince date={nextReview} />
-                      </p>
-                    )
-                  }
-                  disabled={!!userCourse?.lines?.length}
-                >
-                  <p className="text-sm italic text-gray-600 dark:text-gray-400">
-                    {userCourse?.lines?.length}{' '}
-                    {userCourse?.lines?.length == 1
-                      ? 'line is due.'
-                      : 'lines are due.'}
+            <Button
+              variant="primary"
+              onClick={() => openCourse('revise')}
+              disabled={userCourse?.lines?.length == 0}
+            >
+              Study Course
+            </Button>
+            <Tippy
+              content={
+                nextReview && (
+                  <p>
+                    Next review in <TimeSince date={nextReview} />
                   </p>
-                </Tippy>
-              </>
-            ) : (
-              <Button
-                variant="warning"
-                onClick={() => setActive(true)}
-                disabled={userCourse?.lines?.length == 0}
-              >
-                Reactivate
-              </Button>
-            )}
-          </div>
-          {userCourse?.active && (
-            <Tippy content="Archive Course">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                className="absolute top-0 right-0 m-1 hover:text-red-500 cursor-pointer"
-                onClick={() => setActive(false)}
-              >
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeWidth="1.5"
-                  d="m8.464 15.535l7.072-7.07m-7.072 0l7.072 7.07"
-                />
-              </svg>
+                )
+              }
+              disabled={!!userCourse?.lines?.length}
+            >
+              <p className="text-sm italic text-gray-600 dark:text-gray-400">
+                {userCourse?.lines?.length}{' '}
+                {userCourse?.lines?.length == 1
+                  ? 'line is due.'
+                  : 'lines are due.'}
+              </p>
             </Tippy>
-          )}
+          </div>
+          <CourseSettings userCourse={userCourse!} update={props.update} />
         </>
       )}
     </div>

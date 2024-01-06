@@ -14,6 +14,7 @@ export async function GET(request: Request) {
     const courses = await prisma.userCourse.findMany({
       where: {
         userId: user.id,
+        active: true,
       },
       include: {
         course: true,

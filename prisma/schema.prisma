@@ -120,9 +120,6 @@ model UserFen {
     userCourseId String
     fen          String
     commentId    Int?
-    timesTrained Int        @default(0)
-    timesCorrect Int        @default(0)
-    timesWrong   Int        @default(0)
     course       UserCourse @relation(fields: [userCourseId], references: [id], onDelete: Cascade)
 
     @@index([userCourseId])

@@ -30,7 +30,7 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
   const fetchCourses = async () => {
     setLoading(true)
     try {
-      const resp = await fetch('/api/courses')
+      const resp = await fetch('/api/courses/user/active')
       const data = (await resp.json()) as ResponseJson
       if (data?.message != 'Courses found')
         throw new Error('Failed to fetch courses')
@@ -76,6 +76,12 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
             </Button>
           </Link>
         )}
+        <Link
+          className="text-sm text-purple-700 hover:text-purple-600 underline md:ml-auto"
+          href="/training/courses/archived"
+        >
+          View archived courses
+        </Link>
       </div>
       {loading ? (
         <div className="relative dark:text-white w-full h-16 flex items-center justify-center">
