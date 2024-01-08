@@ -62,7 +62,6 @@ export default function CreateCourseForm() {
       router.push('/training/courses/')
     } catch (e) {
       Sentry.captureException(e)
-      console.log(e.message)
       setCurrentStep('error')
     }
   }

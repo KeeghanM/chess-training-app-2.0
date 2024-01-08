@@ -2,24 +2,27 @@
 
 import { useEffect, useState } from 'react'
 
-import { useAutoAnimate } from '@formkit/auto-animate/react'
-import type { Course, Group, Line, Move } from '@prisma/client'
+import type { Course, Group } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
+import Tippy from '@tippyjs/react'
+import 'tippy.js/dist/tippy.css'
+import { set } from 'zod'
 
 import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
 import TextEditor from '~/app/components/general/TextEditor'
 
+import { LineWithMoves } from './GroupEditor'
+import GroupsListEditor from './GroupsListEditor'
+
 interface CourseAdminPanelProps {
   course: Course & {
-    lines: (Line & { moves: Move[] })[]
+    lines: LineWithMoves[]
   } & { groups: Group[] }
 }
 export default function CourseAdminPanel(props: CourseAdminPanelProps) {
   const { course } = props
 
-  const [parent] = useAutoAnimate()
   const [saving, setSaving] = useState(false)
   const [hasHadChanges, setHasHadChanges] = useState(false)
   const [lines, setLines] = useState(course.lines)
@@ -28,31 +31,36 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
   const [courseDescription, setCourseDescription] = useState(
     course.courseDescription ?? '',
   )
-  const [open, setOpen] = useState(false)
 
   const saveCourse = async () => {
     if (!hasHadChanges) return
     if (!confirm('Are you sure you want to save these changes?')) return
 
+    setSaving(true)
     try {
-      const res = await fetch('/api/training/courses', {
+      const res = await fetch('/api/courses', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           courseId: course.id,
           courseName,
           courseDescription,
-          lines,
-          groups,
+          lines: lines.map((line) => ({
+            id: line.id,
+            sortOrder: line.sortOrder,
+          })),
+          groups: groups.map((group) => ({
+            id: group.id,
+            groupName: group.groupName,
+          })),
         }),
       })
       const json = await res.json()
       if (json.message != 'Course updated') throw new Error(json.message)
-      return true
     } catch (e) {
       Sentry.captureException(e)
-      return false
     }
+    setSaving(false)
   }
 
   const exit = () => {
@@ -92,8 +100,12 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
         <label className="font-bold">Course Description:</label>
         <TextEditor value={courseDescription} onChange={setCourseDescription} />
       </div>
-      <div className="flex flex-row gap-2">
-        <Button disabled={saving || !hasHadChanges} variant="accent">
+      <div className="flex flex-col md:flex-row md:flex-wrap gap-2">
+        <Button
+          disabled={saving || !hasHadChanges}
+          variant="success"
+          onClick={saveCourse}
+        >
           {saving ? (
             <>
               Saving... <Spinner />
@@ -102,57 +114,26 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
             'Save Changes'
           )}
         </Button>
+        <Tippy content="Coming Soon!">
+          <Button disabled variant="accent">
+            Add New Lines
+          </Button>
+        </Tippy>
+        <Tippy content="Coming Soon!">
+          <Button disabled variant="warning">
+            Publish Course
+          </Button>
+        </Tippy>
         <Button variant="secondary" onClick={exit}>
           Exit
         </Button>
       </div>
-      <Heading as="h2" color="text-white">
-        <span
-          onClick={() => setOpen(!open)}
-          className="flex items-center gap-2 cursor-pointer hover:text-orange-500"
-        >
-          Groups{' '}
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
-            viewBox="0 0 32 32"
-            className={
-              (open ? '-rotate-180' : '-rotate-90') +
-              ' transition-all duration-200'
-            }
-          >
-            <path
-              fill="currentColor"
-              d="M16 22L6 12l1.4-1.4l8.6 8.6l8.6-8.6L26 12z"
-            />
-          </svg>
-        </span>
-      </Heading>
-      <div ref={parent}>
-        {open &&
-          groups.map((group) => (
-            <div
-              key={group.id}
-              className="flex flex-col gap-4 bg-purple-600 text-white p-2"
-            >
-              <input
-                className="w-full border-b border-gray-300 px-4 py-2 bg-[rgba(255,255,255,0.2)] text-white font-bold"
-                value={group.groupName}
-                onChange={(e) =>
-                  setGroups(
-                    groups.map((g) =>
-                      g.id == group.id
-                        ? { ...g, groupName: e.target.value }
-                        : g,
-                    ),
-                  )
-                }
-                type="text"
-              />
-            </div>
-          ))}
-      </div>
+      <GroupsListEditor
+        groups={groups}
+        lines={lines.sort((a, b) => a.sortOrder - b.sortOrder)}
+        setGroups={setGroups}
+        updateLines={setLines}
+      />
     </div>
   )
 }
