@@ -1,17 +1,20 @@
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import type { Course, UserCourse, UserProfile } from '@prisma/client'
+import type {
+  Course,
+  Group,
+  Line,
+  UserCourse,
+  UserProfile,
+} from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 
-import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
-import PageHeader from '~/app/components/_layouts/pageHeader'
 import GetCourse from '~/app/components/ecomm/GetCourse'
 
 export default async function CoursePage({
@@ -27,7 +30,7 @@ export default async function CoursePage({
     course,
     createdBy,
   }: {
-    course: Course | undefined
+    course: (Course & { lines: Line[] } & { groups: Group[] }) | undefined
     createdBy: UserProfile | undefined
   } = await (async () => {
     try {
@@ -42,6 +45,14 @@ export default async function CoursePage({
               createdBy: user?.id,
             },
           ],
+        },
+        include: {
+          lines: {
+            orderBy: {
+              sortOrder: 'asc',
+            },
+          },
+          groups: true,
         },
       })
 
@@ -78,6 +89,22 @@ export default async function CoursePage({
 
   const publicAuthor = createdBy.public
 
+  const groupLineCounts = course.lines.reduce(
+    (acc: { [name: string]: number }, line) => {
+      const groupName = course.groups.find(
+        (group) => group.id === line.groupId,
+      )!.groupName
+      if (groupName) acc[groupName] = (acc[groupName] || 0) + 1
+      return acc
+    },
+    {},
+  )
+
+  const groupLineCountsArray = Object.keys(groupLineCounts).map((name) => ({
+    name,
+    count: groupLineCounts[name],
+  }))
+
   return (
     <Container>
       <div className="flex flex-col gap-2">
@@ -104,11 +131,21 @@ export default async function CoursePage({
           userCourseId={userCourse?.id}
         />
         {course.courseDescription && (
-          <div className="p-4 bg-gray-100">
-            <Heading as={'h2'}>Course Description</Heading>
-            <p>{course.courseDescription}</p>
-          </div>
+          <div
+            className="p-4 bg-gray-100"
+            dangerouslySetInnerHTML={{ __html: course.courseDescription }}
+          ></div>
         )}
+        <div className="p-4 bg-gray-100">
+          <Heading as={'h2'}>Course Contents</Heading>
+          <ul>
+            {groupLineCountsArray.map((group) => (
+              <li key={group.name}>
+                {group.name} ({group.count})
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </Container>
   )

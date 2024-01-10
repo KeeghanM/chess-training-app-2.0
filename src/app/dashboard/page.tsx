@@ -12,6 +12,7 @@ import ToolGrid from '~/app/components/dashboard/ToolGrid'
 import XpDisplay from '~/app/components/dashboard/XpDisplay'
 import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
 
+import { isFlagEnabledServer } from '../_util/isFlagEnabledServer'
 import { PostHogClient } from '~/app/_util/trackEventOnServer'
 
 export type Tool = {
@@ -78,7 +79,7 @@ export default async function Dashboard() {
       ],
       href: '/training/courses',
       buttonText: 'Train',
-      active: false || override,
+      active: (await isFlagEnabledServer('course-trainer')) || override,
     },
     {
       name: 'Endgame Training',

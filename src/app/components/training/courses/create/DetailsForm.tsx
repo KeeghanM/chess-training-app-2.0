@@ -6,6 +6,7 @@ import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
+import TextEditor from '~/app/components/general/TextEditor'
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
@@ -70,14 +71,13 @@ export default function DetailsForm(props: {
         />
       </div>
       <div>
-        <Heading as={'h3'}>and a helpful description</Heading>
-        <textarea
-          className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-          rows={5}
-          placeholder="An opening course covering all the main lines for White"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
+        <Heading as={'h3'}>
+          and a helpful description{' '}
+          <span className="text-xs text-black dark:text-gray-300">
+            (if you want)
+          </span>
+        </Heading>
+        <TextEditor value={description} onChange={setDescription} />
       </div>
       <div className="flex flex-col gap-2">
         <Button variant="primary" onClick={create}>

@@ -61,6 +61,7 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
       Sentry.captureException(e)
     }
     setSaving(false)
+    setHasHadChanges(false)
   }
 
   const exit = () => {
