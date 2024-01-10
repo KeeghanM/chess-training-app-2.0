@@ -12,7 +12,6 @@ import ToolGrid from '~/app/components/dashboard/ToolGrid'
 import XpDisplay from '~/app/components/dashboard/XpDisplay'
 import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
 
-import { isFlagEnabledServer } from '~/app/_util/isFlagEnabledServer'
 import { PostHogClient } from '~/app/_util/trackEventOnServer'
 
 export type Tool = {
@@ -28,7 +27,6 @@ export const metadata = {
 }
 
 export default async function Dashboard() {
-  // const { user, profile, permissions, badges } = await getUserServer()
   const { getUser, getPermissions } = getKindeServerSession()
   const user = await getUser()
   if (!user) redirect('/auth/signin')
@@ -70,7 +68,7 @@ export default async function Dashboard() {
       ],
       href: '/training/tactics/list',
       buttonText: 'Train',
-      active: true,
+      active: true || override,
     },
     {
       name: 'Study a Course',
@@ -80,7 +78,7 @@ export default async function Dashboard() {
       ],
       href: '/training/courses',
       buttonText: 'Train',
-      active: (await isFlagEnabledServer('course-trainer')) || override,
+      active: false || override,
     },
     {
       name: 'Endgame Training',
@@ -91,7 +89,7 @@ export default async function Dashboard() {
       ],
       href: '/training/endgames/train',
       buttonText: 'Train',
-      active: (await isFlagEnabledServer('endgame-trainer')) || override,
+      active: true || override,
     },
     {
       name: 'Visualisation & Calculation',
@@ -102,7 +100,7 @@ export default async function Dashboard() {
       ],
       href: '/training/visualisation',
       buttonText: 'Train',
-      active: (await isFlagEnabledServer('visualisation-trainer')) || override,
+      active: false || override,
     },
     {
       name: 'Knight Vision',
@@ -113,7 +111,7 @@ export default async function Dashboard() {
       ],
       href: '/training/knight-vision',
       buttonText: 'Train',
-      active: (await isFlagEnabledServer('knight-vision')) || override,
+      active: false || override,
     },
   ]
 

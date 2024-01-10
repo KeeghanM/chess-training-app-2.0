@@ -4,6 +4,7 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
+import BetaMessage from '~/app/components/training/courses/BetaMessage'
 import CourseList from '~/app/components/training/courses/list/CoursesList'
 
 export const metadata = {
@@ -30,6 +31,7 @@ export default async function Courses() {
       />
       <div className="dark:bg-slate-800">
         <Container>
+          <BetaMessage />
           <CourseList hasUnlimitedCourses={hasUnlimitedCourses} />
         </Container>
       </div>
