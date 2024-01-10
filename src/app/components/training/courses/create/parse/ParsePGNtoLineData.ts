@@ -8,6 +8,7 @@ export interface CleanMove {
   notation: string
   turn: string
   comment?: string
+  arrows?: string
 }
 type Tags = Record<string, string>
 
@@ -23,6 +24,7 @@ export function ParsePGNtoLineData(pgnString: string) {
   const parsedLines = parse(pgnString, { startRule: 'games' }) as ParseTree[]
   // Now split out all the variations into separate lines
   const lines: Line[] = []
+
   for (const line of parsedLines) {
     const tags = line.tags as unknown as Tags
     recursiveParse([], line.moves, tags, lines)
@@ -62,6 +64,10 @@ export function ParsePGNtoLineData(pgnString: string) {
     }
   }
 
+  // because we added things recursively, the order is backwards
+  // Reversing here resets things to the original PGN Order
+  lines.reverse()
+
   return lines
 }
 
@@ -81,7 +87,8 @@ function recursiveParse(
     const cleanMove: CleanMove = {
       notation: move.notation.notation,
       turn: move.turn,
-      comment: move.commentAfter ?? undefined,
+      comment: move.commentDiag?.comment?.trim() ?? undefined,
+      arrows: move.commentDiag?.colorArrows?.join(',') ?? undefined,
     }
     movesList.push(cleanMove)
   }

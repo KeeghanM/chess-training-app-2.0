@@ -2,7 +2,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 
 export default function SortableItem(props: {
-  id: string
+  id: string | number
   children: React.ReactNode
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -11,6 +11,7 @@ export default function SortableItem(props: {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    zIndex: 999,
   }
 
   return (

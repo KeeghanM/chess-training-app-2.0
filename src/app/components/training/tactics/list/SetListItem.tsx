@@ -2,10 +2,13 @@
 
 import { useRouter } from 'next/navigation'
 
+import { useEffect, useState } from 'react'
+
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
+import Spinner from '~/app/components/general/Spinner'
 import TimeSince from '~/app/components/general/TimeSince'
 import type { PrismaTacticsSet } from '~/app/components/training/tactics/create/TacticsSetCreator'
 
@@ -27,11 +30,18 @@ export default function SetListItem(props: {
   const completedCount =
     (currentRound?.correct ?? 0) + (currentRound?.incorrect ?? 0)
   const router = useRouter()
+  const [opening, setOpening] = useState(false)
 
   const trainSet = async () => {
+    setOpening(true)
     await trackEventOnClient('tactics_set_opened', {})
     router.push(`/training/tactics/${set.id}`)
   }
+
+  useEffect(() => {
+    setOpening(false)
+  }, [])
+
   return (
     <div
       className="flex flex-col items-center gap-6 bg-gray-100  p-2 dark:bg-slate-900  dark:text-white md:flex-row md:p-4"
@@ -72,11 +82,19 @@ export default function SetListItem(props: {
         </div>
         <div className="mx-auto flex flex-col gap-2 md:ml-auto md:flex-row">
           <Button
-            disabled={set.rounds?.length >= 8 && completedCount >= set.size}
+            disabled={
+              (set.rounds?.length >= 8 && completedCount >= set.size) || opening
+            }
             onClick={trainSet}
             variant="primary"
           >
-            Train
+            {opening ? (
+              <>
+                Opening... <Spinner />
+              </>
+            ) : (
+              'Train'
+            )}
           </Button>
           <SetListEdit set={set} onFinished={props.updated} user={user} />
           <SetListStats set={set} />

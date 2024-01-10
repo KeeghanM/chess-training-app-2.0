@@ -9,12 +9,15 @@ import { XpRanks } from '~/app/_util/RanksAndBadges'
 
 interface XpDisplayProps {
   currentXp: number
+  displayLink?: boolean
 }
 export default function XpDisplay(props: XpDisplayProps) {
   const { currentXp } = props
   const rank = XpRanks.reverse().find((rank) => currentXp >= rank.xp)
   const nextRank = XpRanks.reverse().find((rank) => currentXp < rank.xp)
   const percentage = (currentXp / (nextRank?.xp ?? currentXp)) * 100
+
+  const displayLink = props.displayLink ?? true
 
   return (
     <div className="flex flex-col items-center gap-1">
@@ -48,9 +51,11 @@ export default function XpDisplay(props: XpDisplayProps) {
         </Tippy>
       </div>
 
-      <StyledLink href="/about/ranks-and-badges">
-        <p className="text-sm">View All Ranks</p>
-      </StyledLink>
+      {displayLink && (
+        <StyledLink href="/about/ranks-and-badges">
+          <p className="text-sm">View All Ranks</p>
+        </StyledLink>
+      )}
     </div>
   )
 }

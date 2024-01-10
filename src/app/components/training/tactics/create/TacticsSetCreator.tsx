@@ -111,7 +111,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
   }
   const resetForm = () => {
     setName('')
-    setSize(500)
+    setSize(300)
     setRating(1500)
     setDifficulty(1)
     setThemesList([])
@@ -262,7 +262,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                 <label>Set Name</label>
                 <input
                   type="text"
-                  className="w-full border border-gray-300 px-4 py-2"
+                  className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
                   value={name}
                   onInput={(e) => {
                     setName(e.currentTarget.value)
@@ -273,7 +273,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                 <label htmlFor="">Set Size</label>
                 <input
                   type="number"
-                  className="w-full border border-gray-300 px-4 py-2"
+                  className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
                   min={'20'}
                   max={'500'}
                   value={size}
@@ -290,7 +290,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                 <label>Your Rating</label>
                 <input
                   type="number"
-                  className="w-full border border-gray-300 px-4 py-2"
+                  className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
                   min={'500'}
                   max={'3000'}
                   step={'10'}
@@ -326,6 +326,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
               <div className="">
                 <label>Themes to include</label>
                 <Select
+                  className="bg-gray-100 text-black"
                   defaultValue={[]}
                   isMulti
                   name={'themes'}

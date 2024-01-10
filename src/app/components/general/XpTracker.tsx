@@ -54,7 +54,7 @@ export default function XpTracker(props: {
     <div>
       <div
         className={`w-fit bg-green-300 p-2 text-black transition-all duration-300 ${
-          show ? 'opacity-100' : 'opacity-0'
+          show ? ' absolute inset-0 mx-auto my-4 h-fit ' : 'hidden'
         }`}
       >
         +{xpToAdd} XP

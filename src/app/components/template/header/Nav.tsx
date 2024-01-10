@@ -35,6 +35,10 @@ export default function Nav(props: {
       name: 'Home',
     },
     {
+      href: '/courses',
+      name: 'Courses',
+    },
+    {
       href: '/about/features/woodpecker-method',
       name: 'Woodpecker Method',
     },
@@ -46,22 +50,26 @@ export default function Nav(props: {
           href: '/training/tactics',
         },
         {
-          name: 'Courses',
-          href: '/courses',
+          name: 'Openings Trainer',
+          href: '/about/features/natural-play-learning',
         },
         {
           name: 'Endgame Trainer',
           href: '/training/endgames',
         },
         {
+          name: 'Visualisation Trainer',
+          href: '/training/visualisation',
+        },
+        {
+          name: 'Knight Vision',
+          href: '/training/knight-vision',
+        },
+        {
           name: 'View All Features',
           href: '/about/features',
         },
       ],
-    },
-    {
-      name: 'About',
-      href: '/about',
     },
   ]
 
@@ -167,9 +175,9 @@ export default function Nav(props: {
             >
               <path
                 stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
                 d="M1 1h15M1 7h15M1 13h15"
               />
             </svg>
@@ -215,9 +223,9 @@ export default function Nav(props: {
                     >
                       <path
                         stroke="currentColor"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
                         d="m1 1 4 4 4-4"
                       />
                     </svg>

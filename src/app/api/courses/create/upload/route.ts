@@ -46,78 +46,83 @@ export async function POST(request: Request) {
   if (existingCourse) return errorResponse('Course name is not available', 400)
 
   try {
-    // Create a new global course and it's groups
-    const course = (await prisma.course.create({
-      include: {
-        groups: true,
-      },
-      data: {
-        courseName: courseName,
-        courseDescription: description,
-        createdBy: user.id,
-        slug: slug,
-        groups: {
-          create: groupNames,
+    const result = await prisma.$transaction(async (prisma) => {
+      // Create a new global course and it's groups
+      const course = (await prisma.course.create({
+        include: {
+          groups: true,
         },
-      },
-    })) as Course & { groups: PrismaGroup[] }
-
-    // Link the user to the course by creating their userCourse
-    const userCourse = await prisma.userCourse.create({
-      data: {
-        course: {
-          connect: {
-            id: course.id,
+        data: {
+          courseName: courseName,
+          courseDescription: description,
+          createdBy: user.id,
+          slug: slug,
+          groups: {
+            create: groupNames.map((group, index) => ({
+              groupName: group.groupName,
+              sortOrder: index,
+            })),
           },
         },
-        linesUnseen: lines.length,
-        userId: user.id,
-      },
-    })
+      })) as Course & { groups: PrismaGroup[] }
 
-    // Create each new line and userLine
-    await Promise.all(
-      lines.map(async (line) => {
-        const matchingGroup = course.groups.find(
-          (group) => group.groupName === line.groupName,
-        )
-        if (!matchingGroup) throw new Error('Group not found')
-
-        const transformedMoves = line.moves.map((move, index) => ({
-          move: move.notation,
-          moveNumber: Math.ceil((index + 1) / 2),
-          colour: index % 2 === 0 ? true : false, // True for white, false for black
-          comment: move.comment ?? null,
-        }))
-
-        const dbLine = await prisma.line.create({
-          data: {
-            colour: line.colour,
-            groupId: matchingGroup.id,
-            courseId: course.id,
-            moves: {
-              create: transformedMoves,
+      // Link the user to the course by creating their userCourse
+      const userCourse = await prisma.userCourse.create({
+        data: {
+          course: {
+            connect: {
+              id: course.id,
             },
           },
-        })
+          linesUnseen: lines.length,
+          userId: user.id,
+        },
+      })
 
-        await prisma.userLine.create({
-          data: {
-            userId: user.id,
-            userCourseId: userCourse.id,
-            lineId: dbLine.id,
-          },
-        })
-      }),
-    )
+      // Create each new line and userLine
+      await Promise.all(
+        lines.map(async (line, index) => {
+          const matchingGroup = course.groups.find(
+            (group) => group.groupName === line.groupName,
+          )
+          if (!matchingGroup) throw new Error('Group not found')
 
-    return successResponse(
-      'Course created',
-      {
-        slug: slug,
-      },
-      200,
-    )
+          const transformedMoves = line.moves.map((move, index) => ({
+            move: move.notation,
+            moveNumber: Math.ceil((index + 1) / 2),
+            colour: index % 2 === 0 ? true : false, // True for white, false for black
+            arrows: move.arrows,
+            comment: move.comment
+              ? { create: { comment: move.comment.trim() } } // Create a comment in the comment table if there is one
+              : undefined,
+          }))
+
+          const dbLine = await prisma.line.create({
+            data: {
+              colour: line.colour,
+              groupId: matchingGroup.id,
+              courseId: course.id,
+              sortOrder: index,
+              moves: {
+                create: transformedMoves,
+              },
+            },
+          })
+
+          await prisma.userLine.create({
+            data: {
+              userId: user.id,
+              userCourseId: userCourse.id,
+              lineId: dbLine.id,
+            },
+          })
+        }),
+      )
+
+      return { slug: slug }
+    })
+
+    return successResponse('Course created', result, 200)
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)

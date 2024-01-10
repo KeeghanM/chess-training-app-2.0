@@ -6,30 +6,37 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import type { Course, UserCourse } from '@prisma/client'
-import * as HoverCard from '@radix-ui/react-hover-card'
 import * as Sentry from '@sentry/nextjs'
+import Tippy from '@tippyjs/react'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
+import Spinner from '~/app/components/general/Spinner'
 import TimeSince from '~/app/components/general/TimeSince'
-import type { PrismaUserCourse } from '~/app/components/training/courses/CourseTrainer'
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
+
+import CourseSettings from './CourseSettings'
+import type { PrismaUserCourse } from './CoursesList'
 
 export default function CourseListItem(props: {
   courseId: string
   courseName: string
+  update: () => void
 }) {
   const router = useRouter()
   const [userCourse, setUserCourse] = useState<PrismaUserCourse | null>(null)
+  const [nextReview, setNextReview] = useState<Date | null>(null)
   const [conicGradient, setConicGradient] = useState('')
   const [loading, setLoading] = useState(true)
+  const [opening, setOpening] = useState(false)
 
   const openCourse = async (mode: 'learn' | 'revise') => {
     if (!userCourse) return
 
-    await trackEventOnClient('open_course', {})
+    setOpening(true)
+    await trackEventOnClient('course_opened', {})
     router.push(
       '/training/courses/' +
         userCourse?.id +
@@ -38,6 +45,7 @@ export default function CourseListItem(props: {
   }
 
   useEffect(() => {
+    setOpening(false)
     ;(async () => {
       try {
         const resp = await fetch(`/api/courses/user/${props.courseId}`)
@@ -45,9 +53,14 @@ export default function CourseListItem(props: {
         if (json?.message != 'Course Fetched')
           throw new Error('Course not fetched')
 
-        const course = json.data?.course as PrismaUserCourse
+        const course = json.data!.course as PrismaUserCourse
+
         setUserCourse(course)
         setConicGradient(GenerateConicGradient(course))
+        if (json.data!.nextReview) {
+          setNextReview(new Date(json.data!.nextReview as string))
+        }
+
         setLoading(false)
       } catch (e) {
         Sentry.captureException(e)
@@ -57,74 +70,97 @@ export default function CourseListItem(props: {
     })
   }, [])
 
-  return loading ? (
+  return (
     <div
-      className="flex flex-col items-center gap-6 bg-gray-100 p-2 px-5 md:flex-row"
+      className="flex relative flex-col items-center gap-6 bg-gray-100 p-2 md:px-6 md:!pr-12 dark:bg-slate-900 dark:text-white md:flex-row"
       key={props.courseId}
     >
-      <div className="mr-auto flex flex-col">
-        <Heading as={'h3'}>{props.courseName}</Heading>
-        <p className="text-sm italic text-gray-600">Loading...</p>
-      </div>
-    </div>
-  ) : (
-    <div
-      className="flex flex-col items-center gap-6 bg-gray-100 p-2 px-5 md:flex-row"
-      key={props.courseId}
-    >
-      <div className="mr-auto flex flex-col">
-        <Link href={'/courses/' + userCourse?.course.slug}>
+      {loading ? (
+        <div className="mr-auto flex flex-col">
           <Heading as={'h3'}>{props.courseName}</Heading>
-        </Link>
-        <p className="text-sm italic text-gray-600">
-          Last trained{' '}
-          {userCourse?.lastTrained ? (
-            <TimeSince date={new Date(userCourse?.lastTrained)} />
-          ) : (
-            'never'
-          )}{' '}
-          ago
-        </p>
-      </div>
-      <HoverCard.Root>
-        <HoverCard.Trigger>
-          <div
-            className="ml-auto grid h-16 w-16 place-items-center rounded-full"
-            style={{
-              background: conicGradient,
-            }}
+          <p className="text-sm italic text-gray-600 dark:text-gray-400">
+            Loading...
+          </p>
+        </div>
+      ) : (
+        <>
+          <div className="md:mr-auto flex flex-col md:max-w-[50%] md:w-[50%]">
+            <Link href={'/courses/' + userCourse?.course.slug}>
+              <Heading as={'h3'}>{props.courseName}</Heading>
+            </Link>
+            <p className="text-sm italic text-gray-600 dark:text-gray-400">
+              Last trained{' '}
+              {userCourse?.lastTrained ? (
+                <TimeSince date={new Date(userCourse?.lastTrained)} />
+              ) : (
+                'never'
+              )}{' '}
+              ago
+            </p>
+          </div>
+          <Tippy
+            className="text-base"
+            content={
+              <div className="flex flex-col gap-2">
+                <p className="text-gray-300">
+                  {userCourse?.linesUnseen} lines unseen
+                </p>
+                <p className="text-[#4ade80]">
+                  {userCourse?.linesLearned} lines learned
+                </p>
+                <p className="text-[#2563eb]">
+                  {userCourse?.linesLearning} lines learning
+                </p>
+                <p className="text-[#ff3030]">
+                  {userCourse?.linesHard} lines hard
+                </p>
+              </div>
+            }
           >
-            <div className="h-12 w-12 rounded-full bg-gray-100"></div>
+            <div
+              className="mx-auto md:ml-auto grid h-16 w-16 place-items-center rounded-full"
+              style={{
+                background: conicGradient,
+              }}
+            >
+              <div className="h-12 w-12 rounded-full bg-gray-100 dark:bg-slate-900"></div>
+            </div>
+          </Tippy>
+          <div className="flex flex-col items-center gap-2">
+            <Button
+              variant="primary"
+              onClick={() => openCourse('revise')}
+              disabled={userCourse?.lines?.length == 0 || opening}
+            >
+              {opening ? (
+                <>
+                  Opening... <Spinner />
+                </>
+              ) : (
+                'Study Course'
+              )}
+            </Button>
+            <Tippy
+              content={
+                nextReview && (
+                  <p>
+                    Next review in <TimeSince date={nextReview} />
+                  </p>
+                )
+              }
+              disabled={!!userCourse?.lines?.length}
+            >
+              <p className="text-sm italic text-gray-600 dark:text-gray-400">
+                {userCourse?.lines?.length}{' '}
+                {userCourse?.lines?.length == 1
+                  ? 'line is due.'
+                  : 'lines are due.'}
+              </p>
+            </Tippy>
           </div>
-        </HoverCard.Trigger>
-        <HoverCard.Content>
-          <div className="flex flex-col gap-2 border border-gray-300 bg-white p-2 shadow">
-            <p className="text-[#6b21a8]">
-              {userCourse?.linesUnseen} lines unseen
-            </p>
-            <p className="text-[#4ade80]">
-              {userCourse?.linesLearned} lines learned
-            </p>
-            <p className="text-[#2563eb]">
-              {userCourse?.linesLearning} lines learning
-            </p>
-            <p className="text-[#f87171]">{userCourse?.linesHard} lines hard</p>
-          </div>
-        </HoverCard.Content>
-      </HoverCard.Root>
-      <div className="flex flex-col items-center gap-2">
-        <Button
-          variant="primary"
-          onClick={() => openCourse('revise')}
-          disabled={userCourse?.lines?.length == 0}
-        >
-          Study Course
-        </Button>
-        <p className="text-sm italic text-gray-600">
-          {userCourse?.lines?.length}{' '}
-          {userCourse?.lines?.length == 1 ? 'line is due.' : 'lines are due.'}
-        </p>
-      </div>
+          <CourseSettings userCourse={userCourse!} update={props.update} />
+        </>
+      )}
     </div>
   )
 }
@@ -143,7 +179,7 @@ function GenerateConicGradient(course: UserCourse & { course: Course }) {
   const conicGradient = `conic-gradient(
             #4ade80 ${learnedPercent}%,
             #2563eb ${learnedPercent}% ${learnedPercent + learningPercent}%,
-            #f87171 ${learnedPercent + learningPercent}% ${
+            #ff3030 ${learnedPercent + learningPercent}% ${
               learnedPercent + learningPercent + hardPercent
             }%,
             #6b21a8 ${learnedPercent + learningPercent + hardPercent}% ${
