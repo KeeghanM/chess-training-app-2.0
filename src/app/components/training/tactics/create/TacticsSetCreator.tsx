@@ -111,7 +111,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
   }
   const resetForm = () => {
     setName('')
-    setSize(500)
+    setSize(300)
     setRating(1500)
     setDifficulty(1)
     setThemesList([])

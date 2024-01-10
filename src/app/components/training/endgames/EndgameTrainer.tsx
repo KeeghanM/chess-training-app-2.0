@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 import * as Sentry from '@sentry/nextjs'
+import Tippy from '@tippyjs/react'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
 import type { Piece, Square } from 'chess.js'
@@ -488,59 +489,64 @@ export default function EndgameTrainer() {
             <Spinner />
           </div>
         )}
-        <div className="flex flex-row justify-between gap-2 text-xs text-white lg:justify-start  lg:text-sm">
-          <p className="flex flex-col items-center">
-            <span className="font-bold">Type:</span>
-            <span>{type} Endgames</span>
-          </p>
-          <p className="flex flex-col items-center">
-            <span className="font-bold">Rating:</span>
-            <span>{rating}</span>
-          </p>
-          <p className="flex flex-col items-center">
-            <span className="font-bold">Difficulty:</span>
-            <span>{getDifficulty()}</span>
-          </p>
-          <XpTracker counter={xpCounter} type={'tactic'} />
-          <ThemeSwitch />
-          <div
-            className="ml-auto flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
-            onClick={() => setSoundEnabled(!soundEnabled)}
-          >
-            <p>Sound {soundEnabled ? 'On' : 'Off'}</p>
-            {soundEnabled ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
-                />
-              </svg>
-            )}
+        <div className="flex flex-wrap items-center justify-between text-white text-sm">
+          <div className="flex justify-between items-center gap-1 flex-wrap">
+            <p className="flex flex-col items-center">
+              <span className="font-bold">Type:</span>
+              <span>{type} Endgames</span>
+            </p>
+            <p className="flex flex-col items-center">
+              <span className="font-bold">Rating:</span>
+              <span>{rating}</span>
+            </p>
+            <p className="flex flex-col items-center">
+              <span className="font-bold">Difficulty:</span>
+              <span>{getDifficulty()}</span>
+            </p>
+            <XpTracker counter={xpCounter} type={'tactic'} />
+          </div>
+          <div className="flex items-center gap-2 w-fit mx-auto md:mx-0">
+            <ThemeSwitch />
+            <div
+              className="ml-auto flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
+              onClick={() => setSoundEnabled(!soundEnabled)}
+            >
+              <Tippy content={`Sound ${soundEnabled ? 'On' : 'Off'}`}>
+                {soundEnabled ? (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
+                      d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 16 16"
+                  >
+                    <path
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
+                      d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
+                    />
+                  </svg>
+                )}
+              </Tippy>
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-4 lg:flex-row">
@@ -550,8 +556,8 @@ export default function EndgameTrainer() {
               position={position}
               boardOrientation={orientation}
               boardWidth={Math.min(
-                windowSize.height / 1.75,
-                windowSize.width - 150,
+                windowSize.height / 1.5,
+                windowSize.width - 120,
               )}
               customBoardStyle={{
                 marginInline: 'auto',
@@ -593,6 +599,29 @@ export default function EndgameTrainer() {
                     />
                   </svg>
                   <p>Correct!</p>
+                  <Link
+                    href={`https://lichess.org/training/${currentPuzzle?.puzzleid}`}
+                    target="_blank"
+                  >
+                    <span className="flex flex-row items-center gap-1 text-sm text-white underline">
+                      Lichess
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
+                        />
+                      </svg>
+                    </span>
+                  </Link>
                 </div>
               )}
               {puzzleStatus === 'incorrect' && (
@@ -645,7 +674,8 @@ export default function EndgameTrainer() {
                   defaultChecked={autoNext}
                   onChange={async () => {
                     setAutoNext(!autoNext)
-                    if (puzzleFinished) await goToNextPuzzle(puzzleStatus)
+                    if (puzzleFinished && puzzleStatus == 'correct')
+                      await goToNextPuzzle(puzzleStatus)
                   }}
                 />
                 <span>Auto Next on correct</span>

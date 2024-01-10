@@ -20,9 +20,8 @@ export default function ThemeSwitch() {
           setTheme('dark')
         }
       }}
-      className="flex w-fit cursor-pointer flex-row items-center  gap-2 p-2 dark:border-slate-600"
+      className="flex w-fit cursor-pointer flex-row items-center gap-2 p-2 dark:border-slate-600"
     >
-      <span>Light</span>
       <span className="w-[70px] rounded-full bg-yellow-300 p-1 dark:bg-slate-700">
         {resolvedTheme === 'light' ? (
           <svg
@@ -52,7 +51,6 @@ export default function ThemeSwitch() {
           </svg>
         )}
       </span>
-      <span>Dark</span>
     </div>
   )
 }

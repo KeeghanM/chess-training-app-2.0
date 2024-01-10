@@ -165,8 +165,10 @@ export default async function Dashboard() {
         </Container>
       </div>
       <div className="p-4 dark:bg-slate-800 md:p-6">
-        <div className="mb-6 w-fit rounded-full border border-gray-300 p-1 text-black dark:border-slate-600 dark:text-white">
+        <div className="mb-6 w-fit flex items-center gap-1 rounded-full border border-gray-300 px-2 text-black dark:border-slate-600 dark:text-white">
+          <p>Light</p>
           <ThemeSwitch />
+          <p>Dark</p>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {tools

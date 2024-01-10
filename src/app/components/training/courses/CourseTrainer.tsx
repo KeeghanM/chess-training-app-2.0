@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { Comment, Move, UserFen } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
+import Tippy from '@tippyjs/react'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
 import type { Piece, Square } from 'chess.js'
@@ -693,7 +694,7 @@ export default function CourseTrainer(props: {
           <Spinner />
         </div>
       )}
-      <div className="flex flex-row items-center text-white">
+      <div className="flex flex-wrap items-center justify-between text-white">
         <div className="flex flex-col">
           <p className="font-bold text-white">
             {currentLine?.line.group.groupName}
@@ -708,46 +709,47 @@ export default function CourseTrainer(props: {
           </p>
         </div>
         <XpTracker counter={xpCounter} type={'line'} />
-        <div className="flex items-center gap-2 ml-auto">
+        <div className="flex items-center gap-2">
           <ThemeSwitch />
           <div
             className="flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
             onClick={() => setSoundEnabled(!soundEnabled)}
           >
-            <p>Sound {soundEnabled ? 'On' : 'Off'}</p>
-            {soundEnabled ? (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
-                />
-              </svg>
-            ) : (
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fill="none"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
-                />
-              </svg>
-            )}
+            <Tippy content={`Sound ${soundEnabled ? 'On' : 'Off'}`}>
+              {soundEnabled ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                    d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
+                  />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 16 16"
+                >
+                  <path
+                    fill="none"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="1.5"
+                    d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
+                  />
+                </svg>
+              )}
+            </Tippy>
           </div>
         </div>
       </div>
@@ -760,8 +762,8 @@ export default function CourseTrainer(props: {
             onPieceDrop={userDroppedPiece}
             boardOrientation={orientation}
             boardWidth={Math.min(
-              windowSize.height / 1.75,
-              windowSize.width - 50,
+              windowSize.height / 1.5,
+              windowSize.width - 120,
             )}
             customBoardStyle={{
               marginInline: 'auto',
