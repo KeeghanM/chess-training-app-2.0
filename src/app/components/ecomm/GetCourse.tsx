@@ -21,7 +21,7 @@ export default function GetCourse(props: {
 
   const handleBuy = async () => {
     if (!user) {
-      window.location.href = `/auth/login?redirect=/training/courses/${courseId}`
+      window.location.href = `/auth/signin?redirect=/training/courses/${courseId}`
       return
     }
     setLoading(true)
