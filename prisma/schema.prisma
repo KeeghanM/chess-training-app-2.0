@@ -22,6 +22,7 @@ model Course {
     createdAt         DateTime     @default(now())
     updatedAt         DateTime     @updatedAt
     published         Boolean      @default(false)
+    createdByProfile  UserProfile  @relation(fields: [createdBy], references: [id], onDelete: Cascade)
     lines             Line[]
     groups            Group[]
     userCourses       UserCourse[]
@@ -213,6 +214,7 @@ model UserProfile {
     public              Boolean      @default(false)
     createdAt           DateTime     @default(now())
     updatedAt           DateTime     @updatedAt
+    publishedCourses    Course[]
     daysTrained         DayTrained[]
     badges              UserBadge[]
 }

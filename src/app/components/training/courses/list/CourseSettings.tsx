@@ -119,7 +119,11 @@ export default function CourseSettings(props: CourseSettingsProps) {
             </p>
           </div>
           <div className="flex gap-4 md:justify-between flex-col md:flex-row">
-            <Button variant="danger" onClick={archiveCourse}>
+            <Button
+              disabled={deleting}
+              variant="danger"
+              onClick={archiveCourse}
+            >
               {deleting ? (
                 <>
                   Archiving <Spinner />

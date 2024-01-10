@@ -22,7 +22,7 @@
     "@formkit/auto-animate": "^0.8.1",
     "@kinde-oss/kinde-auth-nextjs": "^2.0.10",
     "@mliebelt/pgn-parser": "^1.4.13",
-    "@prisma/client": "^5.7.1",
+    "@prisma/client": "^5.8.0",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-hover-card": "^1.0.7",
@@ -70,7 +70,7 @@
     "postcss": "^8.4.31",
     "prettier": "^3.1.1",
     "prettier-plugin-tailwindcss": "^0.5.9",
-    "prisma": "^5.7.1",
+    "prisma": "^5.8.0",
     "tailwindcss": "^3.3.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"

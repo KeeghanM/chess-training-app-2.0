@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { prisma } from '~/server/db'
@@ -106,47 +107,83 @@ export default async function CoursePage({
   }))
 
   return (
-    <Container>
-      <div className="flex flex-col gap-2">
-        <div className="p-4 bg-gray-100">
-          <Heading as={'h1'}>{course.courseName}</Heading>
-          <p className="text-sm">
-            Created By:{' '}
-            {publicAuthor ? (
-              <StyledLink href={`/members/${createdBy.username}`}>
-                {createdBy.username}
-              </StyledLink>
-            ) : (
-              createdBy.username
-            )}
-            , making use of{' '}
-            <StyledLink href="/about/features/natural-play-learning">
-              Natural Play Learning
-            </StyledLink>
-          </p>
-        </div>
-        <GetCourse
-          courseId={course.id}
-          price={Number(course.price)}
-          userCourseId={userCourse?.id}
-        />
-        {course.courseDescription && (
-          <div
-            className="p-4 bg-gray-100"
-            dangerouslySetInnerHTML={{ __html: course.courseDescription }}
-          ></div>
-        )}
-        <div className="p-4 bg-gray-100">
-          <Heading as={'h2'}>Course Contents</Heading>
-          <ul>
-            {groupLineCountsArray.map((group) => (
-              <li key={group.name}>
-                {group.name} ({group.count})
-              </li>
-            ))}
-          </ul>
-        </div>
+    <>
+      <div className="w-full flex items-center justify-center py-2 bg-gray-200">
+        <p className="text-xs text-gray-600">
+          <Link className="text-purple-700 hover:underline" href="/">
+            Home
+          </Link>
+          <Link
+            className="text-purple-700 hover:underline cursor-pointer"
+            href="/courses"
+          >
+            /Courses
+          </Link>
+          /{course.courseName}
+        </p>
       </div>
-    </Container>
+      <Container>
+        <div className="flex flex-col gap-2">
+          <StyledLink href="/courses">
+            <span className="flex items-center gap-1">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 1024 1024"
+              >
+                <path
+                  fill="currentColor"
+                  d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64"
+                />
+                <path
+                  fill="currentColor"
+                  d="m237.248 512l265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312z"
+                />
+              </svg>
+              <span>Back to Courses</span>
+            </span>
+          </StyledLink>
+          <div className="p-4 bg-gray-100">
+            <Heading as={'h1'}>{course.courseName}</Heading>
+            <p className="text-sm">
+              Created By:{' '}
+              {publicAuthor ? (
+                <StyledLink href={`/members/${createdBy.username}`}>
+                  {createdBy.username}
+                </StyledLink>
+              ) : (
+                createdBy.username
+              )}
+              , making use of{' '}
+              <StyledLink href="/about/features/natural-play-learning">
+                Natural Play Learning
+              </StyledLink>
+            </p>
+          </div>
+          <GetCourse
+            courseId={course.id}
+            price={Number(course.price)}
+            userCourseId={userCourse?.id}
+          />
+          {course.courseDescription && (
+            <div
+              className="p-4 bg-gray-100"
+              dangerouslySetInnerHTML={{ __html: course.courseDescription }}
+            ></div>
+          )}
+          <div className="p-4 bg-gray-100">
+            <Heading as={'h2'}>Course Contents</Heading>
+            <ul>
+              {groupLineCountsArray.map((group) => (
+                <li key={group.name}>
+                  {group.name} ({group.count})
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </Container>
+    </>
   )
 }

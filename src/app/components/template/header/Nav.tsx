@@ -35,6 +35,10 @@ export default function Nav(props: {
       name: 'Home',
     },
     {
+      href: '/courses',
+      name: 'Courses',
+    },
+    {
       href: '/about/features/woodpecker-method',
       name: 'Woodpecker Method',
     },
@@ -46,22 +50,26 @@ export default function Nav(props: {
           href: '/training/tactics',
         },
         {
-          name: 'Courses',
-          href: '/courses',
+          name: 'Openings Trainer',
+          href: '/about/features/natural-play-learning',
         },
         {
           name: 'Endgame Trainer',
           href: '/training/endgames',
         },
         {
+          name: 'Visualisation Trainer',
+          href: '/training/visualisation',
+        },
+        {
+          name: 'Knight Vision',
+          href: '/training/knight-vision',
+        },
+        {
           name: 'View All Features',
           href: '/about/features',
         },
       ],
-    },
-    {
-      name: 'About',
-      href: '/about',
     },
   ]
 
