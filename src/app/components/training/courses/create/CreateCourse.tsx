@@ -59,8 +59,7 @@ export default function CreateCourseForm() {
         throw new Error(json?.message ?? 'Unknown error')
 
       await trackEventOnClient('create_course_success', {})
-      const courseSlug = json.data!.slug as string
-      router.push('/courses/' + courseSlug) // TODO: This ends up in a 404
+      router.push('/training/courses/')
     } catch (e) {
       Sentry.captureException(e)
       setCurrentStep('error')
@@ -68,61 +67,69 @@ export default function CreateCourseForm() {
   }
 
   return (
-    <Container>
-      {courseName && <Heading as={'h2'}>{courseName}</Heading>}
-      <Steps currentStep={currentStep} />
-      {currentStep == 'name' && (
-        <DetailsForm
-          finished={(name, description) => {
-            setCourseName(name)
-            setDescription(description)
-            setCurrentStep('import')
-          }}
-          courseName={courseName}
-          description={description}
-        />
-      )}
-      {currentStep == 'import' && (
-        <PgnToLinesForm
-          back={() => {
-            setCurrentStep('name')
-          }}
-          finished={(lines) => {
-            setCurrentStep('group')
-            setLines(lines)
-          }}
-        />
-      )}
-      {currentStep == 'group' && (
-        <GroupSelector
-          lines={lines}
-          back={() => {
-            setCurrentStep('import')
-          }}
-          finished={async (group, sortedLines) => {
-            await upload(courseName, description, group, sortedLines)
-          }}
-        />
-      )}
-      {currentStep == 'error' && (
-        <>
-          <Heading as={'h2'} color="red">
-            Error: Something went wrong
-          </Heading>
-          <Button
-            onClick={() => {
-              setCurrentStep('name')
-              setCourseName('')
-              setDescription('')
-              setLines([])
-            }}
-            variant="danger"
-          >
-            Try again
-          </Button>
-        </>
-      )}
-    </Container>
+    <div className="dark:bg-slate-800">
+      <Container>
+        <div className="bg-gray-100 dark:bg-slate-900 p-2 md:p-4">
+          {courseName && (
+            <Heading as={'h2'} color="text-orange-500">
+              {courseName}
+            </Heading>
+          )}
+          <Steps currentStep={currentStep} />
+          {currentStep == 'name' && (
+            <DetailsForm
+              finished={(name, description) => {
+                setCourseName(name)
+                setDescription(description)
+                setCurrentStep('import')
+              }}
+              courseName={courseName}
+              description={description}
+            />
+          )}
+          {currentStep == 'import' && (
+            <PgnToLinesForm
+              back={() => {
+                setCurrentStep('name')
+              }}
+              finished={(lines) => {
+                setCurrentStep('group')
+                setLines(lines)
+              }}
+            />
+          )}
+          {currentStep == 'group' && (
+            <GroupSelector
+              lines={lines}
+              back={() => {
+                setCurrentStep('import')
+              }}
+              finished={async (group, sortedLines) => {
+                await upload(courseName, description, group, sortedLines)
+              }}
+            />
+          )}
+          {currentStep == 'error' && (
+            <>
+              <Heading as={'h2'} color="text-red-500">
+                Error: Something went wrong
+              </Heading>
+              <Button
+                onClick={() => {
+                  setCurrentStep('name')
+                  setCourseName('')
+                  setDescription('')
+                  setLines([])
+                }}
+                variant="danger"
+              >
+                Try again
+              </Button>
+            </>
+          )}
+        </div>
+      </Container>
+    </div>
   )
 }
 

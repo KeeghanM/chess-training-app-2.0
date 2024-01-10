@@ -411,7 +411,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
           <div className="flex flex-row items-center gap-1">
             <label htmlFor="puzzleId">PuzzleId</label>
             <input
-              className="w-full border border-gray-300 px-4 py-2"
+              className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
               type="text"
               id="puzzleId"
               name="puzzleId"

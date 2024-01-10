@@ -8,7 +8,7 @@ import { UpdateStreak } from '~/app/_util/UpdateStreak'
 
 export async function POST(
   request: Request,
-  { params }: { params: { courseId: string; lineId: string } },
+  { params }: { params: { courseId: string; lineId: number } },
 ) {
   const session = getKindeServerSession(request)
   if (!session) return errorResponse('Unauthorized', 401)
@@ -34,7 +34,7 @@ export async function POST(
 
     const line = await prisma.userLine.update({
       where: {
-        id: lineId,
+        id: parseInt(lineId.toString()),
         userId: user.id,
       },
       data: {

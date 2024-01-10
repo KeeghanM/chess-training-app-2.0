@@ -27,7 +27,7 @@ export default function Hero(props: HeroProps) {
       <div className="absolute inset-0">
         <Image
           fill={true}
-          objectFit="cover"
+          className="object-cover object-center w-full h-full"
           src={props.image.src}
           alt={props.image.alt}
         />

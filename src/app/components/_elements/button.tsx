@@ -26,7 +26,7 @@ export default function Button(props: ButtonProps) {
       'bg-none underline text-gray-700 hover:text-purple-700 font-bold py-2 px-6 dark:text-white',
     danger: 'bg-red-700 hover:bg-red-600 text-white font-bold py-2 px-6 shadow',
     warning:
-      'bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-6 shadow',
+      'bg-yellow-500 hover:bg-yellow-400 text-black font-bold py-2 px-6 shadow',
     success:
       'bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-6 shadow',
     info: 'bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 shadow',

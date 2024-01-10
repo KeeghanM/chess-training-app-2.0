@@ -59,7 +59,6 @@ export default function TacticsTrainer(props: {
   const [gameReady, setGameReady] = useState(false)
   const [orientation, setOrientation] = useState<'white' | 'black'>('white')
   const [position, setPosition] = useState(game.fen())
-  const [soundEnabled, setSoundEnabled] = useState(true)
 
   // Setup SFX
   const [checkSound] = useSound('/sfx/check.mp3')
@@ -71,6 +70,7 @@ export default function TacticsTrainer(props: {
   const [incorrectSound] = useSound('/sfx/incorrect.mp3')
 
   // Setup state for the settings/general
+  const [soundEnabled, setSoundEnabled] = useState(true)
   const windowSize = useWindowSize() as { width: number; height: number }
   const [autoNext, setAutoNext] = useState(false)
   const [loading, setLoading] = useState(true)

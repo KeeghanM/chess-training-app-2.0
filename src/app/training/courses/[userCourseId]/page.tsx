@@ -3,11 +3,19 @@ import { redirect } from 'next/navigation'
 import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import type { Comment, Group, Line, Move, UserLine } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import CourseTrainer from '~/app/components/training/courses/CourseTrainer'
+
+export type PrismaUserLine = UserLine & {
+  line: Line & {
+    group: Group
+    moves: (Move & { comment: Comment | null })[]
+  }
+}
 
 export default async function CourseTrainPage({
   params,
@@ -18,8 +26,9 @@ export default async function CourseTrainPage({
   const user = await getUser()
   if (!user) redirect('/auth/signin')
 
+  const { userCourseId } = params
+
   const { userCourse, userLines, userFens } = await (async () => {
-    const { userCourseId } = params
     try {
       const userCourse = await prisma.userCourse.findFirst({
         where: {
@@ -35,13 +44,18 @@ export default async function CourseTrainPage({
 
       const userLines = await prisma.userLine.findMany({
         where: {
+          userId: user.id,
           userCourseId,
         },
         include: {
           line: {
             include: {
               group: true,
-              moves: true,
+              moves: {
+                include: {
+                  comment: true,
+                },
+              },
             },
           },
         },
@@ -57,6 +71,15 @@ export default async function CourseTrainPage({
 
       if (!userFens) throw new Error('Fens not found')
 
+      // Sort lines by their groups sortOrder and then by their own sortOrder
+      userLines.sort((a, b) => {
+        if (a.line.group.sortOrder < b.line.group.sortOrder) return -1
+        if (a.line.group.sortOrder > b.line.group.sortOrder) return 1
+        if (a.line.sortOrder < b.line.sortOrder) return -1
+        if (a.line.sortOrder > b.line.sortOrder) return 1
+        return 0
+      })
+
       return { userCourse, userLines, userFens }
     } catch (e) {
       Sentry.captureException(e)
@@ -71,6 +94,7 @@ export default async function CourseTrainPage({
   if (!userCourse || !userLines || !userFens) {
     redirect('/404')
   }
+
   return (
     <>
       <PageHeader
@@ -80,15 +104,17 @@ export default async function CourseTrainPage({
           alt: 'Wooden chess pieces on a chess board',
         }}
       />
-      <Container>
-        {userCourse && (
-          <CourseTrainer
-            userCourse={userCourse}
-            userLines={userLines}
-            userFens={userFens}
-          />
-        )}
-      </Container>
+      <div className="dark:bg-slate-800">
+        <Container>
+          {userCourse && (
+            <CourseTrainer
+              userCourse={userCourse}
+              userLines={userLines}
+              userFens={userFens}
+            />
+          )}
+        </Container>
+      </div>
     </>
   )
 }

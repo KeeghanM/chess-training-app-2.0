@@ -21,6 +21,7 @@ export async function PUT(request: Request) {
     highestOTBRating,
     puzzleRating,
     difficulty,
+    publicProfile,
   } = (await request.json()) as {
     username: string
     fullname: string
@@ -29,9 +30,15 @@ export async function PUT(request: Request) {
     highestOTBRating: number
     puzzleRating: number
     difficulty: number
+    publicProfile: boolean
   }
 
-  if (!username || !puzzleRating || !difficulty) {
+  if (
+    !username ||
+    !puzzleRating ||
+    !difficulty ||
+    publicProfile === undefined
+  ) {
     return errorResponse('Missing required fields', 400)
   }
 
@@ -93,6 +100,7 @@ export async function PUT(request: Request) {
         highestOTBRating,
         puzzleRating,
         difficulty,
+        public: publicProfile,
       },
     })
 

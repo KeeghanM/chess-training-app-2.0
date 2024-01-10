@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import BigText from '~/app/components/_layouts/bigText'
 import CtaRow from '~/app/components/_layouts/ctaRow'
@@ -28,29 +29,52 @@ export default async function NaturalPlayLearningPage() {
           Welcome to a Revolutionary Chess Training Experience
         </Heading>
       </Hero>
+      <BigText size="small" color="secondary">
+        At ChessTraining.app, we're redefining the way you learn chess. Our
+        unique Natural Play Learning method is here to transform your
+        understanding and mastery of chess openings.
+      </BigText>
       <ImageRowFull
         image={{
           src: '/images/man_frustrated_3.png',
           alt: 'A man sat at a desk frustrated yet determined to improve his chess',
         }}
         imageSide="left"
-        heading="Unlock Your Chess Potential"
+        heading="What is Natural Play Learning?"
         background="light"
       >
         <p>
-          Welcome to ChessTraining.app, the home of innovative chess training.
-          Our unique method, <strong>Natural Play Learning</strong> is designed
-          to transform how you learn chess openings. It's not just learning;
-          it's mastering chess in a way that sticks. Dive into a world where
-          each move becomes a part of you!
+          Natural Play Learning is a groundbreaking technique developed
+          exclusively by ChessTraining.app. This method revolutionizes
+          traditional chess training by combining the effectiveness of Spaced
+          Repetition with a creative twist.
         </p>
         <p>
-          It doesn't matter if you're a beginner or a Grandmaster; our method
-          works for everyone. Improving upon the old Spaced Repetition
-          technique, and getting to the heart of what makes chess openings so
-          challenging, we've created a method that's efficient, effective, and
-          engaging.
+          By ensuring you only "learn" a move once, and after that are shown it
+          directly in context as you would when playing, we not only cut down on
+          the time it takes to learn a move, but also ensure you retain it for
+          longer.
         </p>
+        <Heading as="h3">Here's how it works:</Heading>
+        <ul>
+          <li>
+            <strong>Learning Through Playing:</strong> Instead of monotonously
+            re-learning the same moves, you engage with them in a more natural,
+            game-like environment. Once you master a move, it becomes a core
+            part of your game play.
+          </li>
+          <li>
+            <strong>Efficient and Engaging:</strong> As you play through your
+            openings, if you encounter a familiar position, you skip the basic
+            steps and directly engage with the new challenges. This approach not
+            only makes learning more efficient but also deeply engaging.
+          </li>
+          <li>
+            <strong>Tailored to All Levels:</strong> Whether you're a beginner
+            or a seasoned Grandmaster, our Natural Play Learning method is
+            designed to cater to every skill level.
+          </li>
+        </ul>
       </ImageRowFull>
       <BigText color="secondary">
         Start improving your chess now -{' '}
@@ -68,45 +92,51 @@ export default async function NaturalPlayLearningPage() {
           alt: 'A person sat at a computer studying and improving their chess',
         }}
         imageSide="right"
-        heading="What Is Natural Play Learning?"
+        heading="Courses Powered by Natural Play Learning"
         background="light"
       >
         <p>
-          <strong>Natural Play Learning</strong> is our exclusive technique,
-          revolutionizing chess training and chess improvement. Inspired by
-          Spaced Repetition, it's more than just repeating moves. It's about
-          understanding and remembering them. Here's the twist: you don't just
-          re-learn moves.
+          Our courses are specifically designed to leverage the Natural Play
+          Learning technique. They are:
         </p>
-        <p>
-          Once you master a move, it becomes a part of your gameplay. You'll
-          play through your openings from the start, but if you recognize a
-          position, you skip the basics. You naturally play what you know and
-          focus on learning what you don't. It's efficient, effective, and
-          engaging.
-        </p>
-        <p>
-          <strong>Natural Play Learning</strong> is the future of chess
-          training. It's the best way to learn chess openings, and it's
-          exclusive to ChessTraining.app.
-        </p>
+        <ul>
+          <li>
+            <strong>User-Centric:</strong> You can either create your own
+            courses or explore those shared by other users. Our team of in-house
+            Masters and top players also regularly publishes bespoke courses.
+          </li>
+          <li>
+            <strong>Dynamic and Interactive:</strong> Each course is structured
+            to help you learn and remember chess openings faster than ever
+            before, with an emphasis on practical understanding and retention.
+          </li>
+          <li>
+            <strong>Focusing on Real-Game Scenarios:</strong> The courses are
+            not just about memorizing moves but understanding them in the
+            context of real-game scenarios.
+          </li>
+        </ul>
+        <Link href="/courses">
+          <Button variant="primary">Explore Courses</Button>
+        </Link>
       </ImageRowFull>
       <TextWall title="Why choose Natural Play Learning?" background="dark">
         <ul>
           <li>
-            <strong>Faster Learning:</strong> Absorb chess openings quickly.
+            <strong>Faster Learning:</strong> Absorb and comprehend chess
+            openings more quickly than traditional methods
           </li>
           <li>
-            <strong>Longer Retention:</strong> Remember moves for a more
-            extended period.
+            <strong>Longer Retention:</strong> Our method ensures that you
+            remember moves for a longer period
           </li>
           <li>
-            <strong>Efficient Training:</strong> Focus on new challenges, not
-            what you already know.
+            <strong>Efficient Training:</strong> Focus on learning new
+            strategies and tactics, not just repeating what you already know
           </li>
           <li>
-            <strong>Real-Game Feel:</strong> Experience openings as they would
-            occur in real games.
+            <strong>Real-Game Feel:</strong> Experience the openings as they
+            would naturally occur in real chess games
           </li>
         </ul>
       </TextWall>

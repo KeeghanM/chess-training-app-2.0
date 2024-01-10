@@ -38,45 +38,32 @@ export default function PgnToLinesForm(props: {
     setError(null)
     setStatus('loading')
 
-    // Check for empty string
-    if (string == '') {
-      setError('Input cannot be empty')
-      setStatus('idle')
-      return
-    }
-    // Check for valid PGN
-    if (!validPGN(string)) {
-      setError('Invalid PGN')
-      setStatus('idle')
-      await trackEventOnClient('create_course_invalid_pgn', {})
-      return
-    }
-    // Final Catch
-    if (error) {
-      setStatus('idle')
-      return
-    }
+    try {
+      if (string == '') throw new Error('PGN is empty')
+      if (!validPGN(string)) throw new Error('Invalid PGN')
 
-    const lines = ParsePGNtoLineData(string)
-    if (!lines) {
-      setError('Something went wrong parsing the PGN')
-      setStatus('idle')
-      return
-    }
+      const lines = ParsePGNtoLineData(string)
+      if (!lines) throw new Error('Something went wrong')
 
-    await trackEventOnClient('create_course_pgn_imported', {})
-    props.finished(lines)
+      await trackEventOnClient('create_course_pgn_imported', {})
+      props.finished(lines)
+    } catch (e) {
+      Sentry.captureException(e)
+      if (e instanceof Error) setError(e.message)
+      else setError('Unknown error')
+      setStatus('idle')
+    }
   }
 
   return (
     <div className="flex flex-col gap-2">
-      <p>
+      <p className="dark:text-white">
         Copy and paste your PGN into the box below. You will have a choice later
         about how to group the lines, so feel free to paste either multiple
         PGNs, or a single one with all the lines and variations contained.
       </p>
       <textarea
-        className="w-full border border-gray-300 px-4 py-2"
+        className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
         rows={10}
         onChange={(e) => {
           setString(e.target.value)

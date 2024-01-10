@@ -12,7 +12,7 @@ import ToolGrid from '~/app/components/dashboard/ToolGrid'
 import XpDisplay from '~/app/components/dashboard/XpDisplay'
 import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
 
-import { isFlagEnabledServer } from '~/app/_util/isFlagEnabledServer'
+import { isFlagEnabledServer } from '../_util/isFlagEnabledServer'
 import { PostHogClient } from '~/app/_util/trackEventOnServer'
 
 export type Tool = {
@@ -28,7 +28,6 @@ export const metadata = {
 }
 
 export default async function Dashboard() {
-  // const { user, profile, permissions, badges } = await getUserServer()
   const { getUser, getPermissions } = getKindeServerSession()
   const user = await getUser()
   if (!user) redirect('/auth/signin')
@@ -57,6 +56,7 @@ export default async function Dashboard() {
   })
 
   // This will force new users into the onboarding
+  // TODO: BUG FIX: This seems to get stuck in a loop until you Ctrl-f5
   if (!profile) redirect('/dashboard/new')
 
   const tools: Tool[] = [
@@ -69,10 +69,10 @@ export default async function Dashboard() {
       ],
       href: '/training/tactics/list',
       buttonText: 'Train',
-      active: true,
+      active: true || override,
     },
     {
-      name: 'Study Course',
+      name: 'Study a Course',
       description: [
         'Train using a course you have created, or one that has been shared with you.',
         'Built using spaced repetition, our courses are a great way to learn.',
@@ -90,7 +90,7 @@ export default async function Dashboard() {
       ],
       href: '/training/endgames/train',
       buttonText: 'Train',
-      active: (await isFlagEnabledServer('endgame-trainer')) || override,
+      active: true || override,
     },
     {
       name: 'Visualisation & Calculation',
@@ -101,7 +101,7 @@ export default async function Dashboard() {
       ],
       href: '/training/visualisation',
       buttonText: 'Train',
-      active: (await isFlagEnabledServer('visualisation-trainer')) || override,
+      active: false || override,
     },
     {
       name: 'Knight Vision',
@@ -112,38 +112,7 @@ export default async function Dashboard() {
       ],
       href: '/training/knight-vision',
       buttonText: 'Train',
-      active: (await isFlagEnabledServer('knight-vision')) || override,
-    },
-    {
-      name: 'Find Courses',
-      description: [
-        'Browse our library of courses to find the perfect one for you.',
-        'Courses are created by our community, and cover a wide range of topics.',
-      ],
-      href: '/courses',
-      buttonText: 'Find',
-      active: (await isFlagEnabledServer('course-browser')) || override,
-    },
-    {
-      name: 'Create a Course',
-      description: [
-        'Create your own course, either for yourself or to share with others.',
-        'Courses can be shared with the community, or kept private.',
-        'Simply upload a PGN file, and we will take care of the rest.',
-      ],
-      href: '/courses/create',
-      buttonText: 'Create',
-      active: (await isFlagEnabledServer('course-trainer')) || override,
-    },
-    {
-      name: 'Account Settings',
-      description: [
-        'Modify training defaults, change your password, or update your email address.',
-        'You can also delete your account here.',
-      ],
-      href: '/dashboard/settings',
-      buttonText: 'Open',
-      active: true,
+      active: false || override,
     },
   ]
 
@@ -172,7 +141,7 @@ export default async function Dashboard() {
         <div className="absolute inset-0">
           <Image
             fill={true}
-            objectFit="cover"
+            className="object-cover object-center w-full h-full"
             src="/images/hero.avif"
             alt="Chess board with pieces set up"
           />
