@@ -25,7 +25,7 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
   const [courses, setCourses] = useState<PrismaUserCourse[]>([])
   const [loading, setLoading] = useState(true)
   const { hasUnlimitedCourses } = props
-  const maxCourses = 3
+  const maxCourses = 2
 
   const fetchCourses = async () => {
     setLoading(true)
