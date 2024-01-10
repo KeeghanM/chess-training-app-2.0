@@ -5,7 +5,6 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
 import * as Sentry from '@sentry/nextjs'
-import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css'
 import type { ResponseJson } from '~/app/api/responses'
 

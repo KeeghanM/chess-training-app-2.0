@@ -6,13 +6,13 @@ import type { Course, Group } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css'
-import { set } from 'zod'
+import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 import TextEditor from '~/app/components/general/TextEditor'
 
-import { LineWithMoves } from './GroupEditor'
+import type { LineWithMoves } from './GroupEditor'
 import GroupsListEditor from './GroupsListEditor'
 
 interface CourseAdminPanelProps {
@@ -55,8 +55,9 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
           })),
         }),
       })
-      const json = await res.json()
-      if (json.message != 'Course updated') throw new Error(json.message)
+      const json = (await res.json()) as ResponseJson
+      if (json?.message != 'Course updated')
+        throw new Error(json.message ?? 'Course not updated')
     } catch (e) {
       Sentry.captureException(e)
     }

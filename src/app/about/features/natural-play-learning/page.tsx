@@ -1,7 +1,6 @@
 import Link from 'next/link'
 
 import Button from '~/app/components/_elements/button'
-import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import BigText from '~/app/components/_layouts/bigText'
 import CtaRow from '~/app/components/_layouts/ctaRow'

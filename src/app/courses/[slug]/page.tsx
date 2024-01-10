@@ -91,11 +91,11 @@ export default async function CoursePage({
   const publicAuthor = createdBy.public
 
   const groupLineCounts = course.lines.reduce(
-    (acc: { [name: string]: number }, line) => {
+    (acc: Record<string, number>, line) => {
       const groupName = course.groups.find(
         (group) => group.id === line.groupId,
       )!.groupName
-      if (groupName) acc[groupName] = (acc[groupName] || 0) + 1
+      if (groupName) acc[groupName] = (acc[groupName] ?? 0) + 1
       return acc
     },
     {},

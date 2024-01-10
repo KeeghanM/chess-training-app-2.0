@@ -5,8 +5,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import type { Decimal } from '@prisma/client/runtime/library'
-import { ResponseJson } from '~/app/api/responses'
+import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '../_elements/button'
 import Spinner from '../general/Spinner'

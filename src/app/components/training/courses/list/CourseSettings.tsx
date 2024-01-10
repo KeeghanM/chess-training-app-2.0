@@ -8,7 +8,7 @@ import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
-import { ResponseJson } from '~/app/api/responses'
+import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
@@ -17,7 +17,7 @@ import Spinner from '~/app/components/general/Spinner'
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-import { PrismaUserCourse } from './CoursesList'
+import type { PrismaUserCourse } from './CoursesList'
 
 interface CourseSettingsProps {
   userCourse: PrismaUserCourse

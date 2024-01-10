@@ -11,7 +11,7 @@ import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
 import type { Piece, Square } from 'chess.js'
 import { Chessboard } from 'react-chessboard'
-import { Arrow } from 'react-chessboard/dist/chessboard/types'
+import type { Arrow } from 'react-chessboard/dist/chessboard/types'
 // @ts-expect-error - No types available
 import useSound from 'use-sound'
 import type { ResponseJson } from '~/app/api/responses'

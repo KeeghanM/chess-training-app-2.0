@@ -3,7 +3,7 @@
 import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
 import type { Line } from '~/app/components/training/courses/create/parse/ParsePGNtoLineData'
 
-import { LineWithMoves } from './GroupEditor'
+import type { LineWithMoves } from './GroupEditor'
 
 export default function LineDisplay(props: { line: LineWithMoves }) {
   const { line } = props
