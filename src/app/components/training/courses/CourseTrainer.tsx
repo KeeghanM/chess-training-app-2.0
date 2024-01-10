@@ -702,7 +702,9 @@ export default function CourseTrainer(props: {
           <p className="italic text-sm text-white">
             {
               lines.filter(
-                (line) => line.revisionDate && line.revisionDate <= new Date(),
+                (line) =>
+                  line.revisionDate == null ||
+                  (line.revisionDate && line.revisionDate <= new Date()),
               ).length
             }{' '}
             lines remaining
@@ -779,7 +781,7 @@ export default function CourseTrainer(props: {
                   Math.min(windowSize.height / 1.75, windowSize.width - 50) *
                   0.5,
               }}
-              className="text-white p-2 bg-purple-900 overflow-y-auto "
+              className="text-white p-2 bg-purple-900 overflow-y-auto text-sm"
             >
               {currentMove?.comment?.comment}
             </p>
