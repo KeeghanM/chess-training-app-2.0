@@ -13,15 +13,17 @@ import Spinner from '../general/Spinner'
 export default function GetCourse(props: {
   courseId: string
   price: number
+  slug: string
   userCourseId?: string
 }) {
-  const { courseId, price, userCourseId } = props
+  const { courseId, price, userCourseId, slug } = props
   const [loading, setLoading] = useState(false)
   const { user } = useKindeBrowserClient()
 
   const handleBuy = async () => {
     if (!user) {
-      window.location.href = `/auth/signin?redirect=/training/courses/${courseId}`
+      console.log(`/api/auth/login?post_login_redirect_url=/courses/${slug}`)
+      window.location.href = `/api/auth/login?post_login_redirect_url=/courses/${slug}`
       return
     }
     setLoading(true)
@@ -53,7 +55,7 @@ export default function GetCourse(props: {
           You already own this course!
         </p>
       ) : (
-        <Button variant="accent" onClick={handleBuy}>
+        <Button disabled={loading} variant="accent" onClick={handleBuy}>
           {loading ? (
             <>
               Processing... <Spinner />

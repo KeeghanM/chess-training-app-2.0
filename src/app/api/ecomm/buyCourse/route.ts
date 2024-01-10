@@ -30,13 +30,36 @@ export async function POST(request: Request) {
 
       if (!course) throw new Error('Course not found')
 
-      const userCourse = await prisma.userCourse.create({
-        data: {
+      let userCourse = await prisma.userCourse.findFirst({
+        where: {
           userId: user.id,
           courseId: course.id,
-          linesUnseen: course.lines.length,
         },
       })
+
+      // Create a new userCourse if it doesn't exist (ie. user hasn't bought the course yet)
+      // Otherwise, update the existing userCourse (ie. user has bought the course before, but it's archived)
+      if (!userCourse) {
+        userCourse = await prisma.userCourse.create({
+          data: {
+            userId: user.id,
+            courseId: course.id,
+            linesUnseen: course.lines.length,
+          },
+        })
+      } else {
+        await prisma.userCourse.update({
+          where: {
+            id: userCourse.id,
+          },
+          data: {
+            linesUnseen: course.lines.length,
+            active: true,
+          },
+        })
+      }
+
+      if (!userCourse) throw new Error('User course not found')
 
       // Create each new line and userLine
       await Promise.all(
@@ -44,7 +67,7 @@ export async function POST(request: Request) {
           await prisma.userLine.create({
             data: {
               userId: user.id,
-              userCourseId: userCourse.id,
+              userCourseId: userCourse!.id,
               lineId: line.id,
             },
           })

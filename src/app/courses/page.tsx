@@ -45,7 +45,10 @@ export default async function Courses() {
         <Heading as="h2">All Available Courses</Heading>
         <div className="flex flex-col gap-2">
           {courses.map((course) => (
-            <div className="p-2 md:p-4 text-black bg-gray-200 flex flex-col gap-1">
+            <div
+              key={course.id}
+              className="p-2 md:p-4 text-black bg-gray-200 flex flex-col gap-1"
+            >
               <div className="flex flex-col md:flex-row md:justify-between gap-2">
                 <Link href={`/courses/${course.slug}`}>
                   <Heading as="h4">{course.courseName}</Heading>

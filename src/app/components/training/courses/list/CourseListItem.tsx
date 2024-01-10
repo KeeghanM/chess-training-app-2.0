@@ -12,6 +12,7 @@ import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
+import Spinner from '~/app/components/general/Spinner'
 import TimeSince from '~/app/components/general/TimeSince'
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
@@ -29,10 +30,12 @@ export default function CourseListItem(props: {
   const [nextReview, setNextReview] = useState<Date | null>(null)
   const [conicGradient, setConicGradient] = useState('')
   const [loading, setLoading] = useState(true)
+  const [opening, setOpening] = useState(false)
 
   const openCourse = async (mode: 'learn' | 'revise') => {
     if (!userCourse) return
 
+    setOpening(true)
     await trackEventOnClient('course_opened', {})
     router.push(
       '/training/courses/' +
@@ -42,6 +45,7 @@ export default function CourseListItem(props: {
   }
 
   useEffect(() => {
+    setOpening(false)
     ;(async () => {
       try {
         const resp = await fetch(`/api/courses/user/${props.courseId}`)
@@ -126,9 +130,15 @@ export default function CourseListItem(props: {
             <Button
               variant="primary"
               onClick={() => openCourse('revise')}
-              disabled={userCourse?.lines?.length == 0}
+              disabled={userCourse?.lines?.length == 0 || opening}
             >
-              Study Course
+              {opening ? (
+                <>
+                  Opening... <Spinner />
+                </>
+              ) : (
+                'Study Course'
+              )}
             </Button>
             <Tippy
               content={
