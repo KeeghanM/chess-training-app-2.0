@@ -21,6 +21,9 @@ import PgnToLinesForm from './PgnToLinesForm'
 import Steps from './Steps'
 import type { Line } from './parse/ParsePGNtoLineData'
 
+// TODO: Bug Fix: Deleting line moves colour down one on display
+// TODO: Bug Fix: Order of lines is correct, groups is reversed
+
 export default function CreateCourseForm() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState<
