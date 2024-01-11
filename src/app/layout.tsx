@@ -38,7 +38,7 @@ export default async function RootLayout({
         if (d.head) d.head.appendChild(s);
       })(document, window, 'BrevoConversations');`}
       </Script>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" suppressHydrationWarning={true}>
         <Suspense>
           <PostHogPageview />
         </Suspense>

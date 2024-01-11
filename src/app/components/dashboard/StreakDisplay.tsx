@@ -6,27 +6,22 @@ import 'tippy.js/dist/tippy.css'
 
 import StyledLink from '~/app/components/_elements/styledLink'
 
-import { StreakBadges } from '~/app/_util/RanksAndBadges'
-
 interface StreakDisplayProps {
-  profile: UserProfile
+  data: {
+    trainedToday: boolean
+    currentStreak: number
+    streakBadge:
+      | {
+          name: string
+          description: string
+          streak: number
+        }
+      | undefined
+  }
   badges: UserBadge[]
 }
 export default function StreakDisplay(props: StreakDisplayProps) {
-  const { profile } = props
-  if (!profile) return null
-  const currentStreak = profile.currentStreak
-  const bestStreak = profile.bestStreak
-
-  const streakBadge = [...StreakBadges]
-    .reverse()
-    .find((badge) => bestStreak >= badge.streak)
-
-  const timeSinceLastTrained = profile.lastTrained
-    ? new Date().getTime() - profile.lastTrained.getTime()
-    : 0
-  const oneDay = 1000 * 60 * 60 * 24
-  const trainedToday = timeSinceLastTrained < oneDay && timeSinceLastTrained > 0
+  const { trainedToday, currentStreak, streakBadge } = props.data
 
   return (
     <div className="flex flex-col items-center gap-1">

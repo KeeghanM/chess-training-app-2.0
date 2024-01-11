@@ -5,18 +5,25 @@ import 'tippy.js/dist/tippy.css'
 
 import StyledLink from '~/app/components/_elements/styledLink'
 
-import { XpRanks } from '~/app/_util/RanksAndBadges'
-
 interface XpDisplayProps {
-  currentXp: number
+  data: {
+    currentXp: number
+    rank: {
+      rank: string
+      name: string
+      xp: number
+    }
+    nextRank: {
+      rank: string
+      name: string
+      xp: number
+    }
+    percentage: number
+  }
   displayLink?: boolean
 }
 export default function XpDisplay(props: XpDisplayProps) {
-  const { currentXp } = props
-  const rank = XpRanks.reverse().find((rank) => currentXp >= rank.xp)
-  const nextRank = XpRanks.reverse().find((rank) => currentXp < rank.xp)
-  const percentage = (currentXp / (nextRank?.xp ?? currentXp)) * 100
-
+  const { currentXp, rank, nextRank, percentage } = props.data
   const displayLink = props.displayLink ?? true
 
   return (

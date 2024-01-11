@@ -12,6 +12,8 @@ import ToolGrid from '~/app/components/dashboard/ToolGrid'
 import XpDisplay from '~/app/components/dashboard/XpDisplay'
 import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
 
+import CalculateStreakBadge from '../_util/CalculateStreakBadge'
+import CalculateXpRank from '../_util/CalculateXpRank'
 import { isFlagEnabledServer } from '../_util/isFlagEnabledServer'
 import { PostHogClient } from '~/app/_util/trackEventOnServer'
 
@@ -135,6 +137,9 @@ export default async function Dashboard() {
     },
   ]
 
+  const { streakBadge, currentStreak, bestStreak, trainedToday } =
+    CalculateStreakBadge(profile)
+
   return (
     <>
       <div className="relative">
@@ -159,8 +164,11 @@ export default async function Dashboard() {
             Welcome back, {user.given_name ?? profile.username ?? user.email}
           </Heading>
           <div className="flex flex-col flex-wrap gap-2 md:flex-row">
-            <StreakDisplay profile={profile} badges={badges} />
-            <XpDisplay currentXp={profile?.experience ?? 0} />
+            <StreakDisplay
+              data={CalculateStreakBadge(profile)}
+              badges={badges}
+            />
+            <XpDisplay data={CalculateXpRank(profile.experience)} />
           </div>
         </Container>
       </div>

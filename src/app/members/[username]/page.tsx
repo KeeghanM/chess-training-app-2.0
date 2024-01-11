@@ -7,6 +7,8 @@ import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import XpDisplay from '~/app/components/dashboard/XpDisplay'
 
+import CalculateXpRank from '~/app/_util/CalculateXpRank'
+
 export default async function MemberPage({
   params,
 }: {
@@ -46,7 +48,10 @@ export default async function MemberPage({
             )}
           </div>
           <div className="w-fit">
-            <XpDisplay displayLink={false} currentXp={account.experience} />
+            <XpDisplay
+              displayLink={false}
+              data={CalculateXpRank(account.experience)}
+            />
           </div>
           {account.description && (
             <p className="bg-purple-700 text-white p-2">

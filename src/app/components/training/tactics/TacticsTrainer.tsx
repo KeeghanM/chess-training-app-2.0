@@ -147,10 +147,7 @@ export default function TacticsTrainer(props: {
   }
 
   const increaseTimeTaken = async () => {
-    if (!user) {
-      Sentry.captureException(new Error('No user'))
-      return
-    }
+    if (!user) return
     setLoading(true)
     const newTime = Date.now()
     const timeTaken = (newTime - startTime) / 1000
@@ -174,10 +171,8 @@ export default function TacticsTrainer(props: {
   }
 
   const increaseCorrect = async () => {
-    if (!user) {
-      Sentry.captureException(new Error('No user'))
-      return
-    }
+    if (!user) return
+
     setLoading(true)
     try {
       await trackEventOnClient('tactics_set_puzzle_correct', {
@@ -202,10 +197,7 @@ export default function TacticsTrainer(props: {
     setLoading(false)
   }
   const increaseIncorrect = async () => {
-    if (!user) {
-      Sentry.captureException(new Error('No user'))
-      return
-    }
+    if (!user) return
     setLoading(true)
     try {
       await trackEventOnClient('tactics_set_puzzle_incorrect', {
@@ -244,9 +236,7 @@ export default function TacticsTrainer(props: {
     ) {
       // We have completed the set
 
-      if (!user) {
-        Sentry.captureException(new Error('No user'))
-      } else {
+      if (user) {
         try {
           await trackEventOnClient('tactics_set_round_completed', {
             roundNumber: currentRound.roundNumber.toString(),
