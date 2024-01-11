@@ -27,7 +27,11 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 import type { PrismaUserCourse } from './list/CoursesList'
 
-// TODO: Bug Fix: First move on mount doesn't always show (maybe a react strict mode thing)
+// TODO: Bug Fix: If last move doesn't line up with line colour, it never marks as done
+// TODO: Bug Fix: Jumping between groups for some reason? Is the order wrong?
+// TODO: Add delay on wrong move jumping
+// TODO: Auto Next Line
+// TODO: Line counter split between group & course
 // TODO: Modal for confirming exit
 // TODO: Ensure links in comments work
 // TODO: Line browser
