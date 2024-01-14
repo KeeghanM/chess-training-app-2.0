@@ -31,7 +31,6 @@ import type { PrismaUserCourse } from './list/CoursesList'
 // TODO: Bug Fix: Jumping between groups for some reason? Is the order wrong?
 // TODO: Add delay on wrong move jumping
 // TODO: Auto Next Line
-// TODO: Line counter split between group & course
 // TODO: Modal for confirming exit
 // TODO: Ensure links in comments work
 // TODO: Line browser

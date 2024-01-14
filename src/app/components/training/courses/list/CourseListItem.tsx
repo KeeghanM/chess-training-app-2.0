@@ -150,12 +150,28 @@ export default function CourseListItem(props: {
               }
               disabled={!!userCourse?.lines?.length}
             >
-              <p className="text-sm italic text-gray-600 dark:text-gray-400">
-                {userCourse?.lines?.length}{' '}
-                {userCourse?.lines?.length == 1
-                  ? 'line is due.'
-                  : 'lines are due.'}
-              </p>
+              <div className="flex flex-col gap-1">
+                <p className="text-sm italic text-gray-600 dark:text-gray-400">
+                  {
+                    userCourse?.lines?.filter(
+                      (line) => line.revisionDate != null,
+                    ).length
+                  }{' '}
+                  {userCourse?.lines?.length == 1
+                    ? 'line to review.'
+                    : 'lines to review.'}
+                </p>
+                <p className="text-sm italic text-gray-600 dark:text-gray-400">
+                  {
+                    userCourse?.lines?.filter(
+                      (line) => line.revisionDate === null,
+                    ).length
+                  }{' '}
+                  {userCourse?.lines?.length == 1
+                    ? 'line to learn.'
+                    : 'lines to learn.'}
+                </p>
+              </div>
             </Tippy>
           </div>
           <CourseSettings userCourse={userCourse!} update={props.update} />
