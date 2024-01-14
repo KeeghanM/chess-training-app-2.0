@@ -24,22 +24,6 @@ export default function GroupDisplay(props: {
   const [parent] = useAutoAnimate()
   const [open, setOpen] = useState(false)
 
-  // Code from route
-  //   linesLearned: allLines.filter(
-  //           (line) =>
-  //             line.currentStreak > 4 && line.timesCorrect >= line.timesWrong,
-  //         ).length,
-  //         linesLearning: allLines.filter(
-  //           (line) =>
-  //             line.currentStreak <= 4 &&
-  //             line.timesTrained > 0 &&
-  //             line.timesCorrect >= line.timesWrong,
-  //         ).length,
-  //         linesHard: allLines.filter(
-  //           (line) => line.timesWrong > line.timesCorrect,
-  //         ).length,
-  //         linesUnseen: allLines.filter((line) => line.timesTrained == 0).length,
-
   const { linesLearned, linesLearning, linesHard, linesUnseen } = lines.reduce(
     (acc, line) => {
       if (line.timesTrained == 0) acc.linesUnseen++
@@ -69,15 +53,6 @@ export default function GroupDisplay(props: {
     linesHard,
     linesUnseen,
   )
-
-  console.log({
-    linesLearned,
-    linesLearning,
-    linesHard,
-    linesUnseen,
-    name,
-    lines,
-  })
 
   return (
     <div ref={parent} className="p-2 bg-purple-700" key={name}>

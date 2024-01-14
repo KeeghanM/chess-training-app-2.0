@@ -18,7 +18,6 @@ export default function TextEditor(props: {
   const handleChange = (value: string) => {
     setValue(value)
     setLength(value.length)
-    console.log(value.length)
     props.onChange(value)
   }
 

@@ -109,7 +109,7 @@ export default function CourseTrainer(props: {
   const getNextLine = (lines: PrismaUserLine[]) => {
     // Sorts the lines in order or priority
     // 1. Lines with a "revisionDate" in the past, sorted by date (oldest first)
-    // 2. Lines with no "revisionDate", sorted by id (order they were added)
+    // 2. Lines with no "revisionDate", sorted by their sortOrder
     const now = new Date()
 
     const dueLines = lines
@@ -119,7 +119,7 @@ export default function CourseTrainer(props: {
 
     const unseenLines = lines
       .filter((line) => !line.revisionDate)
-      .sort((a, b) => a.id - b.id)
+      .sort((a, b) => a.line.sortOrder - b.line.sortOrder)
     if (unseenLines.length > 0) return unseenLines[0]
 
     return null

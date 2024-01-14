@@ -22,7 +22,6 @@ export default function GetCourse(props: {
 
   const handleBuy = async () => {
     if (!user) {
-      console.log(`/api/auth/login?post_login_redirect_url=/courses/${slug}`)
       window.location.href = `/api/auth/login?post_login_redirect_url=/courses/${slug}`
       return
     }
