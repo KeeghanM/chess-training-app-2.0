@@ -13,6 +13,8 @@ import { Chess } from 'chess.js'
 import type { Piece, Square } from 'chess.js'
 import { Chessboard } from 'react-chessboard'
 import type { Arrow } from 'react-chessboard/dist/chessboard/types'
+import Toggle from 'react-toggle'
+import 'react-toggle/style.css'
 // @ts-expect-error - No types available
 import useSound from 'use-sound'
 import type { ResponseJson } from '~/app/api/responses'
@@ -30,11 +32,8 @@ import type { PrismaUserCourse } from './list/CoursesList'
 // TODO: Bug Fix: If last move doesn't line up with line colour, it never marks as done
 // TODO: Bug Fix: Jumping between groups for some reason? Is the order wrong?
 // TODO: Add delay on wrong move jumping
-// TODO: Auto Next Line
-// TODO: Line counter split between group & course
 // TODO: Modal for confirming exit
 // TODO: Ensure links in comments work
-// TODO: Line browser
 
 type PrismaMove = Move & { comment?: Comment | null }
 
@@ -76,6 +75,7 @@ export default function CourseTrainer(props: {
   const [currentWrongMove, setCurrentWrongMove] = useState(0)
   const [hadTeachingMove, setHadTeachingMove] = useState(false)
   const [lineCorrect, setLineCorrect] = useState(true)
+  const [autoNext, setAutoNext] = useState(false)
 
   // Tracking/Stats State
   type trainingFen = { fen: string; commentId?: number }
@@ -109,7 +109,7 @@ export default function CourseTrainer(props: {
   const getNextLine = (lines: PrismaUserLine[]) => {
     // Sorts the lines in order or priority
     // 1. Lines with a "revisionDate" in the past, sorted by date (oldest first)
-    // 2. Lines with no "revisionDate", sorted by id (order they were added)
+    // 2. Lines with no "revisionDate", sorted by their sortOrder
     const now = new Date()
 
     const dueLines = lines
@@ -119,7 +119,7 @@ export default function CourseTrainer(props: {
 
     const unseenLines = lines
       .filter((line) => !line.revisionDate)
-      .sort((a, b) => a.id - b.id)
+      .sort((a, b) => a.line.sortOrder - b.line.sortOrder)
     if (unseenLines.length > 0) return unseenLines[0]
 
     return null
@@ -310,6 +310,10 @@ export default function CourseTrainer(props: {
 
   const startNextLine = async () => {
     if (!nextLine) return
+
+    await trackEventOnClient('course_next_line', {
+      courseName: props.userCourse.course.courseName,
+    })
 
     setNextLine(null)
     setCurrentLine(nextLine)
@@ -688,6 +692,13 @@ export default function CourseTrainer(props: {
     }
   }, [currentMove])
 
+  useEffect(() => {
+    if (!nextLine || !autoNext) return
+    ;(async () => await startNextLine())().catch((e) =>
+      Sentry.captureException(e),
+    )
+  }, [nextLine])
+
   // Last check to ensure we have a user
   if (!user) return null
 
@@ -803,6 +814,16 @@ export default function CourseTrainer(props: {
           >
             {PgnDisplay.map((item) => item)}
           </div>
+          <label className="ml-auto flex items-center gap-2 text-sm text-white">
+            <Toggle
+              defaultChecked={autoNext}
+              onChange={async () => {
+                setAutoNext(!autoNext)
+                if (nextLine) await startNextLine()
+              }}
+            />
+            <span>Auto Next on correct</span>
+          </label>
           {teaching && (
             <Button variant="accent" onClick={resetTeachingMove}>
               Got it!
@@ -813,9 +834,6 @@ export default function CourseTrainer(props: {
               variant="accent"
               disabled={status == 'loading'}
               onClick={async () => {
-                await trackEventOnClient('course_next_line', {
-                  courseName: props.userCourse.course.courseName,
-                })
                 await startNextLine()
               }}
             >

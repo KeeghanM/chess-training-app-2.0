@@ -1,6 +1,6 @@
 'use client'
 
-import type { UserBadge, UserProfile } from '@prisma/client'
+import type { UserBadge } from '@prisma/client'
 import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css'
 

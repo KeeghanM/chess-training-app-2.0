@@ -85,9 +85,11 @@ export default function CourseListItem(props: {
       ) : (
         <>
           <div className="md:mr-auto flex flex-col md:max-w-[50%] md:w-[50%]">
-            <Link href={'/courses/' + userCourse?.course.slug}>
-              <Heading as={'h3'}>{props.courseName}</Heading>
-            </Link>
+            <Tippy content="View lines and other stats">
+              <Link href={`/training/courses/${userCourse?.id}/lines`}>
+                <Heading as={'h3'}>{props.courseName}</Heading>
+              </Link>
+            </Tippy>
             <p className="text-sm italic text-gray-600 dark:text-gray-400">
               Last trained{' '}
               {userCourse?.lastTrained ? (
@@ -150,12 +152,28 @@ export default function CourseListItem(props: {
               }
               disabled={!!userCourse?.lines?.length}
             >
-              <p className="text-sm italic text-gray-600 dark:text-gray-400">
-                {userCourse?.lines?.length}{' '}
-                {userCourse?.lines?.length == 1
-                  ? 'line is due.'
-                  : 'lines are due.'}
-              </p>
+              <div className="flex flex-col gap-1">
+                <p className="text-sm italic text-gray-600 dark:text-gray-400">
+                  {
+                    userCourse?.lines?.filter(
+                      (line) => line.revisionDate != null,
+                    ).length
+                  }{' '}
+                  {userCourse?.lines?.length == 1
+                    ? 'line to review.'
+                    : 'lines to review.'}
+                </p>
+                <p className="text-sm italic text-gray-600 dark:text-gray-400">
+                  {
+                    userCourse?.lines?.filter(
+                      (line) => line.revisionDate === null,
+                    ).length
+                  }{' '}
+                  {userCourse?.lines?.length == 1
+                    ? 'line to learn.'
+                    : 'lines to learn.'}
+                </p>
+              </div>
             </Tippy>
           </div>
           <CourseSettings userCourse={userCourse!} update={props.update} />

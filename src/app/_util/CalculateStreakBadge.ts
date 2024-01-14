@@ -1,4 +1,4 @@
-import { UserProfile } from '@prisma/client'
+import type { UserProfile } from '@prisma/client'
 
 import { StreakBadges } from './RanksAndBadges'
 
