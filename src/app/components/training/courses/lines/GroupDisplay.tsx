@@ -3,13 +3,12 @@
 import { useState } from 'react'
 
 import { useAutoAnimate } from '@formkit/auto-animate/react'
-import { Comment, Group, Move, UserLine } from '@prisma/client'
+import type { Comment, Group, Move, UserLine } from '@prisma/client'
 import Tippy from '@tippyjs/react'
 
-import Heading from '~/app/components/_elements/heading'
 import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
 
-import { Line } from '../create/parse/ParsePGNtoLineData'
+import type { Line } from '../create/parse/ParsePGNtoLineData'
 
 export default function GroupDisplay(props: {
   name: string

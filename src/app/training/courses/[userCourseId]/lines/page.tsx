@@ -9,8 +9,6 @@ import * as Sentry from '@sentry/nextjs'
 import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
-import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
-import { Line } from '~/app/components/training/courses/create/parse/ParsePGNtoLineData'
 import GroupDisplay from '~/app/components/training/courses/lines/GroupDisplay'
 
 export default async function CourseTrainPage({

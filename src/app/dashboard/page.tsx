@@ -137,9 +137,6 @@ export default async function Dashboard() {
     },
   ]
 
-  const { streakBadge, currentStreak, bestStreak, trainedToday } =
-    CalculateStreakBadge(profile)
-
   return (
     <>
       <div className="relative">

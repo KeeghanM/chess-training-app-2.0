@@ -694,7 +694,9 @@ export default function CourseTrainer(props: {
 
   useEffect(() => {
     if (!nextLine || !autoNext) return
-    startNextLine()
+    ;(async () => await startNextLine())().catch((e) =>
+      Sentry.captureException(e),
+    )
   }, [nextLine])
 
   // Last check to ensure we have a user
