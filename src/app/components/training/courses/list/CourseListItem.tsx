@@ -85,9 +85,11 @@ export default function CourseListItem(props: {
       ) : (
         <>
           <div className="md:mr-auto flex flex-col md:max-w-[50%] md:w-[50%]">
-            <Link href={'/courses/' + userCourse?.course.slug}>
-              <Heading as={'h3'}>{props.courseName}</Heading>
-            </Link>
+            <Tippy content="View lines and other stats">
+              <Link href={`/training/courses/${userCourse?.id}/lines`}>
+                <Heading as={'h3'}>{props.courseName}</Heading>
+              </Link>
+            </Tippy>
             <p className="text-sm italic text-gray-600 dark:text-gray-400">
               Last trained{' '}
               {userCourse?.lastTrained ? (
