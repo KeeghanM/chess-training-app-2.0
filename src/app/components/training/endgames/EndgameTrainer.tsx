@@ -56,6 +56,7 @@ export default function EndgameTrainer() {
     'none' | 'correct' | 'incorrect'
   >('none')
   const [mode, setMode] = useState<'training' | 'settings'>('settings')
+  const [error, setError] = useState('')
 
   const [xpCounter, setXpCounter] = useState(0)
   const [currentStreak, setCurrentStreak] = useState(0)
@@ -65,6 +66,14 @@ export default function EndgameTrainer() {
   }
 
   const getPuzzle = async () => {
+    const trueRating = Math.round(rating * difficultyAdjuster(difficulty))
+    if (trueRating < 500 || trueRating > 3000) {
+      setError(
+        'Puzzle ratings must be between 500 & 3000, try adjusting the difficulty or the base rating',
+      )
+      return undefined
+    }
+
     const getTheme = () => {
       switch (type) {
         case 'Queen':
@@ -83,7 +92,7 @@ export default function EndgameTrainer() {
     }
     try {
       const params = {
-        rating: Math.round(rating * difficultyAdjuster(difficulty)).toString(),
+        rating: trueRating.toString(),
         themesType: 'ALL',
         themes: `["${getTheme()}"]`,
         count: '1',
@@ -93,13 +102,14 @@ export default function EndgameTrainer() {
         body: JSON.stringify(params),
       })
       const json = (await resp.json()) as ResponseJson
-      if (json.message != 'Puzzles found') throw new Error('No puzzles found')
+      if (json?.message != 'Puzzles found') throw new Error('No puzzles found')
       const puzzles = json.data!.puzzles as TrainingPuzzle[]
 
       return puzzles[0]
     } catch (e) {
       Sentry.captureException(e)
-      return undefined
+      if (e instanceof Error) setError(e.message)
+      else setError('Oops! Something went wrong')
     }
   }
 
@@ -168,6 +178,9 @@ export default function EndgameTrainer() {
       await trackEventOnClient('endgame_incorrect', {})
     }
     const newPuzzle = await getPuzzle()
+
+    if (!newPuzzle) return
+
     setPuzzleStatus('none')
     setLoading(false)
     setCurrentPuzzle(newPuzzle)
@@ -354,7 +367,10 @@ export default function EndgameTrainer() {
     if (mode == 'settings') return
     ;(async () => {
       const puzzle = await getPuzzle()
-      if (!puzzle) return
+      if (!puzzle) {
+        setMode('settings')
+        return
+      }
       setCurrentPuzzle(puzzle)
       setLoading(false)
     })().catch((e) => {
@@ -396,7 +412,7 @@ export default function EndgameTrainer() {
           <label className="text-lg font-bold text-white">Your Rating</label>
           <input
             type="number"
-            className="w-full border border-gray-300 bg-gray-100 px-4 py-2 bg-gray-100 text-black"
+            className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
             min={'500'}
             max={'3000'}
             step={'10'}
@@ -479,6 +495,9 @@ export default function EndgameTrainer() {
         >
           Start Training
         </Button>
+        {error && (
+          <p className="bg-red-500 italic text-sm p-2 text-white">{error}</p>
+        )}
       </div>
     </>
   ) : (
