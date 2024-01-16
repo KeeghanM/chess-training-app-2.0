@@ -4,8 +4,6 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
 
-import { UpdateStreak } from '~/app/_util/UpdateStreak'
-
 export async function POST(request: Request) {
   const session = getKindeServerSession(request)
   if (!session) return errorResponse('Unauthorized', 401)
@@ -21,8 +19,6 @@ export async function POST(request: Request) {
   if (!roundId || !timeTaken) return errorResponse('Missing fields', 400)
 
   try {
-    await UpdateStreak(user.id)
-
     await prisma.tacticsSetRound.update({
       where: {
         id: roundId,
@@ -53,5 +49,7 @@ export async function POST(request: Request) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
     else return errorResponse('Unknown error', 500)
+  } finally {
+    await prisma.$disconnect()
   }
 }

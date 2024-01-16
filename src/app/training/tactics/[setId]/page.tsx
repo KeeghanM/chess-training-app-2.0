@@ -35,6 +35,8 @@ export default async function TacticsTrainPage({
   } catch (e) {
     Sentry.captureException(e)
     return redirect('/training/tactics/list')
+  } finally {
+    await prisma.$disconnect()
   }
 
   if (!set) {

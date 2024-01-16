@@ -25,6 +25,8 @@ export async function getUserServer() {
       return { user, hasAuth, profile, permissions, badges }
     } catch (e) {
       Sentry.captureException(e)
+    } finally {
+      await prisma.$disconnect()
     }
   }
   return { user, hasAuth: false, profile: null, permissions: null, badges: [] }
@@ -70,5 +72,7 @@ export async function createUserProfile(user: KindeUser) {
     })
   } catch (e) {
     Sentry.captureException(e)
+  } finally {
+    await prisma.$disconnect()
   }
 }

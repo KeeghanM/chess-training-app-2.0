@@ -21,6 +21,7 @@ export default async function MemberPage({
       username,
     },
   })
+  await prisma.$disconnect()
 
   if (!account || account.public == false) {
     redirect('/404')

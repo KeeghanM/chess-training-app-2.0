@@ -24,6 +24,9 @@ export async function POST(request: Request) {
   if (count < 1 || count > 500)
     return errorResponse('Count must be between 1 and 500', 400)
 
+  if (rating < 500 || rating > 3000)
+    return errorResponse('Rating must be between 500 & 3000', 400)
+
   let params: {
     rating: string
     count: string

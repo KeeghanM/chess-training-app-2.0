@@ -4,8 +4,6 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
 
-import { UpdateStreak } from '~/app/_util/UpdateStreak'
-
 export async function POST(
   request: Request,
   { params }: { params: { courseId: string; lineId: number } },
@@ -30,8 +28,6 @@ export async function POST(
     return errorResponse('Missing fields', 400)
 
   try {
-    await UpdateStreak(user.id)
-
     const line = await prisma.userLine.update({
       where: {
         id: parseInt(lineId.toString()),
@@ -97,5 +93,7 @@ export async function POST(
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
     else return errorResponse('Unknown error', 500)
+  } finally {
+    await prisma.$disconnect()
   }
 }
