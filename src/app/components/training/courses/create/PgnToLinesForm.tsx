@@ -20,6 +20,11 @@ export default function PgnToLinesForm(props: {
   const [error, setError] = useState<string | null>(null)
   const [string, setString] = useState<string>('')
 
+  const handleError = (msg: string) => {
+    setError(msg)
+    setStatus('idle')
+  }
+
   const validPGN = (string: string) => {
     try {
       const parsed = PGNParse(string, { startRule: 'games' })
@@ -30,6 +35,8 @@ export default function PgnToLinesForm(props: {
       Sentry.captureException(e)
       if (e instanceof Error) setError(e.message)
       else setError('Unknown error')
+
+      setStatus('idle')
       return false
     }
   }
@@ -39,11 +46,11 @@ export default function PgnToLinesForm(props: {
     setStatus('loading')
 
     try {
-      if (string == '') throw new Error('PGN is empty')
-      if (!validPGN(string)) throw new Error('Invalid PGN')
+      if (string == '') return handleError('PGN is empty')
+      if (!validPGN(string)) return handleError('Invalid PGN')
 
       const lines = ParsePGNtoLineData(string)
-      if (!lines) throw new Error('Something went wrong')
+      if (!lines) return handleError('Something went wrong')
 
       await trackEventOnClient('create_course_pgn_imported', {})
       props.finished(lines)
