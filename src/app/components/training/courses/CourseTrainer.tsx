@@ -30,7 +30,6 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import type { PrismaUserCourse } from './list/CoursesList'
 
 // TODO: Bug Fix: If last move doesn't line up with line colour, it never marks as done
-// TODO: Bug Fix: Jumping between groups for some reason? Is the order wrong?
 // TODO: Add delay on wrong move jumping
 // TODO: Modal for confirming exit
 // TODO: Ensure links in comments work
@@ -475,7 +474,6 @@ export default function CourseTrainer(props: {
       return updatedLines
     } catch (e) {
       Sentry.captureException(e)
-      //TODO; This should probably kill the session and make the user restart (re-login?)
     }
   }
 
@@ -842,7 +840,7 @@ export default function CourseTrainer(props: {
           )}
           <Button
             variant="danger"
-            onClick={() => router.push('/training/courses/')} //TODO: Add confirmation modal
+            onClick={() => router.push('/training/courses/')}
           >
             Exit
           </Button>

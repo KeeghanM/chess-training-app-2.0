@@ -42,6 +42,7 @@ export interface TrainingPuzzle {
   themes: string[]
 }
 
+// TODO: "Show solution" button
 export default function TacticsTrainer(props: {
   set: PrismaTacticsSetWithPuzzles
 }) {

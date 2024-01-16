@@ -24,6 +24,8 @@ import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTr
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
+// TODO: "Show solution" button
+
 export default function EndgameTrainer() {
   // Setup main state for the game/puzzles
   const [currentPuzzle, setCurrentPuzzle] = useState<TrainingPuzzle>()
