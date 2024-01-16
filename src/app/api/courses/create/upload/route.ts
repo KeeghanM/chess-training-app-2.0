@@ -85,6 +85,7 @@ export async function POST(request: Request) {
     if (!course || !userCourse)
       throw new Error('Course or userCourse not found')
 
+    // TODO: Need to relook at a transaction here...
     // Create each new line and userLine
     await Promise.all(
       lines.map(async (line, index) => {
@@ -130,5 +131,7 @@ export async function POST(request: Request) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
     else return errorResponse('Unknown error', 500)
+  } finally {
+    await prisma.$disconnect()
   }
 }

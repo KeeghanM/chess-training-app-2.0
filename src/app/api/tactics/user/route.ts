@@ -26,5 +26,7 @@ export async function GET(request: Request) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
     else return errorResponse('Unknown error', 500)
+  } finally {
+    await prisma.$disconnect()
   }
 }

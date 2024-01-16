@@ -106,6 +106,8 @@ export default async function CoursePage({
     count: groupLineCounts[name],
   }))
 
+  await prisma.$disconnect()
+
   return (
     <>
       <div className="w-full flex items-center justify-center py-2 bg-gray-200">

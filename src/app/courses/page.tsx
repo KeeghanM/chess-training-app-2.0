@@ -24,6 +24,8 @@ export default async function Courses() {
     },
   })
 
+  await prisma.$disconnect()
+
   return (
     <>
       <PageHeader

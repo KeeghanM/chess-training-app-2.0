@@ -43,6 +43,8 @@ export async function POST(request: Request) {
   } catch (e) {
     Sentry.captureException(e)
     return errorResponse('Internal server error', 500)
+  } finally {
+    await prisma.$disconnect()
   }
 }
 
@@ -83,5 +85,7 @@ export async function PATCH(request: Request) {
   } catch (e) {
     Sentry.captureException(e)
     return errorResponse('Internal server error', 500)
+  } finally {
+    await prisma.$disconnect()
   }
 }

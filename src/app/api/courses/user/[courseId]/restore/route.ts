@@ -66,5 +66,7 @@ export async function POST(
   } catch (e) {
     Sentry.captureException(e)
     return errorResponse('Internal server error', 500)
+  } finally {
+    await prisma.$disconnect()
   }
 }

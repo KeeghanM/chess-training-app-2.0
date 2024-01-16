@@ -30,6 +30,8 @@ export async function AddBadgeToUser(userId: string, name: string) {
     return
   } catch (e) {
     Sentry.captureException(e)
+  } finally {
+    await prisma.$disconnect()
   }
 }
 
@@ -60,5 +62,7 @@ export async function RemoveBadgeFromUser(userId: string, name: string) {
     return
   } catch (e) {
     Sentry.captureException(e)
+  } finally {
+    await prisma.$disconnect()
   }
 }
