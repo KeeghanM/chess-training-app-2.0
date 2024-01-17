@@ -58,6 +58,10 @@ export default function Nav(props: {
           href: '/training/endgames',
         },
         {
+          name: 'Calculation Trainer',
+          href: '/training/calculation',
+        },
+        {
           name: 'Visualisation Trainer',
           href: '/training/visualisation',
         },

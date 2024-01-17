@@ -3,16 +3,16 @@ import PageHeader from '~/app/components/_layouts/pageHeader'
 
 export const metadata = {
   title:
-    'Visualization Training - Advance Your Chess Strategy at ChessTraining.app',
+    'Calculation Training - Advance Your Chess Strategy at ChessTraining.app',
   description:
-    "Improve your board vision, and memory skills with ChessTraining.app's Visualization training. Designed to test your memory and understanding of the board and it's pieces. Perfect for those looking to elevate their game to the next level.",
+    "Refine your foresight with ChessTraining.app's Calculation training. Tailored for players seeking to enhance their ability to foresee multiple moves ahead, this tool is crucial for long-term planning in chess. Challenge yourself with complex board scenarios and improve your decision-making skills. Perfect for those looking to deepen their tactical understanding and elevate their game to the next level.",
 }
 
-export default async function VisualisationPage() {
+export default async function CalculationPage() {
   return (
     <>
       <PageHeader
-        title="Visualisation Training"
+        title="Calculation Training"
         subTitle="Coming soon!"
         image={{
           src: '/images/hero.avif',
