@@ -10,7 +10,7 @@ import type { Puzzle } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
 import { useWindowSize } from '@uidotdev/usehooks'
-import type { Piece, Square } from 'chess.js'
+import type { Square } from 'chess.js'
 import { Chess } from 'chess.js'
 import { Chessboard } from 'react-chessboard'
 import Toggle from 'react-toggle'
@@ -42,6 +42,7 @@ export interface TrainingPuzzle {
   themes: string[]
 }
 
+// TODO: "Show solution" button
 export default function TacticsTrainer(props: {
   set: PrismaTacticsSetWithPuzzles
 }) {
@@ -60,6 +61,11 @@ export default function TacticsTrainer(props: {
   const [gameReady, setGameReady] = useState(false)
   const [orientation, setOrientation] = useState<'white' | 'black'>('white')
   const [position, setPosition] = useState(game.fen())
+  const [startSquare, setStartSquare] = useState<Square>()
+  const [clickedPiece, setClickedPiece] = useState<string>()
+  const [optionSquares, setOptionSquares] = useState<
+    Record<string, React.CSSProperties>
+  >({})
 
   // Setup SFX
   const [checkSound] = useSound('/sfx/check.mp3')
@@ -321,7 +327,7 @@ export default function TacticsTrainer(props: {
   const checkPromotion = (
     sourceSquare: Square,
     targetSquare: Square,
-    piece: Piece,
+    piece: string,
   ) => {
     // CHECK IF LAST POSITION, BASED ON SOURCE SQUARE, IS A PAWN
     // This works because we haven't actually made the move yet
@@ -345,7 +351,7 @@ export default function TacticsTrainer(props: {
   const userDroppedPiece = async (
     sourceSquare: Square,
     targetSquare: Square,
-    piece: Piece,
+    piece: string,
   ) => {
     // Make the move to see if it's legal
     const playerMove = (() => {
@@ -362,6 +368,10 @@ export default function TacticsTrainer(props: {
     })()
 
     if (playerMove === null) return false // illegal move
+
+    // Valid move so reset the squares & piece
+    setStartSquare(undefined)
+    setClickedPiece(undefined)
 
     // Check if the move is correct
     const correctMove = currentPuzzle!.moves[game.history().length - 1]
@@ -383,6 +393,39 @@ export default function TacticsTrainer(props: {
     makeBookMove()
     await checkEndOfLine()
     return true
+  }
+
+  const squareClicked = async (square: Square) => {
+    if (!readyForInput) return
+    if (puzzleFinished) return
+
+    const piece = game.get(square)
+    // if we click the same square twice
+    // then unselect the piece
+    if (startSquare === square) {
+      setStartSquare(undefined)
+      setClickedPiece(undefined)
+      return
+    }
+
+    // if we click out own piece
+    // then set the start square and clicked piece
+    // (highlighting is handled by a useEffect)
+    if (piece?.color === game.turn()) {
+      setStartSquare(square)
+      setClickedPiece(piece.type + piece.color)
+      return
+    }
+
+    // if we have clicked a piece, and we click a square
+    // that doesn't contain our own piece (or is empty)
+    // then try to make the move
+    if (startSquare && piece?.color !== game.turn()) {
+      await userDroppedPiece(startSquare, square, clickedPiece!)
+      setStartSquare(undefined)
+      setClickedPiece(undefined)
+      return
+    }
   }
 
   const PgnDisplay = game.history().map((move, index) => {
@@ -489,6 +532,38 @@ export default function TacticsTrainer(props: {
     }
   }, [gameReady, game, currentPuzzle])
 
+  useEffect(() => {
+    if (!startSquare || !clickedPiece) {
+      setOptionSquares({})
+      return
+    }
+    const validMoves = game.moves({ square: startSquare, verbose: true })
+    const newOptions: Record<string, React.CSSProperties> = {}
+    // Highlight the start square
+    newOptions[startSquare] = {
+      background: 'rgba(255, 255, 0, 0.4)',
+    }
+
+    if (validMoves.length === 0) {
+      setOptionSquares(newOptions)
+      return
+    }
+    // Highlight the valid moves
+    validMoves.map((move) => {
+      newOptions[move.to] = {
+        background:
+          game.get(move.to) &&
+          game.get(move.to).color !== game.get(startSquare).color
+            ? 'radial-gradient(circle, transparent 50%,  rgba(0, 0, 0, 0.2) 51%,  rgba(0, 0, 0, 0.2) 65%,transparent 66%)'
+            : 'radial-gradient(circle, rgba(0,0,0,.2) 20%, transparent 22%)',
+        borderRadius: '50%',
+        cursor: 'pointer',
+      }
+      return move
+    })
+    setOptionSquares(newOptions)
+  }, [startSquare, clickedPiece])
+
   // Last check to ensure we have a user
   if (!user) return null
 
@@ -580,6 +655,11 @@ export default function TacticsTrainer(props: {
       <div className="flex flex-col gap-4 md:flex-row">
         <div>
           <Chessboard
+            onSquareClick={squareClicked}
+            onSquareRightClick={() => {
+              setStartSquare(undefined)
+              setClickedPiece(undefined)
+            }}
             arePiecesDraggable={readyForInput}
             position={position}
             boardOrientation={orientation}
@@ -592,6 +672,7 @@ export default function TacticsTrainer(props: {
             }}
             // @ts-expect-error - ChessBoard doesnt expect AsyncFunction but works fine
             onPieceDrop={userDroppedPiece}
+            customSquareStyles={{ ...optionSquares }}
           />
         </div>
         <div className="flex w-full flex-col gap-2">
@@ -615,7 +696,7 @@ export default function TacticsTrainer(props: {
               </p>
             )}
             {puzzleStatus === 'correct' && (
-              <div className="z-50 flex items-center gap-2 text-white">
+              <div className="z-50 flex flex-wrap  items-center gap-2 text-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

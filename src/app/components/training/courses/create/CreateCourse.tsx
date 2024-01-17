@@ -22,7 +22,8 @@ import Steps from './Steps'
 import type { Line } from './parse/ParsePGNtoLineData'
 
 // TODO: Bug Fix: Deleting line moves colour down one on display
-// TODO: Bug Fix: Order of lines is correct, groups is reversed
+// TODO: button to set all lines to a colour
+// TODO: Popup to alert if multiple colours
 
 export default function CreateCourseForm() {
   const router = useRouter()
