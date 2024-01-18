@@ -11,12 +11,14 @@ export async function POST(request: Request) {
   const user = await session.getUser()
   if (!user) return errorResponse('Unauthorized', 401)
 
-  const { rating, themesType, themes, count } = (await request.json()) as {
-    rating: number
-    themesType: string
-    themes: string
-    count: number
-  }
+  const { rating, themesType, themes, count, playerMoves } =
+    (await request.json()) as {
+      rating: number
+      themesType: string
+      themes: string
+      count: number
+      playerMoves: number
+    }
 
   if (!rating || count == undefined || (themes && !themesType))
     return errorResponse('Missing required fields', 400)
@@ -32,12 +34,14 @@ export async function POST(request: Request) {
     count: string
     themesType?: string
     themes?: string
+    playerMoves?: string
   } = {
     rating: rating.toString(),
     count: count.toString(),
   }
 
   if (themes) params = { ...params, themesType, themes }
+  if (playerMoves) params = { ...params, playerMoves: playerMoves.toString() }
 
   try {
     const paramsString = new URLSearchParams(params).toString()

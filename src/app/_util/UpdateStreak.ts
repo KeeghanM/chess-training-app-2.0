@@ -40,12 +40,6 @@ export async function UpdateStreak(userId: string) {
 
     const bestStreak = Math.max(currentStreak, profile.bestStreak)
 
-    console.log({
-      lastTrained: new Date(),
-      currentStreak,
-      bestStreak,
-    })
-
     await prisma.userProfile.update({
       where: { id: userId },
       data: {

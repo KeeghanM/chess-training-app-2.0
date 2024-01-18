@@ -62,6 +62,10 @@ export default function Nav(props: {
           href: '/training/visualisation',
         },
         {
+          name: 'Recall Trainer',
+          href: '/training/recall',
+        },
+        {
           name: 'Knight Vision',
           href: '/training/knight-vision',
         },
