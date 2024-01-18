@@ -155,8 +155,8 @@ export default function VisualisationTrainer() {
     if (!currentPuzzle?.moves) return {}
 
     const correctMove = currentPuzzle.moves[currentPuzzle.moves.length - 1]!
-    const correctStartSquare = correctMove!.substring(0, 2)
-    const correctEndSquare = correctMove!.substring(2, 4)
+    const correctStartSquare = correctMove.substring(0, 2)
+    const correctEndSquare = correctMove.substring(2, 4)
     return {
       [correctStartSquare]: {
         backgroundColor: 'rgba(25,255,0,0.4)',
