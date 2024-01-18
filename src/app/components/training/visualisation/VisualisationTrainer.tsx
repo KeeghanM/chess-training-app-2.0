@@ -111,13 +111,13 @@ export default function VisualisationTrainer() {
     // and send it to the server incase a badge needs adding
     if (status == 'correct') {
       await trackEventOnClient('Visualisation_correct', {})
-      await fetch('/api/Visualisation/streak', {
+      await fetch('/api/visualisation/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
       })
       setCurrentStreak(currentStreak + 1)
     } else if (status == 'incorrect') {
-      await trackEventOnClient('Visualisation_incorrect', {})
+      await trackEventOnClient('visualisation_incorrect', {})
     }
     const newPuzzle = await getPuzzle()
 
@@ -135,7 +135,6 @@ export default function VisualisationTrainer() {
     if (status == 'correct') setXpCounter(xpCounter + 1)
 
     setStartSquare(undefined)
-    await trackEventOnClient(`Visualisation_${status}`, {})
 
     if (autoNext) await goToNextPuzzle(status)
   }
@@ -193,7 +192,7 @@ export default function VisualisationTrainer() {
   }
 
   const PgnDisplay = game.history().map((move, index) => {
-    if (index == game.history().length - 1) return null // Don't show the last move
+    if (index == game.history().length - 1 && !puzzleFinished) return null // Don't show the last move until the puzzle is finished
 
     const moveNumber = Math.floor(index / 2) + 1
     const moveColour = index % 2 === 0 ? 'White' : 'Black'
@@ -205,14 +204,34 @@ export default function VisualisationTrainer() {
         <span>{move}</span>
       </p>
     )
-    return (
-      <div
-        key={moveNumber.toString() + move + moveColour}
-        className="px-1 py-1 text-white"
-      >
-        <FlexText />
-      </div>
-    )
+    if (puzzleFinished) {
+      return (
+        <button
+          key={'btn' + moveNumber.toString() + move + moveColour}
+          className="h-max max-h-fit bg-none px-1 py-1 text-white hover:bg-purple-800"
+          onClick={async () => {
+            await trackEventOnClient('calculation_set_jump_to_move', {})
+
+            const newGame = new Chess(currentPuzzle!.fen)
+            for (let i = 0; i <= index; i++) {
+              newGame.move(game.history()[i]!)
+            }
+            setDisplayPosition(newGame.fen())
+          }}
+        >
+          <FlexText />
+        </button>
+      )
+    } else {
+      return (
+        <div
+          key={moveNumber.toString() + move + moveColour}
+          className="px-1 py-1 text-white"
+        >
+          <FlexText />
+        </div>
+      )
+    }
   })
 
   const exit = async () => {
@@ -583,14 +602,12 @@ export default function VisualisationTrainer() {
                             2,
                             4,
                           ) as Square
-                          game.move(correctMove)
-                          setDisplayPosition(game.fen())
                           setSelectedSquares({
                             [correctStartSquare]: {
                               backgroundColor: 'rgba(25,255,0,0.3)',
                             },
                             [correctEndSquare]: {
-                              backgroundColor: 'rgba(25,255,0,0.3)',
+                              backgroundColor: 'rgba(0,255,0,0.5)',
                             },
                           })
                         }}
