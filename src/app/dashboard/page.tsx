@@ -62,6 +62,16 @@ export default async function Dashboard() {
 
   const tools: Tool[] = [
     {
+      name: 'Openings',
+      description: [
+        'Train your opening courses using our Natural Play Learning.',
+        'An enhanced version of Spaced Repetition, and the best way to learn openings.',
+      ],
+      href: '/training/courses',
+      buttonText: 'Train',
+      active: true || override,
+    },
+    {
       name: 'Tactics',
       description: [
         "Train tactics using the WoodPecker Method developed by GM's Axel Smith, and Hans Tikkanen.",
@@ -73,12 +83,13 @@ export default async function Dashboard() {
       active: true || override,
     },
     {
-      name: 'Openings',
+      name: 'Visualisation',
       description: [
-        'Train your opening courses using our Natural Play Learning.',
-        'An enhanced version of Spaced Repetition, and the best way to learn openings.',
+        'Do you struggle to see past two or three moves? Find long calculations difficult? This is for you.',
+        'With our visualisation trainer you are presented with a board position, and a list of moves at the end of which will be a simple tactic.',
+        'All you need to do is play the given sequence of moves in your head, decide on your final move and then check if you were correct.',
       ],
-      href: '/training/courses',
+      href: '/training/visualisation/train',
       buttonText: 'Train',
       active: true || override,
     },
@@ -94,15 +105,15 @@ export default async function Dashboard() {
       active: true || override,
     },
     {
-      name: 'Visualisation',
+      name: 'Play the Masters',
       description: [
-        'Do you struggle to see past two or three moves? Find long calculations difficult? This is for you.',
-        'With our visualisation trainer you are presented with a board position, and a list of moves at the end of which will be a simple tactic.',
-        'All you need to do is play the given sequence of moves in your head, decide on your final move and then check if you were correct.',
+        'Play through the games of the masters, and try to guess their moves.',
+        'A great way to improve your understanding of the game, and to learn new ideas.',
+        'We have a large library of curated master games, all selected for their instructive value.',
       ],
-      href: '/training/visualisation/train',
+      href: '/training/play-the-masters',
       buttonText: 'Train',
-      active: true || override,
+      active: false || override,
     },
     {
       name: 'Board Recall',
@@ -123,17 +134,6 @@ export default async function Dashboard() {
         'Simply put, race against the clock to calculate the fastest way a knight can get to a given square. Rack up a streak and try to beat your own high score.',
       ],
       href: '/training/knight-vision/train',
-      buttonText: 'Train',
-      active: false || override,
-    },
-    {
-      name: 'Play the Masters',
-      description: [
-        'Play through the games of the masters, and try to guess their moves.',
-        'A great way to improve your understanding of the game, and to learn new ideas.',
-        'We have a large library of curated master games, all selected for their instructive value.',
-      ],
-      href: '/training/play-the-masters',
       buttonText: 'Train',
       active: false || override,
     },
