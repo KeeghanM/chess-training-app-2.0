@@ -435,13 +435,13 @@ export default function VisualisationTrainer() {
                 </p>
                 <p
                   onClick={async () => {
-                    await markFlowNotStarted('flow_UITkRxhuAE4Hwmdk')
+                    await markFlowNotStarted('flow_FudOixipuMiWOaP7')
                     await markStepCompleted(
-                      'flow_UITkRxhuAE4Hwmdk',
+                      'flow_FudOixipuMiWOaP7',
                       'welcome-tooltip',
                     )
                     await markStepCompleted(
-                      'flow_UITkRxhuAE4Hwmdk',
+                      'flow_FudOixipuMiWOaP7',
                       'puzzle-length',
                     )
                   }}
