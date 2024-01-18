@@ -13,6 +13,7 @@ interface ButtonProps {
     | 'info'
   disabled?: boolean
   children: React.ReactNode
+  id?: string
 }
 export default function Button(props: ButtonProps) {
   const styles = {
@@ -34,6 +35,7 @@ export default function Button(props: ButtonProps) {
 
   return (
     <button
+      id={props.id}
       className={
         'flex min-w-[145px] items-center justify-center gap-2 text-sm ' +
         styles[props.variant] +
