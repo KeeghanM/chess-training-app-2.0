@@ -10,8 +10,8 @@ import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
 import { useWindowSize } from '@uidotdev/usehooks'
-import { Chess } from 'chess.js'
-import type { Square } from 'chess.js'
+import { Chess, SQUARES } from 'chess.js'
+import type { Color, PieceSymbol, Square } from 'chess.js'
 import { Chessboard } from 'react-chessboard'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
@@ -44,7 +44,21 @@ export default function RecallTrainer() {
   const [selectedSquares, setSelectedSquares] = useState<
     Record<string, React.CSSProperties>
   >({})
-  const [correctSquare, setCorrectSquare] = useState<Square>()
+  const [hiddenSquares, setHiddenSquares] = useState<
+    Record<string, React.CSSProperties>
+  >({})
+  const [availableSquares, setAvailableSquares] = useState<
+    {
+      square: Square
+      type: PieceSymbol
+      color: Color
+    }[]
+  >([])
+  const [correctSquare, setCorrectSquare] = useState<{
+    square: Square
+    type: PieceSymbol
+    color: Color
+  }>()
 
   // Setup SFX
   const [soundEnabled, setSoundEnabled] = useState(true)
@@ -52,7 +66,6 @@ export default function RecallTrainer() {
   const [incorrectSound] = useSound('/sfx/incorrect.mp3')
 
   // Setup state for the settings/general
-  const [parent] = useAutoAnimate()
   const [autoNext, setAutoNext] = useState(false)
   const [loading, setLoading] = useState(true)
   const [readyForInput, setReadyForInput] = useState(false)
@@ -137,11 +150,26 @@ export default function RecallTrainer() {
     if (autoNext) await goToNextPuzzle(status)
   }
 
+  const markImReady = () => {
+    setHiddenSquares({
+      ...SQUARES.reduce(
+        (acc, square) => {
+          acc[square] = {
+            opacity: 0,
+          }
+          return acc
+        },
+        {} as Record<string, React.CSSProperties>,
+      ),
+    })
+    setReadyForInput(true)
+  }
+
   const squareClicked = async (square: Square) => {
     if (puzzleFinished) return
     if (!readyForInput) return
 
-    if (square == correctSquare) {
+    if (square == correctSquare?.square) {
       setSelectedSquares({
         [square]: {
           backgroundColor: 'rgba(25,255,0,0.8)',
@@ -153,7 +181,7 @@ export default function RecallTrainer() {
         [square]: {
           backgroundColor: 'rgba(255,25,0,0.8)',
         },
-        [correctSquare!]: {
+        [correctSquare!.square]: {
           backgroundColor: 'rgba(25,255,0,0.8)',
         },
       })
@@ -205,8 +233,50 @@ export default function RecallTrainer() {
     setLoading(true)
     setOrientation('white')
     setPosition(currentPuzzle.fen)
-    setGame(new Chess(currentPuzzle.fen))
-    setReadyForInput(true)
+    const newGame = new Chess(currentPuzzle.fen)
+    setGame(newGame)
+
+    const squaresWithPieces = newGame
+      .board()
+      .flatMap((row, i) =>
+        row.filter((square) => square?.type != 'p').map((square) => square),
+      )
+
+    const reduction = difficulty === 2 ? 1 : difficulty === 1 ? 2 : 3
+    const amountToShow = Math.max(
+      piecesToRecall,
+      Math.floor(squaresWithPieces.length / reduction),
+    )
+    const squaresToHide = squaresWithPieces
+      .sort(() => 0.5 - Math.random())
+      .slice(0, squaresWithPieces.length - amountToShow)
+      .reduce(
+        (acc, square) => {
+          if (square)
+            acc[square.square] = {
+              opacity: 0,
+              backgroundColor: 'rgba(255,0,0,0.5)',
+            }
+          return acc
+        },
+        {} as Record<string, React.CSSProperties>,
+      )
+
+    const visibleSquares = squaresWithPieces.filter(
+      (
+        square,
+      ): square is { square: Square; type: PieceSymbol; color: Color } => {
+        return square !== null && !squaresToHide[square.square]
+      },
+    )
+
+    setHiddenSquares(squaresToHide)
+    setAvailableSquares(visibleSquares)
+    setCorrectSquare(
+      visibleSquares[Math.floor(Math.random() * visibleSquares.length)],
+    )
+
+    setReadyForInput(false)
     setPuzzleFinished(false)
     setLoading(false)
   }, [currentPuzzle])
@@ -295,7 +365,7 @@ export default function RecallTrainer() {
                 </span>
               </div>
             </div>
-            <div ref={parent}>
+            <div>
               <div className="flex items-center gap-4">
                 <label
                   htmlFor="timed"
@@ -376,7 +446,7 @@ export default function RecallTrainer() {
                 </p>
                 <p className="flex flex-col items-center">
                   <span className="font-bold">Timer:</span>
-                  <span>{timerLength}s</span>
+                  <span>{timed ? <>{timerLength}s</> : 'none'}</span>
                 </p>
                 <p
                   onClick={async () => {
@@ -453,6 +523,10 @@ export default function RecallTrainer() {
                   )}
                   customBoardStyle={{
                     marginInline: 'auto',
+                  }}
+                  customSquareStyles={{
+                    ...selectedSquares,
+                    ...hiddenSquares,
                   }}
                 />
               </div>
@@ -544,7 +618,32 @@ export default function RecallTrainer() {
                     id="tooltip-2"
                     className="flex h-full flex-wrap content-start gap-1 bg-purple-600 p-2"
                   >
-                    {/* {PgnDisplay.map((item) => item)} */}
+                    {!readyForInput &&
+                      (!timed ? (
+                        <Button variant="accent" onClick={markImReady}>
+                          I'm Ready!
+                        </Button>
+                      ) : (
+                        <p className="text-white text-xl font-bold">{timer}s</p>
+                      ))}
+                    {correctSquare && readyForInput && (
+                      <p className="text-white text-lg">
+                        Where is the{' '}
+                        <span className="font-bold underline">
+                          {correctSquare.color == 'w' ? 'White' : 'Black'}{' '}
+                          {correctSquare.type == 'b'
+                            ? 'Bishop'
+                            : correctSquare.type == 'k'
+                              ? 'King'
+                              : correctSquare.type == 'n'
+                                ? 'Knight'
+                                : correctSquare.type == 'q'
+                                  ? 'Queen'
+                                  : 'Rook'}
+                        </span>
+                        ?
+                      </p>
+                    )}
                   </div>
                   <label className="ml-auto flex items-center gap-2 text-sm text-white">
                     <Toggle
@@ -572,8 +671,6 @@ export default function RecallTrainer() {
                         variant="secondary"
                         onClick={async () => {
                           setPuzzleStatus('incorrect')
-                          setReadyForInput(false)
-                          setReadyForInput(true)
                           setPuzzleFinished(true)
                           if (soundEnabled) incorrectSound()
                           setSelectedSquares({})
