@@ -66,12 +66,12 @@ export default function Nav(props: {
           href: '/training/recall',
         },
         {
-          name: 'Knight Vision',
-          href: '/training/knight-vision',
+          name: 'Play the Masters',
+          href: '/training/play-the-masters',
         },
         {
-          name: 'View All Features',
-          href: '/about/features',
+          name: 'Knight Vision',
+          href: '/training/knight-vision',
         },
       ],
     },

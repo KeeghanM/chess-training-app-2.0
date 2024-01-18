@@ -39,15 +39,7 @@ export default async function FeaturesPage() {
       anchor: 'tactics-trainer',
       link: '/training/tactics',
     },
-    {
-      name: 'Knight Vision',
-      description: [
-        'Whether you are a beginner, intermediate, or even experienced player - board vision is crucial to the game of Chess. We have devised a very simple method of improving your board vision through the use of knights in a fun and fast paced way',
-        "Race against the clock to find the knight's path. The more you play, the better your board vision will become.",
-      ],
-      anchor: 'knight-vision',
-      link: '/training/knight-vision',
-    },
+
     {
       name: 'Endgame Trainer',
       description: [
@@ -58,24 +50,43 @@ export default async function FeaturesPage() {
       link: '/training/endgames',
     },
     {
-      name: 'Calculation Training',
-      description: [
-        'Do you struggle to see past two or three moves? Find long calculations difficult? This is for you.',
-        'With our calculation trainer you are presented with a board position, and a list of moves at the end of which will be a simple tactic.',
-        'All you need to do is play the given sequence of moves in your head, decide on your final move and then check if you were correct.',
-      ],
-      anchor: 'calculation-training',
-      link: '/training/calculation',
-    },
-    {
       name: 'Visualisation Training',
       description: [
-        'Help improve your board vision, and your ability to "see" the board in your head.',
-        'With our visualisation trainer you are presented with a board position, and a short time to memorise it.',
-        'You are then asked a question about the position, and you must answer it from memory.',
+        'Do you struggle to see past two or three moves? Find long calculations difficult? This is for you.',
+        'With our visualisation trainer you are presented with a board position, and a list of moves at the end of which will be a simple tactic.',
+        'All you need to do is play the given sequence of moves in your head, decide on your final move and then check if you were correct.',
       ],
       anchor: 'visualisation-training',
-      link: '/training/visualisation',
+      link: '/visualisation/calculation',
+    },
+    {
+      name: 'Board Recall Training',
+      description: [
+        'Help improve your board vision, and your ability to "see" the board in your head.',
+        'With our recall trainer you are presented with a board position, and a short time to memorise it.',
+        'You are then asked a question about the position, and you must answer it from memory.',
+      ],
+      anchor: 'recall-training',
+      link: '/training/recall',
+    },
+    {
+      name: 'Play the Masters',
+      description: [
+        'Play through the games of the masters, and try to guess their moves.',
+        'A great way to improve your understanding of the game, and to learn new ideas.',
+        'We have a large library of curated master games, all selected for their instructive value.',
+      ],
+      anchor: 'play-the-masters',
+      link: '/training/play-the-masters',
+    },
+    {
+      name: 'Knight Vision',
+      description: [
+        'Whether you are a beginner, intermediate, or even experienced player - board vision is crucial to the game of Chess. We have devised a very simple method of improving your board vision through the use of knights in a fun and fast paced way',
+        "Race against the clock to find the knight's path. The more you play, the better your board vision will become.",
+      ],
+      anchor: 'knight-vision',
+      link: '/training/knight-vision',
     },
   ]
 
