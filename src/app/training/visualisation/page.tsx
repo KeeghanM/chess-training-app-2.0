@@ -3,7 +3,6 @@ import StyledLink from '~/app/components/_elements/styledLink'
 import CtaRow from '~/app/components/_layouts/ctaRow'
 import Hero from '~/app/components/_layouts/hero'
 import ImageRowFull from '~/app/components/_layouts/imageRowFull'
-import PageHeader from '~/app/components/_layouts/pageHeader'
 
 export const metadata = {
   title:

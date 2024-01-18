@@ -14,7 +14,6 @@ import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
 
 import CalculateStreakBadge from '../_util/CalculateStreakBadge'
 import CalculateXpRank from '../_util/CalculateXpRank'
-import { isFlagEnabledServer } from '../_util/isFlagEnabledServer'
 import { PostHogClient } from '~/app/_util/trackEventOnServer'
 
 export type Tool = {
@@ -103,7 +102,7 @@ export default async function Dashboard() {
       ],
       href: '/training/visualisation/train',
       buttonText: 'Train',
-      active: false || override,
+      active: true || override,
     },
     {
       name: 'Board Recall',

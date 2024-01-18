@@ -15,6 +15,8 @@ import { Chessboard } from 'react-chessboard'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 import 'tippy.js/dist/tippy.css'
+// @ts-expect-error - No types available
+import useSound from 'use-sound'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
@@ -42,6 +44,11 @@ export default function VisualisationTrainer() {
   const [selectedSquares, setSelectedSquares] = useState<
     Record<string, React.CSSProperties>
   >({})
+
+  // Setup SFX
+  const [soundEnabled, setSoundEnabled] = useState(true)
+  const [correctSound] = useSound('/sfx/correct.mp3')
+  const [incorrectSound] = useSound('/sfx/incorrect.mp3')
 
   // Setup state for the settings/general
   const [autoNext, setAutoNext] = useState(false)
@@ -100,7 +107,6 @@ export default function VisualisationTrainer() {
 
   const goToNextPuzzle = async (status: string) => {
     setLoading(true)
-    setSelectedSquares({})
 
     // Increase the "Last Trained" on the profile
     await fetch('/api/profile/streak', {
@@ -124,6 +130,7 @@ export default function VisualisationTrainer() {
     if (!newPuzzle) return
 
     setPuzzleStatus('none')
+    setSelectedSquares({})
     setLoading(false)
     setCurrentPuzzle(newPuzzle)
   }
@@ -132,11 +139,32 @@ export default function VisualisationTrainer() {
     setPuzzleStatus(status)
     setReadyForInput(false)
     setPuzzleFinished(true)
-    if (status == 'correct') setXpCounter(xpCounter + 1)
+    if (status == 'correct') {
+      setXpCounter(xpCounter + 1)
+      if (soundEnabled) correctSound()
+    } else {
+      if (soundEnabled) incorrectSound()
+    }
 
     setStartSquare(undefined)
 
     if (autoNext) await goToNextPuzzle(status)
+  }
+
+  const getCorrectMoves = () => {
+    if (!currentPuzzle?.moves) return {}
+
+    const correctMove = currentPuzzle.moves[currentPuzzle.moves.length - 1]!
+    const correctStartSquare = correctMove!.substring(0, 2)
+    const correctEndSquare = correctMove!.substring(2, 4)
+    return {
+      [correctStartSquare]: {
+        backgroundColor: 'rgba(25,255,0,0.4)',
+      },
+      [correctEndSquare]: {
+        backgroundColor: 'rgba(0,255,0,0.8)',
+      },
+    }
   }
 
   const squareClicked = async (square: Square) => {
@@ -156,7 +184,7 @@ export default function VisualisationTrainer() {
       setStartSquare(square)
       setSelectedSquares({
         [square]: {
-          backgroundColor: 'rgba(25,255,0,0.3)',
+          backgroundColor: 'rgba(25,255,0,0.4)',
         },
       })
       return
@@ -171,21 +199,22 @@ export default function VisualisationTrainer() {
     if (moveString == finalMove?.substring(0, 4)) {
       setSelectedSquares({
         [square]: {
-          backgroundColor: 'rgba(25,255,0,0.3)',
+          backgroundColor: 'rgba(25,255,0,0.8)',
         },
         [startSquare]: {
-          backgroundColor: 'rgba(25,255,0,0.3)',
+          backgroundColor: 'rgba(25,255,0,0.4)',
         },
       })
       await markMoveAs('correct')
     } else {
       setSelectedSquares({
         [square]: {
-          backgroundColor: 'rgba(255,25,0,0.3)',
+          backgroundColor: 'rgba(255,25,0,0.8)',
         },
         [startSquare]: {
-          backgroundColor: 'rgba(255,25,0,0.3)',
+          backgroundColor: 'rgba(255,25,0,0.4)',
         },
+        ...getCorrectMoves(),
       })
       await markMoveAs('incorrect')
     }
@@ -297,7 +326,7 @@ export default function VisualisationTrainer() {
   return (
     <>
       <FrigadeTour
-        flowId="flow_UITkRxhuAE4Hwmdk"
+        flowId="flow_FudOixipuMiWOaP7"
         tooltipPosition="auto"
         dismissible={true}
         showStepCount={true}
@@ -402,13 +431,16 @@ export default function VisualisationTrainer() {
                   <span>{getDifficulty()}</span>
                 </p>
                 <p
-                  onClick={() => {
-                    markFlowNotStarted('flow_UITkRxhuAE4Hwmdk')
-                    markStepCompleted(
+                  onClick={async () => {
+                    await markFlowNotStarted('flow_UITkRxhuAE4Hwmdk')
+                    await markStepCompleted(
                       'flow_UITkRxhuAE4Hwmdk',
                       'welcome-tooltip',
                     )
-                    markStepCompleted('flow_UITkRxhuAE4Hwmdk', 'puzzle-length')
+                    await markStepCompleted(
+                      'flow_UITkRxhuAE4Hwmdk',
+                      'puzzle-length',
+                    )
                   }}
                   className="cursor-pointer underline hover:no-underline"
                 >
@@ -418,6 +450,46 @@ export default function VisualisationTrainer() {
               </div>
               <div className="flex items-center gap-2 w-fit mx-auto md:mx-0">
                 <ThemeSwitch />
+                <div
+                  className="ml-auto flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
+                  onClick={() => setSoundEnabled(!soundEnabled)}
+                >
+                  <Tippy content={`Sound ${soundEnabled ? 'On' : 'Off'}`}>
+                    {soundEnabled ? (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="1.5"
+                          d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
+                        />
+                      </svg>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 16 16"
+                      >
+                        <path
+                          fill="none"
+                          stroke="currentColor"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="1.5"
+                          d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
+                        />
+                      </svg>
+                    )}
+                  </Tippy>
+                </div>
               </div>
             </div>
             <div className="flex flex-col gap-4 lg:flex-row">
@@ -590,26 +662,8 @@ export default function VisualisationTrainer() {
                           setReadyForInput(false)
                           setReadyForInput(true)
                           setPuzzleFinished(true)
-
-                          if (!currentPuzzle?.moves) return
-                          const correctMove =
-                            currentPuzzle.moves[currentPuzzle.moves.length - 1]!
-                          const correctStartSquare = correctMove!.substring(
-                            0,
-                            2,
-                          ) as Square
-                          const correctEndSquare = correctMove!.substring(
-                            2,
-                            4,
-                          ) as Square
-                          setSelectedSquares({
-                            [correctStartSquare]: {
-                              backgroundColor: 'rgba(25,255,0,0.3)',
-                            },
-                            [correctEndSquare]: {
-                              backgroundColor: 'rgba(0,255,0,0.5)',
-                            },
-                          })
+                          if (soundEnabled) incorrectSound()
+                          setSelectedSquares(getCorrectMoves())
                         }}
                       >
                         Skip/Show Solution

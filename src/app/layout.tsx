@@ -49,7 +49,7 @@ export default async function RootLayout({
         </Suspense>
         <PosthogProvider>
           <FrigadeProvider
-            publicApiKey="api_public_sVHXWy1Gd5eQk1WuQgzIkgkaGGpsWVmH3nw0343N5U6T3SeTERp9xLn9wRKO9aN5"
+            publicApiKey={process.env.FRIGADE_API_KEY!}
             userId={userId}
           >
             <body>
