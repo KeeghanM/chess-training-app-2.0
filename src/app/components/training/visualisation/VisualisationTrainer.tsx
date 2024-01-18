@@ -223,12 +223,15 @@ export default function VisualisationTrainer() {
   const PgnDisplay = game.history().map((move, index) => {
     if (index == game.history().length - 1 && !puzzleFinished) return null // Don't show the last move until the puzzle is finished
 
-    const moveNumber = Math.floor(index / 2) + 1
-    const moveColour = index % 2 === 0 ? 'White' : 'Black'
+    const moveNumber = Math.floor(index / 2) + 1 + displayGame.moveNumber()
+    const moveColour = game.history({ verbose: true })[index]!.color
     const FlexText = () => (
       <p>
-        {moveColour == 'White' && (
-          <span className="font-bold">{moveNumber}</span>
+        {(moveColour == 'w' || (moveColour == 'b' && index == 0)) && (
+          <span className="font-bold">
+            {moveNumber}
+            {moveColour == 'b' && index == 0 && '...'}
+          </span>
         )}{' '}
         <span>{move}</span>
       </p>
