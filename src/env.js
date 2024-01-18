@@ -32,6 +32,7 @@ export const env = createEnv({
     BREVO_API_KEY: z.string(),
     SENTRY_AUTH_TOKEN: z.string(),
     RAPIDAPI_KEY: z.string(),
+    FRIGADE_API_KEY: z.string(),
   },
 
   /**
@@ -68,6 +69,7 @@ export const env = createEnv({
     BREVO_API_KEY: process.env.BREVO_API_KEY,
     SENTRY_AUTH_TOKEN: process.env.SENTRY_AUTH_TOKEN,
     RAPIDAPI_KEY: process.env.RAPIDAPI_KEY,
+    FRIGADE_API_KEY: process.env.FRIGADE_API_KEY,
     // CLIENT
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,

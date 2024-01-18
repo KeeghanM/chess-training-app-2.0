@@ -14,7 +14,6 @@ import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
 
 import CalculateStreakBadge from '../_util/CalculateStreakBadge'
 import CalculateXpRank from '../_util/CalculateXpRank'
-import { isFlagEnabledServer } from '../_util/isFlagEnabledServer'
 import { PostHogClient } from '~/app/_util/trackEventOnServer'
 
 export type Tool = {
@@ -63,7 +62,7 @@ export default async function Dashboard() {
 
   const tools: Tool[] = [
     {
-      name: 'Tactics Training',
+      name: 'Tactics',
       description: [
         "Train tactics using the WoodPecker Method developed by GM's Axel Smith, and Hans Tikkanen.",
         'Re-program your unconscious mind. With benefits including sharper tactical vision, fewer blunders, and better play when in time trouble as well as improved intuition.',
@@ -74,17 +73,17 @@ export default async function Dashboard() {
       active: true || override,
     },
     {
-      name: 'Study a Course',
+      name: 'Openings',
       description: [
-        'Train using a course you have created, or one that has been shared with you.',
-        'Built using spaced repetition, our courses are a great way to learn.',
+        'Train your opening courses using our Natural Play Learning.',
+        'An enhanced version of Spaced Repetition, and the best way to learn openings.',
       ],
       href: '/training/courses',
       buttonText: 'Train',
-      active: (await isFlagEnabledServer('course-trainer')) || override,
+      active: true || override,
     },
     {
-      name: 'Endgame Training',
+      name: 'Endgames',
       description: [
         'Pick from Queen, Rook, Knight, Bishop, or Pawn endgames. Or let fate decide.',
         'Fundamental to the game of chess, endgames are an area of chess which many players neglect in their training.',
@@ -95,13 +94,24 @@ export default async function Dashboard() {
       active: true || override,
     },
     {
-      name: 'Visualisation & Calculation',
+      name: 'Visualisation',
       description: [
         'Do you struggle to see past two or three moves? Find long calculations difficult? This is for you.',
         'With our visualisation trainer you are presented with a board position, and a list of moves at the end of which will be a simple tactic.',
         'All you need to do is play the given sequence of moves in your head, decide on your final move and then check if you were correct.',
       ],
-      href: '/training/visualisation',
+      href: '/training/visualisation/train',
+      buttonText: 'Train',
+      active: true || override,
+    },
+    {
+      name: 'Board Recall',
+      description: [
+        'Help improve your board vision, and your ability to "see" the board in your head.',
+        'With our recall trainer you are presented with a board position, and a short time to memorise it.',
+        'You are then asked a question about the position, and you must answer it from memory.',
+      ],
+      href: '/training/recall/train',
       buttonText: 'Train',
       active: false || override,
     },
@@ -112,7 +122,18 @@ export default async function Dashboard() {
         'We have devised a very simple method of improving your board vision through the use of knights.',
         'Simply put, race against the clock to calculate the fastest way a knight can get to a given square. Rack up a streak and try to beat your own high score.',
       ],
-      href: '/training/knight-vision',
+      href: '/training/knight-vision/train',
+      buttonText: 'Train',
+      active: false || override,
+    },
+    {
+      name: 'Play the Masters',
+      description: [
+        'Play through the games of the masters, and try to guess their moves.',
+        'A great way to improve your understanding of the game, and to learn new ideas.',
+        'We have a large library of curated master games, all selected for their instructive value.',
+      ],
+      href: '/training/play-the-masters',
       buttonText: 'Train',
       active: false || override,
     },

@@ -58,12 +58,23 @@ export default async function FeaturesPage() {
       link: '/training/endgames',
     },
     {
-      name: 'Visualisation & Calculation',
+      name: 'Calculation Training',
       description: [
-        'Do you struggle to see past two or three moves? Find long calculations difficult? This is for you. With our visualisation trainer you are presented with a board position, and a list of moves at the end of which will be a simple tactic.',
-        'All you need to do is play the given sequence of moves out in your head, with no assistance from arrows or pieces moving, and decide on your final move before checking if you were correct.',
+        'Do you struggle to see past two or three moves? Find long calculations difficult? This is for you.',
+        'With our calculation trainer you are presented with a board position, and a list of moves at the end of which will be a simple tactic.',
+        'All you need to do is play the given sequence of moves in your head, decide on your final move and then check if you were correct.',
       ],
-      anchor: 'visualisation-and-calculation',
+      anchor: 'calculation-training',
+      link: '/training/calculation',
+    },
+    {
+      name: 'Visualisation Training',
+      description: [
+        'Help improve your board vision, and your ability to "see" the board in your head.',
+        'With our visualisation trainer you are presented with a board position, and a short time to memorise it.',
+        'You are then asked a question about the position, and you must answer it from memory.',
+      ],
+      anchor: 'visualisation-training',
       link: '/training/visualisation',
     },
   ]

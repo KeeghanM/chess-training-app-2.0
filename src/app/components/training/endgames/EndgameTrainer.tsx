@@ -349,12 +349,16 @@ export default function EndgameTrainer() {
   }
 
   const PgnDisplay = game.history().map((move, index) => {
-    const moveNumber = Math.floor(index / 2) + 1
-    const moveColour = index % 2 === 0 ? 'White' : 'Black'
+    const moveNumber =
+      Math.floor(index / 2) + 1 + (game.moveNumber() - game.history().length)
+    const moveColour = game.history({ verbose: true })[index]!.color
     const FlexText = () => (
       <p>
-        {moveColour == 'White' && (
-          <span className="font-bold">{moveNumber}</span>
+        {(moveColour == 'w' || (moveColour == 'b' && index == 0)) && (
+          <span className="font-bold">
+            {moveNumber}
+            {moveColour == 'b' && index == 0 && '...'}
+          </span>
         )}{' '}
         <span>{move}</span>
       </p>

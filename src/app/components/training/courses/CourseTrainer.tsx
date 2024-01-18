@@ -30,6 +30,7 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import type { PrismaUserCourse } from './list/CoursesList'
 
 // TODO: Bug Fix: If last move doesn't line up with line colour, it never marks as done
+// TODO: Bug Fix: Next line button shows momentarily even when auto next is on
 // TODO: Add delay on wrong move jumping
 // TODO: Modal for confirming exit
 // TODO: Ensure links in comments work
