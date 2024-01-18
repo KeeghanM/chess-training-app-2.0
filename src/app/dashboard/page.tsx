@@ -63,7 +63,7 @@ export default async function Dashboard() {
 
   const tools: Tool[] = [
     {
-      name: 'Tactics Training',
+      name: 'Tactics',
       description: [
         "Train tactics using the WoodPecker Method developed by GM's Axel Smith, and Hans Tikkanen.",
         'Re-program your unconscious mind. With benefits including sharper tactical vision, fewer blunders, and better play when in time trouble as well as improved intuition.',
@@ -74,17 +74,17 @@ export default async function Dashboard() {
       active: true || override,
     },
     {
-      name: 'Study a Course',
+      name: 'Openings',
       description: [
-        'Train using a course you have created, or one that has been shared with you.',
-        'Built using spaced repetition, our courses are a great way to learn.',
+        'Train your opening courses using our Natural Play Learning.',
+        'An enhanced version of Spaced Repetition, and the best way to learn openings.',
       ],
       href: '/training/courses',
       buttonText: 'Train',
       active: true || override,
     },
     {
-      name: 'Endgame Training',
+      name: 'Endgames',
       description: [
         'Pick from Queen, Rook, Knight, Bishop, or Pawn endgames. Or let fate decide.',
         'Fundamental to the game of chess, endgames are an area of chess which many players neglect in their training.',
@@ -95,7 +95,7 @@ export default async function Dashboard() {
       active: true || override,
     },
     {
-      name: 'visualisation Training',
+      name: 'Visualisation',
       description: [
         'Do you struggle to see past two or three moves? Find long calculations difficult? This is for you.',
         'With our visualisation trainer you are presented with a board position, and a list of moves at the end of which will be a simple tactic.',
@@ -106,7 +106,7 @@ export default async function Dashboard() {
       active: false || override,
     },
     {
-      name: 'Board Recall Training',
+      name: 'Board Recall',
       description: [
         'Help improve your board vision, and your ability to "see" the board in your head.',
         'With our recall trainer you are presented with a board position, and a short time to memorise it.',

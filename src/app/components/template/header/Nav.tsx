@@ -58,12 +58,12 @@ export default function Nav(props: {
           href: '/training/endgames',
         },
         {
-          name: 'Calculation Trainer',
-          href: '/training/calculation',
-        },
-        {
           name: 'Visualisation Trainer',
           href: '/training/visualisation',
+        },
+        {
+          name: 'Recall Trainer',
+          href: '/training/recall',
         },
         {
           name: 'Knight Vision',

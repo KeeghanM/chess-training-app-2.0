@@ -25,8 +25,6 @@ import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTr
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-// TODO: "Show solution" button
-
 export default function VisualisationTrainer() {
   const { user } = useKindeBrowserClient()
 
@@ -571,9 +569,30 @@ export default function VisualisationTrainer() {
                         onClick={async () => {
                           setPuzzleStatus('incorrect')
                           setReadyForInput(false)
-                          // await showIncorrectSequence()
                           setReadyForInput(true)
                           setPuzzleFinished(true)
+
+                          if (!currentPuzzle?.moves) return
+                          const correctMove =
+                            currentPuzzle.moves[currentPuzzle.moves.length - 1]!
+                          const correctStartSquare = correctMove!.substring(
+                            0,
+                            2,
+                          ) as Square
+                          const correctEndSquare = correctMove!.substring(
+                            2,
+                            4,
+                          ) as Square
+                          game.move(correctMove)
+                          setDisplayPosition(game.fen())
+                          setSelectedSquares({
+                            [correctStartSquare]: {
+                              backgroundColor: 'rgba(25,255,0,0.3)',
+                            },
+                            [correctEndSquare]: {
+                              backgroundColor: 'rgba(25,255,0,0.3)',
+                            },
+                          })
                         }}
                       >
                         Skip/Show Solution
