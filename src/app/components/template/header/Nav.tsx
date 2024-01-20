@@ -35,12 +35,12 @@ export default function Nav(props: {
       name: 'Home',
     },
     {
-      href: '/courses',
-      name: 'Courses',
-    },
-    {
       href: '/about/features/woodpecker-method',
       name: 'Woodpecker Method',
+    },
+    {
+      href: '/courses',
+      name: 'Courses',
     },
     {
       name: 'Features',
@@ -66,12 +66,12 @@ export default function Nav(props: {
           href: '/training/recall',
         },
         {
-          name: 'Knight Vision',
-          href: '/training/knight-vision',
+          name: 'Play the Masters',
+          href: '/training/play-the-masters',
         },
         {
-          name: 'View All Features',
-          href: '/about/features',
+          name: 'Knight Vision',
+          href: '/training/knight-vision',
         },
       ],
     },
@@ -80,7 +80,7 @@ export default function Nav(props: {
   return (
     <header className="sticky top-0 z-10 bg-purple-700 text-white shadow-lg">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between gap-1 px-1 py-2 lg:gap-4 lg:p-4">
-        <Link href="/">
+        <Link href={user ? '/dashboard' : '/'}>
           <div className="flex items-center">
             <Image
               src="/chesstrainingapplogo.png"

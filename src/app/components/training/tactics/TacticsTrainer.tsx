@@ -436,8 +436,9 @@ export default function TacticsTrainer(props: {
       <p>
         {(moveColour == 'w' || (moveColour == 'b' && index == 0)) && (
           <span className="font-bold">
-            {moveNumber}
-            {moveColour == 'b' && index == 0 && '...'}
+            {/* This weird calc is to fix the first black number being too high */}
+            {moveNumber - (moveColour == 'b' && index == 0 ? 1 : 0)}.
+            {moveColour == 'b' && index == 0 && '..'}
           </span>
         )}{' '}
         <span>{move}</span>

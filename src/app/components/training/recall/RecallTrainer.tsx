@@ -4,13 +4,13 @@ import Link from 'next/link'
 
 import { useEffect, useState } from 'react'
 
-import { FrigadeTour, useFlows } from '@frigade/react'
+import { useFlows } from '@frigade/react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
 import { useWindowSize } from '@uidotdev/usehooks'
-import { Chess } from 'chess.js'
-import type { Square } from 'chess.js'
+import { Chess, SQUARES } from 'chess.js'
+import type { Color, PieceSymbol, Square } from 'chess.js'
 import { Chessboard } from 'react-chessboard'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
@@ -27,7 +27,14 @@ import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTr
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-export default function VisualisationTrainer() {
+// TODO: On multiple recalls, show a temporary green/red border on square clicked for feedback
+// TODO: On multiple recalls, have the piece to select flash on change to alert that it's changed
+// TODO: Add onboarding
+// TODO: Timed mode
+// TODO: Reset everything on exit
+// TODO: Increase XP for each correct recall in a row
+
+export default function RecallTrainer() {
   const { user } = useKindeBrowserClient()
 
   // Setup main state for the game/puzzles
@@ -35,15 +42,32 @@ export default function VisualisationTrainer() {
   const [game, setGame] = useState(new Chess())
   const [orientation, setOrientation] = useState<'white' | 'black'>('white')
   const [position, setPosition] = useState(game.fen())
-  const [displayGame, setDisplayGame] = useState(new Chess())
-  const [displayPosition, setDisplayPosition] = useState(displayGame.fen())
-  const [length, setLength] = useState(6)
-  const [rating, setRating] = useState(1500)
   const [difficulty, setDifficulty] = useState(1)
-  const [startSquare, setStartSquare] = useState<Square>()
+  const [timed, setTimed] = useState(false)
+  const [timerLength, setTimerLength] = useState(30)
+  const [piecesToRecall, setPiecesToRecall] = useState(1)
+  const [counter, setCounter] = useState(0)
+  const [timer, setTimer] = useState(timerLength)
   const [selectedSquares, setSelectedSquares] = useState<
     Record<string, React.CSSProperties>
   >({})
+  const [hiddenSquares, setHiddenSquares] = useState<
+    Record<string, React.CSSProperties>
+  >({})
+  const [availableSquares, setAvailableSquares] = useState<
+    {
+      square: Square
+      type: PieceSymbol
+      color: Color
+    }[]
+  >([])
+  const [correctSquares, setCorrectSquares] = useState<
+    {
+      square: Square
+      type: PieceSymbol
+      color: Color
+    }[]
+  >([])
 
   // Setup SFX
   const [soundEnabled, setSoundEnabled] = useState(true)
@@ -55,39 +79,24 @@ export default function VisualisationTrainer() {
   const [loading, setLoading] = useState(true)
   const [readyForInput, setReadyForInput] = useState(false)
   const [puzzleFinished, setPuzzleFinished] = useState(false)
+  const [mode, setMode] = useState<'training' | 'settings'>('settings')
+  const [error, setError] = useState('')
   const [puzzleStatus, setPuzzleStatus] = useState<
     'none' | 'correct' | 'incorrect'
   >('none')
-  const [mode, setMode] = useState<'training' | 'settings'>('settings')
-  const [error, setError] = useState('')
-
   const [xpCounter, setXpCounter] = useState(0)
   const [currentStreak, setCurrentStreak] = useState(0)
 
   // Onboarding override
   const { markStepCompleted, markFlowNotStarted } = useFlows()
 
-  const difficultyAdjuster = (d: number) => {
-    return d == 0 ? 0.9 : d == 1 ? 1 : 1.2
-  }
-
   const getPuzzle = async () => {
-    const trueRating = Math.max(
-      Math.round(rating * difficultyAdjuster(difficulty)),
-      500,
-    )
-    if (trueRating < 500 || trueRating > 3000) {
-      setError(
-        'Puzzle ratings must be between 500 & 3000, try adjusting the difficulty or the base rating',
-      )
-      return undefined
-    }
-
     try {
       const params = {
-        rating: trueRating,
+        rating: 1500,
         count: '1',
-        playerMoves: length / 2,
+        themes: '["middlegame"]',
+        themesType: 'ALL',
       }
       const resp = await fetch('/api/puzzles/getPuzzles', {
         method: 'POST',
@@ -116,29 +125,25 @@ export default function VisualisationTrainer() {
     // Increase the streak if correct
     // and send it to the server incase a badge needs adding
     if (status == 'correct') {
-      await trackEventOnClient('Visualisation_correct', {})
-      await fetch('/api/visualisation/streak', {
+      await trackEventOnClient('recall_correct', {})
+      await fetch('/api/recall/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
       })
       setCurrentStreak(currentStreak + 1)
     } else if (status == 'incorrect') {
-      await trackEventOnClient('visualisation_incorrect', {})
+      await trackEventOnClient('recall_incorrect', {})
     }
     const newPuzzle = await getPuzzle()
 
     if (!newPuzzle) return
 
-    setPuzzleStatus('none')
     setSelectedSquares({})
     setLoading(false)
     setCurrentPuzzle(newPuzzle)
   }
 
   const markMoveAs = async (status: 'correct' | 'incorrect') => {
-    setPuzzleStatus(status)
-    setReadyForInput(false)
-    setPuzzleFinished(true)
     if (status == 'correct') {
       setXpCounter(xpCounter + 1)
       if (soundEnabled) correctSound()
@@ -146,63 +151,66 @@ export default function VisualisationTrainer() {
       if (soundEnabled) incorrectSound()
     }
 
-    setStartSquare(undefined)
+    if (
+      counter == piecesToRecall - 1 ||
+      counter == availableSquares.length - 1 // Some puzzles won't have enough pieces to recall, so we'll just end it early
+    ) {
+      // If we're on the last piece, mark the puzzle as finished
+      setPuzzleFinished(true)
+      setCounter(0)
+      setHiddenSquares({})
+      setReadyForInput(false)
+      await trackEventOnClient('recall_complete', {})
+    } else {
+      // Otherwise, increase the counter and move the piece
+      setCounter(counter + 1)
+      let newPiece =
+        availableSquares[Math.floor(Math.random() * availableSquares.length)]!
+      const max = availableSquares.length
+      let breakpoint = 0
 
-    if (autoNext && status == 'correct') await goToNextPuzzle(status)
+      // We don't want to show the same piece twice
+      // so we'll keep generating a new piece until we get one that isn't already in the correctSquares array
+      while (correctSquares.includes(newPiece)) {
+        breakpoint++
+        newPiece =
+          availableSquares[Math.floor(Math.random() * availableSquares.length)]!
+
+        if (breakpoint > max) break // Prevent infinite loop, not that it should ever happen - but while's are scary
+      }
+
+      // Add the new piece to the correctSquares array
+      setCorrectSquares([...correctSquares, newPiece])
+    }
+
+    if (autoNext) await goToNextPuzzle(status)
   }
 
-  const getCorrectMoves = () => {
-    if (!currentPuzzle?.moves) return {}
-
-    const correctMove = currentPuzzle.moves[currentPuzzle.moves.length - 1]!
-    const correctStartSquare = correctMove.substring(0, 2)
-    const correctEndSquare = correctMove.substring(2, 4)
-    return {
-      [correctStartSquare]: {
-        backgroundColor: 'rgba(25,255,0,0.4)',
-      },
-      [correctEndSquare]: {
-        backgroundColor: 'rgba(0,255,0,0.8)',
-      },
-    }
+  const markImReady = () => {
+    setHiddenSquares({
+      ...SQUARES.reduce(
+        (acc, square) => {
+          acc[square] = {
+            opacity: 0,
+          }
+          return acc
+        },
+        {} as Record<string, React.CSSProperties>,
+      ),
+    })
+    setReadyForInput(true)
   }
 
   const squareClicked = async (square: Square) => {
     if (puzzleFinished) return
     if (!readyForInput) return
 
-    // if we click the same square twice
-    // then unselect the piece
-    if (startSquare === square) {
-      setStartSquare(undefined)
-      setSelectedSquares({})
-      return
-    }
-    // If we click a square, and we don't already have a
-    // square selected, then select the square
-    if (!startSquare) {
-      setStartSquare(square)
-      setSelectedSquares({
-        [square]: {
-          backgroundColor: 'rgba(25,255,0,0.4)',
-        },
-      })
-      return
-    }
+    const correctSquare = correctSquares[counter]! // We know this will always be defined, as we only allow clicks when readyForInput is true
 
-    // If we click a square, and we already have a square selected
-    // then check if that move matches the puzzle's last move
-    // if it does, then we have a correct move, otherwise it's incorrect
-    const moveString = `${startSquare}${square}`
-    const finalMove = currentPuzzle?.moves[currentPuzzle.moves.length - 1]
-
-    if (moveString == finalMove?.substring(0, 4)) {
+    if (square == correctSquare.square) {
       setSelectedSquares({
         [square]: {
           backgroundColor: 'rgba(25,255,0,0.8)',
-        },
-        [startSquare]: {
-          backgroundColor: 'rgba(25,255,0,0.4)',
         },
       })
       await markMoveAs('correct')
@@ -211,61 +219,13 @@ export default function VisualisationTrainer() {
         [square]: {
           backgroundColor: 'rgba(255,25,0,0.8)',
         },
-        [startSquare]: {
-          backgroundColor: 'rgba(255,25,0,0.4)',
+        [correctSquare!.square]: {
+          backgroundColor: 'rgba(25,255,0,0.8)',
         },
-        ...getCorrectMoves(),
       })
       await markMoveAs('incorrect')
     }
   }
-
-  const PgnDisplay = game.history().map((move, index) => {
-    if (index == game.history().length - 1 && !puzzleFinished) return null // Don't show the last move until the puzzle is finished
-
-    const moveNumber = Math.floor(index / 2) + 1 + displayGame.moveNumber()
-    const moveColour = game.history({ verbose: true })[index]!.color
-    const FlexText = () => (
-      <p>
-        {(moveColour == 'w' || (moveColour == 'b' && index == 0)) && (
-          <span className="font-bold">
-            {/* This weird calc is to fix the first black number being too high */}
-            {moveNumber - (moveColour == 'b' && index == 0 ? 1 : 0)}.
-            {moveColour == 'b' && index == 0 && '..'}
-          </span>
-        )}{' '}
-        <span>{move}</span>
-      </p>
-    )
-    if (puzzleFinished) {
-      return (
-        <button
-          key={'btn' + moveNumber.toString() + move + moveColour}
-          className="h-max max-h-fit bg-none px-1 py-1 text-white hover:bg-purple-800"
-          onClick={async () => {
-            await trackEventOnClient('calculation_set_jump_to_move', {})
-
-            const newGame = new Chess(currentPuzzle!.fen)
-            for (let i = 0; i <= index; i++) {
-              newGame.move(game.history()[i]!)
-            }
-            setDisplayPosition(newGame.fen())
-          }}
-        >
-          <FlexText />
-        </button>
-      )
-    } else {
-      return (
-        <div
-          key={moveNumber.toString() + move + moveColour}
-          className="px-1 py-1 text-white"
-        >
-          <FlexText />
-        </div>
-      )
-    }
-  })
 
   const exit = async () => {
     setMode('settings')
@@ -307,20 +267,55 @@ export default function VisualisationTrainer() {
   useEffect(() => {
     // Create a new game from the puzzle whenever it changes
     if (!currentPuzzle) return
-    setLoading(true)
-    const newGame = new Chess(currentPuzzle.fen)
-    const newDisplayGame = new Chess(currentPuzzle.fen)
-    setOrientation(newGame.turn() == 'w' ? 'black' : 'white') // reversed because the first move is opponents
 
-    for (const move of currentPuzzle.moves) {
-      newGame.move(move)
-    }
-    setPosition(newGame.fen())
+    setLoading(true)
+    setOrientation('white')
+    setPosition(currentPuzzle.fen)
+    const newGame = new Chess(currentPuzzle.fen)
     setGame(newGame)
 
-    setDisplayPosition(newDisplayGame.fen())
-    setDisplayGame(newDisplayGame)
-    setReadyForInput(true)
+    const squaresWithPieces = newGame
+      .board()
+      .flatMap((row, i) =>
+        row
+          .filter((square) => square && square.type != 'p')
+          .map((square) => square),
+      )
+
+    const amountToShow = Math.min(
+      difficulty === 2 ? 100 : difficulty === 1 ? 6 : 3, // all the pieces for hard, 6 for medium, 3 for easy
+      squaresWithPieces.length, // but if there's less pieces than that, just show them all
+    )
+    const squaresToHide = squaresWithPieces
+      .sort(() => 0.5 - Math.random())
+      .slice(0, squaresWithPieces.length - amountToShow)
+      .reduce(
+        (acc, square) => {
+          if (square)
+            acc[square.square] = {
+              opacity: 0,
+              backgroundColor: 'rgba(255,0,0,0.5)',
+            }
+          return acc
+        },
+        {} as Record<string, React.CSSProperties>,
+      )
+
+    const visibleSquares = squaresWithPieces.filter(
+      (
+        square,
+      ): square is { square: Square; type: PieceSymbol; color: Color } => {
+        return square !== null && !squaresToHide[square.square]
+      },
+    )
+
+    setHiddenSquares(squaresToHide)
+    setAvailableSquares(visibleSquares)
+    setCorrectSquares([
+      visibleSquares[Math.floor(Math.random() * visibleSquares.length)]!,
+    ])
+
+    setReadyForInput(false)
     setPuzzleFinished(false)
     setLoading(false)
   }, [currentPuzzle])
@@ -329,35 +324,32 @@ export default function VisualisationTrainer() {
 
   return (
     <>
-      <FrigadeTour
+      {/* <FrigadeTour
         flowId="flow_FudOixipuMiWOaP7"
         tooltipPosition="auto"
         dismissible={true}
         showStepCount={true}
-      />{' '}
+      /> */}
       {mode == 'settings' ? (
         <>
           <div className="flex flex-col gap-4 bg-purple-700 p-4" id="tooltip-0">
-            <div className="flex gap-2 flex-col md:flex-row items-center">
+            <div className="flex flex-col md:flex-row gap-2 md:gap-4 md:items-end">
               <div>
-                <label className="text-lg font-bold text-white">
-                  Your Rating
-                </label>
-                <input
-                  type="number"
-                  className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
-                  min={'500'}
-                  max={'3000'}
-                  step={'10'}
-                  value={rating}
-                  onInput={(e) => {
-                    setRating(parseInt(e.currentTarget.value))
-                  }}
-                />
-              </div>
-              <div>
-                <label className="text-lg font-bold text-white">
-                  Difficulty
+                <label className="text-lg font-bold text-white flex items-center gap-1 w-fit">
+                  <span>Difficulty</span>
+                  <Tippy content="Difficulty sets how many pieces are on the board">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M11.5 16.5h1V11h-1zm.5-6.923q.262 0 .438-.177q.177-.177.177-.438q0-.262-.177-.439q-.176-.177-.438-.177t-.438.177q-.177.177-.177.439q0 .261.177.438q.176.177.438.177M12.003 21q-1.866 0-3.51-.708q-1.643-.709-2.859-1.924q-1.216-1.214-1.925-2.856Q3 13.87 3 12.003q0-1.866.708-3.51q.709-1.643 1.924-2.859q1.214-1.216 2.856-1.925Q10.13 3 11.997 3q1.866 0 3.51.708q1.643.709 2.859 1.924q1.216 1.214 1.925 2.856Q21 10.13 21 11.997q0 1.866-.708 3.51q-.709 1.643-1.924 2.859q-1.214 1.216-2.856 1.925Q13.87 21 12.003 21M12 20q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"
+                      />
+                    </svg>
+                  </Tippy>
                 </label>
                 <div className="flex flex-col gap-2 lg:flex-row lg:gap-4">
                   <Button
@@ -382,29 +374,86 @@ export default function VisualisationTrainer() {
               </div>
             </div>
             <div>
-              <Tippy content="This is the total moves to see, including yours and your opponents.">
-                <label className="text-lg font-bold text-white">
-                  Moves to visualise
+              <label className="text-lg w-fit font-bold flex items-center h-fit gap-1 text-white">
+                <span>Number to recall</span>
+                <Tippy content="The number of pieces in a row you'll have to recall from a single position">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M11.5 16.5h1V11h-1zm.5-6.923q.262 0 .438-.177q.177-.177.177-.438q0-.262-.177-.439q-.176-.177-.438-.177t-.438.177q-.177.177-.177.439q0 .261.177.438q.176.177.438.177M12.003 21q-1.866 0-3.51-.708q-1.643-.709-2.859-1.924q-1.216-1.214-1.925-2.856Q3 13.87 3 12.003q0-1.866.708-3.51q.709-1.643 1.924-2.859q1.214-1.216 2.856-1.925Q10.13 3 11.997 3q1.866 0 3.51.708q1.643.709 2.859 1.924q1.216 1.214 1.925 2.856Q21 10.13 21 11.997q0 1.866-.708 3.51q-.709 1.643-1.924 2.859q-1.214 1.216-2.856 1.925Q13.87 21 12.003 21M12 20q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"
+                    />
+                  </svg>
+                </Tippy>
+              </label>
+              <div className="mt-2 flex items-center gap-2">
+                <input
+                  type="range"
+                  min={1}
+                  max={10}
+                  step={1}
+                  value={piecesToRecall}
+                  onChange={(e) => setPiecesToRecall(parseInt(e.target.value))}
+                />
+                <span className="text-white text-sm italic">
+                  {piecesToRecall} piece{piecesToRecall > 1 && 's'}
+                </span>
+              </div>
+            </div>
+            <div>
+              <div className="flex items-center gap-4">
+                <label
+                  htmlFor="timed"
+                  className="text-lg w-fit font-bold flex items-center h-fit gap-1 text-white"
+                >
+                  <span>Timed Mode</span>
+                  <Tippy content="Timed mode will give you a set amount of time to remember the position before you have to recall it.">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M11.5 16.5h1V11h-1zm.5-6.923q.262 0 .438-.177q.177-.177.177-.438q0-.262-.177-.439q-.176-.177-.438-.177t-.438.177q-.177.177-.177.439q0 .261.177.438q.176.177.438.177M12.003 21q-1.866 0-3.51-.708q-1.643-.709-2.859-1.924q-1.216-1.214-1.925-2.856Q3 13.87 3 12.003q0-1.866.708-3.51q.709-1.643 1.924-2.859q1.214-1.216 2.856-1.925Q10.13 3 11.997 3q1.866 0 3.51.708q1.643.709 2.859 1.924q1.216 1.214 1.925 2.856Q21 10.13 21 11.997q0 1.866-.708 3.51q-.709 1.643-1.924 2.859q-1.214 1.216-2.856 1.925Q13.87 21 12.003 21M12 20q3.35 0 5.675-2.325T20 12q0-3.35-2.325-5.675T12 4Q8.65 4 6.325 6.325T4 12q0 3.35 2.325 5.675T12 20m0-8"
+                      />
+                    </svg>
+                  </Tippy>
                 </label>
-              </Tippy>
-              <select
-                id="tooltip-1"
-                className="w-fit ml-2 border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-                value={length}
-                onChange={(e) => setLength(parseInt(e.currentTarget.value))}
-              >
-                <option value="2">2</option>
-                <option value="4">4</option>
-                <option value="6">6</option>
-                <option value="8">8</option>
-                <option value="10">10</option>
-              </select>
+                <input
+                  id="timed"
+                  type="checkbox"
+                  className="w-6 h-6 !bg-gray-100 text-black"
+                  checked={timed}
+                  onChange={() => setTimed(!timed)}
+                />
+              </div>
+              {timed && (
+                <div className="mt-2 flex items-center gap-2">
+                  <input
+                    type="range"
+                    min={1}
+                    max={60}
+                    step={1}
+                    value={timerLength}
+                    onChange={(e) => setTimerLength(parseInt(e.target.value))}
+                  />
+                  <span className="text-white text-sm italic">
+                    {timerLength} seconds
+                  </span>
+                </div>
+              )}
             </div>
             <Button
               variant="success"
               onClick={async () => {
                 setMode('training')
-                await trackEventOnClient('Visualisation_start', {})
+                await trackEventOnClient('recall_start', {})
               }}
             >
               Start Training
@@ -427,22 +476,26 @@ export default function VisualisationTrainer() {
             <div className="flex flex-wrap items-center justify-between text-white text-sm">
               <div className="flex justify-between items-center gap-1 md:gap-4 flex-wrap">
                 <p className="flex flex-col items-center">
-                  <span className="font-bold">Rating:</span>
-                  <span>{rating}</span>
-                </p>
-                <p className="flex flex-col items-center">
                   <span className="font-bold">Difficulty:</span>
                   <span>{getDifficulty()}</span>
                 </p>
+                <p className="flex flex-col items-center">
+                  <span className="font-bold">Recall Count:</span>
+                  <span>{piecesToRecall}</span>
+                </p>
+                <p className="flex flex-col items-center">
+                  <span className="font-bold">Timer:</span>
+                  <span>{timed ? <>{timerLength}s</> : 'none'}</span>
+                </p>
                 <p
                   onClick={async () => {
-                    await markFlowNotStarted('flow_FudOixipuMiWOaP7')
+                    await markFlowNotStarted('flow_UITkRxhuAE4Hwmdk')
                     await markStepCompleted(
-                      'flow_FudOixipuMiWOaP7',
+                      'flow_UITkRxhuAE4Hwmdk',
                       'welcome-tooltip',
                     )
                     await markStepCompleted(
-                      'flow_FudOixipuMiWOaP7',
+                      'flow_UITkRxhuAE4Hwmdk',
                       'puzzle-length',
                     )
                   }}
@@ -497,10 +550,11 @@ export default function VisualisationTrainer() {
               </div>
             </div>
             <div className="flex flex-col gap-4 lg:flex-row">
-              <div id="tooltip-3" className="relative cursor-pointer">
-                <Chessboard // This is the visible board, set at the start position
+              <div id="tooltip-3" className="cursor-pointer">
+                <Chessboard
+                  onSquareClick={squareClicked}
                   arePiecesDraggable={false}
-                  position={displayPosition}
+                  position={position}
                   boardOrientation={orientation}
                   boardWidth={Math.min(
                     windowSize.height / 1.5,
@@ -509,46 +563,14 @@ export default function VisualisationTrainer() {
                   customBoardStyle={{
                     marginInline: 'auto',
                   }}
-                  customSquareStyles={{ ...selectedSquares }}
+                  customSquareStyles={{
+                    ...selectedSquares,
+                    ...hiddenSquares,
+                  }}
                 />
-                <div className="absolute inset-0 opacity-0">
-                  <Chessboard // This is the hidden board for the moves
-                    onSquareClick={squareClicked}
-                    onSquareRightClick={() => {
-                      setStartSquare(undefined)
-                      setSelectedSquares({})
-                    }}
-                    arePiecesDraggable={false}
-                    position={position}
-                    boardOrientation={orientation}
-                    boardWidth={Math.min(
-                      windowSize.height / 1.5,
-                      windowSize.width - 120,
-                    )}
-                    customBoardStyle={{
-                      marginInline: 'auto',
-                    }}
-                  />
-                </div>
               </div>
               <div className="flex w-full flex-col gap-2">
                 <div className="flex flex-row items-center gap-2">
-                  <p className="flex items-center gap-2 text-white">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      className={
-                        orientation === 'white'
-                          ? 'text-white'
-                          : 'rotate-180 transform text-black'
-                      }
-                    >
-                      <path fill="currentColor" d="M1 21h22L12 2" />
-                    </svg>
-                    {orientation === 'white' ? 'White' : 'Black'} to move
-                  </p>
                   {puzzleStatus === 'correct' && (
                     <div className="z-50 flex flex-wrap  items-center gap-2 text-white">
                       <svg
@@ -631,12 +653,49 @@ export default function VisualisationTrainer() {
                   )}
                 </div>
                 <div className="flex flex-1 flex-col-reverse gap-2 lg:flex-col">
-                  <div
-                    id="tooltip-2"
-                    className="flex h-full flex-wrap content-start gap-1 bg-purple-600 p-2"
-                  >
-                    {PgnDisplay.map((item) => item)}
-                  </div>
+                  {!puzzleFinished && (
+                    <div
+                      id="tooltip-2"
+                      className="flex h-full flex-wrap content-start gap-1 bg-purple-600 p-2"
+                    >
+                      {!readyForInput &&
+                        (!timed ? (
+                          <>
+                            <p className="text-sm italic text-white">
+                              Memorise the position shown, you'll be asked to
+                              remember pieces (not pawns)
+                            </p>
+                            <Button variant="accent" onClick={markImReady}>
+                              I'm Ready!
+                            </Button>
+                          </>
+                        ) : (
+                          <p className="text-white text-xl font-bold">
+                            {timer}s
+                          </p>
+                        ))}
+                      {correctSquares[counter] && readyForInput && (
+                        <p className="text-white text-lg">
+                          Where is the{' '}
+                          <span className="font-bold underline">
+                            {correctSquares[counter]!.color == 'w'
+                              ? 'White'
+                              : 'Black'}{' '}
+                            {correctSquares[counter]!.type == 'b'
+                              ? 'Bishop'
+                              : correctSquares[counter]!.type == 'k'
+                                ? 'King'
+                                : correctSquares[counter]!.type == 'n'
+                                  ? 'Knight'
+                                  : correctSquares[counter]!.type == 'q'
+                                    ? 'Queen'
+                                    : 'Rook'}
+                          </span>
+                          ?
+                        </p>
+                      )}
+                    </div>
+                  )}
                   <label className="ml-auto flex items-center gap-2 text-sm text-white">
                     <Toggle
                       defaultChecked={autoNext}
@@ -663,11 +722,9 @@ export default function VisualisationTrainer() {
                         variant="secondary"
                         onClick={async () => {
                           setPuzzleStatus('incorrect')
-                          setReadyForInput(false)
-                          setReadyForInput(true)
                           setPuzzleFinished(true)
                           if (soundEnabled) incorrectSound()
-                          setSelectedSquares(getCorrectMoves())
+                          setSelectedSquares({})
                         }}
                       >
                         Skip/Show Solution
