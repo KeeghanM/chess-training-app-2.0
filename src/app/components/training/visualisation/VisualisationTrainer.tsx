@@ -73,7 +73,7 @@ export default function VisualisationTrainer() {
 
   const getPuzzle = async () => {
     const trueRating = Math.max(
-      Math.round((rating - 150) * difficultyAdjuster(difficulty)),
+      Math.round(rating * difficultyAdjuster(difficulty)),
       500,
     )
     if (trueRating < 500 || trueRating > 3000) {
@@ -148,7 +148,7 @@ export default function VisualisationTrainer() {
 
     setStartSquare(undefined)
 
-    if (autoNext) await goToNextPuzzle(status)
+    if (autoNext && status == 'correct') await goToNextPuzzle(status)
   }
 
   const getCorrectMoves = () => {
@@ -229,8 +229,9 @@ export default function VisualisationTrainer() {
       <p>
         {(moveColour == 'w' || (moveColour == 'b' && index == 0)) && (
           <span className="font-bold">
-            {moveNumber}
-            {moveColour == 'b' && index == 0 && '...'}
+            {/* This weird calc is to fix the first black number being too high */}
+            {moveNumber - (moveColour == 'b' && index == 0 ? 1 : 0)}.
+            {moveColour == 'b' && index == 0 && '..'}
           </span>
         )}{' '}
         <span>{move}</span>
