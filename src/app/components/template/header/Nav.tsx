@@ -5,8 +5,6 @@ import Link from 'next/link'
 
 import { useState } from 'react'
 
-import { thumbs } from '@dicebear/collection'
-import { createAvatar } from '@dicebear/core'
 import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs'
 import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 import Tippy from '@tippyjs/react'
@@ -23,10 +21,6 @@ export default function Nav(props: {
   const [openSub, setOpenSub] = useState('')
 
   const { user, experience } = props
-  const avatar = createAvatar(thumbs, {
-    seed: user?.email ?? 'default',
-  })
-  const avatarSvg = avatar.toString()
   const rank = XpRanks.reverse().find((rank) => experience >= rank.xp)
 
   const links = [
@@ -78,21 +72,23 @@ export default function Nav(props: {
   ]
 
   return (
-    <header className="sticky top-0 z-10 bg-purple-700 text-white shadow-lg">
+    <header className="sticky top-0 z-10 bg-slate-800 border-b-4 border-purple-700  text-white shadow-lg">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between gap-1 px-1 py-2 lg:gap-4 lg:p-4">
         <Link href={user ? '/dashboard' : '/'}>
           <div className="flex items-center">
             <Image
               src="/chesstrainingapplogo.png"
               alt="ChessTraining.app"
-              width={75}
-              height={75}
+              className="my-1 mx-2 h-auto"
+              width={50}
+              height={50}
             />
             <div>
-              <h2 className="font-bold italic lg:text-xl">ChessTraining.app</h2>
-              <h3 className="text-xs font-light lg:text-sm">
-                The best way to improve your chess
-              </h3>
+              <h2 className="text-base flex flex-col gap-0 leading-none">
+                <span className="font-bold">CHESS</span>
+                <span className="font-bold">TRAINING.</span>
+                <span className="font-thin">APP</span>
+              </h2>
             </div>
           </div>
         </Link>
@@ -102,13 +98,27 @@ export default function Nav(props: {
               <Tippy content="Your Profile">
                 <button
                   type="button"
-                  className="flex overflow-hidden rounded-full bg-gray-800 text-sm focus:ring-4 focus:ring-gray-600 lg:me-0"
+                  className="flex overflow-hidden rounded-full text-sm focus:ring-4 focus:ring-gray-600 lg:me-0"
                   onClick={() => setUserOpen(!userOpen)}
                 >
                   <span className="sr-only">Open user menu</span>
-                  <div className="h-10 w-10">
-                    <div dangerouslySetInnerHTML={{ __html: avatarSvg }} />
-                  </div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                  >
+                    <g
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="1.5"
+                    >
+                      <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10s10-4.477 10-10S17.523 2 12 2" />
+                      <path d="M4.271 18.346S6.5 15.5 12 15.5s7.73 2.846 7.73 2.846M12 12a3 3 0 1 0 0-6a3 3 0 0 0 0 6" />
+                    </g>
+                  </svg>
                 </button>
               </Tippy>
               {userOpen && (
@@ -117,7 +127,7 @@ export default function Nav(props: {
                     className="fixed inset-0 z-10"
                     onClick={() => setUserOpen(false)}
                   ></div>
-                  <div className="absolute right-0 top-8 z-50 my-4 list-none divide-y divide-gray-600 bg-gray-700 text-base shadow">
+                  <div className="absolute right-0 top-8 z-50 my-4 list-none divide-y divide-gray-600 bg-slate-700 text-base shadow-lg border-b-4 border-purple-700">
                     <div className="px-4 py-3">
                       <span className="block text-sm  text-white">
                         {user.given_name} {user.family_name ?? 'Welcome'}
@@ -166,12 +176,12 @@ export default function Nav(props: {
 
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center p-2 text-sm text-white hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-gray-200 lg:hidden"
+            className="inline-flex h-10 w-10 p-2 items-center justify-center text-sm text-white hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-gray-200 lg:hidden"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             <span className="sr-only">Open main menu</span>
             <svg
-              className="h-5 w-5"
+              className="h-10 w-10"
               aria-hidden="true"
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -215,7 +225,7 @@ export default function Nav(props: {
                     onClick={() =>
                       setOpenSub(openSub === link.name ? '' : link.name)
                     }
-                    className="flex w-full items-center justify-between px-4 py-2 text-gray-900 hover:bg-purple-100 lg:w-auto lg:border-0 lg:text-white lg:hover:bg-purple-600"
+                    className="flex w-full items-center justify-between px-4 py-2 text-gray-900 hover:bg-orange-100 lg:w-auto lg:border-0 lg:text-white lg:hover:bg-slate-600"
                   >
                     {link.name}{' '}
                     <svg
@@ -247,7 +257,7 @@ export default function Nav(props: {
                         <Link
                           key={subLink.name}
                           href={subLink.href}
-                          className="block w-full px-4 py-2 hover:bg-purple-100"
+                          className="block w-full px-4 py-2 hover:bg-orange-100"
                           onClick={() => {
                             setMenuOpen(false)
                             setOpenSub('')
@@ -262,7 +272,7 @@ export default function Nav(props: {
               ) : (
                 <Link
                   key={link.name}
-                  className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-purple-100 lg:text-white lg:hover:bg-purple-600"
+                  className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-orange-100 lg:text-white lg:hover:bg-slate-600"
                   href={link.href}
                   onClick={() => {
                     setMenuOpen(false)

@@ -28,7 +28,7 @@ export default function XpDisplay(props: XpDisplayProps) {
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <div className="flex h-fit w-fit  flex-row items-center border-2 border-purple-700 bg-white">
+      <div className="flex h-fit w-fit  flex-row items-center border-2 border-orange-500 bg-white">
         <Tippy
           content={`Experience gained from training puzzles, and studying courses.`}
         >
@@ -39,7 +39,7 @@ export default function XpDisplay(props: XpDisplayProps) {
             </p>
             <div className="h-3 w-full bg-purple-200">
               <div
-                className="h-full rounded-r-full bg-purple-700"
+                className="h-full rounded-r-full bg-orange-500"
                 style={{
                   width: `${percentage}%`,
                 }}
@@ -52,16 +52,19 @@ export default function XpDisplay(props: XpDisplayProps) {
             nextRank ? `"${nextRank.rank}: ${nextRank.name}"` : 'Max Rank'
           }`}
         >
-          <p className="bg-purple-700 p-2 text-white">
+          <p className="bg-orange-500 p-2 text-white">
             <strong>{rank?.rank}:</strong> {rank?.name}
           </p>
         </Tippy>
       </div>
 
       {displayLink && (
-        <StyledLink href="/about/ranks-and-badges">
-          <p className="text-sm">View All Ranks</p>
-        </StyledLink>
+        <a
+          href="/about/ranks-and-badges"
+          className="text-sm text-white underline hover:no-underline"
+        >
+          View All Ranks
+        </a>
       )}
     </div>
   )

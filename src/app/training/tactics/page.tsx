@@ -24,7 +24,7 @@ export default async function Tactics() {
           link: '/training/tactics/list',
         }}
       >
-        <Heading as="h2">
+        <Heading color="text-orange-500" as="h2">
           Train tactics using the WoodPecker Method developed by GM's Axel
           Smith, and Hans Tikkanen.
         </Heading>
