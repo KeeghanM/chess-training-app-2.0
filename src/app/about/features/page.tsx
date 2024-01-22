@@ -99,11 +99,11 @@ export default async function FeaturesPage() {
           alt: 'Wooden Chess pieces on a chess board',
         }}
       >
-        <ol>
+        <ol className="text-orange-500 p-2 bg-[rgba(0,0,0,0.3)]">
           {features.map((feature, index) => (
             <li
               key={'li' + index.toString()}
-              className="cursor-pointer text-purple-700 hover:underline"
+              className="cursor-pointer hover:underline"
             >
               <Link href={'#' + feature.anchor}>
                 {index + 1}. {feature.name}

@@ -19,7 +19,7 @@ export default function AboutUsPage() {
           alt: 'Wooden chess pieces on a chess board',
         }}
       >
-        <p>
+        <p className="p-2 bg-[rgba(0,0,0,0.3)] text-orange-500">
           ChessTraining.app is more than just a chess training platform; it's a
           testament to the passion for chess and the power of technology.
           Founded in 2020 by Keeghan, a chess enthusiast and software developer,

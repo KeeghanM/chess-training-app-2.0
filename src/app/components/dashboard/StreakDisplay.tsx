@@ -25,7 +25,7 @@ export default function StreakDisplay(props: StreakDisplayProps) {
 
   return (
     <div className="flex flex-col items-center gap-1">
-      <div className="flex h-fit w-fit  flex-row items-center border-2 border-purple-700 bg-white">
+      <div className="flex h-fit w-fit  flex-row items-center border-2 border-orange-500 bg-white">
         <div className="flex flex-row items-center gap-1 p-2">
           <Tippy content={trainedToday ? 'Trained Today' : 'Not Trained Today'}>
             <svg
@@ -50,15 +50,18 @@ export default function StreakDisplay(props: StreakDisplayProps) {
           </Tippy>
         </div>
         <Tippy content="Your best training streak badge">
-          <p className="min-w-[50px] bg-purple-700 p-2 text-white">
+          <p className="min-w-[50px] bg-orange-500 p-2 text-white">
             {streakBadge ? `${streakBadge.name} Badge` : 'No Badge..'}
           </p>
         </Tippy>
       </div>
 
-      <StyledLink href="/dashboard/badges">
-        <p className="text-sm">View All Your Badges ({props.badges.length})</p>
-      </StyledLink>
+      <a
+        href="/dashboard/badges"
+        className="text-sm text-white underline hover:no-underline"
+      >
+        View All Your Badges ({props.badges.length})
+      </a>
     </div>
   )
 }

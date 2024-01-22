@@ -164,21 +164,13 @@ export default async function Dashboard() {
         <div className="absolute inset-0">
           <Image
             fill={true}
-            className="object-cover object-center w-full h-full"
+            className="object-cover object-center w-full h-full filter grayscale brightness-[.3]"
             src="/images/hero.avif"
             alt="Chess board with pieces set up"
           />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(90deg, #ffe9da 0%, rgba(249,115,22,0.5) 100%)',
-            }}
-            aria-hidden="true"
-          />
         </div>
         <Container size="wide">
-          <Heading as={'h1'}>
+          <Heading color="text-white" as={'h1'}>
             Welcome back, {user.given_name ?? profile.username ?? user.email}
           </Heading>
           <div className="flex flex-col flex-wrap gap-2 md:flex-row">

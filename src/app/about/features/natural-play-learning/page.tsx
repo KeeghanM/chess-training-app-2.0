@@ -25,11 +25,11 @@ export default async function NaturalPlayLearningPage() {
           alt: 'Wooden Chess pieces on a chess board',
         }}
       >
-        <Heading as={'h2'}>
+        <Heading color="text-orange-500" as={'h2'}>
           Welcome to a Revolutionary Chess Training Experience
         </Heading>
       </Hero>
-      <BigText size="small" color="secondary">
+      <BigText size="small" color="primary">
         At ChessTraining.app, we're redefining the way you learn chess. Our
         unique Natural Play Learning method is here to transform your
         understanding and mastery of chess openings.

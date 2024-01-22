@@ -25,7 +25,7 @@ export default async function Endgames() {
           link: '/training/endgames/train',
         }}
       >
-        <Heading as="h2">
+        <Heading color="text-orange-500" as="h2">
           Master your endgame strategy with ChessTraining.app's Endgame Trainer.
         </Heading>
       </Hero>
