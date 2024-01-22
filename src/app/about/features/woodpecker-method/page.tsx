@@ -24,7 +24,7 @@ export default async function WoodPeckerPage() {
           alt: 'Chess board focusing on tactical positions',
         }}
       >
-        <Heading as={'h2'}>
+        <Heading color="text-orange-500" as={'h2'}>
           Elevate Your Tactical Skills to Master Level
         </Heading>
       </Hero>

@@ -23,7 +23,8 @@ export default async function Courses() {
   return (
     <>
       <PageHeader
-        title="Your Courses"
+        title="Opening Courses"
+        subTitle="Your Courses"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
