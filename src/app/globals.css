@@ -1,11 +1,9 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@100;400;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Hedvig+Letters+Sans&family=Hedvig+Letters+Serif:opsz@12..24&display=swap');
-
 /* @link https://utopia.fyi/type/calculator?c=320,18,1.2,1240,20,1.25,5,2,&s=0.75|0.5|0.25,1.5|2|3|4|6,s-l&g=s,l,xl,12 */
-
 :root {
   --step--2: clamp(0.7813rem, 0.7747rem + 0.0326vw, 0.8rem);
   --step--1: clamp(0.9375rem, 0.9158rem + 0.1087vw, 1rem);
@@ -19,7 +17,7 @@
 
 html {
   font-size: var(--step-0);
-  font-family: 'Hedvig Letters Sans', sans-serif;
+  font-family: 'Lato', sans-serif;
   line-height: 1.5;
 
   color: #000;
@@ -38,7 +36,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: 'Hedvig Letters Sans', sans-serif;
+  font-family: 'Lato', sans-serif;
 }
 
 .text-lg {

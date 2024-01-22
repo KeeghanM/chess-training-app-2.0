@@ -169,9 +169,12 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
     // [Variant "From Position"]
     // [FEN "8/p6p/k7/4p3/2K5/4P1P1/7P/8 w - - 0 31"]
     //
-    // 31. Kd5 Kb5 32. Kxe5 a5 33. Kd4 Kb4 34. Kd3 Kb3
+    // { this is a comment }
+    // 31. Kd5 Kb5 32. Kxe5 a5 { comment in line } 33. Kd4 Kb4 34. Kd3 Kb3
 
     const lines = str
+      .replaceAll(/\{.*?\}/g, '') // Remove comments
+      .replaceAll(/[\*\?!]/g, '') // Remove move annotations
       .split('\n')
       .map((line) => line.replaceAll('\r', '').trim())
       .filter((line) => line.length > 0)
@@ -187,12 +190,15 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
       return
     }
 
-    // Find the first line that doesn't start with a [. This will be the moves
+    // Find the first line that doesn't start with a [ This will be the moves
     // Then split this by spaces, and remove the move numbers
     const moves = lines
-      .find((line) => !line.startsWith('['))
+      .find((line) => !line.startsWith('[') && !line.startsWith('{'))!
       ?.split(' ')
       .filter((move) => !move.includes('.'))
+
+    console.log(moves)
+
     if (!moves) {
       setError('Invalid Moves')
       return

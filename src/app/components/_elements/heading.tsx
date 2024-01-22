@@ -2,7 +2,9 @@ export default function Heading(props: {
   children: React.ReactNode
   as: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
   color?: string
+  bold?: boolean
 }) {
+  const bold = props.bold ?? true
   switch (props.as) {
     case 'h1':
       return (
@@ -19,8 +21,9 @@ export default function Heading(props: {
       return (
         <h2
           className={
-            'mb-2 mt-4 text-2xl font-bold md:text-3xl ' +
-            (props.color ?? 'text-gray-700')
+            'mb-2 mt-4 text-2xl md:text-3xl ' +
+            (props.color ?? 'text-gray-700') +
+            (bold ? ' font-bold' : '')
           }
         >
           {props.children}

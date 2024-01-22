@@ -27,6 +27,8 @@ import XpTracker from '~/app/components/general/XpTracker'
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
+import Heading from '../../_elements/heading'
+import StyledLink from '../../_elements/styledLink'
 import type { PrismaUserCourse } from './list/CoursesList'
 
 // TODO: Bug Fix: If last move doesn't line up with line colour, it never marks as done
@@ -101,6 +103,7 @@ export default function CourseTrainer(props: {
   const [xpCounter, setXpCounter] = useState(0)
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [showComment, setShowComment] = useState(false)
+  const [error, setError] = useState('')
 
   // SFX
   const [checkSound] = useSound('/sfx/check.mp3') as [() => void]
@@ -267,49 +270,56 @@ export default function CourseTrainer(props: {
       return
     }
 
-    // All the moves have now been gotten right and we've reviewed the line if needed
-    // Now we want to log all the stats
-    setXpCounter(xpCounter + 1)
-    setLoading(true)
-    await processNewFens()
-    const updatedLines = await processStats()
+    try {
+      // All the moves have now been gotten right and we've reviewed the line if needed
+      // Now we want to log all the stats
+      setXpCounter(xpCounter + 1)
+      setLoading(true)
+      await processNewFens()
+      const updatedLines = await processStats()
 
-    // Now we need to get the next line
-    const nextLine = getNextLine(updatedLines ?? lines)
-    if (!nextLine) {
-      // Nothing left to review/learn
-      // TODO: Check if this is the first time completing the course
-      // if so, show a nice modal popup and track event
-      // For now, just redirect to the course page
-      await trackEventOnClient('course_completed', {
-        courseName: props.userCourse.course.courseName,
-      })
-      router.push('/training/courses/')
-      return
+      // Now we need to get the next line
+      const nextLine = getNextLine(updatedLines ?? lines)
+      if (!nextLine) {
+        // Nothing left to review/learn
+        // TODO: Check if this is the first time completing the course
+        // if so, show a nice modal popup and track event
+        // For now, just redirect to the course page
+        await trackEventOnClient('course_completed', {
+          courseName: props.userCourse.course.courseName,
+        })
+        router.push('/training/courses/')
+        return
+      }
+
+      if (nextLine.line.groupId !== currentLine?.line.groupId) {
+        // We've reached the end of the group
+        // TODO: Add a nice modal popup here
+        await trackEventOnClient('course_group_completed', {
+          courseName: props.userCourse.course.courseName,
+        })
+      }
+
+      // Because we may have had to go back over some moves
+      // we need to reset the game to the start of the line
+      // and then make all the moves up to the current point
+      // to show the moves in the navigator
+      game.reset()
+      currentLineMoves.forEach((move) => game.move(move.move))
+      setPosition(game.fen())
+      setGame(game)
+
+      // Setup for the next line
+      setNextLine(nextLine)
+      setLineCorrect(true)
+      setLoading(false)
+      setInteractive(false)
+    } catch (e) {
+      Sentry.captureException(e)
+      if (e instanceof Error) setError(e.message)
+      else setError('An unknown error occurred')
+      setLoading(false)
     }
-
-    if (nextLine.line.groupId !== currentLine?.line.groupId) {
-      // We've reached the end of the group
-      // TODO: Add a nice modal popup here
-      await trackEventOnClient('course_group_completed', {
-        courseName: props.userCourse.course.courseName,
-      })
-    }
-
-    // Because we may have had to go back over some moves
-    // we need to reset the game to the start of the line
-    // and then make all the moves up to the current point
-    // to show the moves in the navigator
-    game.reset()
-    currentLineMoves.forEach((move) => game.move(move.move))
-    setPosition(game.fen())
-    setGame(game)
-
-    // Setup for the next line
-    setNextLine(nextLine)
-    setLineCorrect(true)
-    setLoading(false)
-    setInteractive(false)
   }
 
   const startNextLine = async () => {
@@ -414,6 +424,8 @@ export default function CourseTrainer(props: {
         }
       } catch (e) {
         Sentry.captureException(e)
+        if (e instanceof Error) setError(e.message)
+        else setError('An unknown error occurred')
       }
     }
   }
@@ -479,6 +491,8 @@ export default function CourseTrainer(props: {
       return updatedLines
     } catch (e) {
       Sentry.captureException(e)
+      if (e instanceof Error) setError(e.message)
+      else setError('An unknown error occurred')
     }
   }
 
@@ -735,9 +749,11 @@ export default function CourseTrainer(props: {
 
   useEffect(() => {
     if (!nextLine || !autoNext) return
-    ;(async () => await startNextLine())().catch((e) =>
-      Sentry.captureException(e),
-    )
+    ;(async () => await startNextLine())().catch((e) => {
+      Sentry.captureException(e)
+      if (e instanceof Error) setError(e.message)
+      else setError('An unknown error occurred')
+    })
   }, [nextLine])
 
   useEffect(() => {
@@ -775,7 +791,18 @@ export default function CourseTrainer(props: {
   // Last check to ensure we have a user
   if (!user) return null
 
-  return (
+  return error ? (
+    <div className="">
+      <Heading as="h1" color="text-red-500">
+        {error}
+      </Heading>
+      <p>
+        Please try again later, or{' '}
+        <StyledLink href="/contact/report-an-issue">report an issue</StyledLink>{' '}
+        if the problem persists.
+      </p>
+    </div>
+  ) : (
     <div className="relative bg-purple-700 p-4">
       {loading && (
         <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
