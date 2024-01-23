@@ -62,16 +62,6 @@ export default async function Dashboard() {
 
   const tools: Tool[] = [
     {
-      name: 'Openings',
-      description: [
-        'Train your opening courses using our Natural Play Learning.',
-        'An enhanced version of Spaced Repetition, and the best way to learn openings.',
-      ],
-      href: '/training/courses',
-      buttonText: 'Train',
-      active: true || override,
-    },
-    {
       name: 'Tactics',
       description: [
         "Train tactics using the WoodPecker Method developed by GM's Axel Smith, and Hans Tikkanen.",
@@ -79,6 +69,16 @@ export default async function Dashboard() {
         'Generate puzzle sets and train on them, while the site takes care of tracking your accuracy & time spent.',
       ],
       href: '/training/tactics/list',
+      buttonText: 'Train',
+      active: true || override,
+    },
+    {
+      name: 'Openings',
+      description: [
+        'Train your opening courses using our Natural Play Learning.',
+        'An enhanced version of Spaced Repetition, and the best way to learn openings.',
+      ],
+      href: '/training/courses',
       buttonText: 'Train',
       active: true || override,
     },

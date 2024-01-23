@@ -556,7 +556,7 @@ export default function CourseTrainer(props: {
       // We played the wrong move
       setLineCorrect(false)
       game.undo()
-      incorrectSound()
+      if (soundEnabled) incorrectSound()
       setTimeout(() => {
         setPosition(game.fen())
       }, 300)
