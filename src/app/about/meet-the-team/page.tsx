@@ -1,5 +1,4 @@
 import Heading from '~/app/components/_elements/heading'
-import Hero from '~/app/components/_layouts/hero'
 import { MultiCol, MultiColItem } from '~/app/components/_layouts/multiCol'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 

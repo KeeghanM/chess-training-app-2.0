@@ -20,8 +20,21 @@ export function GroupItem(props: {
 }) {
   const { lines, selectedGroup, groupKey, count } = props
   const [open, setOpen] = useState<boolean>(false)
-  const [linesToShow, setLinesToShow] = useState<Line[]>(lines)
+  const [setAllOpen, setSetAllOpen] = useState<boolean>(false)
+  const [selectedColor, setSelectedColor] = useState<string>('White')
   const [parent] = useAutoAnimate()
+
+  const handleColorChange = (line: Line, newColor: string) => {
+    const updatedLines = props.lines.map((l) =>
+      l === line ? { ...l, tags: { ...l.tags, Colour: newColor } } : l,
+    )
+    props.updateLines(updatedLines)
+  }
+
+  const handleLineDeletion = (line: Line) => {
+    const updatedLines = props.lines.filter((l) => l !== line)
+    props.updateLines(updatedLines)
+  }
 
   return (
     <div
@@ -32,7 +45,7 @@ export function GroupItem(props: {
         <p className="font-bold">{count} x</p>
         <p>{groupKey}</p>
         <button
-          className="ml-auto text-purple-700 hover:text-purple-500"
+          className="text-purple-700 hover:text-purple-500"
           onClick={() => setOpen(!open)}
         >
           <svg
@@ -47,17 +60,66 @@ export function GroupItem(props: {
             />
           </svg>
         </button>
+        <div className="ml-auto min-w-fit">
+          <Button onClick={() => setSetAllOpen(true)} variant="secondary">
+            Set all lines...
+          </Button>
+        </div>
       </div>
+
+      {setAllOpen && (
+        <div className="fixed inset-0 z-[99999] grid place-items-center bg-[rgba(0,0,0,0.3)]">
+          <div
+            className="absolute inset-0"
+            onClick={() => setSetAllOpen(false)}
+          />
+          <div className="flex fixed bg-white p-2 z-50 max-w-md flex-col gap-2 shadow-lg">
+            <Heading as={'h4'}>Set All Lines In Group: {groupKey}</Heading>
+            <p>This will set all lines in this group to the same colour.</p>
+            <select
+              className="border border-gray-300 p-2  dark:bg-gray-100"
+              defaultValue={selectedColor}
+              onChange={(e) => setSelectedColor(e.target.value)}
+            >
+              <option value="White">White</option>
+              <option value="Black">Black</option>
+            </select>
+            <div className="flex gap-2">
+              <Button
+                variant="primary"
+                onClick={async () => {
+                  const updatedLines = props.lines.map((l) =>
+                    l.tags[selectedGroup] === groupKey
+                      ? { ...l, tags: { ...l.tags, Colour: selectedColor } }
+                      : l,
+                  )
+                  props.updateLines(updatedLines)
+                  setSetAllOpen(false)
+                  await trackEventOnClient(
+                    'create_course_set_all_lines_colour',
+                    {},
+                  )
+                }}
+              >
+                Set All To {selectedColor}
+              </Button>
+              <Button variant="secondary" onClick={() => setSetAllOpen(false)}>
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {open && (
         <div className="flex flex-col gap-2">
-          {linesToShow
+          {lines
             .filter((line) => line.tags[selectedGroup] === groupKey)
-            .map((line, index) => {
+            .map((line) => {
               return (
                 <div
                   className="flex flex-col justify-center gap-2 bg-gray-200 p-2"
-                  key={groupKey + index.toString()}
+                  key={line.moves.join('')}
                 >
                   <div className="flex items-center gap-2 text-sm">
                     <PrettyPrintLine line={line} />
@@ -67,12 +129,11 @@ export function GroupItem(props: {
                         defaultValue={line.tags.Colour}
                         onChange={async (e) => {
                           const v = e.target.value
+                          handleColorChange(line, v)
                           await trackEventOnClient(
                             'create_course_change_line_colour',
                             {},
                           )
-                          line.tags.Colour = v
-                          props.updateLines(lines)
                         }}
                       >
                         <option value="White">White</option>
@@ -100,15 +161,11 @@ export function GroupItem(props: {
                                   <Button
                                     variant="danger"
                                     onClick={async () => {
+                                      handleLineDeletion(line)
                                       await trackEventOnClient(
                                         'create_course_delete_line',
                                         {},
                                       )
-                                      lines.splice(lines.indexOf(line), 1)
-                                      setLinesToShow(
-                                        linesToShow.filter((l) => l !== line),
-                                      )
-                                      props.updateLines(lines)
                                     }}
                                   >
                                     Delete

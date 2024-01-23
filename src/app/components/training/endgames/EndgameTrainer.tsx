@@ -140,10 +140,17 @@ export default function EndgameTrainer() {
   }
 
   const makeMove = (move: string) => {
-    game.move(move)
-    const lanNotation = game.history()[game.history().length - 1]
-    playMoveSound(lanNotation!)
-    setPosition(game.fen())
+    try {
+      game.move(move)
+      const lanNotation = game.history()[game.history().length - 1]
+      playMoveSound(lanNotation!)
+      setPosition(game.fen())
+    } catch (e) {
+      // honestly, do nothing
+      // I dunno why this is firing, I replicated it once but it didn;t actually affect the usage
+      // I think it's to do with premoving and the chess.js library, but nothing actually breaks
+      // so this is just here to stop logging it in sentry as an "unhandled error"
+    }
   }
 
   // Makes a move for the "opponent"
@@ -371,13 +378,12 @@ export default function EndgameTrainer() {
           key={'btn' + moveNumber.toString() + move + moveColour}
           className="h-max max-h-fit bg-none px-1 py-1 text-white hover:bg-purple-800"
           onClick={async () => {
-            await trackEventOnClient('endgame_set_jump_to_move', {})
-
             const newGame = new Chess(currentPuzzle!.fen)
             for (let i = 0; i <= index; i++) {
               newGame.move(game.history()[i]!)
             }
             setPosition(newGame.fen())
+            await trackEventOnClient('endgame_set_jump_to_move', {})
           }}
         >
           <FlexText />

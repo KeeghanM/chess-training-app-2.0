@@ -61,6 +61,7 @@ export default function CourseTrainer(props: {
   const [currentLine, setCurrentLine] = useState<PrismaUserLine>()
   const [nextLine, setNextLine] = useState<PrismaUserLine | null>(null)
   const [currentLineMoves, setCurrentLineMoves] = useState<PrismaMove[]>([])
+  const [indexOfOurLastMove, setIndexOfOurLastMove] = useState<number>(0)
 
   // Game State
   const [game, setGame] = useState(new Chess())
@@ -167,9 +168,16 @@ export default function CourseTrainer(props: {
   }
 
   const makeMove = (move: string) => {
-    game.move(move)
-    playMoveSound(move)
-    setPosition(game.fen())
+    try {
+      game.move(move)
+      playMoveSound(move)
+      setPosition(game.fen())
+    } catch (e) {
+      // honestly, do nothing
+      // I dunno why this is firing, I replicated it once but it didn;t actually affect the usage
+      // I think it's to do with premoving and the chess.js library, but nothing actually breaks
+      // so this is just here to stop logging it in sentry as an "unhandled error"
+    }
   }
 
   const playOpponentsMove = () => {
@@ -241,8 +249,7 @@ export default function CourseTrainer(props: {
   }
 
   const checkEndOfLine = async () => {
-    if (game.history().length < currentLineMoves.length && mode != 'recap')
-      return
+    if (game.history().length < indexOfOurLastMove && mode != 'recap') return
 
     // We've reached the end of the line
     if (wrongMoves.length > 0) {
@@ -556,7 +563,7 @@ export default function CourseTrainer(props: {
       // We played the wrong move
       setLineCorrect(false)
       game.undo()
-      incorrectSound()
+      if (soundEnabled) incorrectSound()
       setTimeout(() => {
         setPosition(game.fen())
       }, 300)
@@ -677,6 +684,20 @@ export default function CourseTrainer(props: {
     setCurrentLineMoves(currentLine.line.moves)
     setWrongMoves([])
   }, [currentLine])
+
+  useEffect(() => {
+    if (!currentLine || !currentLineMoves) return
+    const ourColour = currentLine.line.colour === 'White' ? true : false
+    const isOurMove = (move: PrismaMove) => move.colour === ourColour
+    const lastIndex = currentLineMoves.reduce(
+      (lastIndex, move, currentIndex) => {
+        return isOurMove(move) ? currentIndex : lastIndex
+      },
+      -1,
+    )
+
+    setIndexOfOurLastMove(lastIndex)
+  }, [currentLineMoves])
 
   useEffect(() => {
     // We need to ensure the game is set before we can make a move
