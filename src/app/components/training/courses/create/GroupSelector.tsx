@@ -61,7 +61,6 @@ export default function GroupSelector(props: {
   }
 
   useEffect(() => {
-    console.log(lines)
     const groups = getGroupOptionsFromLines(lines)
     setGroupOptions(groups)
     if (selectedGroup || groups.length === 0) return

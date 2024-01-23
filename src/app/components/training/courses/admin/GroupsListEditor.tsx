@@ -25,6 +25,7 @@ import Heading from '~/app/components/_elements/heading'
 import type { LineWithMoves } from './GroupEditor'
 import GroupEditor from './GroupEditor'
 
+// TODO: Make the actual groups sortable too, not just the lines within them
 export default function GroupsListEditor(props: {
   groups: Group[]
   lines: LineWithMoves[]
@@ -101,7 +102,7 @@ export default function GroupsListEditor(props: {
         onDragEnd={handleDragEnd}
       >
         <SortableContext items={items} strategy={verticalListSortingStrategy}>
-          <div ref={parent}>
+          <div className="flex flex-col gap-2" ref={parent}>
             {open &&
               groups.map((group) => (
                 <GroupEditor

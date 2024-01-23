@@ -44,7 +44,7 @@ export default function CreateCourseForm() {
     if (!user) return
 
     try {
-      const courseData = transformCourseData(courseName, group, lines)
+      const courseData = transformCourseData(group, lines, courseName)
       const response = await fetch('/api/courses/create/upload', {
         method: 'POST',
         headers: {
@@ -137,7 +137,11 @@ export default function CreateCourseForm() {
   )
 }
 
-function transformCourseData(courseName: string, group: string, lines: Line[]) {
+export function transformCourseData(
+  group: string,
+  lines: Line[],
+  courseName?: string,
+) {
   // Extract the unique group names from the lines
   // into an array of objects with a groupName property
   const groupNames = lines.reduce((acc: { groupName: string }[], line) => {
@@ -150,9 +154,6 @@ function transformCourseData(courseName: string, group: string, lines: Line[]) {
     }
     return acc
   }, [])
-
-  // Get the slug for the course name
-  const slug = GenerateSlug(courseName)
 
   const processedLines = lines.map((line) => {
     const groupName = line.tags[group]!
@@ -167,7 +168,7 @@ function transformCourseData(courseName: string, group: string, lines: Line[]) {
 
   return {
     courseName,
-    slug,
+    slug: courseName ? GenerateSlug(courseName) : undefined,
     groupNames,
     lines: processedLines,
   }

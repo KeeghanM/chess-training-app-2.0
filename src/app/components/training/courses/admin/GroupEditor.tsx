@@ -28,9 +28,12 @@ export default function GroupEditor(props: {
     <div
       key={group.id}
       ref={parent}
-      className="flex flex-col gap-4 bg-purple-600 text-white p-2"
+      className="flex flex-col gap-4 text-white p-2 bg-purple-600 "
     >
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 p-1">
+        <p className="font-bold w-10">
+          {props.lines.filter((line) => line.groupId == group.id).length}x
+        </p>
         <input
           className="w-full border-b border-gray-300 px-4 py-2 bg-[rgba(255,255,255,0.2)] text-white font-bold"
           value={group.groupName}
