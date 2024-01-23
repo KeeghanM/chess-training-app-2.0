@@ -219,7 +219,7 @@ export default function RecallTrainer() {
         [square]: {
           backgroundColor: 'rgba(255,25,0,0.8)',
         },
-        [correctSquare!.square]: {
+        [correctSquare.square]: {
           backgroundColor: 'rgba(25,255,0,0.8)',
         },
       })
@@ -276,7 +276,7 @@ export default function RecallTrainer() {
 
     const squaresWithPieces = newGame
       .board()
-      .flatMap((row, i) =>
+      .flatMap((row) =>
         row
           .filter((square) => square && square.type != 'p')
           .map((square) => square),

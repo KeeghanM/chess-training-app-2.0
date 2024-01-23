@@ -193,7 +193,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
     // Find the first line that doesn't start with a [ This will be the moves
     // Then split this by spaces, and remove the move numbers
     const moves = lines
-      .find((line) => !line.startsWith('[') && !line.startsWith('{'))!
+      .find((line) => !line.startsWith('[') && !line.startsWith('{'))
       ?.split(' ')
       .filter((move) => !move.includes('.'))
 

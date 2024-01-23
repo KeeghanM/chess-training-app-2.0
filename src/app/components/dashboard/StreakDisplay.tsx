@@ -4,8 +4,6 @@ import type { UserBadge } from '@prisma/client'
 import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css'
 
-import StyledLink from '~/app/components/_elements/styledLink'
-
 interface StreakDisplayProps {
   data: {
     trainedToday: boolean

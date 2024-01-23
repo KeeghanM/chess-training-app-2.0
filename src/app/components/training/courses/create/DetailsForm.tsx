@@ -26,8 +26,8 @@ export default function DetailsForm(props: {
     setStatus('loading')
     setError(null)
 
-    if (name === '') {
-      setError('Name cannot be empty')
+    if (name.length < 5) {
+      setError('Name must be at least 5 characters')
       setStatus('idle')
       return
     }

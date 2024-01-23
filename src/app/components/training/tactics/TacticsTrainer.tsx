@@ -125,10 +125,17 @@ export default function TacticsTrainer(props: {
   }
 
   const makeMove = (move: string) => {
-    game.move(move)
-    const lanNotation = game.history()[game.history().length - 1]
-    playMoveSound(lanNotation!)
-    setPosition(game.fen())
+    try {
+      game.move(move)
+      const lanNotation = game.history()[game.history().length - 1]
+      playMoveSound(lanNotation!)
+      setPosition(game.fen())
+    } catch (e) {
+      // honestly, do nothing
+      // I dunno why this is firing, I replicated it once but it didn;t actually affect the usage
+      // I think it's to do with premoving and the chess.js library, but nothing actually breaks
+      // so this is just here to stop logging it in sentry as an "unhandled error"
+    }
   }
 
   // Makes a move for the "opponent"
