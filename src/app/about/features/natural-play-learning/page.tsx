@@ -30,9 +30,58 @@ export default async function NaturalPlayLearningPage() {
         </Heading>
       </Hero>
       <BigText size="small" color="primary">
-        At ChessTraining.app, we're redefining the way you learn chess. Our
-        unique Natural Play Learning method is here to transform your
+        At ChessTraining.app, we're redefining the way you learn chess openings.
+        Our unique Natural Play Learning method is here to transform your
         understanding and mastery of chess openings.
+      </BigText>
+      <ImageRowFull
+        image={{
+          src: '/images/man_chess_computer_3.png',
+          alt: 'A person sat at a computer studying and improving their chess',
+        }}
+        imageSide="right"
+        heading="Courses Powered by Natural Play Learning"
+        background="light"
+      >
+        <p>
+          Our Course Trainer is specifically designed to help you learn chess
+          openings. Faster. And better. With Natural Play Learning, you can
+          master chess openings like never before. You can bring your own PGN
+          files and transform them into interactive courses. Or you can explore
+          the courses shared by other users. We will also regularly publish
+          bespoke courses created by our in-house Masters and top players.
+        </p>
+        <Heading as="h3">Here's what you can expect:</Heading>
+        <ul>
+          <li>
+            <strong>User-Centric:</strong> You can either create your own
+            courses or explore those shared by other users. Our team of in-house
+            Masters and top players also regularly publishes bespoke courses.
+          </li>
+          <li>
+            <strong>Dynamic and Interactive:</strong> Each course is structured
+            to help you learn and remember chess openings faster than ever
+            before, with an emphasis on practical understanding and retention.
+          </li>
+          <li>
+            <strong>Focusing on Real-Game Scenarios:</strong> The courses are
+            not just about memorising moves but understanding them in the
+            context of real-game scenarios.
+          </li>
+        </ul>
+        <Link href="/courses">
+          <Button variant="primary">Explore Courses</Button>
+        </Link>
+      </ImageRowFull>
+      <BigText color="secondary">
+        Start improving your chess now -{' '}
+        <Link
+          className="cursor-pointer font-bold !text-purple-500 underline hover:no-underline"
+          href="/auth/signin"
+        >
+          Sign Up
+        </Link>{' '}
+        for free!
       </BigText>
       <ImageRowFull
         image={{
@@ -75,50 +124,6 @@ export default async function NaturalPlayLearningPage() {
             designed to cater to every skill level.
           </li>
         </ul>
-      </ImageRowFull>
-      <BigText color="secondary">
-        Start improving your chess now -{' '}
-        <Link
-          className="cursor-pointer font-bold !text-purple-500 underline hover:no-underline"
-          href="/auth/signin"
-        >
-          Sign Up
-        </Link>{' '}
-        for free!
-      </BigText>
-      <ImageRowFull
-        image={{
-          src: '/images/man_chess_computer_3.png',
-          alt: 'A person sat at a computer studying and improving their chess',
-        }}
-        imageSide="right"
-        heading="Courses Powered by Natural Play Learning"
-        background="light"
-      >
-        <p>
-          Our courses are specifically designed to leverage the Natural Play
-          Learning technique. They are:
-        </p>
-        <ul>
-          <li>
-            <strong>User-Centric:</strong> You can either create your own
-            courses or explore those shared by other users. Our team of in-house
-            Masters and top players also regularly publishes bespoke courses.
-          </li>
-          <li>
-            <strong>Dynamic and Interactive:</strong> Each course is structured
-            to help you learn and remember chess openings faster than ever
-            before, with an emphasis on practical understanding and retention.
-          </li>
-          <li>
-            <strong>Focusing on Real-Game Scenarios:</strong> The courses are
-            not just about memorizing moves but understanding them in the
-            context of real-game scenarios.
-          </li>
-        </ul>
-        <Link href="/courses">
-          <Button variant="primary">Explore Courses</Button>
-        </Link>
       </ImageRowFull>
       <TextWall title="Why choose Natural Play Learning?" background="dark">
         <ul>

@@ -33,7 +33,7 @@ export default function Nav(props: {
       name: 'Woodpecker Method',
     },
     {
-      href: '/courses',
+      href: '/about/features/natural-play-learning',
       name: 'Courses',
     },
     {
