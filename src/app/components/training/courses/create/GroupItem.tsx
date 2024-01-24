@@ -95,10 +95,7 @@ export function GroupItem(props: {
                   )
                   props.updateLines(updatedLines)
                   setSetAllOpen(false)
-                  await trackEventOnClient(
-                    'create_course_set_all_lines_colour',
-                    {},
-                  )
+                  trackEventOnClient('create_course_set_all_lines_colour', {})
                 }}
               >
                 Set All To {selectedColor}
@@ -130,7 +127,7 @@ export function GroupItem(props: {
                         onChange={async (e) => {
                           const v = e.target.value
                           handleColorChange(line, v)
-                          await trackEventOnClient(
+                          trackEventOnClient(
                             'create_course_change_line_colour',
                             {},
                           )
@@ -162,7 +159,7 @@ export function GroupItem(props: {
                                     variant="danger"
                                     onClick={async () => {
                                       handleLineDeletion(line)
-                                      await trackEventOnClient(
+                                      trackEventOnClient(
                                         'create_course_delete_line',
                                         {},
                                       )

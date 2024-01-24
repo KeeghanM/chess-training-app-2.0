@@ -54,7 +54,7 @@ export default function SetListEdit(props: {
       if (json.message != 'Set Deleted')
         throw new Error(json?.message ?? 'Unknown error')
 
-      await trackEventOnClient('tactics_set_delete', {})
+      trackEventOnClient('tactics_set_delete', {})
       props.onFinished()
       close()
     } catch (e) {
@@ -85,7 +85,7 @@ export default function SetListEdit(props: {
       if (json.message != 'Set Updated')
         throw new Error(json?.message ?? 'Unknown error')
 
-      await trackEventOnClient('tactics_set_updated', {})
+      trackEventOnClient('tactics_set_updated', {})
       props.onFinished()
       close()
     } catch (e) {

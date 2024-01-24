@@ -26,6 +26,7 @@ import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTr
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 // TODO: "Show solution" button
+// TODO: Update stats should be backgrounded, not awaited
 
 export default function EndgameTrainer() {
   const { user } = useKindeBrowserClient()
@@ -185,14 +186,14 @@ export default function EndgameTrainer() {
     // Increase the streak if correct
     // and send it to the server incase a badge needs adding
     if (status == 'correct') {
-      await trackEventOnClient('endgame_correct', {})
-      await fetch('/api/endgames/streak', {
+      trackEventOnClient('endgame_correct', {})
+      fetch('/api/endgames/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
-      })
+      }).catch((e) => Sentry.captureException(e))
       setCurrentStreak(currentStreak + 1)
     } else if (status == 'incorrect') {
-      await trackEventOnClient('endgame_incorrect', {})
+      trackEventOnClient('endgame_incorrect', {})
     }
     const newPuzzle = await getPuzzle()
 
@@ -383,7 +384,7 @@ export default function EndgameTrainer() {
               newGame.move(game.history()[i]!)
             }
             setPosition(newGame.fen())
-            await trackEventOnClient('endgame_set_jump_to_move', {})
+            trackEventOnClient('endgame_set_jump_to_move', {})
           }}
         >
           <FlexText />
@@ -582,7 +583,7 @@ export default function EndgameTrainer() {
           variant="success"
           onClick={async () => {
             setMode('training')
-            await trackEventOnClient('endgame_start', {})
+            trackEventOnClient('endgame_start', {})
           }}
         >
           Start Training

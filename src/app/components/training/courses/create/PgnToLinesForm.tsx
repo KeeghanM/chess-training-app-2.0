@@ -52,7 +52,7 @@ export default function PgnToLinesForm(props: {
       const lines = ParsePGNtoLineData(string)
       if (!lines) return handleError('Something went wrong')
 
-      await trackEventOnClient('create_course_pgn_imported', {})
+      trackEventOnClient('create_course_pgn_imported', {})
       props.finished(lines)
     } catch (e) {
       Sentry.captureException(e)

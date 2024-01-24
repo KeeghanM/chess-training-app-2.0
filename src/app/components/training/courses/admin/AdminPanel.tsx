@@ -1,5 +1,7 @@
 'use client'
 
+import Link from 'next/link'
+
 import { useEffect, useState } from 'react'
 
 import type { Course, Group } from '@prisma/client'
@@ -116,19 +118,17 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
             'Save Changes'
           )}
         </Button>
-        <Tippy content="Coming Soon!">
-          <Button disabled variant="accent">
-            Add New Lines
-          </Button>
-        </Tippy>
+        <Link href={`/training/courses/admin/${course.id}/add-lines`}>
+          <Button variant="accent">Add New Lines</Button>
+        </Link>
+        <Button variant="secondary" onClick={exit}>
+          Exit
+        </Button>
         <Tippy content="Coming Soon!">
           <Button disabled variant="warning">
             Publish Course
           </Button>
         </Tippy>
-        <Button variant="secondary" onClick={exit}>
-          Exit
-        </Button>
       </div>
       <GroupsListEditor
         groups={groups}

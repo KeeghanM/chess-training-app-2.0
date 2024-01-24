@@ -42,7 +42,9 @@ export interface TrainingPuzzle {
   themes: string[]
 }
 
+// TODO: Update stats should be backgrounded, not awaited
 // TODO: "Show solution" button
+
 export default function TacticsTrainer(props: {
   set: PrismaTacticsSetWithPuzzles
 }) {
@@ -188,7 +190,7 @@ export default function TacticsTrainer(props: {
 
     setLoading(true)
     try {
-      await trackEventOnClient('tactics_set_puzzle_correct', {
+      trackEventOnClient('tactics_set_puzzle_correct', {
         rating: currentPuzzle!.rating.toString(),
       })
       await fetch('/api/tactics/stats/increaseCorrect', {
@@ -213,7 +215,7 @@ export default function TacticsTrainer(props: {
     if (!user) return
     setLoading(true)
     try {
-      await trackEventOnClient('tactics_set_puzzle_incorrect', {
+      trackEventOnClient('tactics_set_puzzle_incorrect', {
         rating: currentPuzzle!.rating.toString(),
       })
       await fetch('/api/tactics/stats/increaseIncorrect', {
@@ -251,7 +253,7 @@ export default function TacticsTrainer(props: {
 
       if (user) {
         try {
-          await trackEventOnClient('tactics_set_round_completed', {
+          trackEventOnClient('tactics_set_round_completed', {
             roundNumber: currentRound.roundNumber.toString(),
             correct: currentRound.correct.toString(),
             incorrect: currentRound.incorrect.toString(),
@@ -463,7 +465,7 @@ export default function TacticsTrainer(props: {
               newGame.move(game.history()[i]!)
             }
             setPosition(newGame.fen())
-            await trackEventOnClient('tactics_set_jump_to_move', {})
+            trackEventOnClient('tactics_set_jump_to_move', {})
           }}
         >
           <FlexText />
@@ -484,7 +486,7 @@ export default function TacticsTrainer(props: {
   const exit = async () => {
     setLoading(true)
     await increaseTimeTaken()
-    await trackEventOnClient('tactics_set_closed', {})
+    trackEventOnClient('tactics_set_closed', {})
     router.push('/training/tactics/list')
     return
   }

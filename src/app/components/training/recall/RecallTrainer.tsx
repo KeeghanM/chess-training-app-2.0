@@ -33,6 +33,7 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 // TODO: Timed mode
 // TODO: Reset everything on exit
 // TODO: Increase XP for each correct recall in a row
+// TODO: Update stats should be backgrounded, not awaited
 
 export default function RecallTrainer() {
   const { user } = useKindeBrowserClient()
@@ -125,14 +126,14 @@ export default function RecallTrainer() {
     // Increase the streak if correct
     // and send it to the server incase a badge needs adding
     if (status == 'correct') {
-      await trackEventOnClient('recall_correct', {})
-      await fetch('/api/recall/streak', {
+      trackEventOnClient('recall_correct', {})
+      fetch('/api/recall/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
-      })
+      }).catch((e) => Sentry.captureException(e))
       setCurrentStreak(currentStreak + 1)
     } else if (status == 'incorrect') {
-      await trackEventOnClient('recall_incorrect', {})
+      trackEventOnClient('recall_incorrect', {})
     }
     const newPuzzle = await getPuzzle()
 
@@ -160,7 +161,7 @@ export default function RecallTrainer() {
       setCounter(0)
       setHiddenSquares({})
       setReadyForInput(false)
-      await trackEventOnClient('recall_complete', {})
+      trackEventOnClient('recall_complete', {})
     } else {
       // Otherwise, increase the counter and move the piece
       setCounter(counter + 1)
@@ -453,7 +454,7 @@ export default function RecallTrainer() {
               variant="success"
               onClick={async () => {
                 setMode('training')
-                await trackEventOnClient('recall_start', {})
+                trackEventOnClient('recall_start', {})
               }}
             >
               Start Training

@@ -46,7 +46,7 @@ export default function CourseSettings(props: CourseSettingsProps) {
     if (!confirm(confirmString)) return
 
     setDeleting(true)
-    await trackEventOnClient('course_status_set', {
+    trackEventOnClient('course_status_set', {
       active: 'archived',
     })
     try {

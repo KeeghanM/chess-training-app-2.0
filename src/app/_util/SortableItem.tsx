@@ -11,7 +11,7 @@ export default function SortableItem(props: {
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    zIndex: 999,
+    zIndex: 9,
   }
 
   return (
