@@ -8,9 +8,8 @@ import * as Sentry from '@sentry/nextjs'
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import AddLines from '~/app/components/training/courses/admin/AddLines'
-import CourseAdminPanel from '~/app/components/training/courses/admin/AdminPanel'
 
-export default async function CourseAdminPage({
+export default async function AddLinesPage({
   params,
 }: {
   params: { courseId: string }

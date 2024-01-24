@@ -27,6 +27,8 @@ import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTr
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
+// TODO: Update stats should be backgrounded, not awaited
+
 export default function VisualisationTrainer() {
   const { user } = useKindeBrowserClient()
 
@@ -120,7 +122,7 @@ export default function VisualisationTrainer() {
       fetch('/api/visualisation/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
-      })
+      }).catch((e) => Sentry.captureException(e))
       setCurrentStreak(currentStreak + 1)
     } else if (status == 'incorrect') {
       trackEventOnClient('visualisation_incorrect', {})

@@ -42,7 +42,9 @@ export interface TrainingPuzzle {
   themes: string[]
 }
 
+// TODO: Update stats should be backgrounded, not awaited
 // TODO: "Show solution" button
+
 export default function TacticsTrainer(props: {
   set: PrismaTacticsSetWithPuzzles
 }) {

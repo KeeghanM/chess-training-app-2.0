@@ -2,7 +2,6 @@
 import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import type { Course, Group as PrismaGroup } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
 
@@ -40,7 +39,7 @@ export async function POST(request: Request) {
 
     // Create each new line if it doesn't already exist
     let newGroupCounter = 0
-    let allGroups = [...course.groups]
+    const allGroups = [...course.groups]
     await Promise.all(
       lines.map(async (line, index) => {
         // First check if the line already exists

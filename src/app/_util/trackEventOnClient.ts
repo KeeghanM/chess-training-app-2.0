@@ -5,18 +5,14 @@ export default function trackEventOnClient(
   data: Record<string, string>,
 ) {
   if (process.env.NODE_ENV === 'development') return
-  try {
-    fetch('/api/logEvent', {
-      method: 'POST',
-      body: JSON.stringify({
-        eventName,
-        data,
-      }),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-  } catch (e) {
-    Sentry.captureException(e)
-  }
+  fetch('/api/logEvent', {
+    method: 'POST',
+    body: JSON.stringify({
+      eventName,
+      data,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  }).catch((e) => Sentry.captureException(e))
 }

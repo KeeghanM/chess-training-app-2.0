@@ -26,6 +26,7 @@ import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTr
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 // TODO: "Show solution" button
+// TODO: Update stats should be backgrounded, not awaited
 
 export default function EndgameTrainer() {
   const { user } = useKindeBrowserClient()
@@ -189,7 +190,7 @@ export default function EndgameTrainer() {
       fetch('/api/endgames/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
-      })
+      }).catch((e) => Sentry.captureException(e))
       setCurrentStreak(currentStreak + 1)
     } else if (status == 'incorrect') {
       trackEventOnClient('endgame_incorrect', {})

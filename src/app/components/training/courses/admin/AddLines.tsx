@@ -16,7 +16,7 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import { transformCourseData } from '../create/CreateCourse'
 import GroupSelector from '../create/GroupSelector'
 import PgnToLinesForm from '../create/PgnToLinesForm'
-import { Line } from '../create/parse/ParsePGNtoLineData'
+import type { Line } from '../create/parse/ParsePGNtoLineData'
 
 export default function AddLines(props: { courseId: string }) {
   const [step, setStep] = useState<'pgn' | 'groups' | 'error' | 'success'>(

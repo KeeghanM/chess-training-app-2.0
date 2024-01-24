@@ -35,6 +35,7 @@ import type { PrismaUserCourse } from './list/CoursesList'
 // TODO: Add delay on wrong move jumping
 // TODO: Modal for confirming exit
 // TODO: Ensure links in comments work
+// TODO: Add onboarding for first time users
 
 type PrismaMove = Move & { comment?: Comment | null }
 
@@ -434,10 +435,10 @@ export default function CourseTrainer(props: {
           fens: fensToUpload,
         }),
       })
-        .then((resp) => resp.json())
+        .then((resp) => resp.json() as Promise<ResponseJson>)
         .then((json) => {
-          if (json.message != 'Fens uploaded') {
-            throw new Error(json.message)
+          if (json?.message != 'Fens uploaded') {
+            throw new Error(json?.message ?? 'Unknown error')
           }
         })
         .catch((e) => Sentry.captureException(e)) // Don't do anything with the error, just log it
@@ -499,7 +500,7 @@ export default function CourseTrainer(props: {
         revisionDate,
       }),
     })
-      .then((resp) => resp.json())
+      .then((resp) => resp.json() as Promise<ResponseJson>)
       .then((json) => {
         if (json?.message != 'Stats updated') {
           throw new Error(json?.message ?? 'Unknown error')
