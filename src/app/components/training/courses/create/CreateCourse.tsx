@@ -62,7 +62,7 @@ export default function CreateCourseForm() {
       if (json?.message != 'Course created')
         throw new Error(json?.message ?? 'Unknown error')
 
-      await trackEventOnClient('create_course_success', {})
+      trackEventOnClient('create_course_success', {})
       router.push('/training/courses/')
     } catch (e) {
       Sentry.captureException(e)

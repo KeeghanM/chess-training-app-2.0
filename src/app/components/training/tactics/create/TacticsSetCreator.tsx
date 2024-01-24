@@ -191,7 +191,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
         throw new Error('Something went wrong')
       }
 
-      await trackEventOnClient('create_tactics_set_success', {
+      trackEventOnClient('create_tactics_set_success', {
         setName: name,
         setSize: puzzleIds.length.toString(),
         themesList: themesList.join(','),
@@ -230,7 +230,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
         >
           <div
             onClick={async () =>
-              await trackEventOnClient('create_tactics_set_opened', {})
+              trackEventOnClient('create_tactics_set_opened', {})
             }
             className="flex items-center gap-2 bg-purple-700 px-4 py-2 text-white hover:bg-purple-600"
           >

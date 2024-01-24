@@ -34,7 +34,7 @@ export default function SetListItem(props: {
 
   const trainSet = async () => {
     setOpening(true)
-    await trackEventOnClient('tactics_set_opened', {})
+    trackEventOnClient('tactics_set_opened', {})
     router.push(`/training/tactics/${set.id}`)
   }
 

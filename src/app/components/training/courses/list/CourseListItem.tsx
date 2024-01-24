@@ -36,7 +36,7 @@ export default function CourseListItem(props: {
     if (!userCourse) return
 
     setOpening(true)
-    await trackEventOnClient('course_opened', {})
+    trackEventOnClient('course_opened', {})
     router.push(
       '/training/courses/' +
         userCourse?.id +

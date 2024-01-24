@@ -282,8 +282,10 @@ export default function CourseTrainer(props: {
       // Now we want to log all the stats
       setXpCounter(xpCounter + 1)
       setLoading(true)
-      await processNewFens()
-      const updatedLines = await processStats()
+      processNewFens()
+      const updatedLines = processStats()
+
+      if (updatedLines === null) throw new Error('No updated lines') // This is likely because we've lost auth somehow
 
       // Now we need to get the next line
       const nextLine = getNextLine(updatedLines ?? lines)
@@ -292,7 +294,7 @@ export default function CourseTrainer(props: {
         // TODO: Check if this is the first time completing the course
         // if so, show a nice modal popup and track event
         // For now, just redirect to the course page
-        await trackEventOnClient('course_completed', {
+        trackEventOnClient('course_completed', {
           courseName: props.userCourse.course.courseName,
         })
         router.push('/training/courses/')
@@ -302,7 +304,7 @@ export default function CourseTrainer(props: {
       if (nextLine.line.groupId !== currentLine?.line.groupId) {
         // We've reached the end of the group
         // TODO: Add a nice modal popup here
-        await trackEventOnClient('course_group_completed', {
+        trackEventOnClient('course_group_completed', {
           courseName: props.userCourse.course.courseName,
         })
       }
@@ -319,36 +321,44 @@ export default function CourseTrainer(props: {
       // Setup for the next line
       setNextLine(nextLine)
       setLineCorrect(true)
-      setLoading(false)
       setInteractive(false)
     } catch (e) {
       Sentry.captureException(e)
       if (e instanceof Error) setError(e.message)
       else setError('An unknown error occurred')
+    } finally {
       setLoading(false)
     }
   }
 
   const startNextLine = async () => {
     if (!nextLine) return
+    setLoading(true)
+    try {
+      trackEventOnClient('course_next_line', {
+        courseName: props.userCourse.course.courseName,
+      })
 
-    await trackEventOnClient('course_next_line', {
-      courseName: props.userCourse.course.courseName,
-    })
-
-    setNextLine(null)
-    setCurrentLine(nextLine)
-    setCurrentLineMoves(nextLine.line.moves)
-    setMode('normal')
-    setWrongMoves([])
-    setWrongFens([])
-    setHadTeachingMove(false)
-    setLineCorrect(true)
-    setInteractive(true)
-    setTeaching(false)
-    game.reset()
-    setInteractive(true)
-    setPosition(game.fen())
+      setNextLine(null)
+      setCurrentLine(nextLine)
+      setCurrentLineMoves(nextLine.line.moves)
+      setMode('normal')
+      setWrongMoves([])
+      setWrongFens([])
+      setHadTeachingMove(false)
+      setLineCorrect(true)
+      setInteractive(true)
+      setTeaching(false)
+      game.reset()
+      setInteractive(true)
+      setPosition(game.fen())
+    } catch (e) {
+      Sentry.captureException(e)
+      if (e instanceof Error) setError(e.message)
+      else setError('An unknown error occurred')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const playMoveSound = (move: string) => {
@@ -372,7 +382,7 @@ export default function CourseTrainer(props: {
     return allComments.find((comment) => comment.id == commentId)?.comment
   }
 
-  const processNewFens = async () => {
+  const processNewFens = () => {
     if (!user) return
     // Reconstruct all the FENs we saw as the trainedFens state isn't updated
     // it misses the last move out due to the update sequence of State
@@ -412,34 +422,29 @@ export default function CourseTrainer(props: {
     setExistingFens(allSeenFens)
 
     if (fensToUpload.length > 0) {
-      try {
-        const resp = await fetch(
-          `/api/courses/user/${props.userCourse.id}/fens/upload`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              fens: fensToUpload,
-            }),
-          },
-        )
-        const json = (await resp.json()) as ResponseJson
-        if (json.message != 'Fens uploaded') {
-          throw new Error(json.message)
-        }
-      } catch (e) {
-        Sentry.captureException(e)
-        if (e instanceof Error) setError(e.message)
-        else setError('An unknown error occurred')
-      }
+      // This is not using await, because actually we want this to run in the background
+      // and not block the user from continuing. If this errors, all it means is that the user
+      // will have to re-do some moves, next time they train which isn't a big deal.
+      fetch(`/api/courses/user/${props.userCourse.id}/fens/upload`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fens: fensToUpload,
+        }),
+      })
+        .then((resp) => resp.json())
+        .then((json) => {
+          if (json.message != 'Fens uploaded') {
+            throw new Error(json.message)
+          }
+        })
+        .catch((e) => Sentry.captureException(e)) // Don't do anything with the error, just log it
     }
   }
 
-  const processStats = async () => {
-    if (!user || !currentLine) return
-
+  const calculateRevisionData = (line: PrismaUserLine) => {
     // find the review date for the line
     const now = new Date()
     const tenMinutes = 10 * 60 * 1000
@@ -451,7 +456,7 @@ export default function CourseTrainer(props: {
     const oneMonth = oneDay * 30
     const timeToAdd = lineCorrect
       ? (() => {
-          switch (currentLine.currentStreak) {
+          switch (line.currentStreak) {
             case 0: // First time ever correct, or first time since wrong
               return oneHour
             case 1:
@@ -468,39 +473,45 @@ export default function CourseTrainer(props: {
         })()
       : tenMinutes
 
-    const revisionDate = new Date(now.getTime() + timeToAdd)
+    return new Date(now.getTime() + timeToAdd)
+  }
 
-    // Update the line stats on the server
-    try {
-      const resp = await fetch(
-        `/api/courses/user/${props.userCourse.id}/stats/${currentLine.id}`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            lineCorrect,
-            revisionDate,
-          }),
-        },
-      )
+  const processStats = () => {
+    if (!user || !currentLine) return null
 
-      const json = (await resp.json()) as ResponseJson
-      if (json.message != 'Stats updated') {
-        throw new Error(json.message)
-      }
-      const updatedLine = json.data!.line as PrismaUserLine
-      const updatedLines = lines.map((line) =>
-        line.id === updatedLine.id ? updatedLine : line,
-      )
-      setLines(updatedLines)
-      return updatedLines
-    } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('An unknown error occurred')
-    }
+    const revisionDate = calculateRevisionData(currentLine)
+    const optimisticallyUpdatedLine = { ...currentLine, revisionDate }
+    const updatedLines = lines.map((line) =>
+      line.id === optimisticallyUpdatedLine.id
+        ? optimisticallyUpdatedLine
+        : line,
+    )
+    setLines(updatedLines)
+
+    // Send the update to the server in the background
+    fetch(`/api/courses/user/${props.userCourse.id}/stats/${currentLine.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        lineCorrect,
+        revisionDate,
+      }),
+    })
+      .then((resp) => resp.json())
+      .then((json) => {
+        if (json?.message != 'Stats updated') {
+          throw new Error(json?.message ?? 'Unknown error')
+        }
+        // Optionally handle the successful response
+      })
+      .catch((e) => {
+        Sentry.captureException(e)
+        // Revert to the previous state or handle the error
+      })
+
+    return updatedLines // Return the optimistically updated lines
   }
 
   const checkPromotion = (

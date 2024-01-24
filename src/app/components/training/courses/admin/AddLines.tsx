@@ -39,7 +39,7 @@ export default function AddLines(props: { courseId: string }) {
       if (json?.message != 'Lines added')
         throw new Error(json?.message ?? 'Unknown error')
 
-      await trackEventOnClient('course_lines_added', {})
+      trackEventOnClient('course_lines_added', {})
       setStep('success')
     } catch (e) {
       Sentry.captureException(e)

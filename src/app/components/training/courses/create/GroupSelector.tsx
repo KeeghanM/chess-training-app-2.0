@@ -164,7 +164,7 @@ export default function GroupSelector(props: {
             defaultValue={groupOptions[0]}
             onValueChange={async (x) => {
               setSelectedGroup(x)
-              await trackEventOnClient('create_course_change_grouping', {
+              trackEventOnClient('create_course_change_grouping', {
                 groupName: x,
               })
             }}

@@ -116,14 +116,14 @@ export default function VisualisationTrainer() {
     // Increase the streak if correct
     // and send it to the server incase a badge needs adding
     if (status == 'correct') {
-      await trackEventOnClient('Visualisation_correct', {})
-      await fetch('/api/visualisation/streak', {
+      trackEventOnClient('Visualisation_correct', {})
+      fetch('/api/visualisation/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
       })
       setCurrentStreak(currentStreak + 1)
     } else if (status == 'incorrect') {
-      await trackEventOnClient('visualisation_incorrect', {})
+      trackEventOnClient('visualisation_incorrect', {})
     }
     const newPuzzle = await getPuzzle()
 
@@ -248,7 +248,7 @@ export default function VisualisationTrainer() {
               newGame.move(game.history()[i]!)
             }
             setDisplayPosition(newGame.fen())
-            await trackEventOnClient('calculation_set_jump_to_move', {})
+            trackEventOnClient('calculation_set_jump_to_move', {})
           }}
         >
           <FlexText />
@@ -403,7 +403,7 @@ export default function VisualisationTrainer() {
               variant="success"
               onClick={async () => {
                 setMode('training')
-                await trackEventOnClient('Visualisation_start', {})
+                trackEventOnClient('Visualisation_start', {})
               }}
             >
               Start Training
