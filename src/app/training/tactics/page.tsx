@@ -1,4 +1,8 @@
+import Link from 'next/link'
+
+import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
+import StyledLink from '~/app/components/_elements/styledLink'
 import CtaRow from '~/app/components/_layouts/ctaRow'
 import Hero from '~/app/components/_layouts/hero'
 import ImageRowFull from '~/app/components/_layouts/imageRowFull'
@@ -14,7 +18,7 @@ export default async function Tactics() {
   return (
     <>
       <Hero
-        title="Tactics Training"
+        title="Chess Tactics Training"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
@@ -25,10 +29,36 @@ export default async function Tactics() {
         }}
       >
         <Heading color="text-orange-500" as="h2">
-          Train tactics using the WoodPecker Method developed by GM's Axel
-          Smith, and Hans Tikkanen.
+          Train Your Chess Tactics to Master Level
         </Heading>
       </Hero>
+      <ImageRowFull
+        heading="How to use the Tactics Trainer"
+        background="light"
+        image={{
+          src: '/images/woman_studying_2.png',
+          alt: 'A woman studying chess while sat at a desk',
+        }}
+        imageSide="right"
+      >
+        <p>
+          In our Chess Tactics Trainer we have implemented the{' '}
+          <StyledLink href="/about/features/woodpecker-method">
+            Woodpecker Method
+          </StyledLink>
+          . This allows you to automaticcaly build a set of between 20-500 chess
+          puzzles. Each one tailored to your chess rating, and based on the
+          chess tactics and themes that you want to focus on.
+        </p>
+        <p>
+          We will automatically track your time and accuracy across the chess
+          puzzles. This means all the admin work required in the WoodPecker
+          method is taken care of for you - you just focus on solving chess
+          puzzles. Remember, these puzzles should be difficult for you to solve!
+          For best results, break your practice into 30-60 minute sessions once
+          a day. Your first time through a puzzle set should take 1-2 weeks.
+        </p>
+      </ImageRowFull>
       <ImageRowFull
         heading="What is the Woodpecker Method"
         background="light"
@@ -52,30 +82,13 @@ export default async function Tactics() {
           However this isn't simple memorisation! Rather, you internalise and
           bake into your subconscious the core ideas and patterns.
         </p>
+        <Link href="/about/features/woodpecker-method">
+          <Button variant="primary">
+            Learn More about the Woodpecker Method
+          </Button>
+        </Link>
       </ImageRowFull>
-      <ImageRowFull
-        heading="How to use the Tactics Trainer"
-        background="light"
-        image={{
-          src: '/images/woman_studying_2.png',
-          alt: 'A woman studying chess while sat at a desk',
-        }}
-        imageSide="right"
-      >
-        <p>
-          Using the Tactics Trainer, you can build a set of between 150-500
-          puzzles. Each one tailored to your chess rating. We will automatically
-          track the time spent on each puzzle, and the overall set. As well as
-          your accuracy throughout your training.
-        </p>
-        <p>
-          This means all the admin work required in the WoodPecker method of
-          tracking your work is taken care of for you - you just focus on
-          solving puzzles. Remember, these puzzles should be difficult to solve.
-          For best results, break your practice into 30-60 minute sessions once
-          a day. Your first time through a puzzle set should take 1-2 weeks.
-        </p>
-      </ImageRowFull>
+
       <CtaRow
         title="Ready to take your game to the next level?"
         cta={{
