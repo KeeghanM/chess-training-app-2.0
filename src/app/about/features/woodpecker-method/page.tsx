@@ -18,14 +18,15 @@ export default async function WoodPeckerPage() {
   return (
     <>
       <Hero
-        title={'Tactics Training with the Woodpecker Method'}
+        title={'Chess Tactics Training with the Woodpecker Method'}
         image={{
           src: '/images/hero.avif',
           alt: 'Chess board focusing on tactical positions',
         }}
       >
         <Heading color="text-orange-500" as={'h2'}>
-          Elevate Your Tactical Skills to Master Level
+          Train chess puzzles using the WoodPecker Method developed by GM's Axel
+          Smith, and Hans Tikkanen.
         </Heading>
       </Hero>
       <ImageRowFull
@@ -39,9 +40,9 @@ export default async function WoodPeckerPage() {
       >
         <p>
           The Woodpecker Method, developed by Grandmasters Axel Smith and Hans
-          Tikkanen, is a game-changing approach to chess tactics. It focuses on
-          solving a large set of puzzles and then re-solving them faster and
-          more accurately, embedding core tactical patterns into your
+          Tikkanen, is a game-changing approach to improving at chess tactics.
+          It focuses on solving a large set of puzzles and then re-solving them
+          faster and more accurately, embedding core tactical patterns into your
           subconscious.
         </p>
         <p>
