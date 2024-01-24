@@ -19,7 +19,31 @@ export const metadata = {
   title: 'ChessTraining.app - The best way to improve your chess',
   description:
     'Use our powerful training tools, backed by science and Grand Master training methods, to shape up your chess and bring in the wins!',
-  icons: [{ rel: 'icon', url: '/favicon.ico' }],
+  links: [
+    {
+      rel: 'apple-touch-icon',
+      sizes: '180x180',
+      href: '/apple-touch-icon.png',
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '32x32',
+      href: '/favicon-32x32.png',
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '16x16',
+      href: '/favicon-16x16.png',
+    },
+    { rel: 'manifest', href: '/site.webmanifest' },
+    { rel: 'mask-icon', href: '/safari-pinned-tab.svg', color: '#5bbad5' },
+  ],
+  meta: [
+    { name: 'msapplication-TileColor', content: '#9f00a7' },
+    { name: 'theme-color', content: '#7e22ce' },
+  ],
 }
 
 export default async function RootLayout({
