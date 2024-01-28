@@ -131,7 +131,7 @@ export default function TacticsTrainer(props: {
     return timeoutId
   }
 
-  const increaseTimeTaken = async () => {
+  const increaseTimeTaken = () => {
     if (!user) return
     setLoading(true)
     const newTime = Date.now()
@@ -155,7 +155,7 @@ export default function TacticsTrainer(props: {
     setLoading(false)
   }
 
-  const increaseCorrect = async () => {
+  const increaseCorrect = () => {
     if (!user) return
 
     setLoading(true)
@@ -183,7 +183,7 @@ export default function TacticsTrainer(props: {
     setCurrentRound({ ...currentRound, correct: currentRound.correct + 1 })
     setLoading(false)
   }
-  const increaseIncorrect = async () => {
+  const increaseIncorrect = () => {
     if (!user) return
     setLoading(true)
     try {
@@ -272,8 +272,8 @@ export default function TacticsTrainer(props: {
       setPuzzleFinished(true)
       setXpCounter(xpCounter + 1)
 
-      await increaseTimeTaken()
-      await increaseCorrect()
+      increaseTimeTaken()
+      increaseCorrect()
 
       if (autoNext && puzzleStatus != 'incorrect') {
         await goToNextPuzzle()
@@ -323,7 +323,7 @@ export default function TacticsTrainer(props: {
       game.undo()
       setReadyForInput(false)
       await showIncorrectSequence()
-      await increaseIncorrect()
+      increaseIncorrect()
       setReadyForInput(true)
       setPuzzleFinished(true)
       return false

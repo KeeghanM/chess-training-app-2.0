@@ -26,7 +26,6 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import ChessBoard from '../ChessBoard'
 
 // TODO: "Show solution" button
-// TODO: Update stats should be backgrounded, not awaited
 
 export default function EndgameTrainer() {
   const { user } = useKindeBrowserClient()

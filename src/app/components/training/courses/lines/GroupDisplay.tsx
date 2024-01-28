@@ -10,6 +10,8 @@ import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
 
 import type { Line } from '../create/parse/ParsePGNtoLineData'
 
+// TODO: Add a "Train by group" button
+
 export default function GroupDisplay(props: {
   name: string
   lines: (UserLine & {

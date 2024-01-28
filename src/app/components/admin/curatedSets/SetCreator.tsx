@@ -12,6 +12,8 @@ import Spinner from '~/app/components/general/Spinner'
 
 import GenerateSlug from '~/app/_util/GenerateSlug'
 
+// TODO: rating should be a range
+// TODO: Make description a richtext editor
 export default function SetCreator(props: {
   updateSets: (newSet: CuratedSet) => void
   removeSet?: (id: number) => void
