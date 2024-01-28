@@ -9,8 +9,11 @@ import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
+import TextEditor from '~/app/components/general/TextEditor'
 
 import GenerateSlug from '~/app/_util/GenerateSlug'
+
+// TODO: rating should be a range
 
 export default function SetCreator(props: {
   updateSets: (newSet: CuratedSet) => void
@@ -142,13 +145,7 @@ export default function SetCreator(props: {
             </div>
             <div className="">
               <label htmlFor="description">Description</label>
-              <textarea
-                className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={5}
-              />
+              <TextEditor value={description} onChange={setDescription} />
             </div>
             <div className="flex flex-row gap-4">
               <div className="">

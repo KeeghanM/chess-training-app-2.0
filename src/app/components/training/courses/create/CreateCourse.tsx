@@ -21,10 +21,6 @@ import PgnToLinesForm from './PgnToLinesForm'
 import Steps from './Steps'
 import type { Line } from './parse/ParsePGNtoLineData'
 
-// TODO: Bug Fix: Deleting line moves colour down one on display
-// TODO: button to set all lines to a colour
-// TODO: Popup to alert if multiple colours
-
 export default function CreateCourseForm() {
   const router = useRouter()
   const [currentStep, setCurrentStep] = useState<

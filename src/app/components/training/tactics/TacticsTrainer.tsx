@@ -9,10 +9,8 @@ import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { Puzzle } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
-import { useWindowSize } from '@uidotdev/usehooks'
-import type { Square } from 'chess.js'
+import type { Move } from 'chess.js'
 import { Chess } from 'chess.js'
-import { Chessboard } from 'react-chessboard'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 // @ts-expect-error - No types available
@@ -27,6 +25,7 @@ import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
+import ChessBoard from '../ChessBoard'
 import type { PrismaTacticsSet } from './create/TacticsSetCreator'
 
 export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
@@ -42,7 +41,6 @@ export interface TrainingPuzzle {
   themes: string[]
 }
 
-// TODO: Update stats should be backgrounded, not awaited
 // TODO: "Show solution" button
 
 export default function TacticsTrainer(props: {
@@ -63,24 +61,13 @@ export default function TacticsTrainer(props: {
   const [gameReady, setGameReady] = useState(false)
   const [orientation, setOrientation] = useState<'white' | 'black'>('white')
   const [position, setPosition] = useState(game.fen())
-  const [startSquare, setStartSquare] = useState<Square>()
-  const [clickedPiece, setClickedPiece] = useState<string>()
-  const [optionSquares, setOptionSquares] = useState<
-    Record<string, React.CSSProperties>
-  >({})
 
   // Setup SFX
-  const [checkSound] = useSound('/sfx/check.mp3')
-  const [captureSound] = useSound('/sfx/capture.mp3')
-  const [promotionSound] = useSound('/sfx/promote.mp3')
-  const [castleSound] = useSound('/sfx/castle.mp3')
-  const [moveSound] = useSound('/sfx/move.mp3')
   const [correctSound] = useSound('/sfx/correct.mp3')
   const [incorrectSound] = useSound('/sfx/incorrect.mp3')
 
   // Setup state for the settings/general
   const [soundEnabled, setSoundEnabled] = useState(true)
-  const windowSize = useWindowSize() as { width: number; height: number }
   const [autoNext, setAutoNext] = useState(false)
   const [loading, setLoading] = useState(true)
   const [readyForInput, setReadyForInput] = useState(false)
@@ -111,26 +98,9 @@ export default function TacticsTrainer(props: {
     }
   }
 
-  const playMoveSound = (move: string) => {
-    if (!soundEnabled) return
-    if (move.includes('+')) {
-      checkSound()
-    } else if (move.includes('x')) {
-      captureSound()
-    } else if (move.includes('=')) {
-      promotionSound()
-    } else if (move.includes('O')) {
-      castleSound()
-    } else {
-      moveSound()
-    }
-  }
-
   const makeMove = (move: string) => {
     try {
       game.move(move)
-      const lanNotation = game.history()[game.history().length - 1]
-      playMoveSound(lanNotation!)
       setPosition(game.fen())
     } catch (e) {
       // honestly, do nothing
@@ -161,13 +131,13 @@ export default function TacticsTrainer(props: {
     return timeoutId
   }
 
-  const increaseTimeTaken = async () => {
+  const increaseTimeTaken = () => {
     if (!user) return
     setLoading(true)
     const newTime = Date.now()
     const timeTaken = (newTime - startTime) / 1000
     try {
-      await fetch('/api/tactics/stats/increaseTimeTaken', {
+      fetch('/api/tactics/stats/increaseTimeTaken', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -177,7 +147,7 @@ export default function TacticsTrainer(props: {
           timeTaken,
           setId: props.set.id,
         }),
-      })
+      }).catch((e) => Sentry.captureException(e))
     } catch (e) {
       Sentry.captureException(e)
     }
@@ -185,7 +155,7 @@ export default function TacticsTrainer(props: {
     setLoading(false)
   }
 
-  const increaseCorrect = async () => {
+  const increaseCorrect = () => {
     if (!user) return
 
     setLoading(true)
@@ -193,7 +163,7 @@ export default function TacticsTrainer(props: {
       trackEventOnClient('tactics_set_puzzle_correct', {
         rating: currentPuzzle!.rating.toString(),
       })
-      await fetch('/api/tactics/stats/increaseCorrect', {
+      fetch('/api/tactics/stats/increaseCorrect', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -202,6 +172,8 @@ export default function TacticsTrainer(props: {
           roundId: currentRound.id,
           currentStreak: currentStreak + 1,
         }),
+      }).catch((e) => {
+        Sentry.captureException(e)
       })
     } catch (e) {
       Sentry.captureException(e)
@@ -211,14 +183,14 @@ export default function TacticsTrainer(props: {
     setCurrentRound({ ...currentRound, correct: currentRound.correct + 1 })
     setLoading(false)
   }
-  const increaseIncorrect = async () => {
+  const increaseIncorrect = () => {
     if (!user) return
     setLoading(true)
     try {
       trackEventOnClient('tactics_set_puzzle_incorrect', {
         rating: currentPuzzle!.rating.toString(),
       })
-      await fetch('/api/tactics/stats/increaseIncorrect', {
+      fetch('/api/tactics/stats/increaseIncorrect', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -226,6 +198,8 @@ export default function TacticsTrainer(props: {
         body: JSON.stringify({
           roundId: currentRound.id,
         }),
+      }).catch((e) => {
+        Sentry.captureException(e)
       })
     } catch (e) {
       Sentry.captureException(e)
@@ -298,8 +272,8 @@ export default function TacticsTrainer(props: {
       setPuzzleFinished(true)
       setXpCounter(xpCounter + 1)
 
-      await increaseTimeTaken()
-      await increaseCorrect()
+      increaseTimeTaken()
+      increaseCorrect()
 
       if (autoNext && puzzleStatus != 'incorrect') {
         await goToNextPuzzle()
@@ -333,56 +307,7 @@ export default function TacticsTrainer(props: {
     await Promise.all(timeouts)
   }
 
-  const checkPromotion = (
-    sourceSquare: Square,
-    targetSquare: Square,
-    piece: string,
-  ) => {
-    // CHECK IF LAST POSITION, BASED ON SOURCE SQUARE, IS A PAWN
-    // This works because we haven't actually made the move yet
-    const lastMovePiece = game.get(sourceSquare)
-    const sourceRank = sourceSquare.split('')[1]
-    const targetRank = targetSquare.split('')[1]
-    const pieceString = piece as unknown as string // Hacky cause Chess.js types are wrong
-    const pieceColor = pieceString.split('')[0]
-    const pieceType = pieceString.split('')[1]
-
-    if (
-      lastMovePiece?.type === 'p' &&
-      ((pieceColor == 'w' && sourceRank === '7' && targetRank === '8') ||
-        (pieceColor == 'b' && sourceRank === '2' && targetRank === '1'))
-    ) {
-      return pieceType?.toLowerCase()
-    }
-    return undefined
-  }
-
-  const userDroppedPiece = async (
-    sourceSquare: Square,
-    targetSquare: Square,
-    piece: string,
-  ) => {
-    // Make the move to see if it's legal
-    const playerMove = (() => {
-      try {
-        const move = game.move({
-          from: sourceSquare,
-          to: targetSquare,
-          promotion: checkPromotion(sourceSquare, targetSquare, piece),
-        })
-        return move
-      } catch (e) {
-        return null
-      }
-    })()
-
-    if (playerMove === null) return false // illegal move
-
-    // Valid move so reset the squares & piece
-    setStartSquare(undefined)
-    setClickedPiece(undefined)
-
-    // Check if the move is correct
+  const handleMove = async (playerMove: Move) => {
     const correctMove = currentPuzzle!.moves[game.history().length - 1]
 
     if (correctMove !== playerMove.lan && !game.isCheckmate()) {
@@ -392,49 +317,15 @@ export default function TacticsTrainer(props: {
       game.undo()
       setReadyForInput(false)
       await showIncorrectSequence()
-      await increaseIncorrect()
+      increaseIncorrect()
       setReadyForInput(true)
       setPuzzleFinished(true)
       return false
     }
-    playMoveSound(playerMove.san)
     setPosition(game.fen())
     makeBookMove()
     await checkEndOfLine()
     return true
-  }
-
-  const squareClicked = async (square: Square) => {
-    if (!readyForInput) return
-    if (puzzleFinished) return
-
-    const piece = game.get(square)
-    // if we click the same square twice
-    // then unselect the piece
-    if (startSquare === square) {
-      setStartSquare(undefined)
-      setClickedPiece(undefined)
-      return
-    }
-
-    // if we click out own piece
-    // then set the start square and clicked piece
-    // (highlighting is handled by a useEffect)
-    if (piece?.color === game.turn()) {
-      setStartSquare(square)
-      setClickedPiece(piece.type + piece.color)
-      return
-    }
-
-    // if we have clicked a piece, and we click a square
-    // that doesn't contain our own piece (or is empty)
-    // then try to make the move
-    if (startSquare && piece?.color !== game.turn()) {
-      await userDroppedPiece(startSquare, square, clickedPiece!)
-      setStartSquare(undefined)
-      setClickedPiece(undefined)
-      return
-    }
   }
 
   const PgnDisplay = game.history().map((move, index) => {
@@ -545,38 +436,6 @@ export default function TacticsTrainer(props: {
     }
   }, [gameReady, game, currentPuzzle])
 
-  useEffect(() => {
-    if (!startSquare || !clickedPiece) {
-      setOptionSquares({})
-      return
-    }
-    const validMoves = game.moves({ square: startSquare, verbose: true })
-    const newOptions: Record<string, React.CSSProperties> = {}
-    // Highlight the start square
-    newOptions[startSquare] = {
-      background: 'rgba(255, 255, 0, 0.4)',
-    }
-
-    if (validMoves.length === 0) {
-      setOptionSquares(newOptions)
-      return
-    }
-    // Highlight the valid moves
-    validMoves.map((move) => {
-      newOptions[move.to] = {
-        background:
-          game.get(move.to) &&
-          game.get(move.to).color !== game.get(startSquare).color
-            ? 'radial-gradient(circle, transparent 50%,  rgba(0, 0, 0, 0.2) 51%,  rgba(0, 0, 0, 0.2) 65%,transparent 66%)'
-            : 'radial-gradient(circle, rgba(0,0,0,.2) 20%, transparent 22%)',
-        borderRadius: '50%',
-        cursor: 'pointer',
-      }
-      return move
-    })
-    setOptionSquares(newOptions)
-  }, [startSquare, clickedPiece])
-
   // Last check to ensure we have a user
   if (!user) return null
 
@@ -666,28 +525,18 @@ export default function TacticsTrainer(props: {
         <XpTracker counter={xpCounter} type={'tactic'} />
       </div>
       <div className="flex flex-col gap-4 md:flex-row">
-        <div>
-          <Chessboard
-            onSquareClick={squareClicked}
-            onSquareRightClick={() => {
-              setStartSquare(undefined)
-              setClickedPiece(undefined)
-            }}
-            arePiecesDraggable={readyForInput}
-            position={position}
-            boardOrientation={orientation}
-            boardWidth={Math.min(
-              windowSize.height / 1.5,
-              windowSize.width - 120,
-            )}
-            customBoardStyle={{
-              marginInline: 'auto',
-            }}
-            // @ts-expect-error - ChessBoard doesnt expect AsyncFunction but works fine
-            onPieceDrop={userDroppedPiece}
-            customSquareStyles={{ ...optionSquares }}
-          />
-        </div>
+        <ChessBoard
+          game={game}
+          position={position}
+          orientation={orientation}
+          readyForInput={readyForInput}
+          soundEnabled={soundEnabled}
+          additionalSquares={{}}
+          moveMade={handleMove}
+          additionalArrows={[]}
+          enableHighlights={true}
+          enableArrows={true}
+        />
         <div className="flex w-full flex-col gap-2">
           <div className="flex flex-row items-center gap-2">
             {!puzzleFinished && (

@@ -20,6 +20,8 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import CourseSettings from './CourseSettings'
 import type { PrismaUserCourse } from './CoursesList'
 
+// TODO: Add revision schedule viewer
+
 export default function CourseListItem(props: {
   courseId: string
   courseName: string

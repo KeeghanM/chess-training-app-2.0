@@ -27,8 +27,6 @@ import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTr
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-// TODO: Update stats should be backgrounded, not awaited
-
 export default function VisualisationTrainer() {
   const { user } = useKindeBrowserClient()
 
@@ -111,9 +109,9 @@ export default function VisualisationTrainer() {
     setLoading(true)
 
     // Increase the "Last Trained" on the profile
-    await fetch('/api/profile/streak', {
+    fetch('/api/profile/streak', {
       method: 'POST',
-    })
+    }).catch((e) => Sentry.captureException(e))
 
     // Increase the streak if correct
     // and send it to the server incase a badge needs adding

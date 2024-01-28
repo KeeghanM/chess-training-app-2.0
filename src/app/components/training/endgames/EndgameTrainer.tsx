@@ -7,10 +7,8 @@ import { useEffect, useState } from 'react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
-import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
-import type { Square } from 'chess.js'
-import { Chessboard } from 'react-chessboard'
+import type { Move } from 'chess.js'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 // @ts-expect-error - No types available
@@ -25,8 +23,9 @@ import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTr
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
+import ChessBoard from '../ChessBoard'
+
 // TODO: "Show solution" button
-// TODO: Update stats should be backgrounded, not awaited
 
 export default function EndgameTrainer() {
   const { user } = useKindeBrowserClient()
@@ -43,18 +42,8 @@ export default function EndgameTrainer() {
   >('All')
   const [rating, setRating] = useState(1500)
   const [difficulty, setDifficulty] = useState(1)
-  const [startSquare, setStartSquare] = useState<Square>()
-  const [clickedPiece, setClickedPiece] = useState<string>()
-  const [optionSquares, setOptionSquares] = useState<
-    Record<string, React.CSSProperties>
-  >({})
 
-  // Setup SFX
-  const [checkSound] = useSound('/sfx/check.mp3')
-  const [captureSound] = useSound('/sfx/capture.mp3')
-  const [promotionSound] = useSound('/sfx/promote.mp3')
-  const [castleSound] = useSound('/sfx/castle.mp3')
-  const [moveSound] = useSound('/sfx/move.mp3')
+  // SFX
   const [correctSound] = useSound('/sfx/correct.mp3')
   const [incorrectSound] = useSound('/sfx/incorrect.mp3')
 
@@ -124,27 +113,9 @@ export default function EndgameTrainer() {
     }
   }
 
-  const playMoveSound = (move: string) => {
-    if (!soundEnabled) return
-
-    if (move.includes('+')) {
-      checkSound()
-    } else if (move.includes('x')) {
-      captureSound()
-    } else if (move.includes('=')) {
-      promotionSound()
-    } else if (move.includes('O')) {
-      castleSound()
-    } else {
-      moveSound()
-    }
-  }
-
   const makeMove = (move: string) => {
     try {
       game.move(move)
-      const lanNotation = game.history()[game.history().length - 1]
-      playMoveSound(lanNotation!)
       setPosition(game.fen())
     } catch (e) {
       // honestly, do nothing
@@ -179,9 +150,9 @@ export default function EndgameTrainer() {
     setLoading(true)
 
     // Increase the "Last Trained" on the profile
-    await fetch('/api/profile/streak', {
+    fetch('/api/profile/streak', {
       method: 'POST',
-    })
+    }).catch((e) => Sentry.captureException(e))
 
     // Increase the streak if correct
     // and send it to the server incase a badge needs adding
@@ -244,64 +215,7 @@ export default function EndgameTrainer() {
     await Promise.all(timeouts)
   }
 
-  const checkPromotion = (
-    sourceSquare: Square,
-    targetSquare: Square,
-    piece: string,
-  ) => {
-    // CHECK IF LAST POSITION, BASED ON SOURCE SQUARE, IS A PAWN
-    // This works because we haven't actually made the move yet
-    const lastMovePiece = game.get(sourceSquare)
-    const sourceCol = sourceSquare.split('')[0]
-    const sourceRank = sourceSquare.split('')[1]
-    const targetCol = targetSquare.split('')[0]
-    const targetRank = targetSquare.split('')[1]
-    const pieceString = piece as unknown as string // Hacky cause Chess.js types are wrong
-    const pieceColor = pieceString.split('')[0]
-    const pieceType = pieceString.split('')[1]
-
-    if (
-      lastMovePiece?.type === 'p' &&
-      ((pieceColor == 'w' &&
-        sourceRank === '7' &&
-        targetRank === '8' &&
-        sourceCol == targetCol) ||
-        (pieceColor == 'b' &&
-          sourceRank === '2' &&
-          targetRank === '1' &&
-          sourceCol == targetCol))
-    ) {
-      return pieceType?.toLowerCase()
-    }
-    return undefined
-  }
-
-  const userDroppedPiece = async (
-    sourceSquare: Square,
-    targetSquare: Square,
-    piece: string,
-  ) => {
-    // Make the move to see if it's legal
-    const playerMove = (() => {
-      try {
-        const move = game.move({
-          from: sourceSquare,
-          to: targetSquare,
-          promotion: checkPromotion(sourceSquare, targetSquare, piece),
-        })
-        return move
-      } catch (e) {
-        return null
-      }
-    })()
-
-    if (playerMove === null) return false // illegal move
-
-    // Valid move so reset the squares & piece
-    setStartSquare(undefined)
-    setClickedPiece(undefined)
-
-    // Check if the move is correct
+  const handleMove = async (playerMove: Move) => {
     const correctMove = currentPuzzle!.moves[game.history().length - 1]
 
     if (correctMove !== playerMove.lan && !game.isCheckmate()) {
@@ -316,44 +230,11 @@ export default function EndgameTrainer() {
       setPuzzleFinished(true)
       return false
     }
-    playMoveSound(playerMove.san)
+
     setPosition(game.fen())
     makeBookMove()
     await checkEndOfLine()
     return true
-  }
-
-  const squareClicked = async (square: Square) => {
-    if (!readyForInput) return
-    if (puzzleFinished) return
-
-    const piece = game.get(square)
-    // if we click the same square twice
-    // then unselect the piece
-    if (startSquare === square) {
-      setStartSquare(undefined)
-      setClickedPiece(undefined)
-      return
-    }
-
-    // if we click out own piece
-    // then set the start square and clicked piece
-    // (highlighting is handled by a useEffect)
-    if (piece?.color === game.turn()) {
-      setStartSquare(square)
-      setClickedPiece(piece.type + piece.color)
-      return
-    }
-
-    // if we have clicked a piece, and we click a square
-    // that doesn't contain our own piece (or is empty)
-    // then try to make the move
-    if (startSquare && piece?.color !== game.turn()) {
-      await userDroppedPiece(startSquare, square, clickedPiece!)
-      setStartSquare(undefined)
-      setClickedPiece(undefined)
-      return
-    }
   }
 
   const PgnDisplay = game.history().map((move, index) => {
@@ -405,8 +286,6 @@ export default function EndgameTrainer() {
   const exit = async () => {
     setMode('settings')
   }
-
-  const windowSize = useWindowSize() as { width: number; height: number }
 
   const getDifficulty = () => {
     switch (difficulty) {
@@ -463,38 +342,6 @@ export default function EndgameTrainer() {
       return () => clearTimeout(timeoutId)
     }
   }, [gameReady, game, currentPuzzle])
-
-  useEffect(() => {
-    if (!startSquare || !clickedPiece) {
-      setOptionSquares({})
-      return
-    }
-    const validMoves = game.moves({ square: startSquare, verbose: true })
-    const newOptions: Record<string, React.CSSProperties> = {}
-    // Highlight the start square
-    newOptions[startSquare] = {
-      background: 'rgba(255, 255, 0, 0.4)',
-    }
-
-    if (validMoves.length === 0) {
-      setOptionSquares(newOptions)
-      return
-    }
-    // Highlight the valid moves
-    validMoves.map((move) => {
-      newOptions[move.to] = {
-        background:
-          game.get(move.to) &&
-          game.get(move.to).color !== game.get(startSquare).color
-            ? 'radial-gradient(circle, transparent 50%,  rgba(0, 0, 0, 0.2) 51%,  rgba(0, 0, 0, 0.2) 65%,transparent 66%)'
-            : 'radial-gradient(circle, rgba(0,0,0,.2) 20%, transparent 22%)',
-        borderRadius: '50%',
-        cursor: 'pointer',
-      }
-      return move
-    })
-    setOptionSquares(newOptions)
-  }, [startSquare, clickedPiece])
 
   if (!user) return null
 
@@ -662,28 +509,18 @@ export default function EndgameTrainer() {
           </div>
         </div>
         <div className="flex flex-col gap-4 lg:flex-row">
-          <div>
-            <Chessboard
-              onSquareClick={squareClicked}
-              onSquareRightClick={() => {
-                setStartSquare(undefined)
-                setClickedPiece(undefined)
-              }}
-              arePiecesDraggable={readyForInput}
-              position={position}
-              boardOrientation={orientation}
-              boardWidth={Math.min(
-                windowSize.height / 1.5,
-                windowSize.width - 120,
-              )}
-              customBoardStyle={{
-                marginInline: 'auto',
-              }}
-              // @ts-expect-error - ChessBoard doesnt expect AsyncFunction but works fine
-              onPieceDrop={userDroppedPiece}
-              customSquareStyles={{ ...optionSquares }}
-            />
-          </div>
+          <ChessBoard
+            game={game}
+            position={position}
+            orientation={orientation}
+            readyForInput={readyForInput}
+            soundEnabled={soundEnabled}
+            additionalSquares={{}}
+            moveMade={handleMove}
+            additionalArrows={[]}
+            enableHighlights={true}
+            enableArrows={true}
+          />
           <div className="flex w-full flex-col gap-2">
             <div className="flex flex-row items-center gap-2">
               <p className="flex items-center gap-2 text-white">

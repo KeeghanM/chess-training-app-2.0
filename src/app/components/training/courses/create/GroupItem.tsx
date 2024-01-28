@@ -11,6 +11,9 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 import type { Line } from './parse/ParsePGNtoLineData'
 
+// TODO: Add informational lines
+// TODO: Add priority lines
+
 export function GroupItem(props: {
   lines: Line[]
   selectedGroup: string
