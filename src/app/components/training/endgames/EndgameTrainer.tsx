@@ -219,6 +219,12 @@ export default function EndgameTrainer() {
   const handleMove = async (playerMove: Move) => {
     const correctMove = currentPuzzle!.moves[game.history().length - 1]
 
+    console.log({
+      playerMove,
+      correctMove,
+      playerMoveLan: playerMove.lan,
+    })
+
     if (correctMove !== playerMove.lan && !game.isCheckmate()) {
       // We played the wrong move
       setPuzzleStatus('incorrect')

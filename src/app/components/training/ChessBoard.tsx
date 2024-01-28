@@ -3,11 +3,11 @@
 import { useEffect, useState } from 'react'
 
 import { useWindowSize } from '@uidotdev/usehooks'
-import { Chess } from 'chess.js'
+import type { Chess } from 'chess.js'
 import type { Move, Piece, Square } from 'chess.js'
 import useSound from 'node_modules/use-sound/dist'
 import { Chessboard } from 'react-chessboard'
-import {
+import type {
   Arrow,
   PromotionPieceOption,
 } from 'react-chessboard/dist/chessboard/types'
@@ -90,16 +90,21 @@ export default function ChessBoard(props: ChessBoardProps) {
     sourceSquare: Square,
     targetSquare: Square,
     piece: string,
+    promotion?: boolean,
   ) => {
     // Make the move to see if it's legal
     const playerMove = (() => {
       try {
         const from = sourceSquare ?? startSquare
         const to = targetSquare ?? moveTo
+        const promotionPiece = promotion
+          ? piece.split('')[1]!.toLowerCase()
+          : checkPromotion(from, to, piece)
+
         const move = game.move({
           from,
           to,
-          promotion: checkPromotion(from, to, piece),
+          promotion: promotionPiece,
         })
         return move
       } catch (e) {
@@ -109,13 +114,12 @@ export default function ChessBoard(props: ChessBoardProps) {
 
     if (playerMove === null) return false // invalid move
 
-    // Valid move so reset the squares & piece
-    if (props.soundEnabled) playMoveSound(playerMove.san)
     setStartSquare(undefined)
     setClickedPiece(undefined)
     setMoveTo(undefined)
     setShowPromotionDialog(false)
     setOptionSquares({})
+    // console.log('Making move: ', playerMove)
     props.moveMade(playerMove)
     return true
   }
@@ -141,10 +145,8 @@ export default function ChessBoard(props: ChessBoardProps) {
       return
     }
 
-    // if we have clicked a piece, and we click a square
-    // that doesn't contain our own piece (or is empty)
-    // then try to make the move
-    if (startSquare && piece?.color !== game.turn() && clickedPiece) {
+    // If this is our second click, we check if we need to show the promotion dialog
+    if (startSquare && clickedPiece) {
       const availableMove = game
         .moves({ square: startSquare, verbose: true })
         .find((move) => move.to === clickedSquare)
@@ -178,8 +180,9 @@ export default function ChessBoard(props: ChessBoardProps) {
     selectedPiece: PromotionPieceOption | undefined,
   ) => {
     if (!selectedPiece || !moveTo) return false
+
     setShowPromotionDialog(false)
-    handlePieceDrop(startSquare!, moveTo, selectedPiece)
+    handlePieceDrop(startSquare!, moveTo, selectedPiece, true)
     return true
   }
 
@@ -217,14 +220,9 @@ export default function ChessBoard(props: ChessBoardProps) {
 
   useEffect(() => {
     if (!props.soundEnabled) return
-
     const lastMove = game.history({ verbose: true }).slice(-1)[0]
     if (!lastMove) return
-
-    const opponentMoved = lastMove.color !== props.orientation[0]
-    if (opponentMoved) {
-      playMoveSound(lastMove.san)
-    }
+    playMoveSound(lastMove.san)
   }, [props.position])
 
   const windowSize = useWindowSize() as { width: number; height: number }
