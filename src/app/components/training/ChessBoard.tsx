@@ -119,7 +119,6 @@ export default function ChessBoard(props: ChessBoardProps) {
     setMoveTo(undefined)
     setShowPromotionDialog(false)
     setOptionSquares({})
-    // console.log('Making move: ', playerMove)
     props.moveMade(playerMove)
     return true
   }
