@@ -10,8 +10,7 @@ import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
-import type { Square } from 'chess.js'
-import { Chessboard } from 'react-chessboard'
+import type { Move as ChessMove, Square } from 'chess.js'
 import type { Arrow } from 'react-chessboard/dist/chessboard/types'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
@@ -29,6 +28,7 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 import Heading from '../../_elements/heading'
 import StyledLink from '../../_elements/styledLink'
+import ChessBoard from '../ChessBoard'
 import type { PrismaUserCourse } from './list/CoursesList'
 
 // TODO: Add delay on wrong move jumping
@@ -69,11 +69,6 @@ export default function CourseTrainer(props: {
   const [orientation, setOrientation] = useState<'white' | 'black'>('white')
   const [position, setPosition] = useState(game.fen())
   const [arrows, setArrows] = useState<Arrow[]>([])
-  const [startSquare, setStartSquare] = useState<Square>()
-  const [clickedPiece, setClickedPiece] = useState<string>()
-  const [optionSquares, setOptionSquares] = useState<
-    Record<string, React.CSSProperties>
-  >({})
 
   // Training State
   const [mode, setMode] = useState<'normal' | 'recap'>('normal')
@@ -107,11 +102,6 @@ export default function CourseTrainer(props: {
   const [error, setError] = useState('')
 
   // SFX
-  const [checkSound] = useSound('/sfx/check.mp3') as [() => void]
-  const [captureSound] = useSound('/sfx/capture.mp3') as [() => void]
-  const [promotionSound] = useSound('/sfx/promote.mp3') as [() => void]
-  const [castleSound] = useSound('/sfx/castle.mp3') as [() => void]
-  const [moveSound] = useSound('/sfx/move.mp3') as [() => void]
   const [incorrectSound] = useSound('/sfx/incorrect.mp3') as [() => void]
 
   const getNextLine = (lines: PrismaUserLine[]) => {
@@ -170,7 +160,6 @@ export default function CourseTrainer(props: {
   const makeMove = (move: string) => {
     try {
       game.move(move)
-      playMoveSound(move)
       setPosition(game.fen())
     } catch (e) {
       // honestly, do nothing
@@ -361,22 +350,6 @@ export default function CourseTrainer(props: {
     }
   }
 
-  const playMoveSound = (move: string) => {
-    if (!soundEnabled) return
-
-    if (move.includes('+')) {
-      checkSound()
-    } else if (move.includes('x')) {
-      captureSound()
-    } else if (move.includes('=')) {
-      promotionSound()
-    } else if (move.includes('O')) {
-      castleSound()
-    } else {
-      moveSound()
-    }
-  }
-
   const getComment = (commentId: number | undefined) => {
     if (!commentId) return undefined
     return allComments.find((comment) => comment.id == commentId)?.comment
@@ -514,57 +487,7 @@ export default function CourseTrainer(props: {
     return updatedLines // Return the optimistically updated lines
   }
 
-  const checkPromotion = (
-    sourceSquare: Square,
-    targetSquare: Square,
-    piece: string,
-  ) => {
-    // CHECK IF LAST POSITION, BASED ON SOURCE SQUARE, IS A PAWN
-    // This works because we haven't actually made the move yet
-    const lastMovePiece = game.get(sourceSquare)
-    const sourceRank = sourceSquare.split('')[1]
-    const targetRank = targetSquare.split('')[1]
-    const pieceString = piece as unknown as string // Hacky cause Chess.js types are wrong
-    const pieceColor = pieceString.split('')[0]
-    const pieceType = pieceString.split('')[1]
-
-    if (
-      lastMovePiece?.type === 'p' &&
-      ((pieceColor == 'w' && sourceRank === '7' && targetRank === '8') ||
-        (pieceColor == 'b' && sourceRank === '2' && targetRank === '1'))
-    ) {
-      return pieceType?.toLowerCase()
-    }
-    return undefined
-  }
-
-  // When we drop a piece, we need to check if it's a valid move
-  // if it is, we then need to check if it's the correct move
-  const userDroppedPiece = async (
-    sourceSquare: Square,
-    targetSquare: Square,
-    piece: string,
-  ) => {
-    // Make the move to see if it's legal
-    const playerMove = (() => {
-      try {
-        const move = game.move({
-          from: sourceSquare,
-          to: targetSquare,
-          promotion: checkPromotion(sourceSquare, targetSquare, piece),
-        })
-        return move
-      } catch (e) {
-        return null
-      }
-    })()
-    if (playerMove === null) return false // illegal move
-
-    // Valid move so reset the squares & piece
-    setStartSquare(undefined)
-    setClickedPiece(undefined)
-
-    // Check if the move is correct
+  const handleMove = async (playerMove: ChessMove) => {
     const correctMove =
       mode == 'normal'
         ? currentLineMoves[game.history().length - 1]!.move
@@ -573,8 +496,8 @@ export default function CourseTrainer(props: {
     if (correctMove !== playerMove.san) {
       // We played the wrong move
       setLineCorrect(false)
-      game.undo()
       if (soundEnabled) incorrectSound()
+      game.undo()
       setTimeout(() => {
         setPosition(game.fen())
       }, 300)
@@ -583,8 +506,6 @@ export default function CourseTrainer(props: {
       makeTeachingMove(800)
       return false
     }
-
-    playMoveSound(correctMove)
 
     // We played the correct move
     if (mode == 'normal') {
@@ -605,40 +526,6 @@ export default function CourseTrainer(props: {
     }
     await checkEndOfLine()
     return true
-  }
-
-  const squareClicked = async (square: Square) => {
-    if (!interactive) return
-    if (nextLine) return
-
-    const piece = game.get(square)
-
-    // if we click the same square twice
-    // then unselect the piece
-    if (startSquare === square) {
-      setStartSquare(undefined)
-      setClickedPiece(undefined)
-      return
-    }
-
-    // if we click out own piece
-    // then set the start square and clicked piece
-    // (highlighting is handled by a useEffect)
-    if (piece?.color === game.turn()) {
-      setStartSquare(square)
-      setClickedPiece(piece.type + piece.color)
-      return
-    }
-
-    // if we have clicked a piece, and we click a square
-    // that doesn't contain our own piece (or is empty)
-    // then try to make the move
-    if (startSquare && piece?.color !== game.turn()) {
-      await userDroppedPiece(startSquare, square, clickedPiece!)
-      setStartSquare(undefined)
-      setClickedPiece(undefined)
-      return
-    }
   }
 
   const PgnDisplay = game.history().map((move, index) => {
@@ -788,38 +675,6 @@ export default function CourseTrainer(props: {
     })
   }, [nextLine])
 
-  useEffect(() => {
-    if (!startSquare || !clickedPiece) {
-      setOptionSquares({})
-      return
-    }
-    const validMoves = game.moves({ square: startSquare, verbose: true })
-    const newOptions: Record<string, React.CSSProperties> = {}
-    // Highlight the start square
-    newOptions[startSquare] = {
-      background: 'rgba(255, 255, 0, 0.4)',
-    }
-
-    if (validMoves.length === 0) {
-      setOptionSquares(newOptions)
-      return
-    }
-    // Highlight the valid moves
-    validMoves.map((move) => {
-      newOptions[move.to] = {
-        background:
-          game.get(move.to) &&
-          game.get(move.to).color !== game.get(startSquare).color
-            ? 'radial-gradient(circle, transparent 50%,  rgba(0, 0, 0, 0.2) 51%,  rgba(0, 0, 0, 0.2) 65%,transparent 66%)'
-            : 'radial-gradient(circle, rgba(0,0,0,.2) 20%, transparent 22%)',
-        borderRadius: '50%',
-        cursor: 'pointer',
-      }
-      return move
-    })
-    setOptionSquares(newOptions)
-  }, [startSquare, clickedPiece])
-
   // Last check to ensure we have a user
   if (!user) return null
 
@@ -903,29 +758,18 @@ export default function CourseTrainer(props: {
         </div>
       </div>
       <div className="flex flex-col gap-4 md:flex-row">
-        <div className="h-fit">
-          <Chessboard
-            onSquareClick={squareClicked}
-            onSquareRightClick={() => {
-              setStartSquare(undefined)
-              setClickedPiece(undefined)
-            }}
-            arePiecesDraggable={interactive}
-            position={position}
-            // @ts-expect-error - ChessBoard doesnt expect AsyncFunction but works fine
-            onPieceDrop={userDroppedPiece}
-            boardOrientation={orientation}
-            boardWidth={Math.min(
-              windowSize.height / 1.5,
-              windowSize.width - 120,
-            )}
-            customBoardStyle={{
-              marginInline: 'auto',
-            }}
-            customSquareStyles={{ ...optionSquares }}
-            customArrows={teaching ? arrows : []}
-          />
-        </div>
+        <ChessBoard
+          game={game}
+          position={position}
+          orientation={orientation}
+          readyForInput={interactive}
+          soundEnabled={soundEnabled}
+          additionalSquares={{}}
+          moveMade={handleMove}
+          additionalArrows={arrows}
+          enableHighlights={true}
+          enableArrows={true}
+        />
         <div className="flex flex-col gap-2 flex-1">
           {showComment && (
             <p

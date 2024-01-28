@@ -7,7 +7,10 @@ import { Chess } from 'chess.js'
 import type { Move, Piece, Square } from 'chess.js'
 import useSound from 'node_modules/use-sound/dist'
 import { Chessboard } from 'react-chessboard'
-import { PromotionPieceOption } from 'react-chessboard/dist/chessboard/types'
+import {
+  Arrow,
+  PromotionPieceOption,
+} from 'react-chessboard/dist/chessboard/types'
 
 interface ChessBoardProps {
   game: Chess
@@ -16,20 +19,24 @@ interface ChessBoardProps {
   readyForInput: boolean
   soundEnabled: boolean
   additionalSquares: Record<string, { backgroundColor: string }>
+  additionalArrows: Arrow[]
+  enableArrows: boolean
+  enableHighlights: boolean
   moveMade: (move: Move) => void
 }
 export default function ChessBoard(props: ChessBoardProps) {
   // Chess Game
   const game = props.game
+
   // Board State
   const [showPromotionDialog, setShowPromotionDialog] = useState(false)
-  const [startPiece, setStartPiece] = useState<string>()
   const [startSquare, setStartSquare] = useState<Square>()
   const [clickedPiece, setClickedPiece] = useState<Piece>()
   const [moveTo, setMoveTo] = useState<Square | undefined>()
   const [optionSquares, setOptionSquares] = useState<
     Record<string, React.CSSProperties>
   >({})
+  const [arrows, setArrows] = useState<Arrow[]>([])
 
   // Setup SFX
   const [checkSound] = useSound('/sfx/check.mp3')
@@ -84,11 +91,6 @@ export default function ChessBoard(props: ChessBoardProps) {
     targetSquare: Square,
     piece: string,
   ) => {
-    console.log('handlePieceDrop', {
-      sourceSquare,
-      targetSquare,
-      piece,
-    })
     // Make the move to see if it's legal
     const playerMove = (() => {
       try {
@@ -175,11 +177,6 @@ export default function ChessBoard(props: ChessBoardProps) {
   const handlePromotionSelection = (
     selectedPiece: PromotionPieceOption | undefined,
   ) => {
-    console.log({
-      startSquare,
-      moveTo,
-      selectedPiece,
-    })
     if (!selectedPiece || !moveTo) return false
     setShowPromotionDialog(false)
     handlePieceDrop(startSquare!, moveTo, selectedPiece)
@@ -218,6 +215,18 @@ export default function ChessBoard(props: ChessBoardProps) {
     setOptionSquares(newOptions)
   }, [startSquare, clickedPiece])
 
+  useEffect(() => {
+    if (!props.soundEnabled) return
+
+    const lastMove = game.history({ verbose: true }).slice(-1)[0]
+    if (!lastMove) return
+
+    const opponentMoved = lastMove.color !== props.orientation[0]
+    if (opponentMoved) {
+      playMoveSound(lastMove.san)
+    }
+  }, [props.position])
+
   const windowSize = useWindowSize() as { width: number; height: number }
 
   return (
@@ -245,7 +254,14 @@ export default function ChessBoard(props: ChessBoardProps) {
         customBoardStyle={{
           marginInline: 'auto',
         }}
-        customSquareStyles={{ ...optionSquares, ...props.additionalSquares }}
+        customSquareStyles={
+          props.enableHighlights
+            ? { ...optionSquares, ...props.additionalSquares }
+            : {}
+        }
+        customArrows={
+          props.enableArrows ? [...props.additionalArrows, ...arrows] : []
+        }
       />
     </div>
   )

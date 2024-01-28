@@ -7,10 +7,8 @@ import { useEffect, useState } from 'react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
-import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
-import type { Move, Square } from 'chess.js'
-import { Chessboard } from 'react-chessboard'
+import type { Move } from 'chess.js'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 // @ts-expect-error - No types available
@@ -225,7 +223,7 @@ export default function EndgameTrainer() {
       // We played the wrong move
       setPuzzleStatus('incorrect')
       if (soundEnabled) incorrectSound()
-      game.undo() // TODO: This might not work any more
+      game.undo()
       setReadyForInput(false)
       await showIncorrectSequence()
 
@@ -233,7 +231,8 @@ export default function EndgameTrainer() {
       setPuzzleFinished(true)
       return false
     }
-    setPosition(game.fen()) // TODO: This might not work any more
+
+    setPosition(game.fen())
     makeBookMove()
     await checkEndOfLine()
     return true
@@ -519,6 +518,9 @@ export default function EndgameTrainer() {
             soundEnabled={soundEnabled}
             additionalSquares={{}}
             moveMade={handleMove}
+            additionalArrows={[]}
+            enableHighlights={true}
+            enableArrows={true}
           />
           <div className="flex w-full flex-col gap-2">
             <div className="flex flex-row items-center gap-2">
