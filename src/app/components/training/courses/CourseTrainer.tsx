@@ -31,7 +31,6 @@ import Heading from '../../_elements/heading'
 import StyledLink from '../../_elements/styledLink'
 import type { PrismaUserCourse } from './list/CoursesList'
 
-// TODO: Bug Fix: If last move doesn't line up with line colour, it never marks as done
 // TODO: Add delay on wrong move jumping
 // TODO: Modal for confirming exit
 // TODO: Ensure links in comments work

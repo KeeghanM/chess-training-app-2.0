@@ -42,7 +42,6 @@ export interface TrainingPuzzle {
   themes: string[]
 }
 
-// TODO: Update stats should be backgrounded, not awaited
 // TODO: "Show solution" button
 
 export default function TacticsTrainer(props: {
@@ -167,7 +166,7 @@ export default function TacticsTrainer(props: {
     const newTime = Date.now()
     const timeTaken = (newTime - startTime) / 1000
     try {
-      await fetch('/api/tactics/stats/increaseTimeTaken', {
+      fetch('/api/tactics/stats/increaseTimeTaken', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -177,7 +176,7 @@ export default function TacticsTrainer(props: {
           timeTaken,
           setId: props.set.id,
         }),
-      })
+      }).catch((e) => Sentry.captureException(e))
     } catch (e) {
       Sentry.captureException(e)
     }
@@ -193,7 +192,7 @@ export default function TacticsTrainer(props: {
       trackEventOnClient('tactics_set_puzzle_correct', {
         rating: currentPuzzle!.rating.toString(),
       })
-      await fetch('/api/tactics/stats/increaseCorrect', {
+      fetch('/api/tactics/stats/increaseCorrect', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -202,6 +201,8 @@ export default function TacticsTrainer(props: {
           roundId: currentRound.id,
           currentStreak: currentStreak + 1,
         }),
+      }).catch((e) => {
+        Sentry.captureException(e)
       })
     } catch (e) {
       Sentry.captureException(e)
@@ -218,7 +219,7 @@ export default function TacticsTrainer(props: {
       trackEventOnClient('tactics_set_puzzle_incorrect', {
         rating: currentPuzzle!.rating.toString(),
       })
-      await fetch('/api/tactics/stats/increaseIncorrect', {
+      fetch('/api/tactics/stats/increaseIncorrect', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -226,6 +227,8 @@ export default function TacticsTrainer(props: {
         body: JSON.stringify({
           roundId: currentRound.id,
         }),
+      }).catch((e) => {
+        Sentry.captureException(e)
       })
     } catch (e) {
       Sentry.captureException(e)
