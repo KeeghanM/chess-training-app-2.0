@@ -7,18 +7,20 @@ import * as Sentry from '@sentry/nextjs'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Container from '~/app/components/_elements/container'
+import Spinner from '~/app/components/general/Spinner'
 import type { PrismaTacticsSet } from '~/app/components/training/tactics//create/TacticsSetCreator'
 import TacticsSetCreator from '~/app/components/training/tactics//create/TacticsSetCreator'
 
 import SetListItem from './SetListItem'
 
 export default function TacticsList() {
-  // TODO: Show a loading/fallback item
   const { user } = useKindeBrowserClient()
   const [sets, setSets] = useState<PrismaTacticsSet[]>([])
+  const [loading, setLoading] = useState(true)
 
   const getSets = async () => {
     if (!user) return null
+    setLoading(true)
     try {
       const resp = await fetch(`/api/tactics/user`, {
         method: 'GET',
@@ -35,6 +37,8 @@ export default function TacticsList() {
     } catch (e) {
       Sentry.captureException(e)
       return null
+    } finally {
+      setLoading(false)
     }
   }
 
@@ -63,16 +67,31 @@ export default function TacticsList() {
 
   return (
     <Container>
-      <div className="flex flex-col gap-4">
-        <TacticsSetCreator
-          setCount={sets.length}
-          maxSets={3}
-          setCreated={addSet}
-        />
-        {sets.length == 0 ? (
-          <div className="grid h-24 w-full place-content-center bg-gray-100 p-4 dark:bg-slate-700 dark:text-white md:p-6 lg:p-12">
-            <p className="text-sm italic">Your sets will appear here</p>
-          </div>
+      <TacticsSetCreator
+        setCount={sets.length}
+        maxSets={3}
+        setCreated={addSet}
+        loading={loading}
+      />
+      <div className="mt-4 flex flex-col gap-4">
+        {loading ? (
+          <>
+            <div className="flex flex-col h-24 gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300 opacity-50">
+              <p className="w-fit m-auto flex gap-1">
+                Loading... <Spinner />
+              </p>
+            </div>
+            <div className="flex flex-col h-24 gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300  opacity-50">
+              {' '}
+              <p className="w-fit m-auto flex gap-1">
+                Loading... <Spinner />
+              </p>
+            </div>
+          </>
+        ) : sets.length === 0 ? (
+          <p className="text-center dark:text-white">
+            You don't have any sets yet. Create one above!
+          </p>
         ) : (
           sets
             .sort((a, b) => {

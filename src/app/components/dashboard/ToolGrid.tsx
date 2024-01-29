@@ -3,59 +3,45 @@
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-import { useState } from 'react'
-
-import { useAutoAnimate } from '@formkit/auto-animate/react'
 import type { Tool } from '~/app/dashboard/page'
 
 import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
 
 export default function ToolGrid(props: { tool: Tool }) {
-  const [showDescription, setShowDescription] = useState(false)
-  const [parent] = useAutoAnimate()
   const router = useRouter()
-  const tool = props.tool
+  const { tool } = props
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 p-4 dark:bg-slate-700 dark:text-white md:p-6">
-      <div className="flex h-full flex-col justify-between">
-        <div className="flex flex-col gap-2">
-          {tool.active ? (
-            <Link href={tool.href}>
-              <Heading as={'h3'}>{tool.name}</Heading>
-            </Link>
-          ) : (
-            <Heading as={'h3'} color="#666">
-              {tool.name}
-            </Heading>
-          )}
-          <div className="flex flex-col gap-2" ref={parent}>
-            {
-              // Only show the first line of the description
-              // unless the user has clicked "Show More"
-              tool.description
-                .slice(0, showDescription ? undefined : 1)
-                .map((line) => (
-                  <p key={line}>{line}</p>
-                ))
-            }
-            <Button
-              onClick={() => setShowDescription(!showDescription)}
-              variant={'tertiary'}
-            >
-              {showDescription ? 'Hide' : 'Show More'}
-            </Button>
-          </div>
-        </div>
+    <div className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300">
+      <div
+        className={
+          'px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold' +
+          (tool.active ? ' text-orange-500' : '')
+        }
+      >
         {tool.active ? (
-          <Button variant="primary" onClick={() => router.push(tool.href)}>
-            {tool.buttonText}
-          </Button>
+          <Link href={tool.trainingLink}>{tool.name}</Link>
+        ) : (
+          tool.name
+        )}
+      </div>
+      <div className="p-2 text-sm">
+        <p>{tool.description[0]}</p>
+      </div>
+      <div className="flex flex-col lg:flex-row gap-2 md:justify-between p-2 mt-auto">
+        {tool.active ? (
+          <Link href={tool.trainingLink}>
+            <Button variant="primary">{tool.buttonText}</Button>
+          </Link>
         ) : (
           <Button variant="secondary" disabled={true}>
             Coming Soon
           </Button>
+        )}
+        {tool.learnMoreLink && (
+          <Link href={tool.learnMoreLink!}>
+            <Button variant="secondary">Learn More</Button>
+          </Link>
         )}
       </div>
     </div>

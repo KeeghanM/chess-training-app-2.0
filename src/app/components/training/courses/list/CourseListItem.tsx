@@ -62,123 +62,152 @@ export default function CourseListItem(props: {
         if (json.data!.nextReview) {
           setNextReview(new Date(json.data!.nextReview as string))
         }
-
-        setLoading(false)
       } catch (e) {
         Sentry.captureException(e)
       }
-    })().catch((e) => {
-      Sentry.captureException(e)
-    })
+    })()
+      .catch((e) => Sentry.captureException(e))
+      .finally(() => setLoading(false))
   }, [])
 
   return (
     <div
-      className="flex relative flex-col items-center gap-6 bg-gray-100 p-2 md:px-6 md:!pr-12 dark:bg-slate-900 dark:text-white md:flex-row"
+      className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300"
       key={props.courseId}
     >
       {loading ? (
-        <div className="mr-auto flex flex-col">
-          <Heading as={'h3'}>{props.courseName}</Heading>
-          <p className="text-sm italic text-gray-600 dark:text-gray-400">
-            Loading...
-          </p>
+        <div className="flex flex-col gap-2 p-2">
+          <div className="px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold flex flex-col md:flex-row gap-1 justify-between items-start">
+            <p className="flex flex-col gap-1">
+              <span className="text-lg text-orange-500">Loading...</span>
+              <span className="text-xs italic text-gray-600 dark:text-gray-400">
+                Loading...
+              </span>
+            </p>
+          </div>
+          <div className="flex flex-col md:flex-row gap-2 items-center">
+            <div className="flex flex-col md:flex-row gap-2 items-center">
+              <div className="grid h-16 w-16 place-items-center rounded-full bg-gray-300 dark:bg-slate-700"></div>
+            </div>
+            <div className="flex flex-col md:flex-row gap-2 md:ml-auto">
+              <Button variant="primary" disabled>
+                <Spinner />
+              </Button>
+              <Button variant="secondary" disabled>
+                <Spinner />
+              </Button>
+            </div>
+          </div>
         </div>
       ) : (
         <>
-          <div className="md:mr-auto flex flex-col md:max-w-[50%] md:w-[50%]">
-            <Tippy content="View lines and other stats">
-              <Link href={`/training/courses/${userCourse?.id}/lines`}>
-                <Heading as={'h3'}>{props.courseName}</Heading>
-              </Link>
-            </Tippy>
-            <p className="text-sm italic text-gray-600 dark:text-gray-400">
-              Last trained{' '}
-              {userCourse?.lastTrained ? (
-                <TimeSince date={new Date(userCourse?.lastTrained)} />
-              ) : (
-                'never'
-              )}{' '}
-              ago
+          <div className="px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold flex flex-col md:flex-row gap-1 justify-between items-start">
+            <p className="flex flex-col gap-1">
+              <Tippy content="View lines and other stats">
+                <Link
+                  className="text-lg cursor-pointer text-orange-500"
+                  href={`/training/courses/${userCourse?.id}/lines`}
+                >
+                  {props.courseName}
+                </Link>
+              </Tippy>
+              <span className="text-xs italic text-gray-600 dark:text-gray-400">
+                Last trained{' '}
+                {userCourse?.lastTrained ? (
+                  <TimeSince
+                    text="ago"
+                    date={new Date(userCourse?.lastTrained)}
+                  />
+                ) : (
+                  'never'
+                )}
+              </span>
             </p>
+            <CourseSettings userCourse={userCourse!} update={props.update} />
           </div>
-          <Tippy
-            className="text-base"
-            content={
-              <div className="flex flex-col gap-2">
-                <p className="text-gray-300">
-                  {userCourse?.linesUnseen} lines unseen
-                </p>
-                <p className="text-[#4ade80]">
-                  {userCourse?.linesLearned} lines learned
-                </p>
-                <p className="text-[#2563eb]">
-                  {userCourse?.linesLearning} lines learning
-                </p>
-                <p className="text-[#ff3030]">
-                  {userCourse?.linesHard} lines hard
-                </p>
-              </div>
-            }
-          >
-            <div
-              className="mx-auto md:ml-auto grid h-16 w-16 place-items-center rounded-full"
-              style={{
-                background: conicGradient,
-              }}
-            >
-              <div className="h-12 w-12 rounded-full bg-gray-100 dark:bg-slate-900"></div>
-            </div>
-          </Tippy>
-          <div className="flex flex-col items-center gap-2">
-            <Button
-              variant="primary"
-              onClick={() => openCourse('revise')}
-              disabled={userCourse?.lines?.length == 0 || opening}
-            >
-              {opening ? (
-                <>
-                  Opening... <Spinner />
-                </>
-              ) : (
-                'Study Course'
-              )}
-            </Button>
-            <Tippy
-              content={
-                nextReview && (
-                  <p>
-                    Next review in <TimeSince date={nextReview} />
+          <div className="flex flex-col md:flex-row p-2 items-center gap-2">
+            <div className="flex flex-col md:flex-row gap-2 items-center">
+              <Tippy
+                className="text-base"
+                content={
+                  <div className="flex flex-col gap-2">
+                    <p className="text-gray-300">
+                      {userCourse?.linesUnseen} lines unseen
+                    </p>
+                    <p className="text-[#4ade80]">
+                      {userCourse?.linesLearned} lines learned
+                    </p>
+                    <p className="text-[#2563eb]">
+                      {userCourse?.linesLearning} lines learning
+                    </p>
+                    <p className="text-[#ff3030]">
+                      {userCourse?.linesHard} lines hard
+                    </p>
+                  </div>
+                }
+              >
+                <div
+                  className="grid h-16 w-16 place-items-center rounded-full"
+                  style={{
+                    background: conicGradient,
+                  }}
+                >
+                  <div className="h-4 w-4 rounded-full bg-gray-300 dark:bg-slate-700"></div>
+                </div>
+              </Tippy>
+              <Tippy
+                content={
+                  nextReview && (
+                    <p>
+                      Next review in <TimeSince date={nextReview} />
+                    </p>
+                  )
+                }
+                disabled={!!userCourse?.lines?.length}
+              >
+                <div className="flex flex-col gap-1">
+                  <p className="text-sm italic">
+                    {
+                      userCourse?.lines?.filter(
+                        (line) => line.revisionDate != null,
+                      ).length
+                    }{' '}
+                    {userCourse?.lines?.length == 1
+                      ? 'line to review.'
+                      : 'lines to review.'}
                   </p>
-                )
-              }
-              disabled={!!userCourse?.lines?.length}
-            >
-              <div className="flex flex-col gap-1">
-                <p className="text-sm italic text-gray-600 dark:text-gray-400">
-                  {
-                    userCourse?.lines?.filter(
-                      (line) => line.revisionDate != null,
-                    ).length
-                  }{' '}
-                  {userCourse?.lines?.length == 1
-                    ? 'line to review.'
-                    : 'lines to review.'}
-                </p>
-                <p className="text-sm italic text-gray-600 dark:text-gray-400">
-                  {
-                    userCourse?.lines?.filter(
-                      (line) => line.revisionDate === null,
-                    ).length
-                  }{' '}
-                  {userCourse?.lines?.length == 1
-                    ? 'line to learn.'
-                    : 'lines to learn.'}
-                </p>
-              </div>
-            </Tippy>
+                  <p className="text-sm italic">
+                    {
+                      userCourse?.lines?.filter(
+                        (line) => line.revisionDate === null,
+                      ).length
+                    }{' '}
+                    {userCourse?.lines?.length == 1
+                      ? 'line to learn.'
+                      : 'lines to learn.'}
+                  </p>
+                </div>
+              </Tippy>
+            </div>
+            <div className="flex flex-col md:flex-row gap-2 md:ml-auto">
+              <Button
+                variant="primary"
+                onClick={() => openCourse('revise')}
+                disabled={userCourse?.lines?.length == 0 || opening}
+              >
+                {opening ? (
+                  <>
+                    Opening... <Spinner />
+                  </>
+                ) : (
+                  'Study Course'
+                )}
+              </Button>
+              <Link href={`/training/courses/${userCourse?.id}/lines`}>
+                <Button variant="secondary">View Lines</Button>
+              </Link>
+            </div>
           </div>
-          <CourseSettings userCourse={userCourse!} update={props.update} />
         </>
       )}
     </div>

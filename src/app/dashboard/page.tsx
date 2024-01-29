@@ -19,7 +19,8 @@ import { PostHogClient } from '~/app/_util/trackEventOnServer'
 export type Tool = {
   name: string
   description: string[]
-  href: string
+  trainingLink: string
+  learnMoreLink?: string
   buttonText: string
   active: boolean
 }
@@ -46,7 +47,7 @@ export default async function Dashboard() {
   })
   await prisma.$disconnect()
 
-  const override = process.env.NODE_ENV === 'development'
+  const override = false // process.env.NODE_ENV === 'development'
 
   // Identify the user immediately upon signin
   const posthog = PostHogClient()
@@ -68,7 +69,8 @@ export default async function Dashboard() {
         'Re-program your unconscious mind. With benefits including sharper tactical vision, fewer blunders, and better play when in time trouble as well as improved intuition.',
         'Generate puzzle sets and train on them, while the site takes care of tracking your accuracy & time spent.',
       ],
-      href: '/training/tactics/list',
+      trainingLink: '/training/tactics/list',
+      learnMoreLink: '/training/tactics',
       buttonText: 'Train',
       active: true || override,
     },
@@ -78,7 +80,8 @@ export default async function Dashboard() {
         'Train your opening courses using our Natural Play Learning.',
         'An enhanced version of Spaced Repetition, and the best way to learn openings.',
       ],
-      href: '/training/courses',
+      trainingLink: '/training/courses',
+      learnMoreLink: '/about/features/natural-play-learning',
       buttonText: 'Train',
       active: true || override,
     },
@@ -89,7 +92,8 @@ export default async function Dashboard() {
         'With our visualisation trainer you are presented with a board position, and a list of moves at the end of which will be a simple tactic.',
         'All you need to do is play the given sequence of moves in your head, decide on your final move and then check if you were correct.',
       ],
-      href: '/training/visualisation/train',
+      trainingLink: '/training/visualisation/train',
+      learnMoreLink: '/training/visualisation',
       buttonText: 'Train',
       active: true || override,
     },
@@ -100,7 +104,8 @@ export default async function Dashboard() {
         'Fundamental to the game of chess, endgames are an area of chess which many players neglect in their training.',
         'Not as exciting as openings, not as sexy as middlegame tactics, but arguably much more important than either.',
       ],
-      href: '/training/endgames/train',
+      trainingLink: '/training/endgames/train',
+      learnMoreLink: '/training/endgames',
       buttonText: 'Train',
       active: true || override,
     },
@@ -111,7 +116,7 @@ export default async function Dashboard() {
         'A great way to improve your understanding of the game, and to learn new ideas.',
         'We have a large library of curated master games, all selected for their instructive value.',
       ],
-      href: '/training/play-the-masters',
+      trainingLink: '/training/play-the-masters',
       buttonText: 'Train',
       active: false || override,
     },
@@ -122,7 +127,7 @@ export default async function Dashboard() {
         'With our recall trainer you are presented with a board position, and a short time to memorise it.',
         'You are then asked a question about the position, and you must answer it from memory.',
       ],
-      href: '/training/recall/train',
+      trainingLink: '/training/recall/train',
       buttonText: 'Train',
       active: false || override,
     },
@@ -133,7 +138,7 @@ export default async function Dashboard() {
         'We have devised a very simple method of improving your board vision through the use of knights.',
         'Simply put, race against the clock to calculate the fastest way a knight can get to a given square. Rack up a streak and try to beat your own high score.',
       ],
-      href: '/training/knight-vision/train',
+      trainingLink: '/training/knight-vision/train',
       buttonText: 'Train',
       active: false || override,
     },
@@ -145,14 +150,14 @@ export default async function Dashboard() {
       description: [
         'Browse our library of puzzles, and add them to curated sets.',
       ],
-      href: '/admin/curated-sets',
+      trainingLink: '/admin/curated-sets',
       buttonText: 'Open',
       active: true,
     },
     {
       name: 'Badge Creator',
       description: ['Create and manage badges'],
-      href: '/admin/badges',
+      trainingLink: '/admin/badges',
       buttonText: 'Open',
       active: true,
     },

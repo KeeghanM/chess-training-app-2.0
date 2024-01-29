@@ -140,50 +140,56 @@ export default function SetListEdit(props: {
   }
 
   return (
-    <AlertDialog.Root open={open} onOpenChange={setOpen}>
-      <AlertDialog.Trigger>
-        <Button variant="secondary">Edit</Button>
-      </AlertDialog.Trigger>
-      <AlertDialog.Portal>
-        <AlertDialog.Overlay
-          className="fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)]"
-          onClick={close}
-        />
-        <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[75vh] w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto bg-white p-4 shadow-md md:p-6">
-          <AlertDialog.Title className="text-lg font-bold text-purple-700">
-            Editing "{set.name}"
-          </AlertDialog.Title>
-          <div className="flex flex-col gap-2">
-            <div className="">
-              <label>Set Name</label>
-              <input
-                type="text"
-                className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-                value={name}
-                onInput={(e) => {
-                  setName(e.currentTarget.value)
-                }}
-              />
+    <>
+      <Button variant="secondary" onClick={() => setOpen(true)}>
+        Edit
+      </Button>
+      <AlertDialog.Root open={open} onOpenChange={setOpen}>
+        <AlertDialog.Portal>
+          <AlertDialog.Overlay
+            className="fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)]"
+            onClick={close}
+          />
+          <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[75vh] w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto bg-white p-4 shadow-md md:p-6">
+            <AlertDialog.Title className="text-lg font-bold text-purple-700">
+              Editing "{set.name}"
+            </AlertDialog.Title>
+            <div className="flex flex-col gap-2">
+              <div className="">
+                <label>Set Name</label>
+                <input
+                  type="text"
+                  className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                  value={name}
+                  onInput={(e) => {
+                    setName(e.currentTarget.value)
+                  }}
+                />
+              </div>
+              <div className="flex flex-row gap-2">
+                <Button
+                  variant="primary"
+                  disabled={loading}
+                  onClick={updateSet}
+                >
+                  {loading ? (
+                    <>
+                      Saving <Spinner />
+                    </>
+                  ) : (
+                    'Save'
+                  )}
+                </Button>
+                <Button variant="secondary" onClick={close}>
+                  Close
+                </Button>
+                <DeleteButton />
+              </div>
+              <p className="text-sm italic text-red-500">{error}</p>
             </div>
-            <div className="flex flex-row gap-2">
-              <Button variant="primary" disabled={loading} onClick={updateSet}>
-                {loading ? (
-                  <>
-                    Saving <Spinner />
-                  </>
-                ) : (
-                  'Save'
-                )}
-              </Button>
-              <Button variant="secondary" onClick={close}>
-                Close
-              </Button>
-              <DeleteButton />
-            </div>
-            <p className="text-sm italic text-red-500">{error}</p>
-          </div>
-        </AlertDialog.Content>
-      </AlertDialog.Portal>
-    </AlertDialog.Root>
+          </AlertDialog.Content>
+        </AlertDialog.Portal>
+      </AlertDialog.Root>
+    </>
   )
 }
