@@ -7,7 +7,6 @@ import { useEffect, useState } from 'react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
 import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
 import TimeSince from '~/app/components/general/TimeSince'
 import type { PrismaTacticsSet } from '~/app/components/training/tactics/create/TacticsSetCreator'
@@ -44,43 +43,66 @@ export default function SetListItem(props: {
 
   return (
     <div
-      className="flex flex-col items-center gap-6 bg-gray-100  p-2 dark:bg-slate-900  dark:text-white md:flex-row md:p-4"
+      className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300"
       key={set.id}
     >
-      <div className="mr-auto flex cursor-pointer flex-col" onClick={trainSet}>
-        <Heading as={'h3'}>{set.name}</Heading>
-        <p className="text-sm italic text-gray-600 dark:text-gray-400">
-          Last trained{' '}
-          {set.lastTrained ? (
-            <TimeSince date={new Date(set.lastTrained)} />
-          ) : (
-            'never'
-          )}
-          .
+      <div className="px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
+        <p>
+          <span onClick={trainSet} className="text-lg cursor-pointer">
+            {set.name}
+          </span>
+          <span className="px-2 text-xs italic text-gray-600 dark:text-gray-400">
+            Last trained{' '}
+            {set.lastTrained ? (
+              <TimeSince text="ago" date={new Date(set.lastTrained)} />
+            ) : (
+              'never'
+            )}
+          </span>
         </p>
       </div>
-      <div className="flex w-full flex-col gap-2">
-        <div className="flex flex-col justify-between gap-2 bg-gray-200  p-2 dark:bg-slate-800  dark:text-white md:flex-row">
-          <p>Round: {set.rounds ? set.rounds.length : 1}/8</p>
-          <p>
-            Completed: {completedCount}/{set.size}
-          </p>
-          <p>
-            Accuracy:{' '}
-            {currentRound
-              ? currentRound.correct + currentRound.incorrect > 0
-                ? Math.round(
-                    (currentRound.correct /
-                      (currentRound.correct + currentRound.incorrect)) *
-                      100,
-                  )
-                : 0
-              : 0}
-            %
-          </p>
-          <p>Time Spent: {toHHMMSS(currentRound?.timeSpent ?? 0)}</p>
+
+      <div className="flex w-full flex-col gap-2 p-2">
+        <div className="flex flex-wrap gap-2 justify-center">
+          <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+            <p className="font-bold py-1 px-2 border-b border-gray-300 dark:border-slate-600">
+              Round
+            </p>
+            <p>{set.rounds ? set.rounds.length : 1}/8</p>
+          </div>
+          <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+            <p className="font-bold py-1 px-2 border-b border-gray-300 dark:border-slate-600">
+              Completed
+            </p>
+            <p>
+              {completedCount}/{set.size}
+            </p>
+          </div>
+          <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+            <p className="font-bold py-1 px-2 border-b border-gray-300 dark:border-slate-600">
+              Accuracy
+            </p>
+            <p>
+              {currentRound
+                ? currentRound.correct + currentRound.incorrect > 0
+                  ? Math.round(
+                      (currentRound.correct /
+                        (currentRound.correct + currentRound.incorrect)) *
+                        100,
+                    )
+                  : 0
+                : 0}
+              %
+            </p>
+          </div>
+          <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+            <p className="font-bold py-1 px-2 border-b border-gray-300 dark:border-slate-600">
+              Time Spent
+            </p>
+            <p>{toHHMMSS(currentRound?.timeSpent ?? 0)}</p>
+          </div>
         </div>
-        <div className="mx-auto flex flex-col gap-2 md:ml-auto md:flex-row">
+        <div className="flex flex-col gap-2 md:flex-row md:justify-center">
           <Button
             disabled={
               (set.rounds?.length >= 8 && completedCount >= set.size) || opening

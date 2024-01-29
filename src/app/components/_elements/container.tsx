@@ -10,8 +10,8 @@ export default function Container({
       className={
         'relative mx-auto p-4 md:p-6 lg:p-8' +
         (size == 'default' || size == undefined
-          ? '  max-w-[min(calc(100vw-2rem),90ch)]'
-          : ' max-w-[min(calc(100vw-2rem),120ch)]')
+          ? '  max-w-[min(calc(100vw-1rem),90ch)]'
+          : ' max-w-[min(calc(100vw-1rem),120ch)]')
       }
     >
       {children}

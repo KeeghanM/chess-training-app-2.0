@@ -20,6 +20,7 @@ export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] }
 interface TacticsSetCreatorProps {
   setCount: number
   maxSets: number
+  loading: boolean
   setCreated: (set: PrismaTacticsSet) => void
 }
 export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
@@ -220,10 +221,11 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
 
   return (
     <div className="flex flex-col items-center gap-1 md:flex-row md:gap-4">
-      <Heading as={'h3'}>
-        {setCount}
-        {!hasUnlimitedSets ? <>/{maxSets}</> : ''} Sets Created
-      </Heading>
+      {!hasUnlimitedSets && !props.loading && (
+        <Heading as={'h3'}>
+          {setCount}/{maxSets} Sets Created
+        </Heading>
+      )}
       <AlertDialog.Root open={open} onOpenChange={setOpen}>
         <AlertDialog.Trigger
           className={setCount < maxSets || hasUnlimitedSets ? '' : 'hidden'}
@@ -234,7 +236,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
             }
             className="flex items-center gap-2 bg-purple-700 px-4 py-2 text-white hover:bg-purple-600"
           >
-            <p>Create</p>
+            <p>Create New Set</p>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
