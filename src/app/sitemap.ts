@@ -1,6 +1,29 @@
 import type { MetadataRoute } from 'next'
 
-export default function sitemap(): MetadataRoute.Sitemap {
+import { createClient } from '~/prismicio'
+
+export default async function sitemap() {
+  const client = createClient()
+  const articles = await client.getAllByType('article')
+  const authors = await client.getAllByType('author')
+
+  const tidiedArticles = articles.map((article) => {
+    return {
+      url: `https://chesstraining.app/articles/${article.uid}`,
+      lastModified: article.last_publication_date,
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    }
+  }) as MetadataRoute.Sitemap
+  const tidiedAuthors = authors.map((author) => {
+    return {
+      url: `https://chesstraining.app/articles/author/${author.uid}`,
+      lastModified: author.last_publication_date,
+      changeFrequency: 'monthly',
+      priority: 0.4,
+    }
+  }) as MetadataRoute.Sitemap
+
   const pages: MetadataRoute.Sitemap = [
     {
       url: 'https://chesstraining.app',
@@ -92,6 +115,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.7,
     },
+    {
+      url: 'https://chesstraining.app/articles',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.9,
+    },
+    ...tidiedArticles,
+    ...tidiedAuthors,
   ]
 
   pages.sort((a, b) => {
