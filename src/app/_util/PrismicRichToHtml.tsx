@@ -4,7 +4,7 @@ type Span = {
   start: number
   end: number
   type: string
-  data?: { [key: string]: any }
+  data?: Record<string, string>
 }
 
 export type RichTextContent = {

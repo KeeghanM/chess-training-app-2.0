@@ -1,4 +1,4 @@
-import { Metadata } from 'next'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
@@ -8,10 +8,8 @@ import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import CtaRow from '~/app/components/_layouts/ctaRow'
 
-import {
-  PrismicRichToHtml,
-  RichTextContent,
-} from '~/app/_util/PrismicRichToHtml'
+import { PrismicRichToHtml } from '~/app/_util/PrismicRichToHtml'
+import type { RichTextContent } from '~/app/_util/PrismicRichToHtml'
 
 type Params = { uid: string }
 

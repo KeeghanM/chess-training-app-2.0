@@ -1,5 +1,6 @@
-import { Content, asHTML } from '@prismicio/client'
-import { SliceComponentProps } from '@prismicio/react'
+import { asHTML } from '@prismicio/client'
+import type { Content } from '@prismicio/client'
+import type { SliceComponentProps } from '@prismicio/react'
 
 /**
  * Props for `BlogContent`.

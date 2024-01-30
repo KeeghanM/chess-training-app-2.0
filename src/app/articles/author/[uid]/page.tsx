@@ -8,10 +8,8 @@ import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
 
-import {
-  PrismicRichToHtml,
-  RichTextContent,
-} from '~/app/_util/PrismicRichToHtml'
+import { PrismicRichToHtml } from '~/app/_util/PrismicRichToHtml'
+import type { RichTextContent } from '~/app/_util/PrismicRichToHtml'
 
 type Params = { uid: string }
 export default async function AuthorPage({ params }: { params: Params }) {

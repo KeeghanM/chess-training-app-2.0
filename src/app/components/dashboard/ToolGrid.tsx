@@ -1,14 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 
 import type { Tool } from '~/app/dashboard/page'
 
 import Button from '~/app/components/_elements/button'
 
 export default function ToolGrid(props: { tool: Tool }) {
-  const router = useRouter()
   const { tool } = props
 
   return (
@@ -39,7 +37,7 @@ export default function ToolGrid(props: { tool: Tool }) {
           </Button>
         )}
         {tool.learnMoreLink && (
-          <Link href={tool.learnMoreLink!}>
+          <Link href={tool.learnMoreLink}>
             <Button variant="secondary">Learn More</Button>
           </Link>
         )}

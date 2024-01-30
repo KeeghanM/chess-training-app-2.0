@@ -1,5 +1,5 @@
-import { Content } from '@prismicio/client'
-import { SliceComponentProps } from '@prismicio/react'
+import type { Content } from '@prismicio/client'
+import type { SliceComponentProps } from '@prismicio/react'
 
 /**
  * Props for `CallToAction`.
