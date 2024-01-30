@@ -38,7 +38,7 @@ export default async function ArticlesPage() {
         </p>
       </div>
       <Container>
-        <Heading as="h1">Latest Articles, News, and Blog Posts</Heading>
+        <Heading as="h1">The latest Articles, News, and Blog Posts</Heading>
         <p>
           Read the latest articles on chess improvement and chess training.
           Learn how to improve your chess game and become a better chess player.
@@ -49,7 +49,7 @@ export default async function ArticlesPage() {
           }
           return (
             <div
-              className="flex flex-col gap-0 border border-gray-300 shadow-md bg-[rgba(0,0,0,0.03)]  hover:shadow-lg transition-shadow duration-300"
+              className="flex flex-col gap-0 mb-4 border border-gray-300 shadow-md bg-[rgba(0,0,0,0.03)]  hover:shadow-lg transition-shadow duration-300"
               key={article.id}
             >
               <script
