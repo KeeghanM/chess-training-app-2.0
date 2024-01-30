@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
+import type { ContentRelationshipField } from '@prismicio/client'
 import { createClient } from '~/prismicio'
 
 import Container from '~/app/components/_elements/container'
@@ -20,6 +21,10 @@ export default async function Page({ params }: { params: Params }) {
       fetchLinks: ['author.name', 'author.uid'],
     })
     .catch(() => notFound())
+
+  const author = page.data.author as ContentRelationshipField & {
+    data: { name: string; uid: string }
+  }
 
   return (
     <>
@@ -46,10 +51,10 @@ export default async function Page({ params }: { params: Params }) {
             </p>
             <p className="p-1">
               <Link
-                href={`/articles/author/${page.data.author.data.uid}`}
+                href={`/articles/author/${author.data.uid}`}
                 className="hover:no-underline text-purple-700 underline"
               >
-                {page.data.author.data.name}
+                {author.data.name}
               </Link>
             </p>
           </div>

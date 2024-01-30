@@ -35,8 +35,6 @@ export default async function AuthorPage({ params }: { params: Params }) {
     ],
   })
 
-  console.log(articles)
-
   return (
     <>
       <div className="w-full flex items-center justify-center py-2 bg-gray-200">
