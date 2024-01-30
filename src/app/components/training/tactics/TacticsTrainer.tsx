@@ -376,7 +376,7 @@ export default function TacticsTrainer(props: {
 
   const exit = async () => {
     setLoading(true)
-    await increaseTimeTaken()
+    increaseTimeTaken()
     trackEventOnClient('tactics_set_closed', {})
     router.push('/training/tactics/list')
     return
@@ -402,7 +402,7 @@ export default function TacticsTrainer(props: {
     return () => {
       // On unmount, log the stats
       ;(async () => {
-        await increaseTimeTaken()
+        increaseTimeTaken()
       })().catch((e) => {
         Sentry.captureException(e)
         throw new Error('Unable to log stats')

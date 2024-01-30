@@ -47,7 +47,7 @@ export default async function Dashboard() {
   })
   await prisma.$disconnect()
 
-  const override = false // process.env.NODE_ENV === 'development'
+  const override = false ?? process.env.NODE_ENV === 'development'
 
   // Identify the user immediately upon signin
   const posthog = PostHogClient()

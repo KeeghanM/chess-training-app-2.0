@@ -37,6 +37,10 @@ export default function Nav(props: {
       name: 'Courses',
     },
     {
+      href: '/articles',
+      name: 'Articles',
+    },
+    {
       name: 'Features',
       subLinks: [
         {
