@@ -7,6 +7,10 @@
     {
       "path": "/api/cron/loadTwicGames",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/processMoveUpdates",
+      "schedule": "*/2 * * * *"
     }
   ]
 }
