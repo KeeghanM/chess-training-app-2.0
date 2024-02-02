@@ -253,20 +253,11 @@ model UserBadge {
 }
 
 // Games Database & Openings API
-model twicLoaded {
-    fileNumber Int      @id
-    loaded     Boolean
-    createdAt  DateTime @default(now())
-    updatedAt  DateTime @updatedAt
-}
-
 model Game {
     id         Int        @id @default(autoincrement())
-    moveString String
+    moveString String     @db.Text
     tags       GameTag[]
     moves      MoveTree[]
-
-    @@index([moveString])
 }
 
 model GameTag {
@@ -289,4 +280,20 @@ model MoveTree {
 
     @@unique([fenBefore, movePlayed, fenAfter])
     @@index([fenBefore])
+}
+
+model MoveTreeUpdate {
+    id          Int    @id @default(autoincrement())
+    movePlayed  String
+    timesPlayed Int
+    fenBefore   String
+    fenAfter    String
+    gameIds     String @db.Text
+}
+
+model twicLoaded {
+    fileNumber Int      @id
+    loaded     Boolean
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
 }

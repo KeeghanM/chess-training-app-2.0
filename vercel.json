@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/resetStreak",
       "schedule": "0 * * * *"
+    },
+    {
+      "path": "/api/cron/loadTwicGames",
+      "schedule": "0 0 * * *"
     }
   ]
 }

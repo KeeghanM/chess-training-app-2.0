@@ -1,0 +1,192 @@
+import { prisma } from '~/server/db'
+
+import { ParseTree, parse } from '@mliebelt/pgn-parser'
+import * as sentry from '@sentry/nextjs'
+import { Chess } from 'chess.js'
+import JSZip from 'jszip'
+
+import { errorResponse, successResponse } from '../../responses'
+
+export async function GET() {
+  try {
+    // Get the last loaded TWIC file number
+    const lastLoadedFileNumber = await prisma.twicLoaded.findFirst({
+      orderBy: { fileNumber: 'desc' },
+    })
+    const numberToLoad = lastLoadedFileNumber
+      ? lastLoadedFileNumber.fileNumber + 1
+      : 920
+    // Fetch the next TWIC file
+    const pgnZip = await fetch(
+      `https://theweekinchess.com/zips/twic${numberToLoad}g.zip`,
+    )
+    if (!pgnZip.ok) throw new Error('Error fetching zip file')
+
+    // Load the zip file and extract the PGN file
+    const zip = new JSZip()
+    const pgn = await zip.loadAsync(await pgnZip.arrayBuffer())
+    const files = Object.keys(pgn.files)
+    const pgnFile = files.find((file) => file.endsWith('.pgn'))
+    if (!pgnFile) throw new Error('PGN file not found in zip')
+    const pgnContent = await pgn.file(pgnFile)?.async('string')
+    if (!pgnContent) throw new Error('No content in PGN file')
+
+    // Parse the PGN content
+    let games: ParseTree[] | undefined
+    try {
+      games = parse(pgnContent, { startRule: 'games' }) as ParseTree[]
+    } catch (e) {
+      // If no games were found, throw an error
+      throw new Error('Error parsing PGN content')
+    }
+
+    console.log(`loaded ${games.length} games from twic${numberToLoad}g.zip`)
+
+    // Create the game data, this will get the game tags and move string
+    // then we upload the games to the database
+    const mostRecentGame = await prisma.game.findFirst({
+      orderBy: { id: 'desc' },
+    })
+    const highestId = mostRecentGame ? mostRecentGame.id : 0
+
+    const processedGames = games.map((game, index) => {
+      const { gameTags, moveString } = parseGame(game)
+      const id = highestId + index + 1
+      return {
+        gameData: {
+          id,
+          moveString,
+        },
+        tags: gameTags.map((tag) => ({
+          ...tag,
+          gameId: id,
+        })),
+      }
+    })
+
+    const gamesCreated = await prisma.game.createMany({
+      data: processedGames.map((g) => g.gameData),
+    })
+    const tagsCreated = await prisma.gameTag.createMany({
+      data: processedGames.flatMap((g) => g.tags),
+    })
+
+    // Now we have the games saved in the database, we can create the move tree
+    // and update the database with the new moves
+    const chess = new Chess()
+    const moveMap = new Map<
+      string,
+      {
+        fenBefore: string
+        fenAfter: string
+        movePlayed: string
+        timesPlayed: number
+        gameIds: number[]
+      }
+    >()
+
+    // Create the move map
+    let fenBefore = chess.fen()
+    processedGames.forEach((game) => {
+      chess.reset()
+      const gameId = game.gameData.id
+      game.gameData.moveString.split(',').forEach((move) => {
+        if (!move) return
+
+        const moveResult = chess.move(move)
+        if (!moveResult) throw new Error(`Invalid move: ${move}`)
+
+        const fenAfter = chess.fen()
+        const key = `${fenBefore}_${move}_${fenAfter}`
+
+        let moveData = moveMap.get(key)
+        if (moveData) {
+          moveData.timesPlayed++
+          moveData.gameIds.push(gameId)
+        } else {
+          moveMap.set(key, {
+            fenBefore,
+            fenAfter,
+            movePlayed: move,
+            timesPlayed: 1,
+            gameIds: [gameId],
+          })
+        }
+
+        fenBefore = fenAfter
+      })
+    })
+
+    // Create the move data
+
+    const inserts: {
+      fenBefore: string
+      fenAfter: string
+      movePlayed: string
+      timesPlayed: number
+      gameIds: string
+    }[] = []
+    for (const [key, moveData] of moveMap.entries()) {
+      // Prepare data for insert
+      inserts.push({
+        fenBefore: moveData.fenBefore,
+        fenAfter: moveData.fenAfter,
+        movePlayed: moveData.movePlayed,
+        timesPlayed: moveData.timesPlayed,
+        gameIds: moveData.gameIds.join(','),
+      })
+    }
+
+    if (inserts.length > 0) {
+      // A cron job will later update the move tree table
+      // with this data
+      await prisma.moveTreeUpdate.createMany({ data: inserts })
+    }
+
+    // Store the fact that we've loaded this file
+    await prisma.twicLoaded.create({
+      data: { fileNumber: numberToLoad, loaded: true },
+    })
+
+    return successResponse(
+      'Games loaded',
+      {
+        twic: numberToLoad,
+        gamesCount: games.length,
+        movesCount: moveMap.size,
+        moveTreeInserts: inserts.length,
+      },
+      200,
+    )
+  } catch (e) {
+    sentry.captureException(e)
+    if (e instanceof Error) return errorResponse(e.message, 500)
+    return errorResponse('Something went wrong', 500)
+  }
+}
+
+function parseGame(game: ParseTree): {
+  gameTags: { tagName: string; tagValue: string }[]
+  moveString: string
+} {
+  let gameTags: {
+    tagName: string
+    tagValue: string
+  }[] = []
+
+  if (game.tags) {
+    gameTags = Object.keys(game.tags).map((tagName) => {
+      // @ts-expect-error : We know that the tag exists
+      const tagValue = game.tags![tagName] as string | { value: string }
+      if (typeof tagValue === 'string') {
+        return { tagName, tagValue }
+      } else {
+        return { tagName, tagValue: tagValue.value ?? '' }
+      }
+    })
+  }
+
+  const moveString = game.moves.map((move) => move.notation.notation).join(',')
+
+  return { gameTags, moveString }
+}
