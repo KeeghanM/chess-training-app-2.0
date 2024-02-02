@@ -251,3 +251,42 @@ model UserBadge {
 
     @@index([userId])
 }
+
+// Games Database & Openings API
+model twicLoaded {
+    fileNumber Int      @id
+    loaded     Boolean
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+}
+
+model Game {
+    id         Int        @id @default(autoincrement())
+    moveString String
+    tags       GameTag[]
+    moves      MoveTree[]
+
+    @@index([moveString])
+}
+
+model GameTag {
+    id       Int    @id @default(autoincrement())
+    gameId   Int
+    tagName  String
+    tagValue String
+    game     Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
+
+    @@index([gameId])
+}
+
+model MoveTree {
+    id          Int    @id @default(autoincrement())
+    fenBefore   String
+    fenAfter    String
+    movePlayed  String
+    timesPlayed Int
+    games       Game[]
+
+    @@unique([fenBefore, movePlayed, fenAfter])
+    @@index([fenBefore])
+}
