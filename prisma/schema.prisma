@@ -254,10 +254,12 @@ model UserBadge {
 
 // Games Database & Openings API
 model Game {
-    id         Int        @id @default(autoincrement())
-    moveString String     @db.Text
-    tags       GameTag[]
-    moves      MoveTree[]
+    id          Int        @id @default(autoincrement())
+    moveString  String     @db.Text
+    datePlayed  DateTime
+    combinedElo Int
+    tags        GameTag[]
+    moves       MoveTree[]
 }
 
 model GameTag {

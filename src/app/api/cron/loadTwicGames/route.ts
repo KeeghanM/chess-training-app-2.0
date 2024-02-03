@@ -64,16 +64,18 @@ export async function GET() {
       }
     })
 
-    const gamesCreated = await prisma.game.createMany({
+    await prisma.game.createMany({
       data: processedGames.map((g) => g.gameData),
     })
-    const tagsCreated = await prisma.gameTag.createMany({
+    await prisma.gameTag.createMany({
       data: processedGames.flatMap((g) => g.tags),
     })
 
     // Now we have the games saved in the database, we can create the move tree
     // and update the database with the new moves
-    const chess = new Chess()
+    const chess = new Chess(
+      'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+    )
     const moveMap = new Map<
       string,
       {
@@ -81,14 +83,16 @@ export async function GET() {
         fenAfter: string
         movePlayed: string
         timesPlayed: number
-        gameIds: number[]
+        gameIds: string
       }
     >()
 
     // Create the move map
-    let fenBefore = chess.fen()
+    let fenBefore = ''
     processedGames.forEach((game) => {
       chess.reset()
+      fenBefore = chess.fen()
+
       const gameId = game.gameData.id
       game.gameData.moveString.split(',').forEach((move) => {
         if (!move) return
@@ -100,47 +104,25 @@ export async function GET() {
         const key = `${fenBefore}_${move}_${fenAfter}`
 
         let moveData = moveMap.get(key)
-        if (moveData) {
-          moveData.timesPlayed++
-          moveData.gameIds.push(gameId)
-        } else {
-          moveMap.set(key, {
-            fenBefore,
-            fenAfter,
-            movePlayed: move,
-            timesPlayed: 1,
-            gameIds: [gameId],
-          })
-        }
+
+        moveMap.set(key, {
+          fenBefore,
+          fenAfter,
+          movePlayed: move,
+          timesPlayed: moveData ? moveData.timesPlayed + 1 : 1,
+          gameIds: moveData
+            ? moveData.gameIds + ',' + gameId.toString()
+            : gameId.toString(),
+        })
 
         fenBefore = fenAfter
       })
     })
 
-    // Create the move data
-
-    const inserts: {
-      fenBefore: string
-      fenAfter: string
-      movePlayed: string
-      timesPlayed: number
-      gameIds: string
-    }[] = []
-    for (const [key, moveData] of moveMap.entries()) {
-      // Prepare data for insert
-      inserts.push({
-        fenBefore: moveData.fenBefore,
-        fenAfter: moveData.fenAfter,
-        movePlayed: moveData.movePlayed,
-        timesPlayed: moveData.timesPlayed,
-        gameIds: moveData.gameIds.join(','),
-      })
-    }
-
-    if (inserts.length > 0) {
+    if (moveMap.size > 0) {
       // A cron job will later update the move tree table
       // with this data
-      await prisma.moveTreeUpdate.createMany({ data: inserts })
+      await prisma.moveTreeUpdate.createMany({ data: [...moveMap.values()] })
     }
 
     // Store the fact that we've loaded this file
@@ -152,9 +134,8 @@ export async function GET() {
       'Games loaded',
       {
         twic: numberToLoad,
-        gamesCount: games.length,
-        movesCount: moveMap.size,
-        moveTreeInserts: inserts.length,
+        games: games.length,
+        moves: moveMap.size,
       },
       200,
     )

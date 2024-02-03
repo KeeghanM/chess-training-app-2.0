@@ -44,7 +44,9 @@ export async function GET() {
                 id: moveData.id,
               },
               data: {
-                timesPlayed: moveData.timesPlayed + 1,
+                timesPlayed: {
+                  increment: update.timesPlayed,
+                },
                 games: {
                   connect: gameIds,
                 },
@@ -56,7 +58,7 @@ export async function GET() {
                 fenBefore: update.fenBefore,
                 fenAfter: update.fenAfter,
                 movePlayed: update.movePlayed,
-                timesPlayed: 1,
+                timesPlayed: update.timesPlayed,
                 games: {
                   connect: gameIds,
                 },
