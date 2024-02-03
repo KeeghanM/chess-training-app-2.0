@@ -52,10 +52,22 @@ export async function GET() {
     const processedGames = games.map((game, index) => {
       const { gameTags, moveString } = parseGame(game)
       const id = highestId + index + 1
+      const datePlayed = gameTags.find((tag) => tag.tagName === 'Date')
+        ?.tagValue
+
+      const combinedElo = gameTags
+        .filter(
+          (tag) => tag.tagName === 'WhiteElo' || tag.tagName === 'BlackElo',
+        )
+        .map((tag) => parseInt(tag.tagValue) || 0)
+        .reduce((a, b) => a + b, 0)
+
       return {
         gameData: {
           id,
           moveString,
+          datePlayed: datePlayed ?? '',
+          combinedElo,
         },
         tags: gameTags.map((tag) => ({
           ...tag,
@@ -103,7 +115,7 @@ export async function GET() {
         const fenAfter = chess.fen()
         const key = `${fenBefore}_${move}_${fenAfter}`
 
-        let moveData = moveMap.get(key)
+        const moveData = moveMap.get(key)
 
         moveMap.set(key, {
           fenBefore,
@@ -120,9 +132,17 @@ export async function GET() {
     })
 
     if (moveMap.size > 0) {
-      // A cron job will later update the move tree table
-      // with this data
-      await prisma.moveTreeUpdate.createMany({ data: [...moveMap.values()] })
+      // A cron job will later update the move tree table with the new moves
+      // we want to load a maximum of 50,000 moves at a time
+      const mapAsArray = [...moveMap.values()]
+      const chunkSize = 50000
+      console.log(`Chunking ${mapAsArray.length} values`)
+      for (let i = 0; i < moveMap.size; i += chunkSize) {
+        const chunk = mapAsArray.slice(i, i + chunkSize)
+        console.log(`Chunk: ${i} - ${i + chunkSize}`)
+
+        await prisma.moveTreeUpdate.createMany({ data: chunk })
+      }
     }
 
     // Store the fact that we've loaded this file
@@ -158,9 +178,15 @@ function parseGame(game: ParseTree): {
   if (game.tags) {
     gameTags = Object.keys(game.tags).map((tagName) => {
       // @ts-expect-error : We know that the tag exists
-      const tagValue = game.tags![tagName] as string | { value: string }
+      const tagValue = game.tags![tagName] as
+        | string
+        | number
+        | { value: string }
+
       if (typeof tagValue === 'string') {
         return { tagName, tagValue }
+      } else if (typeof tagValue === 'number') {
+        return { tagName, tagValue: tagValue.toString() }
       } else {
         return { tagName, tagValue: tagValue.value ?? '' }
       }

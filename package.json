@@ -48,6 +48,7 @@
     "posthog-node": "^3.5.0",
     "react": "18.2.0",
     "react-chessboard": "^4.3.4",
+    "react-debounce-input": "^3.3.0",
     "react-dom": "18.2.0",
     "react-quill": "^2.0.0",
     "react-select": "^5.8.0",

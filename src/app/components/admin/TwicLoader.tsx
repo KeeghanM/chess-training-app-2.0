@@ -82,7 +82,7 @@ export default function TwicLoader() {
             onChange={(e) => setAllowProcessing(e.target.checked)}
           />
         </div>
-        <p>Process moves every 5 seconds</p>
+        <p>Process moves with 5 seconds gap</p>
         {processing && <Spinner />}
       </div>
       <p>{message}</p>

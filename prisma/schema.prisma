@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-    provider = "prisma-client-js"
+    provider        = "prisma-client-js"
+    previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -256,7 +257,7 @@ model UserBadge {
 model Game {
     id          Int        @id @default(autoincrement())
     moveString  String     @db.Text
-    datePlayed  DateTime
+    datePlayed  String
     combinedElo Int
     tags        GameTag[]
     moves       MoveTree[]
@@ -270,6 +271,7 @@ model GameTag {
     game     Game   @relation(fields: [gameId], references: [id], onDelete: Cascade)
 
     @@index([gameId])
+    @@fulltext([tagValue])
 }
 
 model MoveTree {

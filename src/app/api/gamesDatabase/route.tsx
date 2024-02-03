@@ -148,16 +148,23 @@ export async function POST(request: Request) {
 
 function buildTagWhereClause(tags: Record<string, string> | undefined) {
   if (!tags) return {}
-  return {
+  // remove empty tags
+  const tagNames = Object.keys(tags).filter((key) => tags[key] !== '')
+  const tagValues = tagNames.map((key) => tags[key] + '*').join(' ')
+
+  console.log(tagValues)
+  const query = {
     tags: {
       some: {
         tagName: {
-          in: Object.keys(tags),
+          in: tagNames,
         },
         tagValue: {
-          in: Object.values(tags),
+          search: tagValues.trim(),
         },
       },
     },
   }
+
+  return query
 }

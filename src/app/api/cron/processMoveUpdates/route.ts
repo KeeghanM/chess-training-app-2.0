@@ -7,7 +7,7 @@ import { errorResponse, successResponse } from '../../responses'
 export async function GET() {
   try {
     const updates = await prisma.moveTreeUpdate.findMany({
-      take: 100,
+      take: 1000,
     })
 
     if (updates.length === 0)

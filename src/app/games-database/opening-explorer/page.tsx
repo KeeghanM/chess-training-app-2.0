@@ -88,7 +88,7 @@ export default function OpeningExplorerPage() {
             game={chess}
             position={position}
             moveMade={onMove}
-            readyForInput={true}
+            readyForInput={false}
             orientation="white"
             soundEnabled={true}
             additionalSquares={{}}
@@ -175,7 +175,7 @@ function percentage(part: number, total: number, precision = 2) {
   return ((part / total) * 100).toFixed(precision)
 }
 
-function findTagValue(
+export function findTagValue(
   tags: {
     tagName: string
     tagValue: string
