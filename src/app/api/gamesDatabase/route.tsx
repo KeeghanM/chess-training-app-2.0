@@ -8,6 +8,7 @@ import { successResponse } from '../responses'
 interface RequestParams {
   position?: string
   tags?: Record<string, string>
+  wildcard?: string
   movesLimit?: number
   movesOffset?: number
   gamesLimit?: number
@@ -50,12 +51,13 @@ export async function POST(request: Request) {
     includeGames,
     gamesOffset,
     movesOffset,
+    wildcard,
   } = params
 
   const maxGamesOverride = 5
 
   // We need at least one of position or tags
-  if (!position && (!tags || Object.keys(tags).length === 0)) {
+  if (!position && (!tags || Object.keys(tags).length === 0) && !wildcard) {
     return new Response('Need one of position or tags', { status: 400 })
   }
 
@@ -90,7 +92,7 @@ export async function POST(request: Request) {
     if (position) {
       // If a position is passed, we'll look at the moveTree table first
       // and then (if requested) join to the games tables (filtered by tags) to get the games that reached that position
-      const tagWhereClause = buildTagWhereClause(tags)
+      const tagWhereClause = buildTagWhereClause(tags, wildcard)
       const data = await prisma.moveTree.findMany({
         where: {
           fenBefore: position,
@@ -126,7 +128,7 @@ export async function POST(request: Request) {
     } else {
       // If no position was passed, we'll look at the games table and filter by tags
       // We can ignore the moveTree table in this case
-      const tagWhereClause = buildTagWhereClause(tags)
+      const tagWhereClause = buildTagWhereClause(tags, wildcard)
       const data = await prisma.game.findMany({
         where: {
           ...tagWhereClause,
@@ -146,25 +148,45 @@ export async function POST(request: Request) {
   }
 }
 
-function buildTagWhereClause(tags: Record<string, string> | undefined) {
-  if (!tags) return {}
-  // remove empty tags
-  const tagNames = Object.keys(tags).filter((key) => tags[key] !== '')
-  const tagValues = tagNames.map((key) => tags[key] + '*').join(' ')
+function buildTagWhereClause(tags?: Record<string, string>, wildcard?: string) {
+  let whereClause: {
+    AND?: any
+  } = {}
 
-  console.log(tagValues)
-  const query = {
-    tags: {
-      some: {
-        tagName: {
-          in: tagNames,
-        },
-        tagValue: {
-          search: tagValues.trim(),
+  if (tags) {
+    // remove empty tags
+    const tagNames = tags
+      ? Object.keys(tags).filter((key) => tags[key] !== '')
+      : []
+
+    const exactTags = ['result', 'round']
+
+    whereClause.AND = tagNames.map((tagName) => ({
+      tags: {
+        some: {
+          tagName: tagName,
+          tagValue: !exactTags.includes(tagName)
+            ? {
+                search: tags[tagName] + '*',
+              }
+            : tags[tagName],
         },
       },
-    },
+    }))
   }
 
-  return query
+  if (wildcard) {
+    whereClause.AND = whereClause.AND ?? []
+    whereClause.AND.push({
+      tags: {
+        some: {
+          tagValue: {
+            search: wildcard + '*',
+          },
+        },
+      },
+    })
+  }
+
+  return whereClause
 }
