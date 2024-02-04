@@ -1,6 +1,5 @@
 import { prisma } from '~/server/db'
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as sentry from '@sentry/nextjs'
 
 import { successResponse } from '../responses'
@@ -24,6 +23,8 @@ export type GamesDatabaseGame = {
     gameId: number
   }[]
   moveString: string
+  combinedElo: number
+  datePlayed: string
 }
 
 export type GamesDatabaseMove = {
@@ -32,16 +33,9 @@ export type GamesDatabaseMove = {
   games?: GamesDatabaseGame[]
 }
 
-export async function POST(request: Request) {
-  const session = getKindeServerSession(request)
-  if (!session) {
-    // If no session, check for an API key
-    const apiKey = request.headers.get('x-api-key')
-    if (apiKey !== process.env.API_KEY) {
-      return new Response('Unauthorized', { status: 401 })
-    }
-  }
+// TODO: Add authentication to this route, either for logged in users or for API keys
 
+export async function POST(request: Request) {
   const params: RequestParams = await request.json()
   const {
     position,
@@ -137,6 +131,9 @@ export async function POST(request: Request) {
         skip: gamesOffset ?? 0,
         include: {
           tags: true,
+        },
+        orderBy: {
+          datePlayed: 'desc',
         },
       })
 
