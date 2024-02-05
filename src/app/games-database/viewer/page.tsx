@@ -29,10 +29,21 @@ export default function OpeningExplorerPage() {
   const [tagsOpen, setTagsOpen] = useState(false)
   const [prevDisabled, setPrevDisabled] = useState(true)
   const [nextDisabled, setNextDisabled] = useState(false)
+  const [additionalSquares, setAdditionalSquares] = useState<
+    Record<string, { backgroundColor: string }>
+  >({})
 
   const moveToIndex = (index: number) => {
-    const newPosition = chess.history({ verbose: true })[index]!.after
-    setPosition(newPosition)
+    const history = chess.history({ verbose: true })
+    const fromSquare = history[index]!.from
+    const toSquare = history[index]!.to
+
+    setAdditionalSquares({
+      [fromSquare]: { backgroundColor: 'rgba(0, 255, 0, 0.2)' },
+      [toSquare]: { backgroundColor: 'rgba(0, 255, 0, 0.4)' },
+    })
+
+    setPosition(history[index]!.after)
     setCurrentMoveIndex(index)
   }
 
@@ -184,7 +195,7 @@ export default function OpeningExplorerPage() {
                 readyForInput={false}
                 orientation="white"
                 soundEnabled={true}
-                additionalSquares={{}}
+                additionalSquares={additionalSquares}
                 additionalArrows={[]}
                 enableArrows={true}
                 enableHighlights={true}
