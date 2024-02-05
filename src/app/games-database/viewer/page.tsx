@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation'
 
 import { useEffect, useState } from 'react'
 
+import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { Chess, Move } from 'chess.js'
 import { decompressFromEncodedURIComponent } from 'lz-string'
 
@@ -13,10 +14,17 @@ import Heading from '../../components/_elements/heading'
 import StyledLink from '../../components/_elements/styledLink'
 import ChessBoard from '../../components/training/ChessBoard'
 
+import { findTagValue } from '../page'
+
 export default function OpeningExplorerPage() {
   const searchParams = useSearchParams()
+  const [parent] = useAutoAnimate()
   const [chess, setChess] = useState(new Chess())
   const [position, setPosition] = useState(chess.fen())
+  const [tags, setTags] = useState(
+    [] as { tagName: string; tagValue: string }[],
+  )
+  const [tagsOpen, setTagsOpen] = useState(false)
 
   const onMove = async (move: Move) => {
     setPosition(chess.fen())
@@ -31,9 +39,54 @@ export default function OpeningExplorerPage() {
     if (pgn) {
       try {
         chess.loadPgn(decompressFromEncodedURIComponent(pgn))
-      } catch (e) {
-        chess.reset()
+        const header = chess.header()
+        const tags = Object.keys(header).map((tagName) => ({
+          tagName,
+          tagValue: header[tagName] ?? '',
+        }))
+
+        // Combine into: WhiteTitle White (WhiteElo) vs BlackTitle Black (BlackElo)
+        const whiteTitle = findTagValue(tags, 'WhiteTitle')
+        const white = findTagValue(tags, 'White')
+        const whiteElo = findTagValue(tags, 'WhiteElo')
+        const blackTitle = findTagValue(tags, 'BlackTitle')
+        const black = findTagValue(tags, 'Black')
+        const blackElo = findTagValue(tags, 'BlackElo')
+        setTagValue(
+          tags,
+          'White',
+          (whiteTitle ? `${whiteTitle} ${white}` : white) +
+            (whiteElo ? ` (${whiteElo})` : ''),
+        )
+        setTagValue(
+          tags,
+          'Black',
+          (blackTitle ? `${blackTitle} ${black}` : black) +
+            (blackElo ? ` (${blackElo})` : ''),
+        )
+        removeTag(tags, 'WhiteTitle')
+        removeTag(tags, 'WhiteElo')
+        removeTag(tags, 'BlackTitle')
+        removeTag(tags, 'BlackElo')
+        removeTag(tags, 'Messages')
+
+        tags.sort((a, b) => {
+          if (a.tagName === 'White') return -1
+          if (b.tagName === 'White') return 1
+          if (a.tagName === 'Black') return -1
+          if (b.tagName === 'Black') return 1
+          if (a.tagName === 'Result') return -1
+          if (b.tagName === 'Result') return 1
+          if (a.tagName === 'Date') return -1
+          if (b.tagName === 'Date') return 1
+          return a.tagName.localeCompare(b.tagName)
+        })
+
+        setTags(tags)
         setPosition(chess.fen())
+      } catch (e) {
+        setChess(new Chess())
+        setTags([])
         console.error(e)
       }
     }
@@ -56,36 +109,79 @@ export default function OpeningExplorerPage() {
         </p>
       </div>
       <Container>
-        <div className="">
-          <Heading as="h1">Game Viewer</Heading>
-          <p>
-            We have a database of over 6 Million Chess Games. If you'd like to
-            search for a particular game, you can use our{' '}
-            <StyledLink href="/games-database/search">search page</StyledLink>.
-            Or, alternatively, you can use our{' '}
-            <StyledLink href="/games-database/explorer">
-              explorer page
-            </StyledLink>{' '}
-            to find games that match a particular position or set of moves.
+        <div className="flex flex-col gap-4">
+          <div className="">
+            <Heading as="h1">Game Viewer</Heading>
+            <p>
+              We have a database of over 6 Million Chess Games. If you'd like to
+              search for a particular game, you can use our{' '}
+              <StyledLink href="/games-database/search">search page</StyledLink>
+              . Or, alternatively, you can use our{' '}
+              <StyledLink href="/games-database/explorer">
+                explorer page
+              </StyledLink>{' '}
+              to find games that match a particular position or set of moves.
+            </p>
+          </div>
+          <div
+            ref={parent}
+            className="flex flex-wrap gap-2 pt-2 justify-center text-xs"
+          >
+            {tags.slice(0, tagsOpen ? tags.length : 4).map((tag) => (
+              <div className="flex flex-col items-center border border-gray-300">
+                <p className="font-bold py-1 px-2 border-b border-gray-300 w-full text-center">
+                  {tag.tagName}
+                </p>
+                <p className="p-1">{tag.tagValue}</p>
+              </div>
+            ))}
+          </div>
+          <p
+            className="text-purple-700 cursor-pointer underline hover:no-underline mx-auto w-fit text-xs"
+            onClick={() => setTagsOpen(!tagsOpen)}
+          >
+            {tagsOpen ? 'Show Less...' : 'Show More...'}
           </p>
-        </div>
-        <div className="flex flex-col gap-2 md:flex-row">
-          <div className="flex flex-col gap-2">
-            <ChessBoard
-              game={chess}
-              position={position}
-              moveMade={onMove}
-              readyForInput={true}
-              orientation="white"
-              soundEnabled={true}
-              additionalSquares={{}}
-              additionalArrows={[]}
-              enableArrows={false}
-              enableHighlights={false}
-            />
+          <div className="flex flex-col gap-2 md:flex-row">
+            <div className="flex flex-col gap-2">
+              <ChessBoard
+                game={chess}
+                position={position}
+                moveMade={onMove}
+                readyForInput={true}
+                orientation="white"
+                soundEnabled={true}
+                additionalSquares={{}}
+                additionalArrows={[]}
+                enableArrows={false}
+                enableHighlights={false}
+              />
+            </div>
           </div>
         </div>
       </Container>
     </>
   )
+}
+
+function setTagValue(
+  tags: { tagName: string; tagValue: string }[],
+  tagName: string,
+  tagValue: string,
+) {
+  const index = tags.findIndex((tag) => tag.tagName === tagName)
+  if (index === -1) {
+    tags.push({ tagName, tagValue })
+  } else {
+    tags[index]!.tagValue = tagValue
+  }
+}
+function removeTag(
+  tags: { tagName: string; tagValue: string }[],
+  tagName: string,
+) {
+  const index = tags.findIndex((tag) => tag.tagName === tagName)
+  if (index !== -1) {
+    tags.splice(index, 1)
+  }
 }
