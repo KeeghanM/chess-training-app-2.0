@@ -13,6 +13,7 @@ import Container from '../../components/_elements/container'
 import Heading from '../../components/_elements/heading'
 import StyledLink from '../../components/_elements/styledLink'
 import ChessBoard from '../../components/training/ChessBoard'
+import Button from '~/app/components/_elements/button'
 
 import { findTagValue } from '../page'
 
@@ -21,18 +22,51 @@ export default function OpeningExplorerPage() {
   const [parent] = useAutoAnimate()
   const [chess, setChess] = useState(new Chess())
   const [position, setPosition] = useState(chess.fen())
+  const [currentMoveIndex, setCurrentMoveIndex] = useState(0)
   const [tags, setTags] = useState(
     [] as { tagName: string; tagValue: string }[],
   )
   const [tagsOpen, setTagsOpen] = useState(false)
+  const [prevDisabled, setPrevDisabled] = useState(true)
+  const [nextDisabled, setNextDisabled] = useState(false)
 
-  const onMove = async (move: Move) => {
-    setPosition(chess.fen())
+  const moveToIndex = (index: number) => {
+    const newPosition = chess.history({ verbose: true })[index]!.after
+    setPosition(newPosition)
+    setCurrentMoveIndex(index)
   }
 
+  const PgnDisplay = chess.history({ verbose: true }).map((move, index) => {
+    const moveNumber = Math.floor(index / 2) + 1
+    const moveColour = index % 2 === 0 ? 'White' : 'Black'
+    const currentMoveMatch = index === currentMoveIndex
+
+    const FlexText = () => (
+      <p>
+        {moveColour == 'White' && (
+          <span className="font-bold">{moveNumber}.</span>
+        )}{' '}
+        <span>{move.san}</span>
+      </p>
+    )
+    return (
+      <button
+        key={'btn' + moveNumber.toString() + move + moveColour}
+        className={
+          'h-max max-h-fit bg-none px-1 py-1 hover:bg-gray-300' +
+          (currentMoveMatch ? ' bg-gray-300' : '')
+        }
+        onClick={async () => moveToIndex(index)}
+      >
+        <FlexText />
+      </button>
+    )
+  })
+
   useEffect(() => {
-    setPosition(chess.fen())
-  }, [chess])
+    setPrevDisabled(currentMoveIndex === 0)
+    setNextDisabled(currentMoveIndex === chess.history().length - 1)
+  }, [position, currentMoveIndex])
 
   useEffect(() => {
     const pgn = searchParams.get('pgn')
@@ -83,7 +117,6 @@ export default function OpeningExplorerPage() {
         })
 
         setTags(tags)
-        setPosition(chess.fen())
       } catch (e) {
         setChess(new Chess())
         setTags([])
@@ -147,15 +180,34 @@ export default function OpeningExplorerPage() {
               <ChessBoard
                 game={chess}
                 position={position}
-                moveMade={onMove}
-                readyForInput={true}
+                moveMade={(move) => null}
+                readyForInput={false}
                 orientation="white"
                 soundEnabled={true}
                 additionalSquares={{}}
                 additionalArrows={[]}
-                enableArrows={false}
-                enableHighlights={false}
+                enableArrows={true}
+                enableHighlights={true}
               />
+            </div>
+            <div className="text-sm border p-2 h-full flex flex-col">
+              <div>{PgnDisplay}</div>
+              <div className="flex gap-2">
+                <Button
+                  variant="primary"
+                  onClick={() => currentMoveIndex - 1}
+                  disabled={prevDisabled}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="primary"
+                  onClick={() => moveToIndex(currentMoveIndex + 1)}
+                  disabled={nextDisabled}
+                >
+                  Next
+                </Button>
+              </div>
             </div>
           </div>
         </div>
