@@ -333,122 +333,132 @@ export default function VisualisationTrainer() {
         tooltipPosition="auto"
         dismissible={true}
         showStepCount={true}
-      />{' '}
+      />
       {mode == 'settings' ? (
         <>
-          <div className="flex flex-col gap-4 bg-purple-700 p-4" id="tooltip-0">
-            <div className="flex gap-2 flex-col md:flex-row items-center">
-              <div>
-                <label className="text-lg font-bold text-white">
-                  Your Rating
-                </label>
-                <input
-                  type="number"
-                  className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
-                  min={'500'}
-                  max={'3000'}
-                  step={'10'}
-                  value={rating}
-                  onInput={(e) => {
-                    setRating(parseInt(e.currentTarget.value))
-                  }}
-                />
-              </div>
-              <div>
-                <label className="text-lg font-bold text-white">
-                  Difficulty
-                </label>
-                <div className="flex flex-col gap-2 lg:flex-row lg:gap-4">
-                  <Button
-                    variant={difficulty == 0 ? 'accent' : 'secondary'}
-                    onClick={() => setDifficulty(0)}
-                  >
-                    Easy
-                  </Button>
-                  <Button
-                    variant={difficulty == 1 ? 'accent' : 'secondary'}
-                    onClick={() => setDifficulty(1)}
-                  >
-                    Medium
-                  </Button>
-                  <Button
-                    variant={difficulty == 2 ? 'accent' : 'secondary'}
-                    onClick={() => setDifficulty(2)}
-                  >
-                    Hard
-                  </Button>
+          <div
+            className="border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]"
+            id="tooltip-0"
+          >
+            <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
+              <p>Adjust your settings</p>
+            </div>
+            <div className="flex flex-col p-2 gap-4">
+              <div className="flex gap-2 flex-col md:flex-row items-center">
+                <div>
+                  <label className="font-bold text-white">Your Rating</label>
+                  <input
+                    type="number"
+                    className="w-full border border-gray-300 bg-gray-100 px-4 py-1 text-black"
+                    min={'500'}
+                    max={'3000'}
+                    step={'10'}
+                    value={rating}
+                    onInput={(e) => {
+                      setRating(parseInt(e.currentTarget.value))
+                    }}
+                  />
+                </div>
+                <div>
+                  <label className="font-bold text-white">Difficulty</label>
+                  <div className="flex flex-col gap-1 lg:flex-row ">
+                    <Button
+                      variant={difficulty == 0 ? 'accent' : 'secondary'}
+                      onClick={() => setDifficulty(0)}
+                    >
+                      Easy
+                    </Button>
+                    <Button
+                      variant={difficulty == 1 ? 'accent' : 'secondary'}
+                      onClick={() => setDifficulty(1)}
+                    >
+                      Medium
+                    </Button>
+                    <Button
+                      variant={difficulty == 2 ? 'accent' : 'secondary'}
+                      onClick={() => setDifficulty(2)}
+                    >
+                      Hard
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div>
-              <Tippy content="This is the total moves to see, including yours and your opponents.">
-                <label className="text-lg font-bold text-white">
-                  Moves to visualise
-                </label>
-              </Tippy>
-              <select
-                id="tooltip-1"
-                className="w-fit ml-2 border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-                value={length}
-                onChange={(e) => setLength(parseInt(e.currentTarget.value))}
+              <div>
+                <Tippy content="This is the total moves to see, including yours and your opponents.">
+                  <label className="font-bold text-white">
+                    Moves to visualise
+                  </label>
+                </Tippy>
+                <select
+                  id="tooltip-1"
+                  className="w-fit ml-2 border border-gray-300 px-4 py-1 bg-gray-100 text-black"
+                  value={length}
+                  onChange={(e) => setLength(parseInt(e.currentTarget.value))}
+                >
+                  <option value="2">2</option>
+                  <option value="4">4</option>
+                  <option value="6">6</option>
+                  <option value="8">8</option>
+                  <option value="10">10</option>
+                </select>
+              </div>
+              <Button
+                variant="primary"
+                onClick={async () => {
+                  setMode('training')
+                  trackEventOnClient('Visualisation_start', {})
+                }}
               >
-                <option value="2">2</option>
-                <option value="4">4</option>
-                <option value="6">6</option>
-                <option value="8">8</option>
-                <option value="10">10</option>
-              </select>
+                Start Training
+              </Button>
+              {error && (
+                <p className="bg-red-500 italic text-sm p-2 text-white">
+                  {error}
+                </p>
+              )}
             </div>
-            <Button
-              variant="success"
-              onClick={async () => {
-                setMode('training')
-                trackEventOnClient('Visualisation_start', {})
-              }}
-            >
-              Start Training
-            </Button>
-            {error && (
-              <p className="bg-red-500 italic text-sm p-2 text-white">
-                {error}
-              </p>
-            )}
           </div>
         </>
       ) : (
         <>
-          <div className="relative flex flex-col gap-2 bg-purple-700 p-4">
+          <div className="relative border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
             {loading && (
               <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
                 <Spinner />
               </div>
             )}
             <div className="flex flex-wrap items-center justify-between text-white text-sm">
-              <div className="flex justify-between items-center gap-1 md:gap-4 flex-wrap">
-                <p className="flex flex-col items-center">
-                  <span className="font-bold">Rating:</span>
-                  <span>{rating}</span>
-                </p>
-                <p className="flex flex-col items-center">
-                  <span className="font-bold">Difficulty:</span>
-                  <span>{getDifficulty()}</span>
-                </p>
-                <p
-                  onClick={async () => {
-                    await markFlowNotStarted('flow_FudOixipuMiWOaP7')
-                    await markStepCompleted(
-                      'flow_FudOixipuMiWOaP7',
-                      'welcome-tooltip',
-                    )
-                    await markStepCompleted(
-                      'flow_FudOixipuMiWOaP7',
-                      'puzzle-length',
-                    )
-                  }}
-                  className="cursor-pointer underline hover:no-underline"
-                >
-                  How to use?
-                </p>
+              <div className="flex gap-1 p-2 pb-0 justify-center text-xs md:text-sm lg:text-base">
+                <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+                  <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                    Rating:
+                  </p>
+                  <p>{rating}</p>
+                </div>
+                <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+                  <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                    Difficulty:
+                  </p>
+                  <p>{getDifficulty()}</p>
+                </div>
+                <div className="flex flex-col justify-center p-1 items-center border border-gray-300 dark:border-slate-600">
+                  <p
+                    onClick={async () => {
+                      await markFlowNotStarted('flow_FudOixipuMiWOaP7')
+                      await markStepCompleted(
+                        'flow_FudOixipuMiWOaP7',
+                        'welcome-tooltip',
+                      )
+                      await markStepCompleted(
+                        'flow_FudOixipuMiWOaP7',
+                        'puzzle-length',
+                      )
+                    }}
+                    className="cursor-pointer underline hover:no-underline "
+                  >
+                    How to use?
+                  </p>
+                </div>
                 <XpTracker counter={xpCounter} type={'tactic'} />
               </div>
               <div className="flex items-center gap-2 w-fit mx-auto md:mx-0">
@@ -495,7 +505,7 @@ export default function VisualisationTrainer() {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-4 lg:flex-row">
+            <div className="flex flex-col gap-4 lg:flex-row p-2">
               <div id="tooltip-3" className="relative cursor-pointer">
                 <Chessboard // This is the visible board, set at the start position
                   arePiecesDraggable={false}
@@ -632,7 +642,7 @@ export default function VisualisationTrainer() {
                 <div className="flex flex-1 flex-col-reverse gap-2 lg:flex-col">
                   <div
                     id="tooltip-2"
-                    className="flex h-full flex-wrap content-start gap-1 bg-purple-600 p-2"
+                    className="flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white"
                   >
                     {PgnDisplay.map((item) => item)}
                   </div>
@@ -651,7 +661,7 @@ export default function VisualisationTrainer() {
                     {puzzleFinished ? (
                       (!autoNext || puzzleStatus == 'incorrect') && (
                         <Button
-                          variant="accent"
+                          variant="primary"
                           onClick={() => goToNextPuzzle(puzzleStatus)}
                         >
                           Next

@@ -224,10 +224,10 @@ export default function ChessBoard(props: ChessBoardProps) {
     playMoveSound(lastMove.san)
   }, [props.position])
 
-  const windowSize = useWindowSize() as { width: number; height: number }
+  const windowSize = useWindowSize()
 
   return (
-    <div>
+    <div className="m-2">
       <Chessboard
         onPieceDrop={handlePieceDrop}
         onSquareClick={handleSquareClick}
@@ -247,7 +247,10 @@ export default function ChessBoard(props: ChessBoardProps) {
         arePiecesDraggable={props.readyForInput}
         position={props.position}
         boardOrientation={props.orientation}
-        boardWidth={Math.min(windowSize.height / 1.5, windowSize.width - 120)}
+        boardWidth={Math.min(
+          (windowSize.height ?? 800) * 0.7,
+          (windowSize.width ?? 300) * 0.9,
+        )}
         customBoardStyle={{
           marginInline: 'auto',
         }}

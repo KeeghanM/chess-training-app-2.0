@@ -542,6 +542,7 @@ export default function CourseTrainer(props: {
 
     return nextLine ? (
       <button
+        key={index + '_pgn'}
         className="h-max max-h-fit bg-none px-1 py-1 text-white hover:bg-purple-800"
         onClick={() => {
           const newGame = new Chess()
@@ -555,7 +556,7 @@ export default function CourseTrainer(props: {
         <FlexText />
       </button>
     ) : (
-      <div className="px-1 py-1 text-white">
+      <div key={index + '_pgn'} className="px-1 py-1 text-white">
         <FlexText />
       </div>
     )
@@ -690,18 +691,16 @@ export default function CourseTrainer(props: {
       </p>
     </div>
   ) : (
-    <div className="relative bg-purple-700 p-4">
+    <div className="relative border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
       {loading && (
         <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
           <Spinner />
         </div>
       )}
-      <div className="flex flex-wrap items-center justify-between text-white">
+      <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
         <div className="flex flex-col">
-          <p className="font-bold text-white">
-            {currentLine?.line.group.groupName}
-          </p>
-          <p className="italic text-sm text-white">
+          <p className="font-bold">{currentLine?.line.group.groupName}</p>
+          <p className="italic text-sm text-gray-600 dark:text-gray-400">
             {
               lines.filter(
                 (line) =>
@@ -713,7 +712,7 @@ export default function CourseTrainer(props: {
           </p>
         </div>
         <XpTracker counter={xpCounter} type={'line'} />
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 text-white">
           <ThemeSwitch />
           <div
             className="flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
@@ -757,7 +756,7 @@ export default function CourseTrainer(props: {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-4 md:flex-row">
+      <div className="flex flex-col md:flex-row">
         <ChessBoard
           game={game}
           position={position}
@@ -770,7 +769,7 @@ export default function CourseTrainer(props: {
           enableHighlights={true}
           enableArrows={true}
         />
-        <div className="flex flex-col gap-2 flex-1">
+        <div className="flex flex-col gap-2 flex-1 p-2">
           {showComment && (
             <p
               style={{
@@ -791,7 +790,7 @@ export default function CourseTrainer(props: {
                 : '100%',
             }}
             className={
-              'flex bg-purple-600 flex-wrap content-start gap-1 p-2 flex-1 overflow-y-auto'
+              'flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white flex-1 overflow-y-auto'
             }
           >
             {PgnDisplay.map((item) => item)}
@@ -807,13 +806,13 @@ export default function CourseTrainer(props: {
             <span>Auto Next on correct</span>
           </label>
           {teaching && (
-            <Button variant="accent" onClick={resetTeachingMove}>
+            <Button variant="primary" onClick={resetTeachingMove}>
               Got it!
             </Button>
           )}
           {nextLine && !autoNext && (
             <Button
-              variant="accent"
+              variant="primary"
               disabled={status == 'loading'}
               onClick={async () => {
                 await startNextLine()

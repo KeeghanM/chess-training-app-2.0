@@ -347,121 +347,134 @@ export default function EndgameTrainer() {
 
   return mode == 'settings' ? (
     <>
-      <div className="flex flex-col gap-4 bg-purple-700 p-4">
-        <div>
-          <label className="text-lg font-bold text-white">Your Rating</label>
-          <input
-            type="number"
-            className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
-            min={'500'}
-            max={'3000'}
-            step={'10'}
-            value={rating}
-            onInput={(e) => {
-              setRating(parseInt(e.currentTarget.value))
+      <div className="border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
+        <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
+          <p>Adjust your settings</p>
+        </div>
+        <div className="flex flex-col p-2 gap-4">
+          <div className="flex flex-col md:flex-row gap-1 md:gap-2">
+            <div>
+              <label className="font-bold text-white">Your Rating</label>
+              <input
+                type="number"
+                className="w-full border border-gray-300 bg-gray-100 px-4 py-1 text-black"
+                min={'500'}
+                max={'3000'}
+                step={'10'}
+                value={rating}
+                onInput={(e) => {
+                  setRating(parseInt(e.currentTarget.value))
+                }}
+              />
+            </div>
+            <div>
+              <label className="font-bold text-white">Difficulty</label>
+              <div className="flex flex-col gap-1 lg:flex-row">
+                <Button
+                  variant={difficulty == 0 ? 'accent' : 'secondary'}
+                  onClick={() => setDifficulty(0)}
+                >
+                  Easy
+                </Button>
+                <Button
+                  variant={difficulty == 1 ? 'accent' : 'secondary'}
+                  onClick={() => setDifficulty(1)}
+                >
+                  Medium
+                </Button>
+                <Button
+                  variant={difficulty == 2 ? 'accent' : 'secondary'}
+                  onClick={() => setDifficulty(2)}
+                >
+                  Hard
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div>
+            <label className="font-bold text-white">Endgame Type</label>
+            <div className="grid grid-cols-2 gap-1 lg:grid-cols-3">
+              <Button
+                variant={type == 'All' ? 'accent' : 'secondary'}
+                onClick={() => setType('All')}
+              >
+                All
+              </Button>
+              <Button
+                variant={type == 'Queen' ? 'accent' : 'secondary'}
+                onClick={() => setType('Queen')}
+              >
+                Queen
+              </Button>
+              <Button
+                variant={type == 'Rook' ? 'accent' : 'secondary'}
+                onClick={() => setType('Rook')}
+              >
+                Rook
+              </Button>
+              <Button
+                variant={type == 'Bishop' ? 'accent' : 'secondary'}
+                onClick={() => setType('Bishop')}
+              >
+                Bishop
+              </Button>
+              <Button
+                variant={type == 'Knight' ? 'accent' : 'secondary'}
+                onClick={() => setType('Knight')}
+              >
+                Knight
+              </Button>
+              <Button
+                variant={type == 'Pawn' ? 'accent' : 'secondary'}
+                onClick={() => setType('Pawn')}
+              >
+                Pawn
+              </Button>
+            </div>
+          </div>
+          <Button
+            variant="primary"
+            onClick={async () => {
+              setMode('training')
+              trackEventOnClient('endgame_start', {})
             }}
-          />
+          >
+            Start Training
+          </Button>
+          {error && (
+            <p className="bg-red-500 italic text-sm p-2 text-white">{error}</p>
+          )}
         </div>
-        <div>
-          <label className="text-lg font-bold text-white">Difficulty</label>
-          <div className="flex flex-col gap-2 lg:flex-row lg:gap-4">
-            <Button
-              variant={difficulty == 0 ? 'accent' : 'secondary'}
-              onClick={() => setDifficulty(0)}
-            >
-              Easy
-            </Button>
-            <Button
-              variant={difficulty == 1 ? 'accent' : 'secondary'}
-              onClick={() => setDifficulty(1)}
-            >
-              Medium
-            </Button>
-            <Button
-              variant={difficulty == 2 ? 'accent' : 'secondary'}
-              onClick={() => setDifficulty(2)}
-            >
-              Hard
-            </Button>
-          </div>
-        </div>
-        <div>
-          <label className="text-lg font-bold text-white">Endgame Type</label>
-          <div className="grid grid-cols-2 gap-2 lg:grid-cols-3">
-            <Button
-              variant={type == 'All' ? 'accent' : 'secondary'}
-              onClick={() => setType('All')}
-            >
-              All
-            </Button>
-            <Button
-              variant={type == 'Queen' ? 'accent' : 'secondary'}
-              onClick={() => setType('Queen')}
-            >
-              Queen
-            </Button>
-            <Button
-              variant={type == 'Rook' ? 'accent' : 'secondary'}
-              onClick={() => setType('Rook')}
-            >
-              Rook
-            </Button>
-            <Button
-              variant={type == 'Bishop' ? 'accent' : 'secondary'}
-              onClick={() => setType('Bishop')}
-            >
-              Bishop
-            </Button>
-            <Button
-              variant={type == 'Knight' ? 'accent' : 'secondary'}
-              onClick={() => setType('Knight')}
-            >
-              Knight
-            </Button>
-            <Button
-              variant={type == 'Pawn' ? 'accent' : 'secondary'}
-              onClick={() => setType('Pawn')}
-            >
-              Pawn
-            </Button>
-          </div>
-        </div>
-        <Button
-          variant="success"
-          onClick={async () => {
-            setMode('training')
-            trackEventOnClient('endgame_start', {})
-          }}
-        >
-          Start Training
-        </Button>
-        {error && (
-          <p className="bg-red-500 italic text-sm p-2 text-white">{error}</p>
-        )}
       </div>
     </>
   ) : (
     <>
-      <div className="relative flex flex-col gap-2 bg-purple-700 p-4">
+      <div className="relative border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
         {loading && (
           <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
             <Spinner />
           </div>
         )}
         <div className="flex flex-wrap items-center justify-between text-white text-sm">
-          <div className="flex justify-between items-center gap-1 flex-wrap">
-            <p className="flex flex-col items-center">
-              <span className="font-bold">Type:</span>
-              <span>{type} Endgames</span>
-            </p>
-            <p className="flex flex-col items-center">
-              <span className="font-bold">Rating:</span>
-              <span>{rating}</span>
-            </p>
-            <p className="flex flex-col items-center">
-              <span className="font-bold">Difficulty:</span>
-              <span>{getDifficulty()}</span>
-            </p>
+          <div className="flex gap-1 p-2 pb-0 justify-center text-xs md:text-sm lg:text-base">
+            <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+              <p className="w-full text-center font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                Type:
+              </p>
+              <p className="px-1">{type} Endgames</p>
+            </div>
+            <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+              <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                Rating:
+              </p>
+              <p>{rating}</p>
+            </div>
+            <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+              <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                Difficulty:
+              </p>
+              <p>{getDifficulty()}</p>
+            </div>
             <XpTracker counter={xpCounter} type={'tactic'} />
           </div>
           <div className="flex items-center gap-2 w-fit mx-auto md:mx-0">
@@ -508,7 +521,7 @@ export default function EndgameTrainer() {
             </div>
           </div>
         </div>
-        <div className="flex flex-col gap-4 lg:flex-row">
+        <div className="flex flex-col lg:flex-row">
           <ChessBoard
             game={game}
             position={position}
@@ -521,7 +534,7 @@ export default function EndgameTrainer() {
             enableHighlights={true}
             enableArrows={true}
           />
-          <div className="flex w-full flex-col gap-2">
+          <div className="flex w-full flex-col gap-2  p-2">
             <div className="flex flex-row items-center gap-2">
               <p className="flex items-center gap-2 text-white">
                 <svg
@@ -621,7 +634,7 @@ export default function EndgameTrainer() {
               )}
             </div>
             <div className="flex flex-1 flex-col-reverse gap-2 lg:flex-col">
-              <div className="flex h-full flex-wrap content-start gap-1 bg-purple-600 p-2">
+              <div className="flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
                 {PgnDisplay.map((item) => item)}
               </div>
               <label className="ml-auto flex items-center gap-2 text-sm text-white">
@@ -639,7 +652,7 @@ export default function EndgameTrainer() {
                 {puzzleFinished ? (
                   (!autoNext || puzzleStatus == 'incorrect') && (
                     <Button
-                      variant="accent"
+                      variant="primary"
                       onClick={() => goToNextPuzzle(puzzleStatus)}
                     >
                       Next

@@ -22,12 +22,12 @@ export default function ThemeSwitch() {
       }}
       className="flex w-fit cursor-pointer flex-row items-center gap-2 p-2 dark:border-slate-600"
     >
-      <span className="w-[70px] rounded-full bg-yellow-300 p-1 dark:bg-slate-700">
+      <span className="w-[55px] rounded-full bg-yellow-300 p-1 dark:bg-slate-700">
         {resolvedTheme === 'light' ? (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="20"
+            height="20"
             viewBox="0 0 256 256"
             className="mr-auto"
           >
@@ -39,8 +39,8 @@ export default function ThemeSwitch() {
         ) : (
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
+            width="20"
+            height="20"
             viewBox="0 0 256 256"
             className="ml-auto"
           >
