@@ -26,7 +26,7 @@ export default function ToolGrid(props: { tool: Tool }) {
       <div className="p-2 text-sm">
         <p>{tool.description[0]}</p>
       </div>
-      <div className="flex flex-col lg:flex-row gap-2 md:justify-between p-2 mt-auto">
+      <div className="flex flex-col gap-2 p-2 mt-auto items-center">
         {tool.active ? (
           <Link href={tool.trainingLink}>
             <Button variant="primary">{tool.buttonText}</Button>
