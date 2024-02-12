@@ -635,7 +635,7 @@ export default function CourseTrainer(props: {
     if ((teaching || nextLine) && currentMove?.comment) setShowComment(true)
     else setShowComment(false)
 
-    if (currentMove.arrows) {
+    if (currentMove.arrows && teaching) {
       // arrows format: "Ga1b3,Gf2b8,Ra1a8"
       const moveArrows = currentMove.arrows.split(',')
       const getColour = (code: string) => {
