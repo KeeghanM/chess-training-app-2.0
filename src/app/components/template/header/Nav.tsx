@@ -10,6 +10,7 @@ import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css'
 
+import CalculateXpRank from '~/app/_util/CalculateXpRank'
 import { XpRanks } from '~/app/_util/RanksAndBadges'
 
 export default function Nav(props: {
@@ -21,7 +22,7 @@ export default function Nav(props: {
   const [openSub, setOpenSub] = useState('')
 
   const { user, experience } = props
-  const rank = XpRanks.reverse().find((rank) => experience >= rank.xp)
+  const rank = CalculateXpRank(experience)
 
   const links = [
     {
@@ -140,8 +141,8 @@ export default function Nav(props: {
                         {user.email}
                       </span>
                       <span className="block truncate text-xs text-orange-500">
-                        {experience.toLocaleString()} XP ({rank?.rank}:{' '}
-                        {rank?.name})
+                        {experience.toLocaleString()} XP ({rank?.rank.rank}:{' '}
+                        {rank?.rank.name})
                       </span>
                     </div>
                     <ul className="py-2" aria-labelledby="user-menu-button">
