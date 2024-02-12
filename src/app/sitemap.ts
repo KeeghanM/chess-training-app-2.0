@@ -10,7 +10,7 @@ export default async function sitemap() {
   const tidiedArticles = articles.map((article) => {
     return {
       url: `https://chesstraining.app/articles/${article.uid}`,
-      lastModified: article.last_publication_date,
+      lastModified: new Date(article.last_publication_date),
       changeFrequency: 'monthly',
       priority: 0.9,
     }
@@ -18,7 +18,7 @@ export default async function sitemap() {
   const tidiedAuthors = authors.map((author) => {
     return {
       url: `https://chesstraining.app/articles/author/${author.uid}`,
-      lastModified: author.last_publication_date,
+      lastModified: new Date(author.last_publication_date),
       changeFrequency: 'monthly',
       priority: 0.4,
     }

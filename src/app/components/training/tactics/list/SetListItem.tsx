@@ -47,10 +47,8 @@ export default function SetListItem(props: {
       key={set.id}
     >
       <div className="px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
-        <p>
-          <span onClick={trainSet} className="text-lg cursor-pointer">
-            {set.name}
-          </span>
+        <p onClick={trainSet} className="cursor-pointer hover:underline">
+          <span className="text-lg">{set.name}</span>
           <span className="px-2 text-xs italic text-gray-600 dark:text-gray-400">
             Last trained{' '}
             {set.lastTrained ? (
@@ -101,6 +99,14 @@ export default function SetListItem(props: {
             </p>
             <p>{toHHMMSS(currentRound?.timeSpent ?? 0)}</p>
           </div>
+          {set.rating && (
+            <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+              <p className="font-bold py-1 px-2 border-b border-gray-300 dark:border-slate-600">
+                Rating
+              </p>
+              <p>{set.rating}</p>
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-2 md:flex-row md:justify-center">
           <Button

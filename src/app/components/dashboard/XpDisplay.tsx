@@ -32,8 +32,10 @@ export default function XpDisplay(props: XpDisplayProps) {
         >
           <div className="px-2">
             <p className="px-4 text-sm">
-              {currentXp}
-              {nextRank && <span>/{nextRank.xp}xp</span>}
+              {currentXp.toLocaleString('en-GB')}
+              {nextRank && (
+                <span>/{nextRank.xp.toLocaleString('en-GB')}xp</span>
+              )}
             </p>
             <div className="h-3 w-full bg-purple-200">
               <div
