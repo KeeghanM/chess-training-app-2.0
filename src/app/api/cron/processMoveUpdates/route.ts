@@ -7,7 +7,7 @@ import { errorResponse, successResponse } from '../../responses'
 export async function GET() {
   try {
     const updates = await prisma.moveTreeUpdate.findMany({
-      take: 1000,
+      take: 500,
     })
 
     if (updates.length === 0)
@@ -17,7 +17,7 @@ export async function GET() {
       updates.map(async (update) => {
         try {
           // Sometimes the update is missing data, so we need to check for it
-          if (!update.movePlayed || !update.fenAfter || !update.fenBefore) {
+          if (!update.movePlayed || !update.fenBefore) {
             await prisma.moveTreeUpdate.delete({
               where: {
                 id: update.id,
@@ -30,7 +30,6 @@ export async function GET() {
           const moveData = await prisma.moveTree.findFirst({
             where: {
               fenBefore: update.fenBefore,
-              fenAfter: update.fenAfter,
               movePlayed: update.movePlayed,
             },
           })
@@ -56,7 +55,6 @@ export async function GET() {
             await prisma.moveTree.create({
               data: {
                 fenBefore: update.fenBefore,
-                fenAfter: update.fenAfter,
                 movePlayed: update.movePlayed,
                 timesPlayed: update.timesPlayed,
                 games: {

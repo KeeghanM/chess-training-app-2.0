@@ -92,7 +92,6 @@ export async function GET() {
       string,
       {
         fenBefore: string
-        fenAfter: string
         movePlayed: string
         timesPlayed: number
         gameIds: string
@@ -112,14 +111,12 @@ export async function GET() {
         const moveResult = chess.move(move)
         if (!moveResult) throw new Error(`Invalid move: ${move}`)
 
-        const fenAfter = chess.fen()
-        const key = `${fenBefore}_${move}_${fenAfter}`
+        const key = `${fenBefore}_${move}`
 
         const moveData = moveMap.get(key)
 
         moveMap.set(key, {
           fenBefore,
-          fenAfter,
           movePlayed: move,
           timesPlayed: moveData ? moveData.timesPlayed + 1 : 1,
           gameIds: moveData
@@ -127,7 +124,7 @@ export async function GET() {
             : gameId.toString(),
         })
 
-        fenBefore = fenAfter
+        fenBefore = chess.fen()
       })
     })
 

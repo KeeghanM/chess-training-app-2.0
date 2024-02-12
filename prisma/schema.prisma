@@ -255,12 +255,12 @@ model UserBadge {
 
 // Games Database & Openings API
 model Game {
-    id          Int        @id @default(autoincrement())
-    moveString  String     @db.Text
+    id          Int       @id @default(autoincrement())
+    moveString  String    @db.Text
     datePlayed  String
     combinedElo Int
     tags        GameTag[]
-    moves       MoveTree[]
+    fens        FenData[]
 }
 
 model GameTag {
@@ -274,15 +274,12 @@ model GameTag {
     @@fulltext([tagValue])
 }
 
-model MoveTree {
-    id          Int    @id @default(autoincrement())
-    fenBefore   String
-    fenAfter    String
-    movePlayed  String
-    timesPlayed Int
-    games       Game[]
+model FenData {
+    id        Int    @id @default(autoincrement())
+    fenBefore String @unique
+    moveData  String @db.Text
+    games     Game[]
 
-    @@unique([fenBefore, movePlayed, fenAfter])
     @@index([fenBefore])
 }
 
@@ -291,7 +288,6 @@ model MoveTreeUpdate {
     movePlayed  String
     timesPlayed Int
     fenBefore   String
-    fenAfter    String
     gameIds     String @db.Text
 }
 

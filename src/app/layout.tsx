@@ -4,6 +4,7 @@ import { Suspense } from 'react'
 import type { ReactNode } from 'react'
 
 import { FrigadeProvider } from '@frigade/react'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 
 import CookieBanner from './components/template/CookieBanner'
 import Footer from './components/template/footer/Footer'
@@ -52,6 +53,8 @@ export default async function RootLayout({
   children: ReactNode
 }) {
   const userId = await getDistinctId()
+  const session = await getKindeServerSession()
+  const user = await session?.getUser()
 
   return (
     <>
@@ -67,6 +70,13 @@ export default async function RootLayout({
         if (d.head) d.head.appendChild(s);
       })(document, window, 'BrevoConversations');`}
       </Script>
+      {!user && (
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7394948634783516"
+          crossOrigin="anonymous"
+        />
+      )}
       <html lang="en" suppressHydrationWarning={true}>
         <Suspense>
           <PostHogPageview />
