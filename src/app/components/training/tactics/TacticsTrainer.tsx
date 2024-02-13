@@ -532,20 +532,22 @@ export default function TacticsTrainer(props: {
                 <TimeSince date={sessionTimeStarted} />
               </p>
             </div>
+          </div>
+          <div>
+            <ChessBoard
+              game={game}
+              position={position}
+              orientation={orientation}
+              readyForInput={readyForInput}
+              soundEnabled={soundEnabled}
+              additionalSquares={{}}
+              moveMade={handleMove}
+              additionalArrows={[]}
+              enableHighlights={true}
+              enableArrows={true}
+            />
             <XpTracker counter={xpCounter} type={'tactic'} />
           </div>
-          <ChessBoard
-            game={game}
-            position={position}
-            orientation={orientation}
-            readyForInput={readyForInput}
-            soundEnabled={soundEnabled}
-            additionalSquares={{}}
-            moveMade={handleMove}
-            additionalArrows={[]}
-            enableHighlights={true}
-            enableArrows={true}
-          />
         </div>
         <div className="flex w-full flex-col gap-2 p-1">
           <div className="flex flex-row items-center gap-2">

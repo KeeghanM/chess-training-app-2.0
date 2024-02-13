@@ -33,7 +33,7 @@ export default function XpTracker(props: {
     // Hide the message after 3.5 seconds
     setTimeout(() => {
       setShow(false)
-    }, 3500)
+    }, 4000)
     // Add the XP to the user
     ;(async () => {
       const resp = await fetch('/api/profile/xp', {
@@ -50,15 +50,11 @@ export default function XpTracker(props: {
     })
   }, [props.counter])
 
-  return (
-    <div>
-      <div
-        className={`w-fit bg-green-300 p-2 text-black transition-all duration-300 ${
-          show ? ' absolute inset-0 mx-auto my-4 h-fit ' : 'hidden'
-        }`}
-      >
+  return show ? (
+    <div className="absolute inset-0 grid place-items-center">
+      <div className="w-fit bg-green-500 shadow-xl py-2 px-4 text-white z-50 animate-fade-up">
         +{xpToAdd} XP
       </div>
     </div>
-  )
+  ) : null
 }

@@ -103,6 +103,7 @@ export default function CourseTrainer(props: {
 
   // SFX
   const [incorrectSound] = useSound('/sfx/incorrect.mp3') as [() => void]
+  const [correctSound] = useSound('/sfx/correct.mp3') as [() => void]
 
   const getNextLine = (lines: PrismaUserLine[]) => {
     // Sorts the lines in order or priority
@@ -273,6 +274,7 @@ export default function CourseTrainer(props: {
       setLoading(true)
       processNewFens()
       const updatedLines = processStats()
+      if (soundEnabled) correctSound()
 
       if (updatedLines === null) throw new Error('No updated lines') // This is likely because we've lost auth somehow
 
@@ -711,7 +713,6 @@ export default function CourseTrainer(props: {
             lines remaining
           </p>
         </div>
-        <XpTracker counter={xpCounter} type={'line'} />
         <div className="flex items-center gap-2 text-white">
           <ThemeSwitch />
           <div
@@ -757,18 +758,21 @@ export default function CourseTrainer(props: {
         </div>
       </div>
       <div className="flex flex-col md:flex-row">
-        <ChessBoard
-          game={game}
-          position={position}
-          orientation={orientation}
-          readyForInput={interactive}
-          soundEnabled={soundEnabled}
-          additionalSquares={{}}
-          moveMade={handleMove}
-          additionalArrows={arrows}
-          enableHighlights={true}
-          enableArrows={true}
-        />
+        <div>
+          <ChessBoard
+            game={game}
+            position={position}
+            orientation={orientation}
+            readyForInput={interactive}
+            soundEnabled={soundEnabled}
+            additionalSquares={{}}
+            moveMade={handleMove}
+            additionalArrows={arrows}
+            enableHighlights={true}
+            enableArrows={true}
+          />
+          <XpTracker counter={xpCounter} type={'line'} />
+        </div>
         <div className="flex flex-col gap-2 flex-1 p-2">
           {showComment && (
             <p
