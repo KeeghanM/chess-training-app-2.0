@@ -47,6 +47,15 @@ export default function DetailsForm(props: {
         return
       }
 
+      const res2 = await fetch('/api/courses/user/canCreate')
+      const json2 = (await res2.json()) as ResponseJson
+      if (!json2.data?.canCreate) {
+        setError('You have reached the maximum number of courses')
+        setStatus('idle')
+        trackEventOnClient('create_course_max_reached', {})
+        return
+      }
+
       trackEventOnClient('create_course_details_submitted', {
         name,
       })

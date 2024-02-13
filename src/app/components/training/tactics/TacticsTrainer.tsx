@@ -440,15 +440,15 @@ export default function TacticsTrainer(props: {
   if (!user) return null
 
   return (
-    <div className="relative bg-purple-700 p-4">
+    <div className="relative border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
       {loading && (
         <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
           <Spinner />
         </div>
       )}
-      <div className="flex flex-wrap items-center justify-between text-white">
+      <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
         <p className="text-lg font-bold">{props.set.name}</p>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 text-white">
           <ThemeSwitch />
           <div
             className="flex cursor-pointer flex-row items-center gap-1 hover:text-orange-500"
@@ -492,59 +492,69 @@ export default function TacticsTrainer(props: {
           </div>
         </div>
       </div>
-      <div className="flex flex-row justify-between gap-2 text-xs md:justify-start md:text-sm">
-        <p className="flex flex-col items-center text-white">
-          <span className="font-bold">Round:</span>{' '}
-          <span>{props.set.rounds.length}/8</span>
-        </p>
-        <p className="flex flex-col items-center text-white">
-          <span className="font-bold">Completed:</span>
-          <span>
-            {CompletedPuzzles}/{props.set.size}
-          </span>
-        </p>
-        <p className="flex flex-col items-center text-white">
-          <span className="font-bold">Accuracy:</span>
-          <span>
-            {currentRound.correct == 0 && currentRound.incorrect == 0
-              ? '0'
-              : Math.round(
-                  (currentRound.correct /
-                    (currentRound.correct + currentRound.incorrect)) *
-                    100,
-                )}
-            %
-          </span>
-        </p>
-        <p className="flex flex-col items-center text-white">
-          <span className="font-bold">Session Time:</span>
-          <span>
-            <TimeSince date={sessionTimeStarted} />
-          </span>
-        </p>
-        <XpTracker counter={xpCounter} type={'tactic'} />
-      </div>
-      <div className="flex flex-col gap-4 md:flex-row">
-        <ChessBoard
-          game={game}
-          position={position}
-          orientation={orientation}
-          readyForInput={readyForInput}
-          soundEnabled={soundEnabled}
-          additionalSquares={{}}
-          moveMade={handleMove}
-          additionalArrows={[]}
-          enableHighlights={true}
-          enableArrows={true}
-        />
-        <div className="flex w-full flex-col gap-2">
+      <div className="flex flex-col lg:flex-row">
+        <div className="flex flex-col">
+          <div className="flex gap-1 mt-1 justify-center text-xs md:text-sm lg:text-base">
+            <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+              <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                Round:
+              </p>
+              <p>{props.set.rounds.length}/8</p>
+            </div>
+            <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+              <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                Completed:
+              </p>
+              <p>
+                {CompletedPuzzles}/{props.set.size}
+              </p>
+            </div>
+            <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+              <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                Accuracy:
+              </p>
+              <p>
+                {currentRound.correct == 0 && currentRound.incorrect == 0
+                  ? '0'
+                  : Math.round(
+                      (currentRound.correct /
+                        (currentRound.correct + currentRound.incorrect)) *
+                        100,
+                    )}
+                %
+              </p>
+            </div>
+            <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+              <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                Session:
+              </p>
+              <p>
+                <TimeSince date={sessionTimeStarted} />
+              </p>
+            </div>
+            <XpTracker counter={xpCounter} type={'tactic'} />
+          </div>
+          <ChessBoard
+            game={game}
+            position={position}
+            orientation={orientation}
+            readyForInput={readyForInput}
+            soundEnabled={soundEnabled}
+            additionalSquares={{}}
+            moveMade={handleMove}
+            additionalArrows={[]}
+            enableHighlights={true}
+            enableArrows={true}
+          />
+        </div>
+        <div className="flex w-full flex-col gap-2 p-1">
           <div className="flex flex-row items-center gap-2">
             {!puzzleFinished && (
               <p className="flex items-center gap-2 text-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   className={
                     orientation === 'white'
@@ -638,8 +648,8 @@ export default function TacticsTrainer(props: {
               </div>
             )}
           </div>
-          <div className="flex flex-1 flex-col-reverse gap-2 md:flex-col">
-            <div className="flex h-full flex-wrap content-start gap-1 bg-purple-600 p-2">
+          <div className="flex flex-1 flex-col-reverse gap-2 lg:flex-col">
+            <div className="flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
               {PgnDisplay.map((item) => item)}
             </div>
             <label className="ml-auto flex items-center gap-2 text-sm text-white">
@@ -656,7 +666,7 @@ export default function TacticsTrainer(props: {
             <div className="flex flex-col gap-2">
               {puzzleFinished ? (
                 (!autoNext || puzzleStatus == 'incorrect') && (
-                  <Button variant="accent" onClick={() => goToNextPuzzle()}>
+                  <Button variant="primary" onClick={() => goToNextPuzzle()}>
                     Next
                   </Button>
                 )

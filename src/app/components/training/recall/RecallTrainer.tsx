@@ -4,7 +4,6 @@ import Link from 'next/link'
 
 import { useEffect, useState } from 'react'
 
-import { useFlows } from '@frigade/react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
@@ -87,9 +86,6 @@ export default function RecallTrainer() {
   >('none')
   const [xpCounter, setXpCounter] = useState(0)
   const [currentStreak, setCurrentStreak] = useState(0)
-
-  // Onboarding override
-  const { markStepCompleted, markFlowNotStarted } = useFlows()
 
   const getPuzzle = async () => {
     try {
@@ -325,12 +321,6 @@ export default function RecallTrainer() {
 
   return (
     <>
-      {/* <FrigadeTour
-        flowId="flow_FudOixipuMiWOaP7"
-        tooltipPosition="auto"
-        dismissible={true}
-        showStepCount={true}
-      /> */}
       {mode == 'settings' ? (
         <>
           <div className="flex flex-col gap-4 bg-purple-700 p-4" id="tooltip-0">
@@ -487,22 +477,6 @@ export default function RecallTrainer() {
                 <p className="flex flex-col items-center">
                   <span className="font-bold">Timer:</span>
                   <span>{timed ? <>{timerLength}s</> : 'none'}</span>
-                </p>
-                <p
-                  onClick={async () => {
-                    await markFlowNotStarted('flow_UITkRxhuAE4Hwmdk')
-                    await markStepCompleted(
-                      'flow_UITkRxhuAE4Hwmdk',
-                      'welcome-tooltip',
-                    )
-                    await markStepCompleted(
-                      'flow_UITkRxhuAE4Hwmdk',
-                      'puzzle-length',
-                    )
-                  }}
-                  className="cursor-pointer underline hover:no-underline"
-                >
-                  How to use?
                 </p>
                 <XpTracker counter={xpCounter} type={'tactic'} />
               </div>

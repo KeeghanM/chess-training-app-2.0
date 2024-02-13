@@ -77,7 +77,7 @@ export default function Nav(props: {
   ]
 
   return (
-    <header className="sticky top-0 z-10 bg-slate-800 border-b-4 border-purple-700  text-white shadow-lg">
+    <header className="bg-slate-800 border-b-4 border-purple-700  text-white shadow-lg">
       <div className="mx-auto flex max-w-screen-xl items-center justify-between gap-1 px-1 py-2 lg:gap-4 lg:p-4">
         <Link href={user ? '/dashboard' : '/'}>
           <div className="flex items-center">

@@ -89,12 +89,7 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
         </Link>
       </div>
 
-      <div
-        className={
-          'flex flex-col gap-4 ' +
-          (courses.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : '')
-        }
-      >
+      <div className="flex flex-col gap-4">
         {loading ? (
           <>
             <div className="flex flex-col h-24 gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300 opacity-50">
@@ -127,11 +122,11 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
               />
             ))
         ) : (
-          <div className="p-2">
+          <div className="p-2 bg-gray-100 dark:bg-slate-900">
             <Heading as="h3">You haven't got any courses yet</Heading>
             <p className="text-gray-500  dark:text-white">
-              You can browse courses any of our{' '}
-              <StyledLink href="/courses">amazing courses</StyledLink> or{' '}
+              You can browse any of our{' '}
+              <StyledLink href="/courses">amazing courses</StyledLink> or try{' '}
               <StyledLink href="/courses/create">creating your own</StyledLink>.
             </p>
           </div>

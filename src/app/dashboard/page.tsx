@@ -206,7 +206,9 @@ export default async function Dashboard() {
         </div>
         {permissions?.permissions?.includes('staff-member') && (
           <div>
-            <Heading as={'h2'}>Staff Tools</Heading>
+            <Heading color="text-purple-700" as={'h2'}>
+              Staff Tools
+            </Heading>
             <div className="mb-2 grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {staffTools.map((tool) => (
                 <ToolGrid tool={tool} key={tool.name} />
