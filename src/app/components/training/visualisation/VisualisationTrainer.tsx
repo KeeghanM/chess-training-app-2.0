@@ -4,7 +4,6 @@ import Link from 'next/link'
 
 import { useEffect, useState } from 'react'
 
-import { FrigadeTour, useFlows } from '@frigade/react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
@@ -63,9 +62,6 @@ export default function VisualisationTrainer() {
 
   const [xpCounter, setXpCounter] = useState(0)
   const [currentStreak, setCurrentStreak] = useState(0)
-
-  // Onboarding override
-  const { markStepCompleted, markFlowNotStarted } = useFlows()
 
   const difficultyAdjuster = (d: number) => {
     return d == 0 ? 0.9 : d == 1 ? 1 : 1.2
@@ -328,12 +324,6 @@ export default function VisualisationTrainer() {
 
   return (
     <>
-      <FrigadeTour
-        flowId="flow_FudOixipuMiWOaP7"
-        tooltipPosition="auto"
-        dismissible={true}
-        showStepCount={true}
-      />
       {mode == 'settings' ? (
         <>
           <div
@@ -440,24 +430,6 @@ export default function VisualisationTrainer() {
                     Difficulty:
                   </p>
                   <p>{getDifficulty()}</p>
-                </div>
-                <div className="flex flex-col justify-center p-1 items-center border border-gray-300 dark:border-slate-600">
-                  <p
-                    onClick={async () => {
-                      await markFlowNotStarted('flow_FudOixipuMiWOaP7')
-                      await markStepCompleted(
-                        'flow_FudOixipuMiWOaP7',
-                        'welcome-tooltip',
-                      )
-                      await markStepCompleted(
-                        'flow_FudOixipuMiWOaP7',
-                        'puzzle-length',
-                      )
-                    }}
-                    className="cursor-pointer underline hover:no-underline "
-                  >
-                    How to use?
-                  </p>
                 </div>
                 <XpTracker counter={xpCounter} type={'tactic'} />
               </div>

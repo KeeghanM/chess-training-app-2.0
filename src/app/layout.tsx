@@ -3,8 +3,6 @@ import Script from 'next/script'
 import { Suspense } from 'react'
 import type { ReactNode } from 'react'
 
-import { FrigadeProvider } from '@frigade/react'
-
 import CookieBanner from './components/template/CookieBanner'
 import Footer from './components/template/footer/Footer'
 import Header from './components/template/header/Header'
@@ -72,19 +70,14 @@ export default async function RootLayout({
           <PostHogPageview />
         </Suspense>
         <PosthogProvider>
-          <FrigadeProvider
-            publicApiKey={process.env.FRIGADE_API_KEY!}
-            userId={userId}
-          >
-            <body>
-              <ThemeSwitchProvider>
-                <Header />
-                {children}
-                <Footer />
-                <CookieBanner />
-              </ThemeSwitchProvider>
-            </body>
-          </FrigadeProvider>
+          <body>
+            <ThemeSwitchProvider>
+              <Header />
+              {children}
+              <Footer />
+              <CookieBanner />
+            </ThemeSwitchProvider>
+          </body>
         </PosthogProvider>
       </html>
     </>
