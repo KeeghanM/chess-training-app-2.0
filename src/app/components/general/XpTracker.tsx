@@ -29,6 +29,9 @@ export default function XpTracker(props: {
     // Calculate the XP to add
     const xpToAdd = calculateXp(props.type)
     setXpToAdd(xpToAdd)
+    // We hide and show it, just in case the user gets multiple XP
+    // in a short period of time
+    setShow(false)
     setShow(true)
     // Hide the message after 3.5 seconds
     setTimeout(() => {
