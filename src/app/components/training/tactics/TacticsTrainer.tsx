@@ -349,7 +349,7 @@ export default function TacticsTrainer(props: {
       return (
         <button
           key={'btn' + moveNumber.toString() + move + moveColour}
-          className="h-max max-h-fit bg-none px-1 py-1 text-white hover:bg-purple-800"
+          className="h-max max-h-fit bg-none px-1 py-1 text-black dark:text-white hover:bg-purple-800 hover:text-white"
           onClick={async () => {
             const newGame = new Chess(currentPuzzle!.fen)
             for (let i = 0; i <= index; i++) {
@@ -366,7 +366,7 @@ export default function TacticsTrainer(props: {
       return (
         <div
           key={moveNumber.toString() + move + moveColour}
-          className="px-1 py-1 text-white"
+          className="px-1 py-1 text-black dark:text-white"
         >
           <FlexText />
         </div>
@@ -448,7 +448,7 @@ export default function TacticsTrainer(props: {
       )}
       <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
         <p className="text-lg font-bold">{props.set.name}</p>
-        <div className="flex items-center gap-2 text-white">
+        <div className="flex items-center gap-2 text-black dark:text-white">
           <ThemeSwitch />
           <div
             className="flex cursor-pointer flex-row items-center gap-1 hover:text-orange-500"
@@ -552,7 +552,7 @@ export default function TacticsTrainer(props: {
         <div className="flex w-full flex-col gap-2 p-1">
           <div className="flex flex-row items-center gap-2">
             {!puzzleFinished && (
-              <p className="flex items-center gap-2 text-white">
+              <p className="flex items-center gap-2 text-black dark:text-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -570,7 +570,7 @@ export default function TacticsTrainer(props: {
               </p>
             )}
             {puzzleStatus === 'correct' && (
-              <div className="z-50 flex flex-wrap  items-center gap-2 text-white">
+              <div className="z-50 flex flex-wrap  items-center gap-2 text-black dark:text-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -588,7 +588,7 @@ export default function TacticsTrainer(props: {
                   href={`https://lichess.org/training/${currentPuzzle?.puzzleid}`}
                   target="_blank"
                 >
-                  <span className="flex flex-row items-center gap-1 text-sm text-white underline">
+                  <span className="flex flex-row items-center gap-1 text-sm text-black dark:text-white underline">
                     Lichess
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -610,7 +610,7 @@ export default function TacticsTrainer(props: {
               </div>
             )}
             {puzzleStatus === 'incorrect' && (
-              <div className="z-50 flex flex-wrap items-center gap-2 text-white">
+              <div className="z-50 flex flex-wrap items-center gap-2 text-black dark:text-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -628,7 +628,7 @@ export default function TacticsTrainer(props: {
                   href={`https://lichess.org/training/${currentPuzzle?.puzzleid}`}
                   target="_blank"
                 >
-                  <span className="flex flex-row items-center gap-1 text-sm text-white underline">
+                  <span className="flex flex-row items-center gap-1 text-sm text-black dark:text-white underline">
                     Lichess
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -654,7 +654,7 @@ export default function TacticsTrainer(props: {
             <div className="flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
               {PgnDisplay.map((item) => item)}
             </div>
-            <label className="ml-auto flex items-center gap-2 text-sm text-white">
+            <label className="ml-auto flex items-center gap-2 text-sm text-black dark:text-white">
               <Toggle
                 defaultChecked={autoNext}
                 onChange={async () => {

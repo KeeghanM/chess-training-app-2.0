@@ -36,7 +36,7 @@ export default function XpTracker(props: {
     // Hide the message after 3.5 seconds
     setTimeout(() => {
       setShow(false)
-    }, 4000)
+    }, 2500)
     // Add the XP to the user
     ;(async () => {
       const resp = await fetch('/api/profile/xp', {

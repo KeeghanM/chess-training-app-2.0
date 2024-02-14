@@ -321,7 +321,7 @@ export default function RecallTrainer() {
   }, [currentPuzzle])
 
   useEffect(() => {
-    if (mode == 'settings' || !timed) return
+    if (mode == 'settings' || !timed || !currentPuzzle) return
     if (timer > 0) {
       const interval = setInterval(() => {
         setTimer(timer - 1)
@@ -330,7 +330,7 @@ export default function RecallTrainer() {
     } else {
       markImReady()
     }
-  }, [timer])
+  }, [timer, currentPuzzle])
 
   if (!user) return null
 
@@ -345,13 +345,13 @@ export default function RecallTrainer() {
     <>
       {mode == 'settings' ? (
         <>
-          <div className="border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
+          <div className="border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
             <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
               <p>Adjust your settings</p>
             </div>
             <div className="flex flex-col gap-2 md:gap-4 p-2">
               <div>
-                <label className="font-bold text-white flex items-center gap-1 w-fit">
+                <label className="font-bold flex items-center gap-1 w-fit">
                   <span>Difficulty</span>
                   <Tippy content="Difficulty sets how many pieces are on the board">
                     <svg
@@ -389,7 +389,7 @@ export default function RecallTrainer() {
                 </div>
               </div>
               <div>
-                <label className=" w-fit font-bold flex items-center h-fit gap-1 text-white">
+                <label className=" w-fit font-bold flex items-center h-fit gap-1">
                   <span>Number to recall</span>
                   <Tippy content="The number of pieces in a row you'll have to recall from a single position">
                     <svg
@@ -416,7 +416,7 @@ export default function RecallTrainer() {
                       setPiecesToRecall(parseInt(e.target.value))
                     }
                   />
-                  <span className="text-white text-sm italic">
+                  <span className="text-sm italic">
                     {piecesToRecall} piece{piecesToRecall > 1 && 's'}
                   </span>
                 </div>
@@ -425,7 +425,7 @@ export default function RecallTrainer() {
                 <div className="flex items-center gap-4">
                   <label
                     htmlFor="timed"
-                    className=" w-fit font-bold flex items-center h-fit gap-1 text-white"
+                    className=" w-fit font-bold flex items-center h-fit gap-1"
                   >
                     <span>Timed Mode</span>
                     <Tippy content="Timed mode will give you a set amount of time to remember the position before you have to recall it.">
@@ -460,7 +460,7 @@ export default function RecallTrainer() {
                       value={timerLength}
                       onChange={(e) => setTimerLength(parseInt(e.target.value))}
                     />
-                    <span className="text-white text-sm italic">
+                    <span className="text-sm italic">
                       {timerLength} seconds
                     </span>
                   </div>
@@ -480,13 +480,13 @@ export default function RecallTrainer() {
         </>
       ) : (
         <>
-          <div className="relative border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] w-fit mx-auto">
+          <div className="relative border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] w-fit mx-auto">
             {loading && (
               <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
                 <Spinner />
               </div>
             )}
-            <div className="flex flex-wrap items-center justify-between text-white text-sm">
+            <div className="flex flex-wrap items-center justify-between text-sm">
               <div className="flex gap-1 p-2 pb-0 justify-center text-xs md:text-sm lg:text-base">
                 <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
                   <p className="w-full text-center font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
@@ -577,7 +577,7 @@ export default function RecallTrainer() {
               </div>
               <div className="flex w-full flex-col">
                 {puzzleStatus === 'correct' && (
-                  <div className="flex items-center gap-2 text-white w-fit mx-auto">
+                  <div className="flex items-center gap-2  w-fit mx-auto">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -594,7 +594,7 @@ export default function RecallTrainer() {
                   </div>
                 )}
                 {puzzleStatus === 'incorrect' && (
-                  <div className="flex items-center gap-2 text-white w-fit mx-auto">
+                  <div className="flex items-center gap-2 w-fit mx-auto">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="24"
@@ -615,7 +615,7 @@ export default function RecallTrainer() {
                     <div className="h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white flex flex-col">
                       {!readyForInput && (
                         <>
-                          <p className="text-sm italic text-white text-center">
+                          <p className="text-sm italic text-center">
                             Memorise the position shown, you'll be asked to
                             remember & recall the pieces (not pawns)
                           </p>
@@ -624,14 +624,14 @@ export default function RecallTrainer() {
                               I'm Ready!
                             </Button>
                           ) : (
-                            <p className="text-white text-xl font-bold text-center mt-4">
+                            <p className="text-xl font-bold text-center mt-4">
                               {timer}s
                             </p>
                           )}
                         </>
                       )}
                       {correctSquares[counter] && readyForInput && (
-                        <p className="text-white ">
+                        <p className="">
                           Where is a{' '}
                           <span className="font-bold underline">
                             {correctSquares[counter]!.color == 'w'
@@ -653,29 +653,14 @@ export default function RecallTrainer() {
                     </div>
                   )}
                   <div className="flex flex-col gap-2">
-                    {puzzleFinished
-                      ? puzzleStatus == 'incorrect' && (
-                          <Button
-                            variant="primary"
-                            onClick={() => goToNextPuzzle(puzzleStatus)}
-                          >
-                            Next
-                          </Button>
-                        )
-                      : readyForInput && (
-                          <Button
-                            variant="secondary"
-                            onClick={async () => {
-                              setPuzzleStatus('incorrect')
-                              setPuzzleFinished(true)
-                              if (soundEnabled) incorrectSound()
-                              setSelectedSquares({})
-                            }}
-                          >
-                            Skip Position
-                          </Button>
-                        )}
-
+                    {puzzleFinished && (
+                      <Button
+                        variant="primary"
+                        onClick={() => goToNextPuzzle(puzzleStatus)}
+                      >
+                        Next
+                      </Button>
+                    )}
                     <Button
                       className="hidden lg:block"
                       variant="danger"
