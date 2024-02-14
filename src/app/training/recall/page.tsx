@@ -32,34 +32,6 @@ export default async function Recall() {
         </Heading>
       </Hero>
       <ImageRowFull
-        heading="How to Use the Recall Trainer"
-        background="light"
-        image={{
-          src: '/images/chunking.avif',
-          alt: 'A chessboard with pieces highlighted in the Carlsbad Structure.',
-        }}
-        imageSide="right"
-      >
-        <p>
-          Our Recall Trainer is the perfect tool to improve your memory and
-          visualization skills in chess. Designed for busy adults like you, it
-          offers efficient and effective training tailored to your chess rating.
-        </p>
-        <p>
-          With this trainer, you'll be presented with chess positions for a
-          brief moment, or longer – you decide. Your task is to recall specific
-          details about the position. It forces you to break up the board into
-          smaller, more easily recognizable positions, improving your memory and
-          chess vision.
-        </p>
-        <p>
-          Our trainer simplifies the process and automates tracking, so you can
-          focus solely on enhancing your chess memory and visualization. Whether
-          you have a few minutes or an hour, our Recall Trainer fits your
-          schedule.
-        </p>
-      </ImageRowFull>
-      <ImageRowFull
         heading="Why Recall Training Matters"
         background="light"
         image={{
@@ -81,6 +53,35 @@ export default async function Recall() {
           needs.
         </p>
       </ImageRowFull>
+      <ImageRowFull
+        heading="How to Use the Recall Trainer"
+        background="light"
+        image={{
+          src: '/images/chunking.png',
+          alt: 'A chessboard with pieces highlighted in the Carlsbad Structure.',
+        }}
+        imageSide="right"
+      >
+        <p>
+          Our Recall Trainer is the perfect tool to improve your memory and
+          visualization skills in chess. Designed for busy adults like you, it
+          offers efficient and effective training tailored to your chess rating.
+        </p>
+        <p>
+          With this trainer, you'll be presented with chess positions for a
+          brief moment, or longer - you decide. Your task is to recall specific
+          details about the position. It forces you to break up the board into
+          smaller, more easily recognizable positions, improving your memory and
+          chess vision.
+        </p>
+        <p>
+          Our trainer simplifies the process and automates tracking, so you can
+          focus solely on enhancing your chess memory and visualization. Whether
+          you have a few minutes or an hour, our Recall Trainer fits your
+          schedule.
+        </p>
+      </ImageRowFull>
+
       <CtaRow
         title="Ready to Boost Your Chess Memory?"
         cta={{

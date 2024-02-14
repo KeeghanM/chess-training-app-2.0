@@ -68,10 +68,6 @@ export default function Nav(props: {
           name: 'Play the Masters',
           href: '/training/play-the-masters',
         },
-        {
-          name: 'Knight Vision',
-          href: '/training/knight-vision',
-        },
       ],
     },
   ]
