@@ -163,6 +163,7 @@ model CuratedSet {
     name        String
     slug        String             @unique
     description String?            @db.Text
+    shortDesc   String?            @db.Text
     rating      Int
     size        Int
     published   Boolean            @default(false)
