@@ -32,7 +32,7 @@ export default async function CuratedSetsPage() {
         }}
         subTitle="Designed to supercharge your Chess Tactics"
       />
-      <TextWall title="What are Curated Sets?" background="light">
+      <TextWall title="What are Curated Sets?" background="dark">
         <p>
           Designed to be used with our{' '}
           <StyledLink href="/training/tactics">Tactics Trainer</StyledLink>, our
@@ -43,19 +43,37 @@ export default async function CuratedSetsPage() {
       </TextWall>
       <Container>
         <Heading as="h2">All Available Curated Sets</Heading>
-        {sets
-          .sort(
-            (a, b) =>
-              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-          )
-          .map((set) => (
-            <div className="flex flex-col gap-0 border border-gray-300  shadow-md bg-[rgba(0,0,0,0.03)]0">
-              <div className="px-2 py-1 border-b border-gray-300 font-bold  text-orange-500">
-                <Link href={set.slug}>{set.name}</Link>
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+          {sets
+            .sort(
+              (a, b) =>
+                new Date(a.createdAt).getTime() -
+                new Date(b.createdAt).getTime(),
+            )
+            .map((set) => (
+              <div className="flex flex-col gap-0 border border-gray-300  shadow-md bg-[rgba(0,0,0,0.03)]0">
+                <div className="px-2 py-1 border-b border-gray-300 font-bold  text-orange-500 flex items-center flex-wrap justify-between">
+                  <Link href={set.slug}>{set.name}</Link>
+                  <p className="font-bold text-green-500">
+                    £{set.price.toFixed(2)}
+                  </p>
+                </div>
+                <div
+                  className="p-2"
+                  dangerouslySetInnerHTML={{ __html: set.shortDesc ?? '' }}
+                />
+                <p className="w-full text-center bg-purple-300 py-1 font-bold">
+                  {set.size} puzzles
+                </p>
+                <div className="flex flex-col md:flex-row gap-2 p-2 items-center justify-center">
+                  <Button variant="primary">Buy Now</Button>
+                  <Link href={set.slug}>
+                    <Button variant="secondary">Read More</Button>
+                  </Link>
+                </div>
               </div>
-              <p>{set.description}</p>
-            </div>
-          ))}
+            ))}
+        </div>
       </Container>
     </>
   )
