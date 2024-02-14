@@ -15,14 +15,6 @@ export default function Footer() {
       title: 'ChessTraining.app',
       links: [
         {
-          text: 'All Features',
-          url: '/about/features',
-        },
-        {
-          text: 'Product Roadmap',
-          url: '/product-roadmap',
-        },
-        {
           text: 'Natural Play Learning',
           url: '/about/features/natural-play-learning',
         },
@@ -31,24 +23,32 @@ export default function Footer() {
           url: '/about/features/woodpecker-method',
         },
         {
-          text: 'Course Trainer',
+          text: 'Chess Openings Trainer',
           url: '/courses',
         },
         {
-          text: 'Tactics Trainer',
+          text: 'Chess Tactics Trainer',
           url: '/training/tactics',
         },
         {
-          text: 'Knight Vision',
-          url: '/training/knight-vision',
-        },
-        {
-          text: 'Endgame Trainer',
+          text: 'Chess Endgame Trainer',
           url: '/training/endgames',
         },
         {
-          text: 'Visualisation & Calculation',
+          text: 'Chess Visualisation Trainer',
           url: '/training/visualisation',
+        },
+        {
+          text: 'Board Recall Trainer',
+          url: '/training/recall',
+        },
+        {
+          text: 'All Features',
+          url: '/about/features',
+        },
+        {
+          text: 'Product Roadmap',
+          url: '/product-roadmap',
         },
         {
           text: 'Ranks & Badges',

@@ -558,7 +558,7 @@ export default function CourseTrainer(props: {
         <FlexText />
       </button>
     ) : (
-      <div key={index + '_pgn'} className="px-1 py-1 text-white">
+      <div key={index + '_pgn'} className="px-1 py-1">
         <FlexText />
       </div>
     )
@@ -693,7 +693,7 @@ export default function CourseTrainer(props: {
       </p>
     </div>
   ) : (
-    <div className="relative border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
+    <div className="relative border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
       {loading && (
         <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
           <Spinner />
@@ -713,7 +713,7 @@ export default function CourseTrainer(props: {
             lines remaining
           </p>
         </div>
-        <div className="flex items-center gap-2 text-white">
+        <div className="flex items-center gap-2 text-black dark:text-white">
           <ThemeSwitch />
           <div
             className="flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
@@ -781,7 +781,7 @@ export default function CourseTrainer(props: {
                   Math.min(windowSize.height / 1.75, windowSize.width - 50) *
                   0.5,
               }}
-              className="text-white p-2 bg-purple-900 overflow-y-auto text-sm"
+              className=" p-2 bg-purple-900 overflow-y-auto text-sm"
             >
               {currentMove?.comment?.comment}
             </p>
@@ -799,7 +799,7 @@ export default function CourseTrainer(props: {
           >
             {PgnDisplay.map((item) => item)}
           </div>
-          <label className="ml-auto flex items-center gap-2 text-sm text-white">
+          <label className="ml-auto flex items-center gap-2 text-sm">
             <Toggle
               defaultChecked={autoNext}
               onChange={async () => {

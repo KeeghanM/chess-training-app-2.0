@@ -5,7 +5,7 @@ const config = {
   theme: {
     extend: {
       animation: {
-        'fade-up': 'fade-up 4s both',
+        'fade-up': 'fade-up 2.5s both',
       },
       keyframes: {
         'fade-up': {

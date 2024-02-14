@@ -14,6 +14,7 @@ interface ButtonProps {
   disabled?: boolean
   children: React.ReactNode
   id?: string
+  className?: string
 }
 export default function Button(props: ButtonProps) {
   const styles = {
@@ -39,7 +40,8 @@ export default function Button(props: ButtonProps) {
       className={
         'flex min-w-[145px] items-center justify-center gap-2 text-sm ' +
         styles[props.variant] +
-        (props.disabled ? ' cursor-not-allowed opacity-50' : '')
+        (props.disabled ? ' cursor-not-allowed opacity-50' : '') +
+        (props.className ? ' ' + props.className : '')
       }
       onClick={props.onClick ? props.onClick : undefined}
       disabled={props.disabled}

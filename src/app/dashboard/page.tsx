@@ -98,6 +98,18 @@ export default async function Dashboard() {
       active: true || override,
     },
     {
+      name: 'Board Recall',
+      description: [
+        'Help improve your board vision, and your ability to "see" the board in your head.',
+        'With our recall trainer you are presented with a board position, and a short time to memorise it.',
+        'You are then asked a question about the position, and you must answer it from memory.',
+      ],
+      trainingLink: '/training/recall/train',
+      learnMoreLink: '/training/recall',
+      buttonText: 'Train',
+      active: true || override,
+    },
+    {
       name: 'Endgames',
       description: [
         'Pick from Queen, Rook, Knight, Bishop, or Pawn endgames. Or let fate decide.',
@@ -117,17 +129,6 @@ export default async function Dashboard() {
         'We have a large library of curated master games, all selected for their instructive value.',
       ],
       trainingLink: '/training/play-the-masters',
-      buttonText: 'Train',
-      active: false || override,
-    },
-    {
-      name: 'Board Recall',
-      description: [
-        'Help improve your board vision, and your ability to "see" the board in your head.',
-        'With our recall trainer you are presented with a board position, and a short time to memorise it.',
-        'You are then asked a question about the position, and you must answer it from memory.',
-      ],
-      trainingLink: '/training/recall/train',
       buttonText: 'Train',
       active: false || override,
     },
