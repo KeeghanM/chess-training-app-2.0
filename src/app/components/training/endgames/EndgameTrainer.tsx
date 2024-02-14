@@ -275,7 +275,7 @@ export default function EndgameTrainer() {
       return (
         <div
           key={moveNumber.toString() + move + moveColour}
-          className="px-1 py-1 text-white"
+          className="px-1 py-1"
         >
           <FlexText />
         </div>
@@ -347,14 +347,14 @@ export default function EndgameTrainer() {
 
   return mode == 'settings' ? (
     <>
-      <div className="border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
+      <div className="border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
         <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
           <p>Adjust your settings</p>
         </div>
         <div className="flex flex-col p-2 gap-4">
           <div className="flex flex-col md:flex-row gap-1 md:gap-2">
             <div>
-              <label className="font-bold text-white">Your Rating</label>
+              <label className="font-bold">Your Rating</label>
               <input
                 type="number"
                 className="w-full border border-gray-300 bg-gray-100 px-4 py-1 text-black"
@@ -368,8 +368,8 @@ export default function EndgameTrainer() {
               />
             </div>
             <div>
-              <label className="font-bold text-white">Difficulty</label>
-              <div className="flex flex-col gap-1 lg:flex-row">
+              <label className="font-bold">Difficulty</label>
+              <div className="flex flex-col gap-1 md:flex-row">
                 <Button
                   variant={difficulty == 0 ? 'accent' : 'secondary'}
                   onClick={() => setDifficulty(0)}
@@ -392,7 +392,7 @@ export default function EndgameTrainer() {
             </div>
           </div>
           <div>
-            <label className="font-bold text-white">Endgame Type</label>
+            <label className="font-bold">Endgame Type</label>
             <div className="grid grid-cols-2 gap-1 lg:grid-cols-3">
               <Button
                 variant={type == 'All' ? 'accent' : 'secondary'}
@@ -449,13 +449,13 @@ export default function EndgameTrainer() {
     </>
   ) : (
     <>
-      <div className="relative border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
+      <div className="relative border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
         {loading && (
           <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
             <Spinner />
           </div>
         )}
-        <div className="flex flex-wrap items-center justify-between text-white text-sm">
+        <div className="flex flex-wrap items-center justify-between text-sm">
           <div className="flex gap-1 p-2 pb-0 justify-center text-xs md:text-sm lg:text-base">
             <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
               <p className="w-full text-center font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
@@ -536,7 +536,7 @@ export default function EndgameTrainer() {
           />
           <div className="flex w-full flex-col gap-2  p-2">
             <div className="flex flex-row items-center gap-2">
-              <p className="flex items-center gap-2 text-white">
+              <p className="flex items-center gap-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -553,7 +553,7 @@ export default function EndgameTrainer() {
                 {orientation === 'white' ? 'White' : 'Black'} to move
               </p>
               {puzzleStatus === 'correct' && (
-                <div className="z-50 flex flex-wrap  items-center gap-2 text-white">
+                <div className="z-50 flex flex-wrap  items-center gap-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -571,7 +571,7 @@ export default function EndgameTrainer() {
                     href={`https://lichess.org/training/${currentPuzzle?.puzzleid}`}
                     target="_blank"
                   >
-                    <span className="flex flex-row items-center gap-1 text-sm text-white underline">
+                    <span className="flex flex-row items-center gap-1 text-sm underline">
                       Lichess
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -593,7 +593,7 @@ export default function EndgameTrainer() {
                 </div>
               )}
               {puzzleStatus === 'incorrect' && (
-                <div className="z-50 flex flex-wrap items-center gap-2 text-white">
+                <div className="z-50 flex flex-wrap items-center gap-2">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -611,7 +611,7 @@ export default function EndgameTrainer() {
                     href={`https://lichess.org/training/${currentPuzzle?.puzzleid}`}
                     target="_blank"
                   >
-                    <span className="flex flex-row items-center gap-1 text-sm text-white underline">
+                    <span className="flex flex-row items-center gap-1 text-sm underline">
                       Lichess
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -637,7 +637,7 @@ export default function EndgameTrainer() {
               <div className="flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
                 {PgnDisplay.map((item) => item)}
               </div>
-              <label className="ml-auto flex items-center gap-2 text-sm text-white">
+              <label className="ml-auto flex items-center gap-2 text-sm">
                 <Toggle
                   defaultChecked={autoNext}
                   onChange={async () => {

@@ -110,6 +110,18 @@ export default async function sitemap() {
       priority: 0.7,
     },
     {
+      url: 'https://chesstraining.app/training/recall',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
+      url: 'https://chesstraining.app/training/play-the-masters',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.7,
+    },
+    {
       url: 'https://chesstraining.app/about/ranks-and-badges',
       lastModified: new Date(),
       changeFrequency: 'monthly',

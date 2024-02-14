@@ -47,7 +47,7 @@ export default function SetListItem(props: {
       key={set.id}
     >
       <div className="px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
-        <p onClick={trainSet} className="cursor-pointer hover:underline">
+        <p onClick={trainSet} className="cursor-pointer">
           <span className="text-lg">{set.name}</span>
           <span className="px-2 text-xs italic text-gray-600 dark:text-gray-400">
             Last trained{' '}
