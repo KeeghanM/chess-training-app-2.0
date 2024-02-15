@@ -19,8 +19,8 @@ export async function POST(request: Request) {
   if (!setId) return errorResponse('Missing required fields', 400)
 
   try {
-    const result = await prisma.$transaction(async (prisma) => {
-      const curatedSet = await prisma.curatedSet.findUnique({
+    const result = await prisma.$transaction(async (txn) => {
+      const curatedSet = await txn.curatedSet.findUnique({
         where: {
           id: setId,
         },
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
       if (!curatedSet) throw new Error('Course not found')
 
-      let userTacticsSet = await prisma.tacticsSet.findFirst({
+      let userTacticsSet = await txn.tacticsSet.findFirst({
         where: {
           curatedSetId: setId,
           userId: user.id,
@@ -41,10 +41,11 @@ export async function POST(request: Request) {
       // Create a new userCourse if it doesn't exist (ie. user hasn't bought the course yet)
       // Otherwise, update the existing userCourse (ie. user has bought the course before, but it's archived)
       if (!userTacticsSet) {
-        const puzzleIds = curatedSet.puzzles.map((puzzle) => ({
+        const puzzles = curatedSet.puzzles.map((puzzle) => ({
           puzzleid: puzzle.puzzleid,
+          sortOrder: puzzle.sortOrder,
         }))
-        userTacticsSet = await prisma.tacticsSet.create({
+        userTacticsSet = await txn.tacticsSet.create({
           data: {
             name: curatedSet.name,
             userId: user.id,
@@ -52,7 +53,7 @@ export async function POST(request: Request) {
             size: curatedSet.size,
             puzzles: {
               createMany: {
-                data: puzzleIds,
+                data: puzzles,
               },
             },
             rounds: {
@@ -66,7 +67,7 @@ export async function POST(request: Request) {
           },
         })
       } else {
-        await prisma.tacticsSet.update({
+        await txn.tacticsSet.update({
           where: {
             id: userTacticsSet.id,
           },

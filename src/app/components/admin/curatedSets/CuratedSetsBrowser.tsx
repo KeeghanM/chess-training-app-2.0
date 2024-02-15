@@ -101,7 +101,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
     setStatus('idle')
   }
 
-  const addPuzzleToSet = async (puzzle: TrainingPuzzle) => {
+  const addPuzzleToSet = async (puzzle: TrainingPuzzle, sortOrder = 0) => {
     setError('')
     if (!selectedSet) {
       setError('No set selected')
@@ -119,6 +119,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
         body: JSON.stringify({
           setId: selectedSet.id,
           puzzle: puzzle,
+          sortOrder,
         }),
       })
       const json = (await resp.json()) as ResponseJson
@@ -296,17 +297,22 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
       mateInOnes.push(m1)
     }
 
+    let sortOrder = 0
     for (const puzzle of mateInOnes) {
-      await addPuzzleToSet(puzzle)
+      sortOrder++
+      await addPuzzleToSet(puzzle, sortOrder)
     }
     for (const puzzle of mateInTwos) {
-      await addPuzzleToSet(puzzle)
+      sortOrder++
+      await addPuzzleToSet(puzzle, sortOrder)
     }
     for (const puzzle of mateInThrees) {
-      await addPuzzleToSet(puzzle)
+      sortOrder++
+      await addPuzzleToSet(puzzle, sortOrder)
     }
     for (const puzzle of mateInFours) {
-      await addPuzzleToSet(puzzle)
+      sortOrder++
+      await addPuzzleToSet(puzzle, sortOrder)
     }
   }
 

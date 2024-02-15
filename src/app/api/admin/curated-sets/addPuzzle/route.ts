@@ -17,9 +17,10 @@ export async function POST(request: Request) {
   if (!permissions?.permissions.includes('staff-member'))
     return errorResponse('Unauthorized', 401)
 
-  const { setId, puzzle } = (await request.json()) as {
+  const { setId, puzzle, sortOrder } = (await request.json()) as {
     setId: number
     puzzle: TrainingPuzzle
+    sortOrder?: number
   }
   if (!setId || !puzzle) return errorResponse('Missing required fields', 400)
 
@@ -45,6 +46,7 @@ export async function POST(request: Request) {
       data: {
         puzzleid: puzzle.puzzleid,
         setId: setId,
+        sortOrder: sortOrder ?? 0,
       },
     })
 
