@@ -2,15 +2,15 @@ import Link from 'next/link'
 
 import { prisma } from '~/server/db'
 
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+
 import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
-import CtaRow from '~/app/components/_layouts/ctaRow'
-import Hero from '~/app/components/_layouts/hero'
-import ImageRowFull from '~/app/components/_layouts/imageRowFull'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import { TextWall } from '~/app/components/_layouts/textWall'
+import GetCuratedSet from '~/app/components/ecomm/GetCuratedSet'
 
 export const metadata = {
   title: 'Curated Chess Tactics Training Sets at ChessTraining.app',
@@ -19,9 +19,23 @@ export const metadata = {
 }
 
 export default async function CuratedSetsPage() {
+  const session = getKindeServerSession()
+  const user = await session.getUser()
   const sets = await prisma.curatedSet.findMany({
     where: { published: true },
   })
+
+  const userCuratedSets = user
+    ? await prisma.tacticsSet.findMany({
+        where: {
+          userId: user?.id,
+          NOT: {
+            curatedSetId: null,
+          },
+        },
+      })
+    : []
+
   return (
     <>
       <PageHeader
@@ -53,7 +67,9 @@ export default async function CuratedSetsPage() {
             .map((set) => (
               <div className="flex flex-col gap-0 border border-gray-300  shadow-md bg-[rgba(0,0,0,0.03)]0">
                 <div className="px-2 py-1 border-b border-gray-300 font-bold  text-orange-500 flex items-center flex-wrap justify-between">
-                  <Link href={set.slug}>{set.name}</Link>
+                  <Link href={`/training/tactics/curated-sets/${set.slug}`}>
+                    {set.name}
+                  </Link>
                   <p className="font-bold text-green-500">
                     £{set.price.toFixed(2)}
                   </p>
@@ -66,8 +82,16 @@ export default async function CuratedSetsPage() {
                   {set.size} puzzles
                 </p>
                 <div className="flex flex-col md:flex-row gap-2 p-2 items-center justify-center">
-                  <Button variant="primary">Buy Now</Button>
-                  <Link href={set.slug}>
+                  <GetCuratedSet
+                    setId={set.id}
+                    price={set.price}
+                    slug={set.slug}
+                    userSetId={
+                      userCuratedSets.find((s) => s.curatedSetId === set.id)?.id
+                    }
+                    showPrice={false}
+                  />
+                  <Link href={`/training/tactics/curated-sets/${set.slug}`}>
                     <Button variant="secondary">Read More</Button>
                   </Link>
                 </div>

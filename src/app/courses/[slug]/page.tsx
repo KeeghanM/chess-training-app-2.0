@@ -170,10 +170,10 @@ export default async function CoursePage({
             slug={course.slug}
           />
           {course.courseDescription && (
-            <div
+            <article
               className="p-4 bg-gray-100"
               dangerouslySetInnerHTML={{ __html: course.courseDescription }}
-            ></div>
+            />
           )}
           <div className="p-4 bg-gray-100">
             <Heading as={'h2'}>Course Contents</Heading>
