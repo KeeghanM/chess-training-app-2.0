@@ -95,10 +95,18 @@ export default function TacticsList() {
         ) : (
           sets
             .sort((a, b) => {
-              const fallback = new Date(0)
+              // add non-trained sets to the top, sorted by created date
+              // then sort, in descending order, by the last trained date
+              if (a.lastTrained === null) return -1
+              if (b.lastTrained === null) return 1
+              if (a.lastTrained === b.lastTrained)
+                return (
+                  new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime()
+                )
               return (
-                new Date(b.lastTrained ?? fallback).getTime() -
-                new Date(a.lastTrained ?? fallback).getTime()
+                new Date(b.lastTrained).getTime() -
+                new Date(a.lastTrained).getTime()
               )
             })
             .map((set) => (

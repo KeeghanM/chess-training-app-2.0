@@ -139,15 +139,17 @@ model TacticsSet {
     puzzles      Puzzle[]
     rounds       TacticsSetRound[]
     curatedSetId Int?
+    active       Boolean           @default(true)
 
     @@index([userId])
 }
 
 model Puzzle {
-    id       String     @id @default(cuid())
-    puzzleid String
-    setId    String
-    set      TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+    id        String     @id @default(cuid())
+    puzzleid  String
+    setId     String
+    sortOrder Int        @default(0)
+    set       TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
 
     @@index([setId])
 }
@@ -178,6 +180,7 @@ model CuratedSetPuzzle {
     id        Int        @id @default(autoincrement())
     puzzleid  String
     setId     Int
+    sortOrder Int        @default(0)
     set       CuratedSet @relation(fields: [setId], references: [id], onDelete: Cascade)
     createdAt DateTime   @default(now())
     updatedAt DateTime   @updatedAt

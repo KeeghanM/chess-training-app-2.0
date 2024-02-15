@@ -13,6 +13,8 @@ import type { PrismaTacticsSet } from '~/app/components/training/tactics/create/
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
+// todo: dont allow name edits for curated sets
+// todo: add an archive button for curated sets
 export default function SetListEdit(props: {
   set: PrismaTacticsSet
   user: KindeUser | null

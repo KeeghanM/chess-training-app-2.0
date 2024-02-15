@@ -23,7 +23,7 @@ export default function GetCuratedSet(props: {
 
   const handleBuy = async () => {
     if (!user) {
-      window.location.href = `/api/auth/login?post_login_redirect_url=/tactics/training/curated-sets/${slug}`
+      window.location.href = `/api/auth/login?post_login_redirect_url=/training/tactics/curated-sets/${slug}`
       return
     }
     setLoading(true)
