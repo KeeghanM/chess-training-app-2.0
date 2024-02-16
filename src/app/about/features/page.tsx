@@ -57,7 +57,7 @@ export default async function FeaturesPage() {
         'All you need to do is play the given sequence of moves in your head, decide on your final move and then check if you were correct.',
       ],
       anchor: 'visualisation-training',
-      link: '/visualisation/calculation',
+      link: '/training/visualisation',
     },
     {
       name: 'Board Recall Training',
