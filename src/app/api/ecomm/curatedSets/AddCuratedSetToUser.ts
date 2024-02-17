@@ -1,22 +1,11 @@
 import { prisma } from '~/server/db'
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
 
 // todo: add check for max number of sets
-export async function POST(request: Request) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
-
-  const user = await session.getUser()
-  if (!user) return errorResponse('Unauthorized', 401)
-
-  const { setId } = (await request.json()) as {
-    setId: number
-  }
-
-  if (!setId) return errorResponse('Missing required fields', 400)
+export async function AddCuratedSetToUser(setId: number, userId: string) {
+  if (!setId || !userId) return errorResponse('Missing required fields', 400)
 
   try {
     const result = await prisma.$transaction(async (txn) => {
@@ -34,7 +23,7 @@ export async function POST(request: Request) {
       let userTacticsSet = await txn.tacticsSet.findFirst({
         where: {
           curatedSetId: setId,
-          userId: user.id,
+          userId: userId,
         },
       })
 
@@ -48,7 +37,7 @@ export async function POST(request: Request) {
         userTacticsSet = await txn.tacticsSet.create({
           data: {
             name: curatedSet.name,
-            userId: user.id,
+            userId: userId,
             curatedSetId: curatedSet.id,
             size: curatedSet.size,
             puzzles: {

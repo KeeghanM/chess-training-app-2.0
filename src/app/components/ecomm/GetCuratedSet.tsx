@@ -28,17 +28,21 @@ export default function GetCuratedSet(props: {
     }
     setLoading(true)
     try {
-      const resp = await fetch('/api/ecomm/buyCuratedSet', {
+      const resp = await fetch('/api/ecomm/createSession', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ setId }),
+        body: JSON.stringify({
+          productType: 'curatedSet',
+          productId: setId,
+        }),
       })
       const json = (await resp.json()) as ResponseJson
-      if (json?.message != 'Set bought') throw new Error(json?.message)
+      if (json?.message != 'Session created' || json?.data?.url == undefined)
+        throw new Error(json?.message)
 
-      window.location.href = `/training/tactics/list`
+      window.location.href = json.data.url as string
     } catch (e) {
       console.error(e)
     }

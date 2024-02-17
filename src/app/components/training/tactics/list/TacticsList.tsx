@@ -13,6 +13,7 @@ import TacticsSetCreator from '~/app/components/training/tactics//create/Tactics
 
 import SetListItem from './SetListItem'
 
+// TODO: Add a link to curated sets
 export default function TacticsList() {
   const { user } = useKindeBrowserClient()
   const [sets, setSets] = useState<PrismaTacticsSet[]>([])

@@ -1,19 +1,10 @@
 import { prisma } from '~/server/db'
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
 
-export async function POST(request: Request) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
-
-  const user = await session.getUser()
-  if (!user) return errorResponse('Unauthorized', 401)
-
-  const { courseId } = (await request.json()) as {
-    courseId: string
-  }
+export async function AddCourseToUser(courseId: string, userId: string) {
+  if (!userId) return errorResponse('Unauthorized', 401)
 
   if (!courseId) return errorResponse('Missing required fields', 400)
 
@@ -32,7 +23,7 @@ export async function POST(request: Request) {
 
       let userCourse = await prisma.userCourse.findFirst({
         where: {
-          userId: user.id,
+          userId: userId,
           courseId: course.id,
         },
       })
@@ -42,7 +33,7 @@ export async function POST(request: Request) {
       if (!userCourse) {
         userCourse = await prisma.userCourse.create({
           data: {
-            userId: user.id,
+            userId: userId,
             courseId: course.id,
             linesUnseen: course.lines.length,
           },
@@ -66,7 +57,7 @@ export async function POST(request: Request) {
         course.lines.map(async (line) => {
           await prisma.userLine.create({
             data: {
-              userId: user.id,
+              userId: userId,
               userCourseId: userCourse!.id,
               lineId: line.id,
             },

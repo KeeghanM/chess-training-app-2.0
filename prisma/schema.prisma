@@ -256,3 +256,23 @@ model UserBadge {
 
     @@index([userId])
 }
+
+// eCommerce and Subscriptions
+model checkoutSession {
+    id        Int           @id @default(autoincrement())
+    sessionId String
+    userId    String
+    createdAt DateTime      @default(now())
+    updatedAt DateTime      @updatedAt
+    items     sessionItem[]
+}
+
+model sessionItem {
+    id          Int             @id @default(autoincrement())
+    sessionId   Int
+    productId   String
+    productType String
+    createdAt   DateTime        @default(now())
+    updatedAt   DateTime        @updatedAt
+    session     checkoutSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
