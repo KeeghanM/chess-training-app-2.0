@@ -45,8 +45,8 @@ export default function GetCuratedSet(props: {
       window.location.href = json.data.url as string
     } catch (e) {
       console.error(e)
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (

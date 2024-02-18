@@ -1,11 +1,10 @@
 import { prisma } from '~/server/db'
 
 import * as Sentry from '@sentry/nextjs'
-import { errorResponse, successResponse } from '~/app/api/responses'
 
 // todo: add check for max number of sets
 export async function AddCuratedSetToUser(setId: number, userId: string) {
-  if (!setId || !userId) return errorResponse('Missing required fields', 400)
+  if (!setId || !userId) return false
 
   try {
     const result = await prisma.$transaction(async (txn) => {
@@ -80,10 +79,10 @@ export async function AddCuratedSetToUser(setId: number, userId: string) {
       return { userTacticsSetId: userTacticsSet.id }
     })
 
-    return successResponse('Set bought', result, 200)
+    return true
   } catch (e) {
     Sentry.captureException(e)
-    return errorResponse('Internal server error', 500)
+    return false
   } finally {
     await prisma.$disconnect()
   }

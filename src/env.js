@@ -35,6 +35,7 @@ export const env = createEnv({
     FRIGADE_API_KEY: z.string(),
     STRIPE_SECRET_KEY: z.string(),
     STRIPE_PUBLIC_KEY: z.string(),
+    STRIPE_WEBHOOK_SECRET: z.string(),
   },
 
   /**
@@ -75,6 +76,7 @@ export const env = createEnv({
     FRIGADE_API_KEY: process.env.FRIGADE_API_KEY,
     STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     STRIPE_PUBLIC_KEY: process.env.STRIPE_PUBLIC_KEY,
+    STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
     // CLIENT
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,

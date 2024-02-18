@@ -35,6 +35,10 @@ export async function POST(request: Request) {
             currency: 'GBP',
             product_data: {
               name: name,
+              metadata: {
+                productId,
+                productType,
+              },
             },
             unit_amount: price * 100,
           },

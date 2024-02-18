@@ -1,12 +1,11 @@
 import { prisma } from '~/server/db'
 
 import * as Sentry from '@sentry/nextjs'
-import { errorResponse, successResponse } from '~/app/api/responses'
 
 export async function AddCourseToUser(courseId: string, userId: string) {
-  if (!userId) return errorResponse('Unauthorized', 401)
+  if (!userId) return false
 
-  if (!courseId) return errorResponse('Missing required fields', 400)
+  if (!courseId) return false
 
   try {
     const result = await prisma.$transaction(async (prisma) => {
@@ -68,10 +67,10 @@ export async function AddCourseToUser(courseId: string, userId: string) {
       return { userCourseId: userCourse.id }
     })
 
-    return successResponse('Course bought', result, 200)
+    return true
   } catch (e) {
     Sentry.captureException(e)
-    return errorResponse('Internal server error', 500)
+    return false
   } finally {
     await prisma.$disconnect()
   }
