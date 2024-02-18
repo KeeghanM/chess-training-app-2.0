@@ -69,10 +69,12 @@ export async function POST(request: Request) {
       // Sentry.captureMessage(`Failed to add ${item.productType} to user`)
     }
 
-    // now we've added the items to the user, we can delete the session
-    await prisma.checkoutSession.delete({
+    await prisma.checkoutSession.update({
       where: {
         sessionId: checkoutSession.id,
+      },
+      data: {
+        processed: true,
       },
     })
 

@@ -25,6 +25,7 @@ export async function POST(request: Request) {
 
     if (!price || !name) return errorResponse('Product not found', 404)
 
+    const referrer = request.headers.get('Referer')
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'link'],
@@ -47,7 +48,7 @@ export async function POST(request: Request) {
       ],
       mode: 'payment',
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/cancel`,
+      cancel_url: referrer ?? `${process.env.NEXT_PUBLIC_SITE_URL}/`,
       automatic_tax: { enabled: true },
     })
 
