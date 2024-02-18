@@ -27,21 +27,25 @@ export default function GetCourse(props: {
     }
     setLoading(true)
     try {
-      const resp = await fetch('/api/ecomm/buyCourse', {
+      const resp = await fetch('/api/ecomm/createSession', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ courseId }),
+        body: JSON.stringify({
+          productType: 'course',
+          productId: courseId,
+        }),
       })
       const json = (await resp.json()) as ResponseJson
-      if (json?.message != 'Course bought') throw new Error(json?.message)
+      if (json?.message != 'Session created' || json?.data?.url == undefined)
+        throw new Error(json?.message)
 
-      window.location.href = `/training/courses/`
+      window.location.href = json.data.url as string
     } catch (e) {
       console.error(e)
+      setLoading(false)
     }
-    setLoading(false)
   }
 
   return (
@@ -60,7 +64,7 @@ export default function GetCourse(props: {
               Processing... <Spinner />
             </>
           ) : price > 0 ? (
-            `Buy for $${price}`
+            `Buy for $${price / 100}`
           ) : (
             'Get for Free'
           )}

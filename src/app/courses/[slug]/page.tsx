@@ -165,7 +165,7 @@ export default async function CoursePage({
           </div>
           <GetCourse
             courseId={course.id}
-            price={Number(course.price)}
+            price={course.price}
             userCourseId={userCourse?.active ? userCourse?.id : undefined}
             slug={course.slug}
           />

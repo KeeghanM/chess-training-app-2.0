@@ -41,7 +41,7 @@ export async function POST(request: Request) {
                 productType,
               },
             },
-            unit_amount: price * 100,
+            unit_amount: price,
           },
           quantity: 1,
         },

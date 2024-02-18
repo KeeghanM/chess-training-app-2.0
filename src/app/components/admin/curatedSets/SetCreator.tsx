@@ -162,7 +162,7 @@ export default function SetCreator(props: {
                 />
               </div>
               <div className="">
-                <label htmlFor="price">Price</label>
+                <label htmlFor="price">Price (in pence)</label>
                 <input
                   className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
                   id="price"

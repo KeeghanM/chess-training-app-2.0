@@ -70,9 +70,7 @@ export default async function CuratedSetsPage() {
                   <Link href={`/training/tactics/curated-sets/${set.slug}`}>
                     {set.name}
                   </Link>
-                  <p className="font-bold text-green-500">
-                    £{set.price.toFixed(2)}
-                  </p>
+                  <p className="font-bold text-green-500">£{set.price / 100}</p>
                 </div>
                 <div
                   className="p-2"

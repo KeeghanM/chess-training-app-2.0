@@ -66,7 +66,7 @@ export default function GetCuratedSet(props: {
             </>
           ) : price > 0 ? (
             showPrice ? (
-              `Buy for $${price}`
+              `Buy for $${price / 100}`
             ) : (
               `Buy Now`
             )
