@@ -59,22 +59,31 @@ export default async function AuthorPage({ params }: { params: Params }) {
         </div>
         <Heading as="h2">Articles</Heading>
         <ul>
-          {articles.map((article) => (
-            <li key={article.id} className="flex gap-2">
-              <StyledLink href={article.url!}>{article.data.title}</StyledLink>
-              <span className="text-gray-500 italic">
-                Published:{' '}
-                {new Date(article.first_publication_date).toLocaleDateString(
-                  'en-GB',
-                  {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  },
-                )}
-              </span>
-            </li>
-          ))}
+          {articles
+            .sort((a, b) => {
+              return (
+                new Date(b.first_publication_date).getTime() -
+                new Date(a.first_publication_date).getTime()
+              )
+            })
+            .map((article) => (
+              <li key={article.id} className="flex gap-2">
+                <StyledLink href={article.url!}>
+                  {article.data.title}
+                </StyledLink>
+                <span className="text-gray-500 italic">
+                  Published:{' '}
+                  {new Date(article.first_publication_date).toLocaleDateString(
+                    'en-GB',
+                    {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    },
+                  )}
+                </span>
+              </li>
+            ))}
         </ul>
       </Container>
     </>
