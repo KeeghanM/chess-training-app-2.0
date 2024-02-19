@@ -69,6 +69,9 @@ export default function CourseTrainer(props: {
   const [orientation, setOrientation] = useState<'white' | 'black'>('white')
   const [position, setPosition] = useState(game.fen())
   const [arrows, setArrows] = useState<Arrow[]>([])
+  const [highlightSquares, setHighlightSquares] = useState<
+    Record<string, { backgroundColor: string }>
+  >({})
 
   // Training State
   const [mode, setMode] = useState<'normal' | 'recap'>('normal')
@@ -631,6 +634,13 @@ export default function CourseTrainer(props: {
 
   useEffect(() => {
     setCurrentMove(currentLineMoves[game.history().length - 1])
+    const lastMove = game.history({ verbose: true })[game.history().length - 1]
+    if (lastMove) {
+      setHighlightSquares({
+        [lastMove.to]: { backgroundColor: 'rgba(126,34,206, 0.3)' },
+        [lastMove.from]: { backgroundColor: 'rgba(126,34,206, 0.3)' },
+      })
+    } else setHighlightSquares({})
   }, [game.history().length])
 
   useEffect(() => {
@@ -765,7 +775,7 @@ export default function CourseTrainer(props: {
             orientation={orientation}
             readyForInput={interactive}
             soundEnabled={soundEnabled}
-            additionalSquares={{}}
+            additionalSquares={highlightSquares}
             moveMade={handleMove}
             additionalArrows={arrows}
             enableHighlights={true}

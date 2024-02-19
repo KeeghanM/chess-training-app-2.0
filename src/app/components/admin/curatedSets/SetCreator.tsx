@@ -25,6 +25,7 @@ export default function SetCreator(props: {
   // Form
   const [name, setName] = useState(set?.name ?? '')
   const [description, setDescription] = useState(set?.description ?? '')
+  const [shortDescription, setShortDescription] = useState(set?.shortDesc ?? '')
   const [minRating, setMinRating] = useState(set?.minRating ?? 500)
   const [maxRating, setMaxRating] = useState(set?.maxRating ?? 2500)
   const [price, setPrice] = useState(set?.price ?? 0)
@@ -44,6 +45,7 @@ export default function SetCreator(props: {
           name,
           slug: GenerateSlug(name),
           description,
+          shortDesc: shortDescription,
           minRating,
           maxRating,
           price,
@@ -76,6 +78,7 @@ export default function SetCreator(props: {
           slug: GenerateSlug(name),
           size: set.size,
           description,
+          shortDesc: shortDescription,
           minRating,
           maxRating,
           price,
@@ -144,6 +147,16 @@ export default function SetCreator(props: {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
+              />
+            </div>
+            <div className="">
+              <label htmlFor="shortDescription">Short Description</label>
+              <input
+                className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                id="shortDescription"
+                type="text"
+                value={shortDescription}
+                onChange={(e) => setShortDescription(e.target.value)}
               />
             </div>
             <div className="">
