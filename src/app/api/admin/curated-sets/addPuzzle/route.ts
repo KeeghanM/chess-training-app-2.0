@@ -17,10 +17,13 @@ export async function POST(request: Request) {
   if (!permissions?.permissions.includes('staff-member'))
     return errorResponse('Unauthorized', 401)
 
-  const { setId, puzzle } = (await request.json()) as {
-    setId: number
-    puzzle: TrainingPuzzle
-  }
+  const { setId, puzzle, sortOrder, isDirectStart } =
+    (await request.json()) as {
+      setId: string
+      puzzle: TrainingPuzzle
+      sortOrder?: number
+      isDirectStart?: boolean
+    }
   if (!setId || !puzzle) return errorResponse('Missing required fields', 400)
 
   try {
@@ -45,6 +48,7 @@ export async function POST(request: Request) {
       data: {
         puzzleid: puzzle.puzzleid,
         setId: setId,
+        sortOrder: sortOrder ?? 0,
       },
     })
 
@@ -62,6 +66,7 @@ export async function POST(request: Request) {
             fen: puzzle.fen,
             rating: puzzle.rating,
             moves: puzzle.moves.join(','),
+            directStart: isDirectStart ?? false,
           },
         })
     }

@@ -20,13 +20,38 @@ export async function POST(request: Request) {
   }
 
   try {
-    await prisma.tacticsSet.delete({
+    const existingSet = await prisma.tacticsSet.findFirst({
       where: {
         id: setId,
         userId: user.id,
       },
     })
 
+    if (!existingSet) {
+      return errorResponse('Set not found', 404)
+    }
+
+    // check if the set is a purchased one, if so, just archive it and delete progress
+    if (existingSet.curatedSetId) {
+      await prisma.tacticsSet.update({
+        where: {
+          id: setId,
+        },
+        data: {
+          active: false,
+          rounds: {
+            deleteMany: {},
+          },
+        },
+      })
+    } else {
+      await prisma.tacticsSet.delete({
+        where: {
+          id: setId,
+          userId: user.id,
+        },
+      })
+    }
     return successResponse('Set Deleted', { setId }, 200)
   } catch (e) {
     Sentry.captureException(e)

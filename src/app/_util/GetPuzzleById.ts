@@ -21,6 +21,7 @@ export default async function getPuzzleById(puzzleid: string) {
           ratingdeviation: 0,
           moves: customPuzzle.moves.split(','),
           themes: [],
+          directStart: customPuzzle.directStart,
         }
       }
     } else {

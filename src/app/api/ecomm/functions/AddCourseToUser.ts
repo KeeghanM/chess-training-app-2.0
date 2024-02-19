@@ -1,24 +1,14 @@
 import { prisma } from '~/server/db'
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
-import { errorResponse, successResponse } from '~/app/api/responses'
 
-export async function POST(request: Request) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
+export async function AddCourseToUser(courseId: string, userId: string) {
+  if (!userId) return false
 
-  const user = await session.getUser()
-  if (!user) return errorResponse('Unauthorized', 401)
-
-  const { courseId } = (await request.json()) as {
-    courseId: string
-  }
-
-  if (!courseId) return errorResponse('Missing required fields', 400)
+  if (!courseId) return false
 
   try {
-    const result = await prisma.$transaction(async (prisma) => {
+    await prisma.$transaction(async (prisma) => {
       const course = await prisma.course.findFirst({
         where: {
           id: courseId,
@@ -32,7 +22,7 @@ export async function POST(request: Request) {
 
       let userCourse = await prisma.userCourse.findFirst({
         where: {
-          userId: user.id,
+          userId: userId,
           courseId: course.id,
         },
       })
@@ -42,7 +32,7 @@ export async function POST(request: Request) {
       if (!userCourse) {
         userCourse = await prisma.userCourse.create({
           data: {
-            userId: user.id,
+            userId: userId,
             courseId: course.id,
             linesUnseen: course.lines.length,
           },
@@ -66,21 +56,19 @@ export async function POST(request: Request) {
         course.lines.map(async (line) => {
           await prisma.userLine.create({
             data: {
-              userId: user.id,
+              userId: userId,
               userCourseId: userCourse!.id,
               lineId: line.id,
             },
           })
         }),
       )
-
-      return { userCourseId: userCourse.id }
     })
 
-    return successResponse('Course bought', result, 200)
+    return true
   } catch (e) {
     Sentry.captureException(e)
-    return errorResponse('Internal server error', 500)
+    return false
   } finally {
     await prisma.$disconnect()
   }

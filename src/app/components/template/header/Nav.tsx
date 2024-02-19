@@ -11,7 +11,6 @@ import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css'
 
 import CalculateXpRank from '~/app/_util/CalculateXpRank'
-import { XpRanks } from '~/app/_util/RanksAndBadges'
 
 export default function Nav(props: {
   user: KindeUser | null

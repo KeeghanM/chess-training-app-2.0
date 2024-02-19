@@ -15,16 +15,24 @@ export async function POST(request: Request) {
   if (!permissions?.permissions.includes('staff-member'))
     return errorResponse('Unauthorized', 401)
 
-  const { name, slug, description, rating, price, published } =
+  const { name, slug, description, minRating, maxRating, price, published } =
     (await request.json()) as {
       name: string
       slug: string
       description: string
-      rating: number
+      minRating: number
+      maxRating: number
       price: number
       published: boolean
     }
-  if (!name || !slug || !rating || price == undefined || published == undefined)
+  if (
+    !name ||
+    !slug ||
+    !minRating ||
+    !maxRating ||
+    price == undefined ||
+    published == undefined
+  )
     return errorResponse('Missing required fields', 400)
 
   // Check slug is valid
@@ -45,7 +53,8 @@ export async function POST(request: Request) {
       data: {
         name: name,
         description: description,
-        rating: rating,
+        minRating: minRating,
+        maxRating: maxRating,
         price: price,
         published: published,
         slug: slug,
@@ -73,22 +82,33 @@ export async function PATCH(request: Request) {
   if (!permissions?.permissions.includes('staff-member'))
     return errorResponse('Unauthorized', 401)
 
-  const { id, name, slug, description, rating, price, published, size } =
-    (await request.json()) as {
-      id: number
-      name: string
-      slug: string
-      description: string
-      size: number
-      rating: number
-      price: number
-      published: boolean
-    }
+  const {
+    id,
+    name,
+    slug,
+    description,
+    minRating,
+    maxRating,
+    price,
+    published,
+    size,
+  } = (await request.json()) as {
+    id: string
+    name: string
+    slug: string
+    description: string
+    size: number
+    minRating: number
+    maxRating: number
+    price: number
+    published: boolean
+  }
   if (
     !id ||
     !name ||
     !slug ||
-    !rating ||
+    !minRating ||
+    !maxRating ||
     price == undefined ||
     published == undefined ||
     size == undefined
@@ -117,7 +137,8 @@ export async function PATCH(request: Request) {
       data: {
         name: name,
         description: description,
-        rating: rating,
+        minRating,
+        maxRating,
         price: price,
         published: published,
         slug: slug,
@@ -146,7 +167,7 @@ export async function DELETE(request: Request) {
     return errorResponse('Unauthorized', 401)
 
   const { id } = (await request.json()) as {
-    id: number
+    id: string
   }
   if (!id) return errorResponse('Missing required fields', 400)
 

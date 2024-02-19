@@ -227,13 +227,13 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
         </Heading>
       )}
       <AlertDialog.Root open={open} onOpenChange={setOpen}>
-        <AlertDialog.Trigger
-          className={setCount < maxSets || hasUnlimitedSets ? '' : 'hidden'}
-        >
-          <div
-            onClick={async () =>
+        <div className={setCount < maxSets || hasUnlimitedSets ? '' : 'hidden'}>
+          <Button
+            variant="primary"
+            onClick={() => {
+              setOpen(true)
               trackEventOnClient('create_tactics_set_opened', {})
-            }
+            }}
             className="flex items-center gap-2 bg-purple-700 px-4 py-2 text-white hover:bg-purple-600"
           >
             <p>Create New Set</p>
@@ -248,8 +248,8 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                 d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
               />
             </svg>
-          </div>
-        </AlertDialog.Trigger>
+          </Button>
+        </div>
         <AlertDialog.Portal>
           <AlertDialog.Overlay
             className="fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)]"

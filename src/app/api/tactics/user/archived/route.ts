@@ -7,26 +7,27 @@ import { errorResponse, successResponse } from '~/app/api/responses'
 export async function GET(request: Request) {
   const session = getKindeServerSession(request)
   if (!session) return errorResponse('Unauthorized', 401)
-
   const user = await session.getUser()
   if (!user) return errorResponse('Unauthorized', 401)
 
   try {
     const sets = await prisma.tacticsSet.findMany({
-      include: {
-        rounds: true,
-      },
       where: {
         userId: user.id,
-        active: true,
       },
     })
 
-    return successResponse('Sets found', { sets }, 200)
+    return successResponse(
+      'Sets found',
+      {
+        sets: sets.filter((set) => set.active == false),
+        activeCount: sets.reduce((acc, set) => (set.active ? acc + 1 : acc), 0),
+      },
+      200,
+    )
   } catch (e) {
     Sentry.captureException(e)
-    if (e instanceof Error) return errorResponse(e.message, 500)
-    else return errorResponse('Unknown error', 500)
+    return errorResponse('Internal Server Error', 500)
   } finally {
     await prisma.$disconnect()
   }
