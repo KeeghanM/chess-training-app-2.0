@@ -18,6 +18,7 @@ export default function GetCourse(props: {
 }) {
   const { courseId, price, userCourseId, slug } = props
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const { user } = useKindeBrowserClient()
 
   const handleBuy = async () => {
@@ -38,17 +39,19 @@ export default function GetCourse(props: {
         }),
       })
       const json = (await resp.json()) as ResponseJson
-      if (json?.message != 'Session created' || json?.data?.url == undefined)
-        throw new Error(json?.message)
+      console.log(json)
+      if (json?.data?.url == undefined) throw new Error(json?.message)
 
       window.location.href = json.data.url as string
     } catch (e) {
-      console.error(e)
+      setError('Something went wrong, please try again later')
       setLoading(false)
     }
   }
 
-  return (
+  return error ? (
+    <p className="text-red-500">{error}</p>
+  ) : (
     <div>
       {userCourseId ? (
         <p className="flex items-center gap-4">

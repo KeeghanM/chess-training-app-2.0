@@ -25,7 +25,8 @@ export default function SetCreator(props: {
   // Form
   const [name, setName] = useState(set?.name ?? '')
   const [description, setDescription] = useState(set?.description ?? '')
-  const [rating, setRating] = useState(set?.rating ?? 0)
+  const [minRating, setMinRating] = useState(set?.minRating ?? 500)
+  const [maxRating, setMaxRating] = useState(set?.maxRating ?? 2500)
   const [price, setPrice] = useState(set?.price ?? 0)
   const [published, setPublished] = useState(set?.published ?? false)
 
@@ -43,7 +44,8 @@ export default function SetCreator(props: {
           name,
           slug: GenerateSlug(name),
           description,
-          rating,
+          minRating,
+          maxRating,
           price,
           published,
         }),
@@ -74,7 +76,8 @@ export default function SetCreator(props: {
           slug: GenerateSlug(name),
           size: set.size,
           description,
-          rating,
+          minRating,
+          maxRating,
           price,
           published,
         }),
@@ -149,16 +152,23 @@ export default function SetCreator(props: {
             </div>
             <div className="flex flex-row gap-4">
               <div className="">
-                <label htmlFor="rating">Intended Rating</label>
+                <label htmlFor="rating">Min Rating</label>
                 <input
                   className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-                  id="rating"
+                  id="minRating"
                   type="number"
-                  step=".01"
-                  min={0}
-                  max={100}
-                  value={rating}
-                  onChange={(e) => setRating(parseInt(e.target.value))}
+                  value={minRating}
+                  onChange={(e) => setMinRating(parseInt(e.target.value))}
+                />
+              </div>
+              <div className="">
+                <label htmlFor="rating">Max Rating</label>
+                <input
+                  className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                  id="minRating"
+                  type="number"
+                  value={maxRating}
+                  onChange={(e) => setMaxRating(parseInt(e.target.value))}
                 />
               </div>
               <div className="">

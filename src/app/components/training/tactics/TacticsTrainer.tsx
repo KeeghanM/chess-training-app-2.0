@@ -39,6 +39,7 @@ export interface TrainingPuzzle {
   ratingdeviation: number
   moves: string[]
   themes: string[]
+  directStart?: boolean
 }
 
 // TODO: "Show solution" button
@@ -310,7 +311,11 @@ export default function TacticsTrainer(props: {
   const handleMove = async (playerMove: Move) => {
     const correctMove = currentPuzzle!.moves[game.history().length - 1]
 
-    if (correctMove !== playerMove.lan && !game.isCheckmate()) {
+    if (
+      correctMove !== playerMove.lan &&
+      correctMove !== playerMove.san &&
+      !game.isCheckmate()
+    ) {
       // We played the wrong move
       setPuzzleStatus('incorrect')
       if (soundEnabled) incorrectSound()
@@ -429,10 +434,17 @@ export default function TacticsTrainer(props: {
     if (gameReady && currentPuzzle) {
       setPuzzleFinished(false)
       setPosition(currentPuzzle.fen)
-      setOrientation(game.turn() == 'w' ? 'black' : 'white') // reversed because the first move is opponents
-      const firstMove = currentPuzzle?.moves[0]
-      const timeoutId = makeFirstMove(firstMove!)
-      return () => clearTimeout(timeoutId)
+      if (currentPuzzle.directStart) {
+        // The first move is the players
+        setOrientation(game.turn() == 'w' ? 'white' : 'black')
+        setReadyForInput(true)
+      } else {
+        // The first move is the opponents
+        setOrientation(game.turn() == 'w' ? 'black' : 'white') // reversed because the first move is opponents
+        const firstMove = currentPuzzle?.moves[0]
+        const timeoutId = makeFirstMove(firstMove!)
+        return () => clearTimeout(timeoutId)
+      }
     }
   }, [gameReady, game, currentPuzzle])
 

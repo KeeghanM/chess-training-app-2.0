@@ -81,8 +81,8 @@ export default async function CuratedSetPage({
             </p>
             <ul>
               <li>
-                <strong>Intended Rating Range:</strong> {set.rating - 250} -{' '}
-                {set.rating + 250}
+                <strong>Intended Rating Range:</strong> {set.minRating} -{' '}
+                {set.maxRating}
               </li>
               <li>
                 <strong>Number of Puzzles:</strong> {set.size}

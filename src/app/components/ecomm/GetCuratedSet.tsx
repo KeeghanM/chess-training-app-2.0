@@ -19,6 +19,7 @@ export default function GetCuratedSet(props: {
 }) {
   const { setId, price, slug, userSetId, showPrice } = props
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
   const { user } = useKindeBrowserClient()
 
   const handleBuy = async () => {
@@ -39,17 +40,18 @@ export default function GetCuratedSet(props: {
         }),
       })
       const json = (await resp.json()) as ResponseJson
-      if (json?.message != 'Session created' || json?.data?.url == undefined)
-        throw new Error(json?.message)
+      if (json?.data?.url == undefined) throw new Error(json?.message)
 
       window.location.href = json.data.url as string
     } catch (e) {
-      console.error(e)
+      setError('Something went wrong, please try again later')
       setLoading(false)
     }
   }
 
-  return (
+  return error ? (
+    <p className="text-red-500">{error}</p>
+  ) : (
     <div>
       {userSetId ? (
         <p className="flex flex-wrap items-center gap-4">

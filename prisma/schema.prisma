@@ -155,10 +155,11 @@ model Puzzle {
 }
 
 model CustomPuzzle {
-    id     String @id
-    fen    String
-    rating Int
-    moves  String
+    id          String  @id
+    fen         String
+    rating      Int
+    moves       String
+    directStart Boolean @default(false)
 }
 
 model CuratedSet {
@@ -167,7 +168,8 @@ model CuratedSet {
     slug        String             @unique
     description String?            @db.Text
     shortDesc   String?            @db.Text
-    rating      Int
+    minRating   Int                @default(500)
+    maxRating   Int                @default(2500)
     size        Int
     published   Boolean            @default(false)
     price       Int                @default(0)

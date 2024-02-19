@@ -5,7 +5,11 @@ import * as Sentry from '@sentry/nextjs'
 import Stripe from 'stripe'
 
 import { errorResponse, successResponse } from '../../responses'
+import { AddCourseToUser } from '../courses/AddCourseToUser'
+import { AddCuratedSetToUser } from '../curatedSets/AddCuratedSetToUser'
 
+// TODO: Check for already purchased products
+// TODO: Check if user is at their limit for products
 export async function POST(request: Request) {
   try {
     const session = getKindeServerSession()
@@ -23,7 +27,35 @@ export async function POST(request: Request) {
 
     const { price, name } = await getProductDetails(productType, productId)
 
-    if (!price || !name) return errorResponse('Product not found', 404)
+    if (price == undefined || !name)
+      return errorResponse('Product not found', 404)
+
+    if (price === 0) {
+      // If the product is free, we can just add it to the user and return a success response
+      try {
+        if (productType === 'curatedSet') {
+          await AddCuratedSetToUser(parseInt(productId), user.id)
+          return successResponse(
+            'Free product',
+            {
+              url: `${process.env.NEXT_PUBLIC_SITE_URL}/training/tactics/list`,
+            },
+            200,
+          )
+        } else if (productType === 'course') {
+          await AddCourseToUser(productId, user.id)
+          return successResponse(
+            'Free product',
+            { url: `${process.env.NEXT_PUBLIC_SITE_URL}/training/courses` },
+            200,
+          )
+        }
+      } catch (e) {
+        Sentry.captureException(e)
+        if (e instanceof Error) return errorResponse(e.message, 500)
+        else return errorResponse('Unknown error', 500)
+      }
+    }
 
     const referrer = request.headers.get('Referer')
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)

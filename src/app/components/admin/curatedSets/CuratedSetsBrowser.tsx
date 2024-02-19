@@ -11,6 +11,7 @@ import { Chess } from 'chess.js'
 import { Chessboard } from 'react-chessboard'
 import 'tippy.js/dist/tippy.css'
 import { v4 as uuidv4 } from 'uuid'
+import { set } from 'zod'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
@@ -42,6 +43,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
   const [sets, setSets] = useState<CuratedSet[]>(props.sets)
   const [listOpen, setListOpen] = useState(false)
   const [puzzleList, setPuzzleList] = useState<TrainingPuzzle[]>([])
+  const [isDirectStart, setIsDirectStart] = useState(false)
 
   // Status
   const [error, setError] = useState('')
@@ -95,6 +97,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
 
       setPuzzle(puzzle)
       setId('')
+      setIsDirectStart(false)
     } catch (e) {
       console.error(e)
     }
@@ -120,6 +123,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
           setId: selectedSet.id,
           puzzle: puzzle,
           sortOrder,
+          isDirectStart,
         }),
       })
       const json = (await resp.json()) as ResponseJson
@@ -129,6 +133,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
       setSets(sets.map((s) => (s.id == newSet.id ? newSet : s)))
       setSelectedSet(newSet)
       setStatus('saved')
+      setIsDirectStart(false)
     } catch (e) {
       console.error(e)
       if (e instanceof Error) setError(e.message)
@@ -171,6 +176,11 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
       'Enter Full PGN from LiChess - Remember to set it to the starting position!',
     )
     if (!str) return
+
+    const isDirectStart = prompt('Is the first move the player to move? (y/n)')
+    if (!isDirectStart) return
+
+    setIsDirectStart(isDirectStart.toLowerCase() == 'y')
 
     // EXAMPLE OF VALID CONTENT:
 
