@@ -2,7 +2,6 @@ import { prisma } from '~/server/db'
 
 import * as Sentry from '@sentry/nextjs'
 
-// todo: add check for max number of sets
 export async function AddCuratedSetToUser(setId: string, userId: string) {
   if (!setId || !userId) return false
 

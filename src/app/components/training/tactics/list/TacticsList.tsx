@@ -73,12 +73,18 @@ export default function TacticsList() {
       <div className="flex items-center gap-2">
         <TacticsSetCreator
           setCount={sets.length}
-          maxSets={3}
+          maxSets={1}
           setCreated={addSet}
           loading={loading}
         />
         <Link href="/training/tactics/curated-sets">
           <Button variant="secondary">Browse Curated Sets</Button>
+        </Link>
+        <Link
+          className="text-sm text-purple-700 hover:text-purple-600 underline md:ml-auto"
+          href="/training/tactics/list/archived"
+        >
+          View archived sets
         </Link>
       </div>
       <div className="mt-4 flex flex-col gap-4">
