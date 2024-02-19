@@ -138,7 +138,7 @@ model TacticsSet {
     rating       Int?
     puzzles      Puzzle[]
     rounds       TacticsSetRound[]
-    curatedSetId Int?
+    curatedSetId String?
     active       Boolean           @default(true)
 
     @@index([userId])
@@ -163,7 +163,7 @@ model CustomPuzzle {
 }
 
 model CuratedSet {
-    id          Int                @id @default(autoincrement())
+    id          String             @id @default(cuid())
     name        String
     slug        String             @unique
     description String?            @db.Text
@@ -181,7 +181,7 @@ model CuratedSet {
 model CuratedSetPuzzle {
     id        Int        @id @default(autoincrement())
     puzzleid  String
-    setId     Int
+    setId     String
     sortOrder Int        @default(0)
     set       CuratedSet @relation(fields: [setId], references: [id], onDelete: Cascade)
     createdAt DateTime   @default(now())

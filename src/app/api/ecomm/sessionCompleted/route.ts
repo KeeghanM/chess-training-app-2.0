@@ -6,8 +6,8 @@ import * as Sentry from '@sentry/nextjs'
 import Stripe from 'stripe'
 
 import { errorResponse, successResponse } from '../../responses'
-import { AddCourseToUser } from '../courses/AddCourseToUser'
-import { AddCuratedSetToUser } from '../curatedSets/AddCuratedSetToUser'
+import { AddCourseToUser } from '../functions/AddCourseToUser'
+import { AddCuratedSetToUser } from '../functions/AddCuratedSetToUser'
 
 export async function POST(request: Request) {
   try {

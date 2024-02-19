@@ -30,13 +30,12 @@ export default function GetCuratedSet(props: {
     }
     setLoading(true)
     try {
-      const resp = await fetch('/api/ecomm/createSession', {
+      const resp = await fetch('/api/ecomm/purchaseSet', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          productType: 'curatedSet',
           productId: setId,
         }),
       })

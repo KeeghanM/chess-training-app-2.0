@@ -29,13 +29,12 @@ export default function GetCourse(props: {
     }
     setLoading(true)
     try {
-      const resp = await fetch('/api/ecomm/createSession', {
+      const resp = await fetch('/api/ecomm/purchaseCourse', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          productType: 'course',
           productId: courseId,
         }),
       })

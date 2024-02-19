@@ -17,7 +17,7 @@ import GenerateSlug from '~/app/_util/GenerateSlug'
 
 export default function SetCreator(props: {
   updateSets: (newSet: CuratedSet) => void
-  removeSet?: (id: number) => void
+  removeSet?: (id: string) => void
   set?: CuratedSet
   children: React.ReactNode
 }) {

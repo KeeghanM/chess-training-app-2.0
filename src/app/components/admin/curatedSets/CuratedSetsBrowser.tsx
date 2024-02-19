@@ -11,7 +11,6 @@ import { Chess } from 'chess.js'
 import { Chessboard } from 'react-chessboard'
 import 'tippy.js/dist/tippy.css'
 import { v4 as uuidv4 } from 'uuid'
-import { set } from 'zod'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
