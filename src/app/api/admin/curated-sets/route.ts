@@ -93,7 +93,7 @@ export async function PATCH(request: Request) {
     published,
     size,
   } = (await request.json()) as {
-    id: number
+    id: string
     name: string
     slug: string
     description: string
@@ -167,7 +167,7 @@ export async function DELETE(request: Request) {
     return errorResponse('Unauthorized', 401)
 
   const { id } = (await request.json()) as {
-    id: number
+    id: string
   }
   if (!id) return errorResponse('Missing required fields', 400)
 

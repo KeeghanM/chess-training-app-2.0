@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 
   const { setId, puzzle, sortOrder, isDirectStart } =
     (await request.json()) as {
-      setId: number
+      setId: string
       puzzle: TrainingPuzzle
       sortOrder?: number
       isDirectStart?: boolean
