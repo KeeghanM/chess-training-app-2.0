@@ -17,14 +17,7 @@ export const metadata = {
 export default async function ArticlesPage() {
   const client = createClient()
   const articles = await client.getAllByType('article', {
-    pageSize: 20,
     fetchLinks: ['author.name', 'author.uid'],
-    orderings: [
-      {
-        field: 'my.blog_post.published_on',
-        direction: 'desc',
-      },
-    ],
   })
 
   return (
