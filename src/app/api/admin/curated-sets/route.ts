@@ -15,16 +15,25 @@ export async function POST(request: Request) {
   if (!permissions?.permissions.includes('staff-member'))
     return errorResponse('Unauthorized', 401)
 
-  const { name, slug, description, minRating, maxRating, price, published } =
-    (await request.json()) as {
-      name: string
-      slug: string
-      description: string
-      minRating: number
-      maxRating: number
-      price: number
-      published: boolean
-    }
+  const {
+    name,
+    slug,
+    description,
+    shortDesc,
+    minRating,
+    maxRating,
+    price,
+    published,
+  } = (await request.json()) as {
+    name: string
+    slug: string
+    description: string
+    shortDesc: string
+    minRating: number
+    maxRating: number
+    price: number
+    published: boolean
+  }
   if (
     !name ||
     !slug ||
@@ -53,6 +62,7 @@ export async function POST(request: Request) {
       data: {
         name: name,
         description: description,
+        shortDesc,
         minRating: minRating,
         maxRating: maxRating,
         price: price,
@@ -87,6 +97,7 @@ export async function PATCH(request: Request) {
     name,
     slug,
     description,
+    shortDesc,
     minRating,
     maxRating,
     price,
@@ -97,6 +108,7 @@ export async function PATCH(request: Request) {
     name: string
     slug: string
     description: string
+    shortDesc: string
     size: number
     minRating: number
     maxRating: number
@@ -137,6 +149,7 @@ export async function PATCH(request: Request) {
       data: {
         name: name,
         description: description,
+        shortDesc,
         minRating,
         maxRating,
         price: price,

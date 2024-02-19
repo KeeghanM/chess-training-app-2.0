@@ -96,8 +96,7 @@ export default async function Page({ params }: { params: Params }) {
         our comprehensive chess training tools, improve your skills, and unlock
         your full chess potential. Whether you're a beginner or an experienced
         player, ChessTraining.app has the resources to help you succeed. Don't
-        miss out on the opportunity to level up your game. Click 'Start Training
-        Now' and embark on your chess improvement journey today.
+        miss out on the opportunity to level up your game.
       </CtaRow>
     </>
   )

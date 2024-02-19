@@ -100,6 +100,10 @@ export default function Footer() {
           text: 'Report an issue',
           url: '/contact/report-an-issue',
         },
+        {
+          text: 'Twitter/X',
+          url: 'https://twitter.com/ChessTrainApp',
+        },
       ],
     },
   ]
