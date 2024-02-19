@@ -19,7 +19,6 @@ export default async function AuthorPage({ params }: { params: Params }) {
     .getByUID('author', params.uid)
     .catch(() => notFound())
   const articles = await client.getAllByType('article', {
-    pageSize: 20,
     graphQuery: `{
         article {
            title
@@ -27,12 +26,6 @@ export default async function AuthorPage({ params }: { params: Params }) {
     }`,
     filters: [prismic.filter.any('my.article.author', [author.id])],
     fetchLinks: ['author.name', 'author.uid'],
-    orderings: [
-      {
-        field: 'my.blog_post.published_on',
-        direction: 'desc',
-      },
-    ],
   })
 
   return (
