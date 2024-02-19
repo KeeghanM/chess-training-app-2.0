@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     try {
       event = stripe.webhooks.constructEvent(payload, signature, webHookSecret)
     } catch (err) {
-      let message = 'Unkown Error'
+      let message = 'Unknown Error'
       if (err instanceof Error) message = err.message
       Sentry.captureException(err)
       return errorResponse(`Webhook Error: ${message}`, 400)
@@ -53,14 +53,10 @@ export async function POST(request: Request) {
 
     if (!dbSession) throw new Error('Database Session not found')
 
-    // TODO: Check the items against the line items to make sure they match
     for (const item of dbSession.items) {
       let added = false
       if (item.productType === 'curatedSet')
-        added = await AddCuratedSetToUser(
-          parseInt(item.productId),
-          dbSession.userId,
-        )
+        added = await AddCuratedSetToUser(item.productId, dbSession.userId)
 
       if (item.productType === 'course')
         added = await AddCourseToUser(item.productId, dbSession.userId)
@@ -78,7 +74,7 @@ export async function POST(request: Request) {
       },
     })
 
-    // TOOO: Send email to user with details of what they bought
+    // TODO: Send email to user with details of what they bought
 
     return successResponse('Session Completed', {}, 200)
   } catch (e) {

@@ -1,6 +1,6 @@
 import { prisma } from '~/server/db'
 
-import { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
+import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 import * as Sentry from '@sentry/nextjs'
 import Stripe from 'stripe'
 

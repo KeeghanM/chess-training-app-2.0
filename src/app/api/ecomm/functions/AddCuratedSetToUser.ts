@@ -7,7 +7,7 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
   if (!setId || !userId) return false
 
   try {
-    const result = await prisma.$transaction(async (txn) => {
+    await prisma.$transaction(async (txn) => {
       const curatedSet = await txn.curatedSet.findUnique({
         where: {
           id: setId,
@@ -75,8 +75,6 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
       }
 
       if (!userTacticsSet) throw new Error('No userTacticsSet found')
-
-      return { userTacticsSetId: userTacticsSet.id }
     })
 
     return true

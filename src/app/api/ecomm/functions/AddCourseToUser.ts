@@ -8,7 +8,7 @@ export async function AddCourseToUser(courseId: string, userId: string) {
   if (!courseId) return false
 
   try {
-    const result = await prisma.$transaction(async (prisma) => {
+    await prisma.$transaction(async (prisma) => {
       const course = await prisma.course.findFirst({
         where: {
           id: courseId,
@@ -63,8 +63,6 @@ export async function AddCourseToUser(courseId: string, userId: string) {
           })
         }),
       )
-
-      return { userCourseId: userCourse.id }
     })
 
     return true

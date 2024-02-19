@@ -31,7 +31,7 @@ export default async function CheckoutSuccessPage() {
 
   if (!latestSession) redirect('/')
 
-  let items: {
+  const items: {
     name: string
     url: string
   }[] = []
@@ -40,7 +40,7 @@ export default async function CheckoutSuccessPage() {
     if (item.productType === 'curatedSet') {
       const curatedSet = await prisma.curatedSet.findUnique({
         where: {
-          id: parseInt(item.productId),
+          id: item.productId,
         },
       })
       items.push({
