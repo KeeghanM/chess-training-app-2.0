@@ -139,6 +139,49 @@ export default function SetListEdit(props: {
     )
   }
 
+  const ArchiveButton = () => {
+    return (
+      <AlertDialog.Root>
+        <AlertDialog.Trigger>
+          <Button variant="danger">Archive</Button>
+        </AlertDialog.Trigger>
+        <AlertDialog.Portal>
+          <AlertDialog.Overlay
+            className="fixed inset-0 z-20 bg-[rgba(0,0,0,0.5)]"
+            onClick={close}
+          />
+          <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[75vh] w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto bg-white p-4 shadow-md md:p-6">
+            <AlertDialog.Title className="text-lg font-bold text-purple-700">
+              Are you sure you want to archive this?
+            </AlertDialog.Title>
+            <p>
+              You will lose all progress on your Tactics Set, and the set will
+              be moved to your Archive List.
+            </p>
+            <div className="flex gap-2">
+              <AlertDialog.Action>
+                <Button variant="danger" onClick={deleteSet}>
+                  {loading ? (
+                    <>
+                      Archiving <Spinner />
+                    </>
+                  ) : (
+                    'Archive'
+                  )}
+                </Button>
+              </AlertDialog.Action>
+              <AlertDialog.Cancel>
+                <Button variant="primary" disabled={loading}>
+                  Keep The Set
+                </Button>
+              </AlertDialog.Cancel>
+            </div>
+          </AlertDialog.Content>
+        </AlertDialog.Portal>
+      </AlertDialog.Root>
+    )
+  }
+
   return (
     <>
       <Button variant="secondary" onClick={() => setOpen(true)}>
@@ -152,38 +195,42 @@ export default function SetListEdit(props: {
           />
           <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[75vh] w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto bg-white p-4 shadow-md md:p-6">
             <AlertDialog.Title className="text-lg font-bold text-purple-700">
-              Editing "{set.name}"
+              {set.curatedSetId ? '' : 'Editing'} "{set.name}"
             </AlertDialog.Title>
-            <div className="flex flex-col gap-2">
-              <div className="">
-                <label>Set Name</label>
-                <input
-                  type="text"
-                  className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-                  value={name}
-                  onInput={(e) => {
-                    setName(e.currentTarget.value)
-                  }}
-                />
-              </div>
+            <div className="flex flex-col gap-2 mt-4">
+              {!set.curatedSetId && (
+                <div className="">
+                  <label>Set Name</label>
+                  <input
+                    type="text"
+                    className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                    value={name}
+                    onInput={(e) => {
+                      setName(e.currentTarget.value)
+                    }}
+                  />
+                </div>
+              )}
               <div className="flex flex-row gap-2">
-                <Button
-                  variant="primary"
-                  disabled={loading}
-                  onClick={updateSet}
-                >
-                  {loading ? (
-                    <>
-                      Saving <Spinner />
-                    </>
-                  ) : (
-                    'Save'
-                  )}
-                </Button>
+                {!set.curatedSetId && (
+                  <Button
+                    variant="primary"
+                    disabled={loading}
+                    onClick={updateSet}
+                  >
+                    {loading ? (
+                      <>
+                        Saving <Spinner />
+                      </>
+                    ) : (
+                      'Save'
+                    )}
+                  </Button>
+                )}
                 <Button variant="secondary" onClick={close}>
                   Close
                 </Button>
-                <DeleteButton />
+                {set.curatedSetId ? <ArchiveButton /> : <DeleteButton />}
               </div>
               <p className="text-sm italic text-red-500">{error}</p>
             </div>

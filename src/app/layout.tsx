@@ -9,7 +9,6 @@ import Header from './components/template/header/Header'
 
 import { PostHogPageview, PosthogProvider } from './_util/PostHog'
 import { ThemeSwitchProvider } from './_util/ThemeProvider'
-import getDistinctId from './_util/getDistinctId'
 
 import './globals.css'
 
@@ -49,8 +48,6 @@ export default async function RootLayout({
 }: {
   children: ReactNode
 }) {
-  const userId = await getDistinctId()
-
   return (
     <>
       <Script id="brevo-conversations">

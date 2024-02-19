@@ -1,11 +1,14 @@
 'use client'
 
+import Link from 'next/link'
+
 import { useEffect, useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
 import type { ResponseJson } from '~/app/api/responses'
 
+import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
 import Spinner from '~/app/components/general/Spinner'
 import type { PrismaTacticsSet } from '~/app/components/training/tactics//create/TacticsSetCreator'
@@ -67,12 +70,27 @@ export default function TacticsList() {
 
   return (
     <Container>
-      <TacticsSetCreator
-        setCount={sets.length}
-        maxSets={3}
-        setCreated={addSet}
-        loading={loading}
-      />
+      <div className="flex items-center gap-2">
+        <TacticsSetCreator
+          setCount={sets.length}
+          maxSets={1}
+          setCreated={addSet}
+          loading={loading}
+        />
+        {false && (
+          <>
+            <Link href="/training/tactics/curated-sets">
+              <Button variant="secondary">Browse Curated Sets</Button>
+            </Link>
+            <Link
+              className="text-sm text-purple-700 hover:text-purple-600 underline md:ml-auto"
+              href="/training/tactics/list/archived"
+            >
+              View archived sets
+            </Link>
+          </>
+        )}
+      </div>
       <div className="mt-4 flex flex-col gap-4">
         {loading ? (
           <>
@@ -95,10 +113,18 @@ export default function TacticsList() {
         ) : (
           sets
             .sort((a, b) => {
-              const fallback = new Date(0)
+              // add non-trained sets to the top, sorted by created date
+              // then sort, in descending order, by the last trained date
+              if (a.lastTrained === null) return -1
+              if (b.lastTrained === null) return 1
+              if (a.lastTrained === b.lastTrained)
+                return (
+                  new Date(b.createdAt).getTime() -
+                  new Date(a.createdAt).getTime()
+                )
               return (
-                new Date(b.lastTrained ?? fallback).getTime() -
-                new Date(a.lastTrained ?? fallback).getTime()
+                new Date(b.lastTrained).getTime() -
+                new Date(a.lastTrained).getTime()
               )
             })
             .map((set) => (

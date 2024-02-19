@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     return errorResponse('Unauthorized', 401)
 
   const { setId } = (await request.json()) as {
-    setId: number
+    setId: string
   }
   if (!setId) return errorResponse('Missing required fields', 400)
 

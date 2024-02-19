@@ -56,7 +56,7 @@ export default async function Courses() {
                   <Heading as="h4">{course.courseName}</Heading>
                 </Link>
                 <p className="font-bold text-green-500">
-                  {course.price > 0 ? <>£{course.price}</> : 'FREE'}
+                  {course.price > 0 ? <>£{course.price / 100}</> : 'FREE'}
                 </p>
               </div>
               <div className="flex flex-col md:flex-row md:justify-between gap-2">

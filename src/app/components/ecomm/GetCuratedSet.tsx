@@ -11,35 +11,35 @@ import type { ResponseJson } from '~/app/api/responses'
 import Button from '../_elements/button'
 import Spinner from '../general/Spinner'
 
-export default function GetCourse(props: {
-  courseId: string
+export default function GetCuratedSet(props: {
+  setId: string
   price: number
   slug: string
-  userCourseId?: string
+  userSetId?: string
+  showPrice: boolean
 }) {
-  const { courseId, price, userCourseId, slug } = props
+  const { setId, price, slug, userSetId, showPrice } = props
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const { user } = useKindeBrowserClient()
 
   const handleBuy = async () => {
     if (!user) {
-      window.location.href = `/api/auth/login?post_login_redirect_url=/courses/${slug}`
+      window.location.href = `/api/auth/login?post_login_redirect_url=/training/tactics/curated-sets/${slug}`
       return
     }
     setLoading(true)
     try {
-      const resp = await fetch('/api/ecomm/purchaseCourse', {
+      const resp = await fetch('/api/ecomm/purchaseSet', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          productId: courseId,
+          productId: setId,
         }),
       })
       const json = (await resp.json()) as ResponseJson
-      console.log(json)
       if (json?.data?.url == undefined) throw new Error(json?.message)
 
       window.location.href = json.data.url as string
@@ -53,9 +53,9 @@ export default function GetCourse(props: {
     <p className="text-red-500">{error}</p>
   ) : (
     <div>
-      {userCourseId ? (
-        <Tippy content="You already own this course!">
-          <Link href={`/training/courses/${userCourseId}`}>
+      {userSetId ? (
+        <Tippy content="You already own this Tactics Set!">
+          <Link href={`/training/tactics/list/${userSetId}`}>
             <Button variant="accent">Train Now</Button>
           </Link>
         </Tippy>
@@ -66,7 +66,11 @@ export default function GetCourse(props: {
               Processing... <Spinner />
             </>
           ) : price > 0 ? (
-            `Buy for £${price / 100}`
+            showPrice ? (
+              `Buy for £${price / 100}`
+            ) : (
+              `Buy Now`
+            )
           ) : (
             'Get for Free'
           )}

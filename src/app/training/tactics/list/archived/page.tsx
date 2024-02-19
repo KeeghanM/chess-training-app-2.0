@@ -5,24 +5,25 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import ArchivedList from '~/app/components/training/courses/list/ArhivedList'
+import ArchivedSetList from '~/app/components/training/tactics/list/ArhivedList'
 
 export const metadata = {
-  title: 'Your Archived Courses - ChessTraining.app',
+  title: 'Your Archived Sets - ChessTraining.app',
 }
 
-export default async function ArchivedCoursesPage() {
+export default async function ArchivedSetsPage() {
   const { getUser, getPermissions } = getKindeServerSession()
   const user = await getUser()
 
   if (!user) redirect('/auth/signin')
 
   const permissions = await getPermissions()
-  const hasUnlimitedCourses =
-    permissions?.permissions.includes('unlimited-courses') ?? false
+  const hasUnlimitedSets =
+    permissions?.permissions.includes('unlimited-sets') ?? false
   return (
     <>
       <PageHeader
-        title="Your Archived Courses"
+        title="Your Archived Sets"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
@@ -30,7 +31,7 @@ export default async function ArchivedCoursesPage() {
       />
       <div className="dark:bg-slate-800">
         <Container>
-          <ArchivedList hasUnlimitedCourses={hasUnlimitedCourses} />
+          <ArchivedSetList hasUnlimitedSets={hasUnlimitedSets} />
         </Container>
       </div>
     </>

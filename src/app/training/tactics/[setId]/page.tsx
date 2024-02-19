@@ -27,7 +27,14 @@ export default async function TacticsTrainPage({
       where: { id: params.setId, userId },
       include: {
         puzzles: {
-          orderBy: { puzzleid: 'asc' },
+          orderBy: [
+            {
+              sortOrder: 'asc',
+            },
+            {
+              puzzleid: 'asc',
+            },
+          ],
         },
         rounds: true,
       },
