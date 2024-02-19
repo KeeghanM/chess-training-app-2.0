@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import Tippy from '@tippyjs/react'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '../_elements/button'
@@ -54,12 +55,11 @@ export default function GetCourse(props: {
   ) : (
     <div>
       {userCourseId ? (
-        <p className="flex items-center gap-4">
+        <Tippy content="You already own this course!">
           <Link href={`/training/courses/${userCourseId}`}>
             <Button variant="accent">Train Now</Button>
           </Link>
-          You already own this course!
-        </p>
+        </Tippy>
       ) : (
         <Button disabled={loading} variant="accent" onClick={handleBuy}>
           {loading ? (

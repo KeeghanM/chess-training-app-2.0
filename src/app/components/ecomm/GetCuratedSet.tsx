@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import Tippy from '@tippyjs/react'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '../_elements/button'
@@ -54,12 +55,11 @@ export default function GetCuratedSet(props: {
   ) : (
     <div>
       {userSetId ? (
-        <p className="flex flex-wrap items-center gap-4">
+        <Tippy content="You already own this Tactics Set!">
           <Link href={`/training/tactics/list/${userSetId}`}>
             <Button variant="accent">Train Now</Button>
           </Link>
-          You already own this Tactics Set!
-        </p>
+        </Tippy>
       ) : (
         <Button disabled={loading} variant="accent" onClick={handleBuy}>
           {loading ? (
