@@ -64,7 +64,7 @@ export default function GetCourse(props: {
               Processing... <Spinner />
             </>
           ) : price > 0 ? (
-            `Buy for $${price / 100}`
+            `Buy for £${price / 100}`
           ) : (
             'Get for Free'
           )}
