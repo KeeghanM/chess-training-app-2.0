@@ -12,7 +12,7 @@ import Button from '../_elements/button'
 import Spinner from '../general/Spinner'
 
 export default function GetCuratedSet(props: {
-  setId: number
+  setId: string
   price: number
   slug: string
   userSetId?: string
