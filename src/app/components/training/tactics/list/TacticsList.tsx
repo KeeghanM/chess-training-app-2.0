@@ -1,11 +1,14 @@
 'use client'
 
+import Link from 'next/link'
+
 import { useEffect, useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
 import type { ResponseJson } from '~/app/api/responses'
 
+import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
 import Spinner from '~/app/components/general/Spinner'
 import type { PrismaTacticsSet } from '~/app/components/training/tactics//create/TacticsSetCreator'
@@ -13,7 +16,6 @@ import TacticsSetCreator from '~/app/components/training/tactics//create/Tactics
 
 import SetListItem from './SetListItem'
 
-// TODO: Add a link to curated sets
 export default function TacticsList() {
   const { user } = useKindeBrowserClient()
   const [sets, setSets] = useState<PrismaTacticsSet[]>([])
@@ -68,12 +70,17 @@ export default function TacticsList() {
 
   return (
     <Container>
-      <TacticsSetCreator
-        setCount={sets.length}
-        maxSets={3}
-        setCreated={addSet}
-        loading={loading}
-      />
+      <div className="flex items-center gap-2">
+        <TacticsSetCreator
+          setCount={sets.length}
+          maxSets={3}
+          setCreated={addSet}
+          loading={loading}
+        />
+        <Link href="/training/tactics/curated-sets">
+          <Button variant="secondary">Browse Curated Sets</Button>
+        </Link>
+      </div>
       <div className="mt-4 flex flex-col gap-4">
         {loading ? (
           <>
