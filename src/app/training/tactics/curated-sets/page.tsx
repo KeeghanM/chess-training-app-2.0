@@ -29,6 +29,7 @@ export default async function CuratedSetsPage() {
     ? await prisma.tacticsSet.findMany({
         where: {
           userId: user?.id,
+          active: true,
           NOT: {
             curatedSetId: null,
           },
