@@ -44,9 +44,8 @@ export default function PuzzleList(props: {
   }, [props.setId])
 
   return (
-    <div>
-      <Heading as="h3">Puzzles In Set</Heading>
-      <ul className="h-full max-h-[50vh] overflow-y-auto">
+    <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 max-h-[70vh]">
+      <ul className="h-full max-h-[50vh] overflow-y-auto text-black">
         {loading ? (
           <Spinner />
         ) : (

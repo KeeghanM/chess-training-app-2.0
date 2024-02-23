@@ -1,14 +1,40 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import { ResponseJson } from '~/app/api/responses'
+
+import Button from '~/app/components/_elements/button'
+import Spinner from '~/app/components/general/Spinner'
 
 import type { CuratedSetPuzzle } from '../CuratedSetsBrowser'
+import CreateCustom from './CreateCustom'
 import LiChessSearch from './LiChessSearch'
 
 export default function PuzzleSearch(props: {
   setPuzzle: (puzzle: CuratedSetPuzzle) => void
 }) {
   const [mode, setMode] = useState<'LiChess' | 'Custom'>('LiChess')
+  const [puzzles, setPuzzles] = useState<CuratedSetPuzzle[]>([])
+  const [selectedPuzzle, setSelectedPuzzle] = useState<CuratedSetPuzzle>()
+  const [loading, setLoading] = useState(false)
+
+  const loadPuzzles = async () => {
+    setLoading(true)
+    const response = await fetch('/api/admin/curated-sets/customPuzzle')
+    const json = (await response.json()) as ResponseJson
+    if (!json.data?.puzzles) return
+    setPuzzles(json.data.puzzles as CuratedSetPuzzle[])
+    setLoading(false)
+  }
+
+  useEffect(() => {
+    if (mode === 'LiChess') {
+      setPuzzles([])
+      return
+    }
+    ;(async () => await loadPuzzles())()
+  }, [mode])
 
   return (
     <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white max-h-[70vh]">
@@ -39,7 +65,32 @@ export default function PuzzleSearch(props: {
       {mode === 'LiChess' ? (
         <LiChessSearch setPuzzle={props.setPuzzle} />
       ) : (
-        <></>
+        <>
+          <CreateCustom onLoad={loadPuzzles} />
+          {loading ? (
+            <Spinner />
+          ) : (
+            <ul className="h-full max-h-[50vh] overflow-y-auto text-black">
+              {puzzles.map((puzzle) => (
+                <li
+                  key={puzzle.puzzleid}
+                  className={
+                    'cursor-pointer bg-gray-50 border-b border-slate-500 hover:bg-orange-200 p-2 text-sm' +
+                    (selectedPuzzle?.puzzleid == puzzle.puzzleid
+                      ? ' bg-purple-200'
+                      : '')
+                  }
+                  onClick={() => {
+                    setSelectedPuzzle(puzzle)
+                    props.setPuzzle(puzzle)
+                  }}
+                >
+                  {puzzle.puzzleid} ({puzzle.rating} - {puzzle.moves.length} )
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
       )}
     </div>
   )

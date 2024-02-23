@@ -200,7 +200,7 @@ model CustomPuzzle {
     id          String   @id
     fen         String
     rating      Int
-    moves       String
+    moves       String   @db.Text
     comment     String?  @db.Text
     directStart Boolean
     createdAt   DateTime @default(now())

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { ResponseJson } from '~/app/api/responses'
 
@@ -32,22 +32,28 @@ export default function AddToSet(props: { setId: string; puzzleId?: string }) {
       setLoading(false)
     }
   }
-  return error ? (
-    <p className="text-red-500">{error}</p>
-  ) : (
-    <Button
-      variant="accent"
-      className="w-full mt-1"
-      onClick={addPuzzleToSet}
-      disabled={loading}
-    >
-      {loading ? (
-        <>
-          Add to set <Spinner />
-        </>
-      ) : (
-        'Add to Set'
-      )}
-    </Button>
+
+  useEffect(() => {
+    setError('')
+  }, [puzzleId, setId])
+
+  return (
+    <>
+      <Button
+        variant="accent"
+        className="w-full mt-1"
+        onClick={addPuzzleToSet}
+        disabled={loading}
+      >
+        {loading ? (
+          <>
+            Add to set <Spinner />
+          </>
+        ) : (
+          'Add to Set'
+        )}
+      </Button>
+      {error && <p className="text-red-500">{error}</p>}
+    </>
   )
 }
