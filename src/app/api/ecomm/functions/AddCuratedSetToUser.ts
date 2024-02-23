@@ -25,8 +25,6 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
         },
       })
 
-      // Create a new userCourse if it doesn't exist (ie. user hasn't bought the course yet)
-      // Otherwise, update the existing userCourse (ie. user has bought the course before, but it's archived)
       if (!userTacticsSet) {
         const puzzles = curatedSet.puzzles.map((puzzle) => ({
           puzzleid: puzzle.puzzleid,

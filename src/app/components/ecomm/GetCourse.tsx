@@ -39,7 +39,6 @@ export default function GetCourse(props: {
         }),
       })
       const json = (await resp.json()) as ResponseJson
-      console.log(json)
       if (json?.data?.url == undefined) throw new Error(json?.message)
 
       window.location.href = json.data.url as string

@@ -15,5 +15,9 @@ export default async function CuratedSetsPage() {
 
   const sets = await prisma.curatedSet.findMany()
 
-  return <CuratedSetsBrowser sets={sets} />
+  return (
+    <div className="dark:bg-slate-800">
+      <CuratedSetsBrowser sets={sets} />
+    </div>
+  )
 }

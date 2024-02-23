@@ -15,34 +15,11 @@ export async function POST(request: Request) {
   if (!permissions?.permissions.includes('staff-member'))
     return errorResponse('Unauthorized', 401)
 
-  const {
-    name,
-    slug,
-    description,
-    shortDesc,
-    minRating,
-    maxRating,
-    price,
-    published,
-  } = (await request.json()) as {
+  const { name, slug } = (await request.json()) as {
     name: string
     slug: string
-    description: string
-    shortDesc: string
-    minRating: number
-    maxRating: number
-    price: number
-    published: boolean
   }
-  if (
-    !name ||
-    !slug ||
-    !minRating ||
-    !maxRating ||
-    price == undefined ||
-    published == undefined
-  )
-    return errorResponse('Missing required fields', 400)
+  if (!name || !slug) return errorResponse('Missing required fields', 400)
 
   // Check slug is valid
   const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
@@ -61,12 +38,6 @@ export async function POST(request: Request) {
     const set = await prisma.curatedSet.create({
       data: {
         name: name,
-        description: description,
-        shortDesc,
-        minRating: minRating,
-        maxRating: maxRating,
-        price: price,
-        published: published,
         slug: slug,
         size: 0,
       },

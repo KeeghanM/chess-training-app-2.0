@@ -40,6 +40,8 @@ export interface TrainingPuzzle {
   moves: string[]
   themes: string[]
   directStart?: boolean
+  sortOrder?: number
+  comment?: string
 }
 
 // TODO: "Show solution" button

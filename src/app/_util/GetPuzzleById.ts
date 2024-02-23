@@ -22,7 +22,10 @@ export default async function getPuzzleById(puzzleid: string) {
           moves: customPuzzle.moves.split(','),
           themes: [],
           directStart: customPuzzle.directStart,
+          comment: customPuzzle.comment ?? '',
         }
+      } else {
+        throw new Error('Puzzle not found')
       }
     } else {
       const params = { id: puzzleid }
