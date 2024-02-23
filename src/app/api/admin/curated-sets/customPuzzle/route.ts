@@ -1,7 +1,7 @@
 import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import { CustomPuzzle } from '@prisma/client'
+import type { CustomPuzzle } from '@prisma/client'
 import { errorResponse, successResponse } from '~/app/api/responses'
 
 export async function POST(request: Request) {

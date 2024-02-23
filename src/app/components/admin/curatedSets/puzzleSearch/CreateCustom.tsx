@@ -2,9 +2,10 @@
 
 import { useState } from 'react'
 
-import { ParseTree, parse } from '@mliebelt/pgn-parser'
+import { parse } from '@mliebelt/pgn-parser'
+import type { ParseTree } from '@mliebelt/pgn-parser'
 import { v4 as uuidv4 } from 'uuid'
-import { ResponseJson } from '~/app/api/responses'
+import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'

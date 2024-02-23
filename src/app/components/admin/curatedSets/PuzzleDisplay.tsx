@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 
-import { CustomPuzzle } from '@prisma/client'
 import Tippy from '@tippyjs/react'
 import { Chess } from 'chess.js'
 import type { ResponseJson } from '~/app/api/responses'
@@ -113,7 +112,7 @@ export default function PuzzleDisplay(props: {
       ;(async () => {
         // Ensure we have the latest
         const json = await fetch(
-          '/api/puzzles/getPuzzleById/' + props!.puzzle!.puzzleid,
+          '/api/puzzles/getPuzzleById/' + props.puzzle!.puzzleid,
         ).then((res) => res.json())
         const puzzle = json.data.puzzle as CuratedSetPuzzle
 
@@ -136,7 +135,7 @@ export default function PuzzleDisplay(props: {
         setRating(puzzle.rating)
         setComment(puzzle.comment ?? '')
         setMoves(puzzle.moves)
-      })()
+      })().catch(console.error)
     } else {
       game.reset()
       setPosition(game.fen())
@@ -155,7 +154,7 @@ export default function PuzzleDisplay(props: {
         additionalArrows={[]}
         enableArrows={false}
         enableHighlights={false}
-        moveMade={() => {}}
+        moveMade={null}
       />
       {props.puzzle && (
         <div className="flex flex-row">

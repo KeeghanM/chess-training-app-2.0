@@ -22,7 +22,7 @@ interface ChessBoardProps {
   additionalArrows: Arrow[]
   enableArrows: boolean
   enableHighlights: boolean
-  moveMade: (move: Move) => void
+  moveMade: null | ((move: Move) => void)
 }
 export default function ChessBoard(props: ChessBoardProps) {
   // Chess Game
@@ -119,7 +119,7 @@ export default function ChessBoard(props: ChessBoardProps) {
     setMoveTo(undefined)
     setShowPromotionDialog(false)
     setOptionSquares({})
-    props.moveMade(playerMove)
+    if (props.moveMade) props.moveMade(playerMove)
     return true
   }
 

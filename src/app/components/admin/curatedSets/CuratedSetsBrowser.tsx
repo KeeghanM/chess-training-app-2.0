@@ -1,7 +1,5 @@
 'use client'
 
-import Link from 'next/link'
-
 import { useEffect, useState } from 'react'
 
 import type { CuratedSet } from '@prisma/client'

@@ -1,6 +1,6 @@
 'use client'
 
-import { CuratedSet } from '@prisma/client'
+import type { CuratedSet } from '@prisma/client'
 
 import Button from '../../_elements/button'
 import Container from '../../_elements/container'

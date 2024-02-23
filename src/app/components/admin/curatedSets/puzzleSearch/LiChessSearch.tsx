@@ -1,12 +1,12 @@
 import { useState } from 'react'
 
 import Tippy from '@tippyjs/react'
-import { ResponseJson } from '~/app/api/responses'
+import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 
-import { CuratedSetPuzzle } from '../CuratedSetsBrowser'
+import type { CuratedSetPuzzle } from '../CuratedSetsBrowser'
 import themes from '../themes'
 
 export default function LiChessSearch(props: {
@@ -159,6 +159,7 @@ export default function LiChessSearch(props: {
           'Search'
         )}
       </Button>
+      {error && <p className="text-red-500">{error}</p>}
     </>
   )
 }

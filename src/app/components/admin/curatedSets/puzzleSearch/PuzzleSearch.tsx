@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from 'react'
 
-import { ResponseJson } from '~/app/api/responses'
+import type { ResponseJson } from '~/app/api/responses'
 
-import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 
 import type { CuratedSetPuzzle } from '../CuratedSetsBrowser'
@@ -33,7 +32,7 @@ export default function PuzzleSearch(props: {
       setPuzzles([])
       return
     }
-    ;(async () => await loadPuzzles())()
+    ;(async () => await loadPuzzles())().catch(console.error)
   }, [mode])
 
   return (

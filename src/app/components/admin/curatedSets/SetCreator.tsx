@@ -9,7 +9,6 @@ import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
-import TextEditor from '~/app/components/general/TextEditor'
 
 import GenerateSlug from '~/app/_util/GenerateSlug'
 

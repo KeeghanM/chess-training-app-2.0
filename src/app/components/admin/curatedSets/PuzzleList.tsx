@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react'
 
 import type { ResponseJson } from '~/app/api/responses'
 
-import Heading from '../../_elements/heading'
 import Spinner from '../../general/Spinner'
 import type { CuratedSetPuzzle } from './CuratedSetsBrowser'
 
@@ -40,7 +39,8 @@ export default function PuzzleList(props: {
   }
 
   useEffect(() => {
-    if (props.setId) getPuzzles(props.setId)
+    if (props.setId)
+      (async () => getPuzzles(props.setId))().catch(console.error)
   }, [props.setId])
 
   return (
