@@ -6,8 +6,8 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
   if (!setId || !userId) return false
 
   try {
-    await prisma.$transaction(async (txn) => {
-      const curatedSet = await txn.curatedSet.findUnique({
+    await prisma.$transaction(async (prisma) => {
+      const curatedSet = await prisma.curatedSet.findUnique({
         where: {
           id: setId,
         },
@@ -18,7 +18,7 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
 
       if (!curatedSet) throw new Error('Course not found')
 
-      let userTacticsSet = await txn.tacticsSet.findFirst({
+      let userTacticsSet = await prisma.tacticsSet.findFirst({
         where: {
           curatedSetId: setId,
           userId: userId,
@@ -30,7 +30,7 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
           puzzleid: puzzle.puzzleid,
           sortOrder: puzzle.sortOrder,
         }))
-        userTacticsSet = await txn.tacticsSet.create({
+        userTacticsSet = await prisma.tacticsSet.create({
           data: {
             name: curatedSet.name,
             userId: userId,
@@ -52,7 +52,7 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
           },
         })
       } else {
-        await txn.tacticsSet.update({
+        await prisma.tacticsSet.update({
           where: {
             id: userTacticsSet.id,
           },
@@ -78,7 +78,5 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
   } catch (e) {
     Sentry.captureException(e)
     return false
-  } finally {
-    await prisma.$disconnect()
   }
 }

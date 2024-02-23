@@ -116,7 +116,6 @@ export default function PuzzleDisplay(props: {
           '/api/puzzles/getPuzzleById/' + props!.puzzle!.puzzleid,
         ).then((res) => res.json())
         const puzzle = json.data.puzzle as CuratedSetPuzzle
-        console.log(puzzle)
 
         game.load(puzzle.fen)
         const fenCol = puzzle.fen.split(' ')[1]

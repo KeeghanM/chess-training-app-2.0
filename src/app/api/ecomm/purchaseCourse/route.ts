@@ -68,7 +68,8 @@ export async function POST(request: Request) {
 
     // Now get the product details
     const { price, name } = await getProductDetails('course', productId)
-    if (!price || !name) return errorResponse('Product not found', 404)
+    if (price === undefined || !name)
+      return errorResponse('Product not found', 404)
 
     // If the product is free, add it
     if (price === 0) {

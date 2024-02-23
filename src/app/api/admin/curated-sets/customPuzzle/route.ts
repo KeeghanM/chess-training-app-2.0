@@ -20,7 +20,6 @@ export async function POST(request: Request) {
       puzzles: CustomPuzzle[]
     }
 
-    console.log(puzzles)
     await prisma.customPuzzle.createMany({
       data: puzzles,
     })
