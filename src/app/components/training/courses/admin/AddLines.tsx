@@ -2,8 +2,9 @@
 
 import Link from 'next/link'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
+import { Course, Group, Move } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import type { ResponseJson } from '~/app/api/responses'
 
@@ -18,6 +19,10 @@ import GroupSelector from '../create/GroupSelector'
 import PgnToLinesForm from '../create/PgnToLinesForm'
 import type { Line } from '../create/parse/ParsePGNtoLineData'
 
+type FullCourseData = Course & {
+  lines: (Line & { moves: Move[] })[]
+}
+
 export default function AddLines(props: { courseId: string }) {
   const [step, setStep] = useState<'pgn' | 'groups' | 'error' | 'success'>(
     'pgn',
@@ -26,15 +31,26 @@ export default function AddLines(props: { courseId: string }) {
 
   const uploadLines = async (group: string, lines: Line[]) => {
     try {
-      const courseData = transformCourseData(group, lines)
-      const response = await fetch('/api/courses/create/addLines', {
+      const cleanLines = lines.map((line) => ({
+        groupName: line.tags[group],
+        colour: line.tags['Colour'],
+        moves: line.moves,
+      }))
+      const allGroups = [...new Set(cleanLines.map((line) => line.groupName))]
+
+      const resp = await fetch('/api/courses/create/addLines', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ ...courseData, courseId: props.courseId }),
+        body: JSON.stringify({
+          courseId: props.courseId,
+          groupNames: allGroups,
+          lines: cleanLines,
+        }),
       })
-      const json = (await response.json()) as ResponseJson
+
+      const json = (await resp.json()) as ResponseJson
 
       if (json?.message != 'Lines added')
         throw new Error(json?.message ?? 'Unknown error')
@@ -45,6 +61,37 @@ export default function AddLines(props: { courseId: string }) {
       Sentry.captureException(e)
       setStep('error')
     }
+  }
+
+  const processLines = async (lines: Line[]) => {
+    // Download existing data
+    const lineResp = await fetch('/api/courses/create/getLines', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ courseId: props.courseId }),
+    })
+    const lineJson = (await lineResp.json()) as ResponseJson
+
+    if (lineJson?.message != 'Success')
+      throw new Error(lineJson?.message ?? 'Unknown error')
+
+    const existingCourseData = lineJson.data!.course as FullCourseData
+
+    // Now filter out any lines that already exist
+    setLines(
+      lines.filter(
+        (line) =>
+          !existingCourseData.lines.some(
+            (existingLine) =>
+              // @ts-expect-error : This is a bug in the types, dunno why it's expecting a CleanMove when the moves is a Move[]
+              existingLine.moves.map((move) => move.move).join('') ===
+              line.moves.map((move) => move.notation).join(''),
+          ),
+      ),
+    )
+    setStep('groups')
   }
 
   return (
@@ -65,9 +112,8 @@ export default function AddLines(props: { courseId: string }) {
       )}
       {step === 'pgn' && (
         <PgnToLinesForm
-          finished={(lines) => {
-            setLines(lines)
-            setStep('groups')
+          finished={async (lines) => {
+            await processLines(lines)
           }}
           back={() => {
             history.back()

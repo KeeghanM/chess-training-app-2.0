@@ -20,9 +20,13 @@ interface MultiColProps {
 
 export function MultiColItem(props: MultiColItemProps) {
   return (
-    <div className="flex flex-1 flex-col bg-gray-100 p-2 md:p-4 lg:p-6">
-      <Heading as={'h3'}>{props.title}</Heading>
-      <div className="flex flex-col gap-4">{props.children}</div>
+    <div className="flex flex-1 flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)]">
+      <div className="px-2 py-1 border-b border-gray-300 font-bold">
+        <Heading as={'h3'} color="text-orange-500 !m-0 !p-0">
+          {props.title}
+        </Heading>
+      </div>
+      <div className="flex flex-col gap-2 p-2">{props.children}</div>
     </div>
   )
 }

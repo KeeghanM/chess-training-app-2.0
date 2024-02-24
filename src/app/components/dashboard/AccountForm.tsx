@@ -102,9 +102,9 @@ export default function AccountForm(props: { profile: UserProfile }) {
   }
 
   return (
-    <div className=" bg-purple-700 p-4 md:p-6">
-      <div className="mb-4 flex flex-col items-center justify-between md:flex-row">
-        <Heading color="text-white" as={'h2'}>
+    <div className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] ">
+      <div className="flex flex-col md:flex-row px-2 py-1 border-b border-gray-300 dark:border-slate-600 items-center justify-between">
+        <Heading color="text-orange-500 !m-0 !p-0" as={'h2'}>
           Account Settings
         </Heading>
         <Link href="/dashboard">
@@ -114,7 +114,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
 
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 text-white md:gap-4"
+        className="flex flex-col gap-2 text-white p-2"
       >
         <div className="flex flex-col gap-4 md:flex-row">
           <div>
@@ -248,7 +248,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
             onChange={() => setPublicProfile(!publicProfile)}
           />
         </div>
-        <Button variant="success">
+        <Button variant="success" disabled={loading}>
           {loading ? (
             <span className="flex flex-row items-center gap-2">
               Saving

@@ -20,11 +20,11 @@ export async function UpdateStreak(userId: string) {
     const yesterday = new Date(now.getTime() - 1000 * 60 * 60 * 24)
     let didTrainYesterday = false
 
-    const todayString = now.toISOString().split('T')![0]!
-    const lastTrainedString = lastTrained.toISOString().split('T')![0]!
+    const todayString = now.toISOString().split('T')[0]
+    const lastTrainedString = lastTrained.toISOString().split('T')[0]
 
     if (todayString != lastTrainedString) {
-      const yesterdayString = yesterday.toISOString().split('T')![0]!
+      const yesterdayString = yesterday.toISOString().split('T')[0]
       const trainedYesterday = await prisma.dayTrained.findFirst({
         where: {
           userId,

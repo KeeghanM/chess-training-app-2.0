@@ -40,6 +40,8 @@ export interface TrainingPuzzle {
   moves: string[]
   themes: string[]
   directStart?: boolean
+  sortOrder?: number
+  comment?: string
 }
 
 // TODO: "Show solution" button
@@ -562,66 +564,66 @@ export default function TacticsTrainer(props: {
           </div>
         </div>
         <div className="flex w-full flex-col gap-2 p-1">
-          <div className="flex flex-row items-center gap-2">
-            {!puzzleFinished && (
-              <p className="flex items-center gap-2 text-black dark:text-white">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 24 24"
-                  className={
-                    orientation === 'white'
-                      ? 'text-white'
-                      : 'rotate-180 transform text-black'
-                  }
-                >
-                  <path fill="currentColor" d="M1 21h22L12 2" />
-                </svg>
-                {orientation === 'white' ? 'White' : 'Black'} to move
-              </p>
-            )}
-            {puzzleStatus === 'correct' && (
-              <div className="z-50 flex flex-wrap  items-center gap-2 text-black dark:text-white">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 512 512"
-                  className="text-lime-500"
-                >
-                  <path
-                    fill="currentColor"
-                    d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2h144c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48h-97.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192h64c17.7 0 32 14.3 32 32v224c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
-                  />
-                </svg>
-                <p>Correct!</p>
-                <Link
-                  href={`https://lichess.org/training/${currentPuzzle?.puzzleid}`}
-                  target="_blank"
-                >
-                  <span className="flex flex-row items-center gap-1 text-sm text-black dark:text-white underline">
-                    Lichess
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
-                      />
-                    </svg>
-                  </span>
-                </Link>
-              </div>
-            )}
-            {puzzleStatus === 'incorrect' && (
+          {!puzzleFinished && (
+            <p className="flex items-center gap-2 text-black dark:text-white">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                className={
+                  orientation === 'white'
+                    ? 'text-white'
+                    : 'rotate-180 transform text-black'
+                }
+              >
+                <path fill="currentColor" d="M1 21h22L12 2" />
+              </svg>
+              {orientation === 'white' ? 'White' : 'Black'} to move
+            </p>
+          )}
+          {puzzleStatus === 'correct' && (
+            <div className="z-50 flex flex-wrap  items-center gap-2 text-black dark:text-white">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 512 512"
+                className="text-lime-500"
+              >
+                <path
+                  fill="currentColor"
+                  d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2h144c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48h-97.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192h64c17.7 0 32 14.3 32 32v224c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
+                />
+              </svg>
+              <p>Correct!</p>
+              <Link
+                href={`https://lichess.org/training/${currentPuzzle?.puzzleid}`}
+                target="_blank"
+              >
+                <span className="flex flex-row items-center gap-1 text-sm text-black dark:text-white underline">
+                  Lichess
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
+                    />
+                  </svg>
+                </span>
+              </Link>
+            </div>
+          )}
+          {puzzleStatus === 'incorrect' && (
+            <>
               <div className="z-50 flex flex-wrap items-center gap-2 text-black dark:text-white">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -660,8 +662,13 @@ export default function TacticsTrainer(props: {
                   </span>
                 </Link>
               </div>
-            )}
-          </div>
+              {currentPuzzle?.comment && (
+                <p className="p-2 border lg:border-4 border-orange-500 bg-orange-500 bg-opacity-20 text-black dark:text-white text-sm overflow-y-auto">
+                  {currentPuzzle?.comment}
+                </p>
+              )}
+            </>
+          )}
           <div className="flex flex-1 flex-col-reverse gap-2 lg:flex-col">
             <div className="flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
               {PgnDisplay.map((item) => item)}

@@ -31,12 +31,17 @@ export async function POST(request: Request) {
       },
     })
 
-    const puzzles: TrainingPuzzle[] = []
+    const puzzles: (TrainingPuzzle & { curatedPuzzleId: number })[] = []
 
     await Promise.all(
       setPuzzles.map(async (puzzle) => {
         const foundPuzzle = await getPuzzleById(puzzle.puzzleid)
-        if (foundPuzzle) puzzles.push(foundPuzzle)
+        if (foundPuzzle)
+          puzzles.push({
+            ...foundPuzzle,
+            sortOrder: puzzle.sortOrder,
+            curatedPuzzleId: puzzle.id,
+          })
       }),
     )
 

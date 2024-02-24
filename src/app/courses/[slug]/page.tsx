@@ -168,6 +168,7 @@ export default async function CoursePage({
             price={course.price}
             userCourseId={userCourse?.active ? userCourse?.id : undefined}
             slug={course.slug}
+            showPrice={true}
           />
           {course.courseDescription && (
             <article

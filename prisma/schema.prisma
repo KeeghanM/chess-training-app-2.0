@@ -16,6 +16,7 @@ model Course {
     id                String       @id @default(cuid())
     courseName        String
     slug              String       @unique
+    shortDescription  String?      @db.Text
     courseDescription String?      @db.Text
     createdBy         String
     price             Int          @default(0)
@@ -144,6 +145,20 @@ model TacticsSet {
     @@index([userId])
 }
 
+model TacticsSetRound {
+    id          String     @id @default(cuid())
+    roundNumber Int
+    timeSpent   Int        @default(0)
+    correct     Int        @default(0)
+    incorrect   Int        @default(0)
+    setId       String
+    createdAt   DateTime   @default(now())
+    updatedAt   DateTime   @updatedAt
+    set         TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
+
+    @@index([setId])
+}
+
 model Puzzle {
     id        String     @id @default(cuid())
     puzzleid  String
@@ -152,14 +167,6 @@ model Puzzle {
     set       TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
 
     @@index([setId])
-}
-
-model CustomPuzzle {
-    id          String  @id
-    fen         String
-    rating      Int
-    moves       String
-    directStart Boolean @default(false)
 }
 
 model CuratedSet {
@@ -183,27 +190,25 @@ model CuratedSetPuzzle {
     puzzleid  String
     setId     String
     sortOrder Int        @default(0)
-    set       CuratedSet @relation(fields: [setId], references: [id], onDelete: Cascade)
     createdAt DateTime   @default(now())
     updatedAt DateTime   @updatedAt
+    set       CuratedSet @relation(fields: [setId], references: [id], onDelete: Cascade)
 
     @@index([setId])
 }
 
-model TacticsSetRound {
-    id          String     @id @default(cuid())
-    roundNumber Int
-    timeSpent   Int        @default(0)
-    correct     Int        @default(0)
-    incorrect   Int        @default(0)
-    setId       String
-    createdAt   DateTime   @default(now())
-    updatedAt   DateTime   @updatedAt
-    set         TacticsSet @relation(fields: [setId], references: [id], onDelete: Cascade)
-
-    @@index([setId])
+model CustomPuzzle {
+    id          String   @id
+    fen         String
+    rating      Int
+    moves       String   @db.Text
+    comment     String?  @db.Text
+    directStart Boolean
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
 }
 
+// User data
 model UserProfile {
     id                  String       @id
     username            String       @unique

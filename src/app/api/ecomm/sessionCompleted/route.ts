@@ -61,8 +61,8 @@ export async function POST(request: Request) {
       if (item.productType === 'course')
         added = await AddCourseToUser(item.productId, dbSession.userId)
 
-      if (!added) console.log(`Failed to add ${item.productType} to user`)
-      // Sentry.captureMessage(`Failed to add ${item.productType} to user`)
+      if (!added)
+        Sentry.captureMessage(`Failed to add ${item.productType} to user`)
     }
 
     await prisma.checkoutSession.update({

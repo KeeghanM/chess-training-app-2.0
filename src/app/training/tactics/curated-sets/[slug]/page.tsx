@@ -35,6 +35,7 @@ export default async function CuratedSetPage({
         where: {
           curatedSetId: set.id,
           userId: user?.id,
+          active: true,
         },
       })
 

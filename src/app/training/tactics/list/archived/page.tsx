@@ -4,7 +4,6 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
-import ArchivedList from '~/app/components/training/courses/list/ArhivedList'
 import ArchivedSetList from '~/app/components/training/tactics/list/ArhivedList'
 
 export const metadata = {
