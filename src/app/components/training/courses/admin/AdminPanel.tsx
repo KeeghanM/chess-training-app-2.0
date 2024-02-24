@@ -95,7 +95,7 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
   }, [courseName, courseDescription, lines, groups, shortDescription])
 
   return (
-    <div className="flex flex-col gap-4 bg-purple-700 text-white p-2">
+    <div className="flex flex-col gap-2 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] p-2">
       <div>
         <label className="font-bold">Course Name:</label>
         <input
