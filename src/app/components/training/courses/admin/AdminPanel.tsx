@@ -33,6 +33,9 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
   const [courseDescription, setCourseDescription] = useState(
     course.courseDescription ?? '',
   )
+  const [shortDescription, setShortDescription] = useState(
+    course.shortDescription ?? '',
+  )
 
   const saveCourse = async () => {
     if (!hasHadChanges) return
@@ -41,12 +44,13 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
     setSaving(true)
     try {
       const res = await fetch('/api/courses', {
-        method: 'PUT',
+        method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           courseId: course.id,
           courseName,
           courseDescription,
+          shortDescription,
           lines: lines.map((line) => ({
             id: line.id,
             sortOrder: line.sortOrder,
@@ -81,13 +85,14 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
       courseName != course.courseName ||
       courseDescription != course.courseDescription ||
       lines != course.lines ||
-      groups != course.groups
+      groups != course.groups ||
+      shortDescription != course.shortDescription
     ) {
       setHasHadChanges(true)
     } else {
       setHasHadChanges(false)
     }
-  }, [courseName, courseDescription, lines, groups])
+  }, [courseName, courseDescription, lines, groups, shortDescription])
 
   return (
     <div className="flex flex-col gap-4 bg-purple-700 text-white p-2">
@@ -100,6 +105,17 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
           type="text"
         />
       </div>
+      {course.published && (
+        <div>
+          <label className="font-bold">Short Description:</label>
+          <textarea
+            rows={3}
+            className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+            value={shortDescription}
+            onChange={(e) => setShortDescription(e.target.value)}
+          />
+        </div>
+      )}
       <div>
         <label className="font-bold">Course Description:</label>
         <TextEditor value={courseDescription} onChange={setCourseDescription} />

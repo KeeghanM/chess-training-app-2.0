@@ -4,24 +4,31 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
 
-export async function PUT(request: Request) {
+export async function PATCH(request: Request) {
   const session = getKindeServerSession(request)
   if (!session) return errorResponse('Unauthorized', 401)
 
   const user = await session.getUser()
   if (!user) return errorResponse('Unauthorized', 401)
 
-  const { courseId, courseName, courseDescription, lines, groups } =
-    (await request.json()) as {
-      courseId: string
-      courseName: string
-      courseDescription: string
-      lines: { id: number; sortOrder: number }[]
-      groups: {
-        id: string
-        groupName: string
-      }[]
-    }
+  const {
+    courseId,
+    courseName,
+    courseDescription,
+    shortDescription,
+    lines,
+    groups,
+  } = (await request.json()) as {
+    courseId: string
+    courseName: string
+    courseDescription: string
+    shortDescription: string
+    lines: { id: number; sortOrder: number }[]
+    groups: {
+      id: string
+      groupName: string
+    }[]
+  }
 
   if (!courseName || !groups || !lines || !courseId)
     return errorResponse('Missing required fields', 400)
@@ -70,6 +77,7 @@ export async function PUT(request: Request) {
         data: {
           courseName: courseName,
           courseDescription: courseDescription,
+          shortDescription: shortDescription,
         },
       })
     })

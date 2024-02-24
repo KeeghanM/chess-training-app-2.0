@@ -16,8 +16,9 @@ export default function GetCourse(props: {
   price: number
   slug: string
   userCourseId?: string
+  showPrice: boolean
 }) {
-  const { courseId, price, userCourseId, slug } = props
+  const { courseId, price, userCourseId, slug, showPrice } = props
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const { user } = useKindeBrowserClient()
@@ -43,34 +44,37 @@ export default function GetCourse(props: {
 
       window.location.href = json.data.url as string
     } catch (e) {
-      setError('Something went wrong, please try again later')
+      if (e instanceof Error) setError(e.message)
+      else setError('Something went wrong, please try again later')
+    } finally {
       setLoading(false)
     }
   }
 
-  return error ? (
-    <p className="text-red-500">{error}</p>
+  return userCourseId ? (
+    <Tippy content="You already own this course!">
+      <Link href={`/training/courses/${userCourseId}`}>
+        <Button variant="accent">Train Now</Button>
+      </Link>
+    </Tippy>
   ) : (
-    <div>
-      {userCourseId ? (
-        <Tippy content="You already own this course!">
-          <Link href={`/training/courses/${userCourseId}`}>
-            <Button variant="accent">Train Now</Button>
-          </Link>
-        </Tippy>
-      ) : (
-        <Button disabled={loading} variant="accent" onClick={handleBuy}>
-          {loading ? (
-            <>
-              Processing... <Spinner />
-            </>
-          ) : price > 0 ? (
+    <>
+      <Button disabled={loading} variant="accent" onClick={handleBuy}>
+        {loading ? (
+          <>
+            Processing... <Spinner />
+          </>
+        ) : price > 0 ? (
+          showPrice ? (
             `Buy for £${price / 100}`
           ) : (
-            'Get for Free'
-          )}
-        </Button>
-      )}
-    </div>
+            `Buy Now`
+          )
+        ) : (
+          'Get for Free'
+        )}
+      </Button>
+      {error && <p className="text-red-500">{error}</p>}
+    </>
   )
 }

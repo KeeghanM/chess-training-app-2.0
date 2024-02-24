@@ -16,6 +16,7 @@ model Course {
     id                String       @id @default(cuid())
     courseName        String
     slug              String       @unique
+    shortDescription  String?      @db.Text
     courseDescription String?      @db.Text
     createdBy         String
     price             Int          @default(0)

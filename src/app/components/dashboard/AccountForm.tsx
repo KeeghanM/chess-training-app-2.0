@@ -248,7 +248,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
             onChange={() => setPublicProfile(!publicProfile)}
           />
         </div>
-        <Button variant="success">
+        <Button variant="success" disabled={loading}>
           {loading ? (
             <span className="flex flex-row items-center gap-2">
               Saving

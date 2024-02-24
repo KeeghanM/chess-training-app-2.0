@@ -25,6 +25,7 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
         },
       })
 
+
       if (!userTacticsSet) {
         const puzzles = curatedSet.puzzles.map((puzzle) => ({
           puzzleid: puzzle.puzzleid,
@@ -58,18 +59,19 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
           },
           data: {
             active: true,
-            rounds: {
-              deleteMany: {},
-              create: {
-                roundNumber: 1,
-                timeSpent: 0,
-                correct: 0,
-                incorrect: 0,
-              },
-            },
           },
         })
       }
+
+      await prisma.tacticsSetRound.create({
+        data: {
+          setId: userTacticsSet.id,
+          roundNumber: 1,
+          timeSpent: 0,
+          correct: 0,
+          incorrect: 0,
+        },
+      })
 
       if (!userTacticsSet) throw new Error('No userTacticsSet found')
     })

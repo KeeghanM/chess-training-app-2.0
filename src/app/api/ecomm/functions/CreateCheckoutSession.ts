@@ -30,18 +30,20 @@ export async function CreateCheckoutSession(
             },
             unit_amount: price,
           },
+          quantity: 1,
         }
       }),
     )
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'link'],
       customer_email: user.email ?? undefined,
       line_items: lineItems,
       mode: 'payment',
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/success`,
-      cancel_url: returnUrl ?? `${process.env.NEXT_PUBLIC_SITE_URL}/`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/${returnUrl ?? '/'}`,
       automatic_tax: { enabled: true },
     })
 
