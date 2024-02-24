@@ -16,9 +16,7 @@ export async function POST(request: Request) {
 
   const { groupNames, lines, courseId } = (await request.json()) as {
     courseId: string
-    groupNames: {
-      groupName: string
-    }[]
+    groupNames: string[]
     lines: {
       groupName: string
       colour: string
@@ -32,7 +30,7 @@ export async function POST(request: Request) {
   try {
     const course = await prisma.course.findFirst({
       where: { id: courseId, createdBy: user.id },
-      include: { groups: true, lines: { include: { moves: true } } },
+      include: { groups: true },
     })
 
     if (!course) return errorResponse('Course not found', 404)
@@ -42,16 +40,7 @@ export async function POST(request: Request) {
     const allGroups = [...course.groups]
     await Promise.all(
       lines.map(async (line, index) => {
-        // First check if the line already exists
-        const fullMoveString = line.moves.map((move) => move.notation).join('')
-        const existingLine = course.lines.find(
-          (line) =>
-            line.moves.map((move) => move.move).join('') === fullMoveString,
-        )
-        if (existingLine) return // If it does, skip it
-
-        // Now check if the group already exists
-        // and if not create it
+        // Check if the group already exists, and if not create it
         let matchingGroup = allGroups.find(
           (group) => group.groupName === line.groupName,
         )
@@ -92,6 +81,7 @@ export async function POST(request: Request) {
         })
 
         // Now, we need to add this new line to ALL users who are enrolled in this course
+        // TODO: Maybe turn this into a Cron Job that runs every 5 minutes or something checking for new lines to add to users
         const userCourses = await prisma.userCourse.findMany({
           where: { courseId: course.id },
         })
