@@ -36,7 +36,7 @@ export async function UpdateStreak(userId: string) {
       }
     }
 
-    if (didTrainYesterday) currentStreak++
+    if (didTrainYesterday || currentStreak == 0) currentStreak++
 
     const bestStreak = Math.max(currentStreak, profile.bestStreak)
 
