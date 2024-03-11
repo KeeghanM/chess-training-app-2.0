@@ -20,9 +20,8 @@ See the [full product roadmap](https://chesstraining.app/product-roadmap) here
 We welcome contributions from the community. Whether it's adding new features, fixing bugs, or improving documentation, your help is appreciated. Please raise an issue first to discuss the idea/bug before opening a PR.
 
 ## License
-Source code for ChessTraining.app is released under the **GPL-3.0** License (or any later version). You are welcome to reuse any of the code yourself, but if you do so your combined work must also be released under the GPL. **You must release your source code** to your users.
 
-Please read more about GPL for JavaScript [here](greendrake.info/#nfy0).
+ChessTraining.app is open-sourced under the MIT license. See the [LICENSE](LICENSE) file for more details.
 
 ## Support
 
