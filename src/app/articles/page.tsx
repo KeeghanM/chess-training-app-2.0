@@ -15,7 +15,7 @@ export const metadata = {
 }
 
 export default async function ArticlesPage() {
-  const client = createClient()
+  const client = await createClient()
   const articles = await client.getAllByType('article', {
     fetchLinks: ['author.name', 'author.uid'],
   })
