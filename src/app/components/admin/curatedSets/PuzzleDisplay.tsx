@@ -75,8 +75,7 @@ export default function PuzzleDisplay(props: {
   }
 
   const PgnDisplay = game.history().map((move, index) => {
-    const moveNumber =
-      Math.floor(index / 2) + 1 + (game.moveNumber() - game.history().length)
+    const moveNumber = Math.floor(index / 2) + 1 + game.moveNumber()
     const moveColour = game.history({ verbose: true })[index]!.color
     const FlexText = () => (
       <p>

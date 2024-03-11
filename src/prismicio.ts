@@ -1,19 +1,7 @@
 import * as prismic from '@prismicio/client'
 import * as prismicNext from '@prismicio/next'
 
-import config from '../slicemachine.config.json'
-
-/**
- * The project's Prismic repository name.
- */
-export const repositoryName =
-  process.env.NEXT_PUBLIC_PRISMIC_ENVIRONMENT ?? config.repositoryName
-
-/**
- * A list of Route Resolver objects that define how a document's `url` field is resolved.
- *
- * {@link https://prismic.io/docs/route-resolver#route-resolver}
- */
+export const repositoryName = 'chess-training-app'
 const routes: prismic.ClientConfig['routes'] = [
   {
     type: 'article',
@@ -36,12 +24,5 @@ export const createClient = (config: prismicNext.CreateClientConfig = {}) => {
     routes,
     ...config,
   })
-
-  prismicNext.enableAutoPreviews({
-    client,
-    previewData: config.previewData,
-    req: config.req,
-  })
-
   return client
 }
