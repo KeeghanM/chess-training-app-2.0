@@ -6,10 +6,7 @@ import { errorResponse, successResponse } from '../../responses'
 
 export async function GET() {
   const now = new Date()
-  const twoDaysAgo = new Date(now.getTime() - 1000 * 60 * 60 * 24 * 2)
-  const twoDaysOneHourAgo = new Date(
-    now.getTime() - 1000 * 60 * 60 * 24 * 2 - 1000 * 60 * 60,
-  )
+  const twentyFourHoursAgo = new Date(now.getTime() - 1000 * 60 * 60 * 24)
 
   try {
     await prisma.userProfile.updateMany({
@@ -18,8 +15,10 @@ export async function GET() {
       },
       where: {
         lastTrained: {
-          lt: twoDaysAgo,
-          gt: twoDaysOneHourAgo,
+          lt: twentyFourHoursAgo,
+        },
+        currentStreak: {
+          gt: 0,
         },
       },
     })

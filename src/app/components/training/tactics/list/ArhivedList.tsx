@@ -19,7 +19,7 @@ export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
   const [loading, setLoading] = useState(true)
   const [restoring, setRestoring] = useState(false)
   const { hasUnlimitedSets } = props
-  const maxSets = 1
+  const maxSets = 3
 
   const fetchSets = async () => {
     setLoading(true)

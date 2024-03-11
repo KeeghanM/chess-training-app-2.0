@@ -73,7 +73,7 @@ export default function TacticsList() {
       <div className="flex items-center gap-2">
         <TacticsSetCreator
           setCount={sets.length}
-          maxSets={1}
+          maxSets={3}
           setCreated={addSet}
           loading={loading}
         />
