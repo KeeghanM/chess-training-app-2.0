@@ -1,28 +1,31 @@
-# Create T3 App
+# [ChessTraining.app](https://www.chesstraining.app)
+## The definitive destination for chess enthusiasts of all skill levels
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Our mission is simple yet ambitious: to improve your chess game through innovative, science-backed training methods. ChessTraining.app is designed to cater to players of all levels, from those taking their first steps on the chessboard to those seeking to refine their grandmaster-level tactics as a dedicated chess trainer.
 
-## What's next? How do I make an app with this?
+Built by a solo dev - [Hi! That's Me!](https://github.com/KeeghanM/) - as a passion project that I hope to one day turn profitable.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Current Features
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+- **[Natural Play Learning](https://chesstraining.app/about/features/natural-play-learning)**: Chessable, but better! A unique method that adapts to your learning curve, focusing on new challenges and reinforcing concepts as needed.
+- **Tactics Trainer**: Sharpen your tactical vision using the [WoodPecker Method](https://chesstraining.app/about/features/woodpecker-method), with puzzles generated based on themes or covering the whole remit of chess tactics.
+- **Endgame Trainer**: Improve your endgame skills with tailored training covering all major piece endgames.
+- **Visualisation Training**: Enhance your ability to foresee multiple moves ahead and improve your strategic planning.
+- - **Recall Training**: Enhance your board recall by memorising peices, try it under time pressure for a real challenge.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+See the [full product roadmap](https://chesstraining.app/product-roadmap) here
 
-## Learn More
+## Contributing
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+We welcome contributions from the community. Whether it's adding new features, fixing bugs, or improving documentation, your help is appreciated. Please raise an issue first to discuss the idea/bug before opening a PR.
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+## License
+Source code for ChessTraining.app is released under the **GPL-3.0** License (or any later version). You are welcome to reuse any of the code yourself, but if you do so your combined work must also be released under the GPL. **You must release your source code** to your users.
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+Please read more about GPL for JavaScript [here](greendrake.info/#nfy0).
 
-## How do I deploy this?
+## Support
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+If you find ChessTraining.app useful, consider supporting the project by starring it on GitHub or contributing.
+<p>If you would like to financially support the development of ChessTraining.app, you can do so through my <br/>
+<a href="https://www.buymeacoffee.com/KeeghanM" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 180px !important;" ></a></p>
