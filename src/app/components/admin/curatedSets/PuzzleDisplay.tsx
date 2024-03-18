@@ -24,7 +24,7 @@ export default function PuzzleDisplay(props: {
   const [game] = useState(new Chess())
   const [moves, setMoves] = useState<string[]>([])
   const [orientation, setOrientation] = useState<'white' | 'black'>('white')
-  const [readyForInput, setReadyForInput] = useState(false)
+  const [readyForInput] = useState(false)
 
   // Puzzle Editing
   const [rating, setRating] = useState(props.puzzle?.rating ?? 1500)

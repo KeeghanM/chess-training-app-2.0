@@ -36,7 +36,7 @@ export default function ChessBoard(props: ChessBoardProps) {
   const [optionSquares, setOptionSquares] = useState<
     Record<string, React.CSSProperties>
   >({})
-  const [arrows, setArrows] = useState<Arrow[]>([])
+  const [arrows] = useState<Arrow[]>([])
 
   // Setup SFX
   const [checkSound] = useSound('/sfx/check.mp3')

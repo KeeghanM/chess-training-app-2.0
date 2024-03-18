@@ -1,5 +1,5 @@
 import * as prismic from '@prismicio/client'
-import * as prismicNext from '@prismicio/next'
+import type * as prismicNext from '@prismicio/next'
 
 export const repositoryName = 'chess-training-app'
 const routes: prismic.ClientConfig['routes'] = [

@@ -33,7 +33,7 @@ export default function AddLines(props: { courseId: string }) {
     try {
       const cleanLines = lines.map((line) => ({
         groupName: line.tags[group],
-        colour: line.tags['Colour'],
+        colour: line.tags.Colour,
         moves: line.moves,
       }))
       const allGroups = [...new Set(cleanLines.map((line) => line.groupName))]
