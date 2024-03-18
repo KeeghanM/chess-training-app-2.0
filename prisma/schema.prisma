@@ -27,8 +27,6 @@ model Course {
     lines             Line[]
     groups            Group[]
     userCourses       UserCourse[]
-
-    @@index([slug])
 }
 
 model Group {
