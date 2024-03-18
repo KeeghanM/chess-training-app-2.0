@@ -54,7 +54,7 @@ export default function XpTracker(props: {
   }, [props.counter])
 
   return show ? (
-    <div className="absolute inset-0 grid place-items-center">
+    <div className="absolute inset-0 grid place-items-center pointer-events-none">
       <div className="w-fit bg-green-500 shadow-xl py-2 px-4 text-white z-50 animate-fade-up">
         +{xpToAdd} XP
       </div>
