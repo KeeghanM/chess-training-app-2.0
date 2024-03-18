@@ -11,7 +11,7 @@ export default async function BadgesPage() {
   const allBadges = await prisma.badge.findMany()
   await prisma.$disconnect()
 
-  allBadges.sort((a, b) => {
+  allBadges.sort((a) => {
     if (badges.find((badge) => badge.badgeName === a.name)) return -1
     return 1
   })

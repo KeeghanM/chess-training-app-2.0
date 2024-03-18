@@ -25,7 +25,6 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
         },
       })
 
-
       if (!userTacticsSet) {
         const puzzles = curatedSet.puzzles.map((puzzle) => ({
           puzzleid: puzzle.puzzleid,

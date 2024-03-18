@@ -1,4 +1,5 @@
 # [ChessTraining.app](https://www.chesstraining.app)
+
 ## The definitive destination for chess enthusiasts of all skill levels
 
 Our mission is simple yet ambitious: to improve your chess game through innovative, science-backed training methods. ChessTraining.app is designed to cater to players of all levels, from those taking their first steps on the chessboard to those seeking to refine their grandmaster-level tactics as a dedicated chess trainer.
@@ -26,5 +27,6 @@ ChessTraining.app is open-sourced under the MIT license. See the [LICENSE](LICEN
 ## Support
 
 If you find ChessTraining.app useful, consider supporting the project by starring it on GitHub or contributing.
+
 <p>If you would like to financially support the development of ChessTraining.app, you can do so through my <br/>
 <a href="https://www.buymeacoffee.com/KeeghanM" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 50px !important;width: 180px !important;" ></a></p>

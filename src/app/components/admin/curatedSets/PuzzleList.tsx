@@ -34,10 +34,6 @@ export default function PuzzleList(props: {
     }
   }
 
-  const onDrop = async () => {
-    // Drag and drop
-  }
-
   useEffect(() => {
     if (props.setId)
       (async () => getPuzzles(props.setId))().catch(console.error)
