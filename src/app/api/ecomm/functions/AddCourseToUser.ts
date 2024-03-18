@@ -57,7 +57,7 @@ export async function AddCourseToUser(courseId: string, userId: string) {
           await prisma.userLine.create({
             data: {
               userId: userId,
-              userCourseId: userCourse.id,
+              userCourseId: userCourse!.id,
               lineId: line.id,
             },
           })
