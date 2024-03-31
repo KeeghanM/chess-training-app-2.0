@@ -211,7 +211,7 @@ export default function SetListEdit(props: {
                   />
                 </div>
               )}
-              <div className="flex flex-row gap-2">
+              <div className="flex flex-col md:flex-row gap-2">
                 {!set.curatedSetId && (
                   <Button
                     variant="primary"
