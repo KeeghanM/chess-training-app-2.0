@@ -4,6 +4,7 @@ import Link from 'next/link'
 
 import { useEffect, useState } from 'react'
 
+import { Tour } from '@frigade/react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
@@ -27,7 +28,6 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 // TODO: On multiple recalls, show a temporary green/red border on square clicked for feedback
 // TODO: On multiple recalls, have the piece to select flash on change to alert that it's changed
-// TODO: Add onboarding
 // TODO: Increase XP for each correct recall in a row
 
 export default function RecallTrainer() {
@@ -343,9 +343,13 @@ export default function RecallTrainer() {
     </div>
   ) : (
     <>
+      <Tour flowId="flow_g0ITjQQa" />
       {mode == 'settings' ? (
         <>
-          <div className="border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
+          <div
+            id="tooltip-0"
+            className="border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]"
+          >
             <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
               <p>Adjust your settings</p>
             </div>
