@@ -6,7 +6,7 @@ import TacticsList from '~/app/components/training/tactics/list/TacticsList'
 import { getUserServer } from '~/app/_util/getUserServer'
 
 export default async function TacticsListPage() {
-  const { user } = await getUserServer()
+  const { user, isPremium } = await getUserServer()
   if (!user) redirect('/auth/signin')
 
   return (
@@ -20,7 +20,7 @@ export default async function TacticsListPage() {
         }}
       />
       <div className="dark:bg-slate-800">
-        <TacticsList />
+        <TacticsList hasUnlimitedSets={isPremium} />
       </div>
     </>
   )

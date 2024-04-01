@@ -16,7 +16,8 @@ import TacticsSetCreator from '~/app/components/training/tactics//create/Tactics
 
 import SetListItem from './SetListItem'
 
-export default function TacticsList() {
+export default function TacticsList(props: { hasUnlimitedSets: boolean }) {
+  const { hasUnlimitedSets } = props
   const { user } = useKindeBrowserClient()
   const [sets, setSets] = useState<PrismaTacticsSet[]>([])
   const [loading, setLoading] = useState(true)
@@ -76,6 +77,7 @@ export default function TacticsList() {
           maxSets={3}
           setCreated={addSet}
           loading={loading}
+          hasUnlimitedSets={hasUnlimitedSets}
         />
         {false && (
           <>

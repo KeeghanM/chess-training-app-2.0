@@ -107,19 +107,12 @@ async function hasBoughtPremium(userId: string) {
     }
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-    const stripeCustomer = await stripe.customers.retrieve(stripeCustomerId)
+    const stripeSubscriptions = await stripe.subscriptions.list({
+      customer: stripeCustomerId,
+      status: 'active',
+    })
 
-    // Check if the user has been deleted from Stripe
-    if (stripeCustomer.deleted) {
-      return false
-    }
-
-    // Check if the user has an active subscription
-    return (
-      stripeCustomer.subscriptions?.data.some(
-        (subscription) => subscription.status === 'active',
-      ) ?? false
-    )
+    return stripeSubscriptions.data.length > 0
   } catch (e) {
     console.error(e)
     return false

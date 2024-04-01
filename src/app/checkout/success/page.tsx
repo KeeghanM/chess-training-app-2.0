@@ -47,8 +47,7 @@ export default async function CheckoutSuccessPage() {
         name: curatedSet!.name,
         url: '/training/tactics/list',
       })
-    }
-    if (item.productType === 'course') {
+    } else if (item.productType === 'course') {
       const course = await prisma.course.findUnique({
         where: {
           id: item.productId,
@@ -57,6 +56,11 @@ export default async function CheckoutSuccessPage() {
       items.push({
         name: course!.courseName,
         url: '/training/courses',
+      })
+    } else if (item.productType === 'subscription') {
+      items.push({
+        name: 'Premium Subscription',
+        url: '/dashboard',
       })
     }
   }

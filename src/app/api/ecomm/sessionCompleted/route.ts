@@ -8,6 +8,7 @@ import Stripe from 'stripe'
 import { errorResponse, successResponse } from '../../responses'
 import { AddCourseToUser } from '../functions/AddCourseToUser'
 import { AddCuratedSetToUser } from '../functions/AddCuratedSetToUser'
+import SubscribeUser from '../functions/SubscribeUser'
 
 export async function POST(request: Request) {
   try {
@@ -60,6 +61,13 @@ export async function POST(request: Request) {
 
       if (item.productType === 'course')
         added = await AddCourseToUser(item.productId, dbSession.userId)
+
+      if (item.productType === 'subscription') {
+        const stripeCustomerId = checkoutSession.customer as string | null
+        if (!stripeCustomerId) throw new Error('No customer ID found')
+
+        added = await SubscribeUser(stripeCustomerId, dbSession.userId)
+      }
 
       if (!added)
         Sentry.captureMessage(`Failed to add ${item.productType} to user`)
