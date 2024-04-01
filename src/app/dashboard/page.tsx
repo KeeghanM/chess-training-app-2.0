@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 
 import { prisma } from '~/server/db'
 
+import { Tour } from '@frigade/react'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 
 import Container from '~/app/components/_elements/container'
@@ -23,6 +24,7 @@ export type Tool = {
   learnMoreLink?: string
   buttonText: string
   active: boolean
+  id?: string
 }
 
 export const metadata = {
@@ -73,6 +75,7 @@ export default async function Dashboard() {
       learnMoreLink: '/training/tactics',
       buttonText: 'Train',
       active: true || override,
+      id: 'tooltip-1',
     },
     {
       name: 'Openings',
@@ -84,6 +87,7 @@ export default async function Dashboard() {
       learnMoreLink: '/about/features/natural-play-learning',
       buttonText: 'Train',
       active: true || override,
+      id: 'tooltip-2',
     },
     {
       name: 'Visualisation',
@@ -96,6 +100,7 @@ export default async function Dashboard() {
       learnMoreLink: '/training/visualisation',
       buttonText: 'Train',
       active: true || override,
+      id: 'tooltip-3',
     },
     {
       name: 'Board Recall',
@@ -108,6 +113,7 @@ export default async function Dashboard() {
       learnMoreLink: '/training/recall',
       buttonText: 'Train',
       active: true || override,
+      id: 'tooltip-4',
     },
     {
       name: 'Endgames',
@@ -120,6 +126,7 @@ export default async function Dashboard() {
       learnMoreLink: '/training/endgames',
       buttonText: 'Train',
       active: true || override,
+      id: 'tooltip-5',
     },
     {
       name: 'Play the Masters',
@@ -166,6 +173,7 @@ export default async function Dashboard() {
 
   return (
     <>
+      <Tour flowId="flow_JaIcoLlR" />
       <div className="relative">
         <div className="absolute inset-0">
           <Image
@@ -177,9 +185,15 @@ export default async function Dashboard() {
         </div>
         <Container size="wide">
           <Heading color="text-white" as={'h1'}>
-            Welcome back, {user.given_name ?? profile.username ?? user.email}
+            Welcome back,{' '}
+            <span id="tooltip-6">
+              {user.given_name ?? profile.username ?? user.email}
+            </span>
           </Heading>
-          <div className="flex flex-col flex-wrap gap-2 md:flex-row">
+          <div
+            id="tooltip-0"
+            className="flex flex-col flex-wrap gap-2 md:flex-row"
+          >
             <StreakDisplay
               data={CalculateStreakBadge(profile)}
               badges={badges}
