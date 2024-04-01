@@ -1,19 +1,16 @@
 import { prisma } from '~/server/db'
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
 
+import { getUserServer } from '~/app/_util/getUserServer'
+
 export async function GET(request: Request) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
-  const user = await session.getUser()
+  const { user, isPremium } = await getUserServer()
   if (!user) return errorResponse('Unauthorized', 401)
 
   const maxCourses = 2
-  const permissions = await session.getPermissions()
-  const hasUnlimitedCourses =
-    permissions?.permissions.includes('unlimited-courses') ?? false
+  const hasUnlimitedCourses = isPremium ?? false
 
   try {
     const courses = await prisma.userCourse.findMany({

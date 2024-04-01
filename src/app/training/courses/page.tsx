@@ -1,25 +1,21 @@
 import { redirect } from 'next/navigation'
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import BetaMessage from '~/app/components/training/courses/BetaMessage'
 import CourseList from '~/app/components/training/courses/list/CoursesList'
+
+import { getUserServer } from '~/app/_util/getUserServer'
 
 export const metadata = {
   title: 'Your Courses - ChessTraining.app',
 }
 
 export default async function Courses() {
-  const { getUser, getPermissions } = getKindeServerSession()
-  const user = await getUser()
+  const { user, isPremium } = await getUserServer()
 
   if (!user) redirect('/auth/signin')
 
-  const permissions = await getPermissions()
-  const hasUnlimitedCourses =
-    permissions?.permissions.includes('unlimited-courses') ?? false
   return (
     <>
       <PageHeader
@@ -33,7 +29,7 @@ export default async function Courses() {
       <div className="dark:bg-slate-800">
         <Container>
           <BetaMessage />
-          <CourseList hasUnlimitedCourses={hasUnlimitedCourses} />
+          <CourseList hasUnlimitedCourses={isPremium} />
         </Container>
       </div>
     </>

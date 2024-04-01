@@ -22,13 +22,11 @@ interface TacticsSetCreatorProps {
   maxSets: number
   loading: boolean
   setCreated: (set: PrismaTacticsSet) => void
+  hasUnlimitedSets: boolean
 }
 export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
-  const { user, permissions } = useKindeBrowserClient()
-  const [hasUnlimitedSets, setHasUnlimitedSets] = useState(
-    permissions?.permissions?.includes('unlimited-sets') ?? false,
-  )
-  const { setCount, maxSets, setCreated } = props
+  const { user } = useKindeBrowserClient()
+  const { setCount, maxSets, setCreated, hasUnlimitedSets } = props
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
@@ -212,12 +210,6 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
     resetForm()
     setOpen(false)
   }
-
-  useEffect(() => {
-    if (permissions?.permissions?.includes('unlimited-sets')) {
-      setHasUnlimitedSets(true)
-    }
-  }, [permissions])
 
   return (
     <div className="flex flex-col items-center gap-1 md:flex-row md:gap-4">
