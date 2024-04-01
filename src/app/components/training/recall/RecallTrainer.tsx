@@ -346,17 +346,14 @@ export default function RecallTrainer() {
       <Tour flowId="flow_g0ITjQQa" />
       {mode == 'settings' ? (
         <>
-          <div
-            id="tooltip-0"
-            className="border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]"
-          >
+          <div className="border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
             <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
-              <p>Adjust your settings</p>
+              <p id="tooltip-0">Adjust your settings</p>
             </div>
             <div className="flex flex-col gap-2 md:gap-4 p-2">
               <div>
                 <label className="font-bold flex items-center gap-1 w-fit">
-                  <span>Difficulty</span>
+                  <span id="tooltip-1">Difficulty</span>
                   <Tippy content="Difficulty sets how many pieces are on the board">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -394,7 +391,7 @@ export default function RecallTrainer() {
               </div>
               <div>
                 <label className=" w-fit font-bold flex items-center h-fit gap-1">
-                  <span>Number to recall</span>
+                  <span id="tooltip-2">Number to recall</span>
                   <Tippy content="The number of pieces in a row you'll have to recall from a single position">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -635,7 +632,7 @@ export default function RecallTrainer() {
                         </>
                       )}
                       {correctSquares[counter] && readyForInput && (
-                        <p className="">
+                        <p id="tooltip-3">
                           Where is a{' '}
                           <span className="font-bold underline">
                             {correctSquares[counter]!.color == 'w'
@@ -661,6 +658,7 @@ export default function RecallTrainer() {
                       <Button
                         variant="primary"
                         onClick={() => goToNextPuzzle(puzzleStatus)}
+                        id="tooltip-4"
                       >
                         Next
                       </Button>
