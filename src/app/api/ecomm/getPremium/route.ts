@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     // create a checkout session
     const checkoutSession = await CreateCheckoutSession(
       [{ productType: 'subscription', productId }],
-      '/training/courses',
+      returnUrl,
       user,
     )
 

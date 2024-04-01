@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs'
 
-import { ResponseJson } from '../api/responses'
+import type { ResponseJson } from '../api/responses'
 
 export default async function getPremiumUpgradeUrl(returnUrl: string) {
   try {
@@ -18,8 +18,7 @@ export default async function getPremiumUpgradeUrl(returnUrl: string) {
 
     window.location.href = json.data.url as string
   } catch (e) {
-    // Sentry.captureException(e)
-    console.error(e)
+    Sentry.captureException(e)
     return undefined
   }
 }

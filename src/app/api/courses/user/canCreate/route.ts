@@ -6,11 +6,11 @@ import { env } from '~/env'
 
 import { getUserServer } from '~/app/_util/getUserServer'
 
-export async function GET(request: Request) {
+export async function GET() {
   const { user, isPremium } = await getUserServer()
   if (!user) return errorResponse('Unauthorized', 401)
 
-  const maxCourses = env.NEXT_PUBLIC_MAX_COURSES!
+  const maxCourses = env.NEXT_PUBLIC_MAX_COURSES
   const hasUnlimitedCourses = isPremium ?? false
 
   try {

@@ -20,7 +20,7 @@ export default function ArchivedList(props: { hasUnlimitedCourses: boolean }) {
   const [loading, setLoading] = useState(true)
   const [restoring, setRestoring] = useState(false)
   const { hasUnlimitedCourses } = props
-  const maxCourses = env.NEXT_PUBLIC_MAX_COURSES!
+  const maxCourses = env.NEXT_PUBLIC_MAX_COURSES
 
   const fetchCourses = async () => {
     setLoading(true)

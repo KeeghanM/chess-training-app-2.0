@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
-import { Course, Group, Move } from '@prisma/client'
+import type { Course, Move } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import type { ResponseJson } from '~/app/api/responses'
 
@@ -14,7 +14,6 @@ import StyledLink from '~/app/components/_elements/styledLink'
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-import { transformCourseData } from '../create/CreateCourse'
 import GroupSelector from '../create/GroupSelector'
 import PgnToLinesForm from '../create/PgnToLinesForm'
 import type { Line } from '../create/parse/ParsePGNtoLineData'
