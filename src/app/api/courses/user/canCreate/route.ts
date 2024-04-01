@@ -2,6 +2,7 @@ import { prisma } from '~/server/db'
 
 import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
+import { env } from '~/env'
 
 import { getUserServer } from '~/app/_util/getUserServer'
 
@@ -9,7 +10,7 @@ export async function GET(request: Request) {
   const { user, isPremium } = await getUserServer()
   if (!user) return errorResponse('Unauthorized', 401)
 
-  const maxCourses = 2
+  const maxCourses = env.NEXT_PUBLIC_MAX_COURSES!
   const hasUnlimitedCourses = isPremium ?? false
 
   try {

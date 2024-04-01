@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import * as Sentry from '@sentry/nextjs'
 import 'tippy.js/dist/tippy.css'
 import type { ResponseJson } from '~/app/api/responses'
+import { env } from '~/env'
 
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
@@ -19,7 +20,7 @@ export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
   const [loading, setLoading] = useState(true)
   const [restoring, setRestoring] = useState(false)
   const { hasUnlimitedSets } = props
-  const maxSets = 3
+  const maxSets = env.NEXT_PUBLIC_MAX_SETS
 
   const fetchSets = async () => {
     setLoading(true)

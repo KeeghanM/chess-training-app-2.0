@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
 import type { ResponseJson } from '~/app/api/responses'
+import { env } from '~/env'
 
 import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
@@ -74,7 +75,7 @@ export default function TacticsList(props: { hasUnlimitedSets: boolean }) {
       <div className="flex items-center gap-2">
         <TacticsSetCreator
           setCount={sets.length}
-          maxSets={3}
+          maxSets={env.NEXT_PUBLIC_MAX_SETS}
           setCreated={addSet}
           loading={loading}
           hasUnlimitedSets={hasUnlimitedSets}
