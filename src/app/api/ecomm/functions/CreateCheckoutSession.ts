@@ -20,13 +20,14 @@ export async function CreateCheckoutSession(
         )
         if (!price || !name) throw new Error('Product not found')
 
-        const recurring =
+        const recurring = (
           product.productType === 'subscription'
             ? {
                 interval: 'month',
                 interval_count: 1,
               }
             : undefined
+        ) as { interval: 'month'; interval_count: number } | undefined
 
         return {
           price_data: {
