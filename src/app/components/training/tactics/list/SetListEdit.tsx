@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from 'react'
 
-import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import * as Sentry from '@sentry/nextjs'
+import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'

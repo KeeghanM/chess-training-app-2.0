@@ -1,11 +1,10 @@
 import type { MetadataRoute } from 'next'
 
-import { createClient } from '~/prismicio'
+import Prismic from '~/prismicio'
 
 export default async function sitemap() {
-  const client = createClient()
-  const articles = await client.getAllByType('article')
-  const authors = await client.getAllByType('author')
+  const articles = await Prismic.getAllByType('article')
+  const authors = await Prismic.getAllByType('author')
 
   const tidiedArticles = articles.map((article) => {
     return {
@@ -132,6 +131,12 @@ export default async function sitemap() {
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.9,
+    },
+    {
+      url: 'httpsL//chesstraining.app/premium',
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.4,
     },
     ...tidiedArticles,
     ...tidiedAuthors,

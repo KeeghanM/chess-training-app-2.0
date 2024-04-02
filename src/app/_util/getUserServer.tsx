@@ -1,8 +1,8 @@
 import { prisma } from '~/server/db'
 
-import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
+import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
 import Stripe from 'stripe'
 
 export async function getUserServer() {

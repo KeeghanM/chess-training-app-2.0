@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
 import * as prismic from '@prismicio/client'
-import { createClient } from '~/prismicio'
+import Prismic from '~/prismicio'
 
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
@@ -13,12 +13,10 @@ import type { RichTextContent } from '~/app/_util/PrismicRichToHtml'
 
 type Params = { uid: string }
 export default async function AuthorPage({ params }: { params: Params }) {
-  const client = createClient()
-
-  const author = await client
-    .getByUID('author', params.uid)
-    .catch(() => notFound())
-  const articles = await client.getAllByType('article', {
+  const author = await Prismic.getByUID('author', params.uid).catch(() =>
+    notFound(),
+  )
+  const articles = await Prismic.getAllByType('article', {
     graphQuery: `{
         article {
            title
@@ -48,7 +46,7 @@ export default async function AuthorPage({ params }: { params: Params }) {
         <Heading as="h1">{author.data.name}</Heading>
         <div className="flex flex-col gap-2">
           <p className="text-gray-500 italic">{author.data.title}</p>
-          {author.data.bio.map((c) => PrismicRichToHtml(c as RichTextContent))}
+          {author.data.bio.map((c: RichTextContent) => PrismicRichToHtml(c))}
         </div>
         <Heading as="h2">Articles</Heading>
         <ul>

@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 import { asHTML, asText } from '@prismicio/client'
 import type { ContentRelationshipField } from '@prismicio/client'
-import { createClient } from '~/prismicio'
+import Prismic from '~/prismicio'
 
 import Button from '../components/_elements/button'
 import Container from '../components/_elements/container'
@@ -15,8 +15,7 @@ export const metadata = {
 }
 
 export default async function ArticlesPage() {
-  const client = createClient()
-  const articles = await client.getAllByType('article', {
+  const articles = await Prismic.getAllByType('article', {
     fetchLinks: ['author.name', 'author.uid'],
   })
 
@@ -122,7 +121,7 @@ export default async function ArticlesPage() {
                 <div
                   className="p-2"
                   dangerouslySetInnerHTML={{
-                    __html: asHTML(article.data.introduction),
+                    __html: asHTML(article.data.introduction) ?? '',
                   }}
                 />
                 <Link className="p-2 mx-auto" href={`/articles/${article.uid}`}>
