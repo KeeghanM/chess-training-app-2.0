@@ -114,7 +114,7 @@ async function hasBoughtPremium(userId: string) {
 
     return stripeSubscriptions.data.length > 0
   } catch (e) {
-    console.error(e)
+    Sentry.captureException(e)
     return false
   }
 }

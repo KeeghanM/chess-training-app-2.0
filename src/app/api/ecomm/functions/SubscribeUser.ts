@@ -1,5 +1,7 @@
 import { prisma } from '~/server/db'
 
+import * as Sentry from '@sentry/nextjs'
+
 export default async function SubscribeUser(
   stripeCustomerId: string,
   userId: string,
@@ -19,7 +21,7 @@ export default async function SubscribeUser(
 
     return true
   } catch (e) {
-    console.error(e)
+    Sentry.captureException(e)
     return false
   }
 }

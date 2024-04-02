@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import type { CuratedSet } from '@prisma/client'
+import * as Sentry from '@sentry/react'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
@@ -47,7 +48,7 @@ export default function SetEditor(props: { set: CuratedSet }) {
       const json = (await resp.json()) as ResponseJson
       if (json.message != 'Set updated') throw new Error(json.message)
     } catch (e) {
-      console.error(e)
+      Sentry.captureException(e)
       if (e instanceof Error) setError(e.message)
       else setError('Something went wrong')
     }

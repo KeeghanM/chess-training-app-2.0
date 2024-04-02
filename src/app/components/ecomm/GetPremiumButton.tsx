@@ -3,6 +3,7 @@
 import { useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import * as Sentry from '@sentry/react'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '../_elements/button'
@@ -33,8 +34,7 @@ export default function GetPremiumButton(props: { returnUrl: string }) {
 
       window.location.href = json.data.url as string
     } catch (e) {
-      // Sentry.captureException(e)
-      console.error(e)
+      Sentry.captureException(e)
       setLoading(false)
       setError(true)
     }

@@ -83,8 +83,7 @@ export async function CreateCheckoutSession(
 
     return checkoutSession.url
   } catch (e) {
-    // Sentry.captureException(e)
-    console.error(e)
+    Sentry.captureException(e)
     return undefined
   }
 }

@@ -1,14 +1,8 @@
-import Link from 'next/link'
-
 import { MultiCol, MultiColItem } from '../components/_layouts/multiCol'
 import { TextWall } from '../components/_layouts/textWall'
 import GetPremiumButton from '../components/ecomm/GetPremiumButton'
-import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
-import StyledLink from '~/app/components/_elements/styledLink'
-import CtaRow from '~/app/components/_layouts/ctaRow'
 import Hero from '~/app/components/_layouts/hero'
-import ImageRowFull from '~/app/components/_layouts/imageRowFull'
 
 export const metadata = {
   title: 'Go Premium and Unlock Unlimited Chess Training at ChessTraining.app',
@@ -160,7 +154,7 @@ export default async function PremiumPage() {
               Unlimited access to everything else
             </li>
           </ul>
-          <GetPremiumButton text="Sign Up Now" />
+          <GetPremiumButton returnUrl="premium" />
         </MultiColItem>
       </MultiCol>
       <TextWall title="Just £2.99/month" background="light">
@@ -170,7 +164,7 @@ export default async function PremiumPage() {
             ChessTraining.app Premium is available for just £2.99/month.
           </p>
           <div>
-            <GetPremiumButton text="Go Premium" />
+            <GetPremiumButton returnUrl="premium" />
           </div>
         </div>
       </TextWall>
