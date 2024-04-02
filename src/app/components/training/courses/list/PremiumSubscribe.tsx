@@ -4,31 +4,15 @@ import * as AlertDialog from '@radix-ui/react-alert-dialog'
 
 import Button from '~/app/components/_elements/button'
 import StyledLink from '~/app/components/_elements/styledLink'
+import GetPremiumButton from '~/app/components/ecomm/GetPremiumButton'
 import Spinner from '~/app/components/general/Spinner'
 
-import getPremiumUpgradeUrl from '~/app/_util/getPremiumUpgradeUrl'
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export default function PremiumSubscribe(props: { maxCourses: number }) {
   const { maxCourses } = props
 
   const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-
-  const getPremium = async () => {
-    setLoading(true)
-
-    try {
-      const url = await getPremiumUpgradeUrl('training/courses')
-      if (!url) throw new Error('Failed to get premium upgrade url')
-      window.location.href = url
-    } catch (e) {
-      // Sentry.captureException(e)
-      console.error(e)
-    } finally {
-      setLoading(false)
-    }
-  }
 
   return (
     <AlertDialog.Root open={open} onOpenChange={setOpen}>
@@ -79,15 +63,7 @@ export default function PremiumSubscribe(props: { maxCourses: number }) {
               You get both unlimited tactics sets and openings courses plus a{' '}
               <strong>5%</strong> discount on all products.
             </p>
-            <Button variant="primary" onClick={getPremium} disabled={loading}>
-              {loading ? (
-                <>
-                  Processing <Spinner />
-                </>
-              ) : (
-                'Upgrade to Premium'
-              )}
-            </Button>
+            <GetPremiumButton returnUrl="training/courses" />
             <Button variant="secondary" onClick={() => setOpen(false)}>
               Cancel
             </Button>

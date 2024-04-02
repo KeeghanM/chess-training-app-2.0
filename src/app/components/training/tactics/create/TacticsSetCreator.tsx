@@ -14,10 +14,10 @@ import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
+import GetPremiumButton from '~/app/components/ecomm/GetPremiumButton'
 import Spinner from '~/app/components/general/Spinner'
 import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
 
-import getPremiumUpgradeUrl from '~/app/_util/getPremiumUpgradeUrl'
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] }
@@ -215,21 +215,6 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
     setOpen(false)
   }
 
-  const getPremium = async () => {
-    setLoading(true)
-
-    try {
-      const url = await getPremiumUpgradeUrl('training/tactics/list')
-      if (!url) throw new Error('Failed to get premium upgrade url')
-      window.location.href = url
-    } catch (e) {
-      // Sentry.captureException(e)
-      console.error(e)
-    } finally {
-      setLoading(false)
-    }
-  }
-
   return (
     <div className="flex flex-col items-center gap-1 md:flex-row md:gap-4">
       <AlertDialog.Root open={open} onOpenChange={setOpen}>
@@ -392,19 +377,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   You get both unlimited tactics sets and openings courses plus
                   a <strong>5%</strong> discount on all products.
                 </p>
-                <Button
-                  variant="primary"
-                  onClick={getPremium}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      Processing <Spinner />
-                    </>
-                  ) : (
-                    'Upgrade to Premium'
-                  )}
-                </Button>
+                <GetPremiumButton returnUrl="training/tactics/list" />
                 <Button variant="secondary" onClick={close}>
                   Cancel
                 </Button>
