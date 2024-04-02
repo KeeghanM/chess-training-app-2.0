@@ -27,6 +27,8 @@ model Course {
     lines             Line[]
     groups            Group[]
     userCourses       UserCourse[]
+
+    @@index([slug])
 }
 
 model Group {
@@ -222,6 +224,7 @@ model UserProfile {
     highestOnlineRating Int?
     highestOTBRating    Int?
     public              Boolean      @default(false)
+    stripeCustomerId    String?
     createdAt           DateTime     @default(now())
     updatedAt           DateTime     @updatedAt
     publishedCourses    Course[]

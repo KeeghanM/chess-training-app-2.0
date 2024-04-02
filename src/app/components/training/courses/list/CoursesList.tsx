@@ -14,6 +14,7 @@ import StyledLink from '~/app/components/_elements/styledLink'
 import Spinner from '~/app/components/general/Spinner'
 
 import CourseListItem from './CourseListItem'
+import PremiumSubscribe from './PremiumSubscribe'
 
 export type PrismaUserCourse = UserCourse & {
   course: Course
@@ -55,12 +56,7 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
   return (
     <>
       <div className={'flex flex-col md:flex-row items-center gap-2 mb-2'}>
-        {!hasUnlimitedCourses && (
-          <Heading as={'h3'}>
-            {courses.length}/{maxCourses} courses
-          </Heading>
-        )}
-        {(courses.length < maxCourses || hasUnlimitedCourses) && (
+        {courses.length < maxCourses || hasUnlimitedCourses ? (
           <Link href="/courses/create">
             <Button variant="primary">
               Create New Course
@@ -77,6 +73,8 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
               </svg>
             </Button>
           </Link>
+        ) : (
+          <PremiumSubscribe maxCourses={maxCourses} />
         )}
         <Link href="/courses">
           <Button variant="secondary">Browse Courses</Button>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import * as Sentry from '@sentry/react'
 import Tippy from '@tippyjs/react'
 import type { ResponseJson } from '~/app/api/responses'
 
@@ -68,7 +69,7 @@ export default function LiChessSearch(props: {
       props.setPuzzle(puzzle)
       setPuzzleId('')
     } catch (e) {
-      console.error(e)
+      Sentry.captureException(e)
     } finally {
       setLoading(false)
     }

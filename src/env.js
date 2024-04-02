@@ -44,10 +44,19 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
     NEXT_PUBLIC_POSTHOG_KEY: z.string(),
     NEXT_PUBLIC_POSTHOG_HOST: z.string(),
     NEXT_PUBLIC_SITE_URL: z.string().url(),
+    NEXT_PUBLIC_MAX_COURSES: z
+      .string()
+      .transform((val) => parseInt(val))
+      .refine((val) => val > 0, { message: 'Must be greater than 0' })
+      .default('2'),
+    NEXT_PUBLIC_MAX_SETS: z
+      .string()
+      .transform((val) => parseInt(val))
+      .refine((val) => val > 0, { message: 'Must be greater than 0' })
+      .default('2'),
   },
 
   /**
@@ -81,6 +90,8 @@ export const env = createEnv({
     NEXT_PUBLIC_POSTHOG_KEY: process.env.NEXT_PUBLIC_POSTHOG_KEY,
     NEXT_PUBLIC_POSTHOG_HOST: process.env.NEXT_PUBLIC_POSTHOG_HOST,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    NEXT_PUBLIC_MAX_COURSES: process.env.NEXT_PUBLIC_MAX_COURSES,
+    NEXT_PUBLIC_MAX_SETS: process.env.NEXT_PUBLIC_MAX_SETS,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

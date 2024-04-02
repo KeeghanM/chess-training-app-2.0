@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import * as Sentry from '@sentry/nextjs'
 import 'tippy.js/dist/tippy.css'
 import type { ResponseJson } from '~/app/api/responses'
+import { env } from '~/env'
 
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
@@ -19,7 +20,7 @@ export default function ArchivedList(props: { hasUnlimitedCourses: boolean }) {
   const [loading, setLoading] = useState(true)
   const [restoring, setRestoring] = useState(false)
   const { hasUnlimitedCourses } = props
-  const maxCourses = 3
+  const maxCourses = env.NEXT_PUBLIC_MAX_COURSES
 
   const fetchCourses = async () => {
     setLoading(true)

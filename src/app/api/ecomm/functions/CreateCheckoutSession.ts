@@ -4,8 +4,10 @@ import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 import * as Sentry from '@sentry/nextjs'
 import Stripe from 'stripe'
 
+type ProductType = 'curatedSet' | 'course' | 'subscription'
+
 export async function CreateCheckoutSession(
-  products: { productType: 'curatedSet' | 'course'; productId: string }[],
+  products: { productType: ProductType; productId: string }[],
   returnUrl: string,
   user: KindeUser,
 ) {
@@ -18,6 +20,15 @@ export async function CreateCheckoutSession(
         )
         if (!price || !name) throw new Error('Product not found')
 
+        const recurring = (
+          product.productType === 'subscription'
+            ? {
+                interval: 'month',
+                interval_count: 1,
+              }
+            : undefined
+        ) as { interval: 'month'; interval_count: number } | undefined
+
         return {
           price_data: {
             currency: 'GBP',
@@ -29,6 +40,7 @@ export async function CreateCheckoutSession(
               },
             },
             unit_amount: price,
+            recurring,
           },
           quantity: 1,
         }
@@ -37,11 +49,15 @@ export async function CreateCheckoutSession(
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
+    const hasSubscription = products.some(
+      (product) => product.productType === 'subscription',
+    )
+
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'link'],
       customer_email: user.email ?? undefined,
       line_items: lineItems,
-      mode: 'payment',
+      mode: hasSubscription ? 'subscription' : 'payment',
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/success`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/${returnUrl ?? '/'}`,
       automatic_tax: { enabled: true },
@@ -73,7 +89,7 @@ export async function CreateCheckoutSession(
 }
 
 export async function getProductDetails(
-  productType: 'curatedSet' | 'course',
+  productType: ProductType,
   productId: string,
 ) {
   try {
@@ -93,6 +109,8 @@ export async function getProductDetails(
       })
       if (!course) throw new Error('Course not found')
       return { price: course.price, name: course.courseName }
+    } else if (productType === 'subscription') {
+      return { price: 299, name: 'Premium Subscription' }
     } else {
       throw new Error('Invalid product type')
     }

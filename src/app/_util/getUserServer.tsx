@@ -3,6 +3,7 @@ import { prisma } from '~/server/db'
 import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
+import Stripe from 'stripe'
 
 export async function getUserServer() {
   const { getUser, isAuthenticated, getPermissions } = getKindeServerSession()
@@ -22,14 +23,24 @@ export async function getUserServer() {
           userId: user.id,
         },
       })
-      return { user, hasAuth, profile, permissions, badges }
+      const isStaff = permissions?.permissions.includes('staff-member') ?? false
+      const isPremium = await hasBoughtPremium(user.id)
+
+      return { user, hasAuth, profile, isStaff, isPremium, badges }
     } catch (e) {
       Sentry.captureException(e)
     } finally {
       await prisma.$disconnect()
     }
   }
-  return { user, hasAuth: false, profile: null, permissions: null, badges: [] }
+  return {
+    user,
+    hasAuth: false,
+    profile: null,
+    isStaff: false,
+    isPremium: false,
+    badges: [],
+  }
 }
 
 export async function createUserProfile(user: KindeUser) {
@@ -74,5 +85,36 @@ export async function createUserProfile(user: KindeUser) {
     Sentry.captureException(e)
   } finally {
     await prisma.$disconnect()
+  }
+}
+
+async function hasBoughtPremium(userId: string) {
+  try {
+    // First, find their stripeCustomerId in the database
+    const stripeCustomerId = await prisma.userProfile
+      .findUnique({
+        where: {
+          id: userId,
+        },
+      })
+      .then((profile) => {
+        return profile?.stripeCustomerId
+      })
+
+    if (!stripeCustomerId) {
+      // If the user doesn't have a stripeCustomerId, there is no way they are premium
+      return false
+    }
+
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+    const stripeSubscriptions = await stripe.subscriptions.list({
+      customer: stripeCustomerId,
+      status: 'active',
+    })
+
+    return stripeSubscriptions.data.length > 0
+  } catch (e) {
+    Sentry.captureException(e)
+    return false
   }
 }

@@ -10,9 +10,9 @@ import ExistingBadges from '~/app/components/admin/ExistingBadges'
 import { getUserServer } from '~/app/_util/getUserServer'
 
 export default async function AdminBadgePage() {
-  const { user, permissions } = await getUserServer()
+  const { user, isStaff } = await getUserServer()
   if (!user) redirect('/auth/signin')
-  if (!permissions?.permissions.includes('staff-member')) redirect('/dashboard')
+  if (!isStaff) redirect('/dashboard')
 
   const existingBadges = await prisma.badge.findMany().then((badges) => {
     return badges.sort((a, b) => a.sort - b.sort)

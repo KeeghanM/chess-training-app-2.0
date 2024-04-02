@@ -4,6 +4,7 @@ import { useState } from 'react'
 
 import type { CuratedSet } from '@prisma/client'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
+import * as Sentry from '@sentry/react'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
@@ -40,7 +41,7 @@ export default function SetCreator(props: {
       props.onCreate(newSet)
       close()
     } catch (e) {
-      console.error(e)
+      Sentry.captureException(e)
       if (e instanceof Error) setError(e.message)
       else setError('Something went wrong')
     }

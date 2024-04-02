@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
+import * as Sentry from '@sentry/react'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Spinner from '../../general/Spinner'
@@ -28,7 +29,7 @@ export default function PuzzleList(props: {
       const puzzles = json.data!.puzzles as CuratedSetPuzzle[]
       setPuzzles(puzzles)
     } catch (e) {
-      console.error(e)
+      Sentry.captureException(e)
     } finally {
       setLoading(false)
     }

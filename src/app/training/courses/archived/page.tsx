@@ -1,24 +1,19 @@
 import { redirect } from 'next/navigation'
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import ArchivedList from '~/app/components/training/courses/list/ArhivedList'
+
+import { getUserServer } from '~/app/_util/getUserServer'
 
 export const metadata = {
   title: 'Your Archived Courses - ChessTraining.app',
 }
 
 export default async function ArchivedCoursesPage() {
-  const { getUser, getPermissions } = getKindeServerSession()
-  const user = await getUser()
+  const { user, isPremium } = await getUserServer()
 
   if (!user) redirect('/auth/signin')
-
-  const permissions = await getPermissions()
-  const hasUnlimitedCourses =
-    permissions?.permissions.includes('unlimited-courses') ?? false
   return (
     <>
       <PageHeader
@@ -30,7 +25,7 @@ export default async function ArchivedCoursesPage() {
       />
       <div className="dark:bg-slate-800">
         <Container>
-          <ArchivedList hasUnlimitedCourses={hasUnlimitedCourses} />
+          <ArchivedList hasUnlimitedCourses={isPremium} />
         </Container>
       </div>
     </>
