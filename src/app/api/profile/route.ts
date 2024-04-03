@@ -51,11 +51,7 @@ export async function PUT(request: Request) {
     return errorResponse('Invalid username', 400)
   }
 
-  if (
-    fullname.length < 5 ||
-    fullname.length > 150 ||
-    nameRegex.test(fullname)
-  ) {
+  if (fullname && (fullname.length > 150 || nameRegex.test(fullname))) {
     return errorResponse('Invalid fullname', 400)
   }
 
