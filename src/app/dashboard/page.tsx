@@ -1,12 +1,11 @@
 import Image from 'next/image'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { prisma } from '~/server/db'
 
 import { Tour } from '@frigade/react'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 
+import PremiumDisplay from '../components/dashboard/PremiumDisplay'
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import StreakDisplay from '~/app/components/dashboard/StreakDisplay'
@@ -16,6 +15,7 @@ import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
 
 import CalculateStreakBadge from '../_util/CalculateStreakBadge'
 import CalculateXpRank from '../_util/CalculateXpRank'
+import { getUserServer } from '../_util/getUserServer'
 import { PostHogClient } from '~/app/_util/trackEventOnServer'
 
 export type Tool = {
@@ -33,11 +33,13 @@ export const metadata = {
 }
 
 export default async function Dashboard() {
-  const { getUser, getPermissions } = getKindeServerSession()
-  const user = await getUser()
-  if (!user) redirect('/auth/signin')
+  const { user, isPremium, isStaff } = await getUserServer()
 
-  const permissions = await getPermissions()
+  if (!user) {
+    redirect('/auth/signin')
+    return
+  }
+
   const profile = await prisma.userProfile.findFirst({
     where: {
       id: user.id,
@@ -190,6 +192,7 @@ export default async function Dashboard() {
             <span id="tooltip-6">
               {user.given_name ?? profile.username ?? user.email}
             </span>
+            <PremiumDisplay isPremium={isPremium} />
           </Heading>
           <div
             id="tooltip-0"
@@ -220,7 +223,7 @@ export default async function Dashboard() {
               <ToolGrid tool={tool} key={tool.name} />
             ))}
         </div>
-        {permissions?.permissions?.includes('staff-member') && (
+        {isStaff && (
           <div>
             <Heading color="text-purple-700" as={'h2'}>
               Staff Tools
