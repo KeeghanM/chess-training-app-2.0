@@ -17,6 +17,11 @@ export default async function MembersPage({
     : 1
   const resultsPerPage = 50
   const members = await prisma.userProfile.findMany({
+    where: {
+      lastTrained: {
+        not: null,
+      },
+    },
     skip: (pageNumber - 1) * resultsPerPage,
     take: resultsPerPage,
     orderBy: {
