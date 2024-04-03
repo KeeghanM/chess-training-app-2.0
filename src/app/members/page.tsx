@@ -17,6 +17,11 @@ export default async function MembersPage({
     : 1
   const resultsPerPage = 50
   const members = await prisma.userProfile.findMany({
+    where: {
+      lastTrained: {
+        not: null,
+      },
+    },
     skip: (pageNumber - 1) * resultsPerPage,
     take: resultsPerPage,
     orderBy: {
@@ -74,7 +79,7 @@ export default async function MembersPage({
                     member.username
                   )}
                 </td>
-                <td>{member.experience}</td>
+                <td>{member.experience.toLocaleString('en-GB')}</td>
                 <td>
                   <strong>{rank.rank.rank}:</strong> {rank.rank.name}
                 </td>
@@ -90,7 +95,7 @@ export default async function MembersPage({
             </StyledLink>
           )}
           {members.length === resultsPerPage && (
-            <StyledLink href={`/members?page=${pageNumber - 1}`}>
+            <StyledLink href={`/members?page=${pageNumber + 1}`}>
               Next Page
             </StyledLink>
           )}

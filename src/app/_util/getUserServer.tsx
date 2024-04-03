@@ -25,7 +25,9 @@ export async function getUserServer() {
         },
       })
       const isStaff = permissions?.permissions.includes('staff-member') ?? false
-      const isPremium = await hasBoughtPremium(user.id)
+      const isPremium =
+        permissions?.permissions.includes('premium-override') ??
+        (await hasBoughtPremium(user.id))
 
       return { user, hasAuth, profile, isStaff, isPremium, badges }
     } catch (e) {

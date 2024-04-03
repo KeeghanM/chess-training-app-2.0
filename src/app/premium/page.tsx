@@ -14,7 +14,7 @@ export default async function PremiumPage() {
   return (
     <>
       <Hero
-        title="ChessTraining.app is free forever"
+        title="ChessTraining App is free forever"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
@@ -43,7 +43,7 @@ export default async function PremiumPage() {
             <li className="py-1">
               <strong>Max Two</strong> Active Openings Courses
             </li>
-            <li className="flex gap-1 items-center py-1">
+            <li className="flex gap-1  items-center py-1">
               <span className="text-red-500">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +59,7 @@ export default async function PremiumPage() {
               </span>
               No discount on store items
             </li>
-            <li className="flex gap-1 items-center py-1">
+            <li className="flex gap-1  items-center py-1">
               <span className="text-green-500">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -81,7 +81,7 @@ export default async function PremiumPage() {
         </MultiColItem>
         <MultiColItem title="Premium">
           <ul className="divide-y divide-slate-300">
-            <li className="flex gap-1 items-center py-1">
+            <li className="flex gap-1  items-center py-1">
               <span className="text-green-500">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -99,7 +99,7 @@ export default async function PremiumPage() {
               </span>
               Unlimited Tactics Sets
             </li>
-            <li className="flex gap-1 items-center py-1">
+            <li className="flex gap-1  items-center py-1">
               <span className="text-green-500">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +117,7 @@ export default async function PremiumPage() {
               </span>
               Unlimited Openings Courses
             </li>
-            <li className="flex gap-1 items-center py-1">
+            <li className="flex gap-1  items-center py-1">
               <span className="text-green-500">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -135,7 +135,7 @@ export default async function PremiumPage() {
               </span>
               5% Discount on all paid sets/course
             </li>
-            <li className="flex gap-1 items-center py-1">
+            <li className="flex gap-1  items-center py-1">
               <span className="text-green-500">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

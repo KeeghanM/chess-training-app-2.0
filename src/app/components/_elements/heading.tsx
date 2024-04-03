@@ -10,7 +10,7 @@ export default function Heading(props: {
       return (
         <h1
           className={
-            'mb-2 text-3xl font-bold md:text-4xl ' +
+            'mb-2 text-3xl font-bold md:text-4xl flex items-center gap-1 flex-wrap ' +
             (props.color ?? 'text-purple-700')
           }
         >
