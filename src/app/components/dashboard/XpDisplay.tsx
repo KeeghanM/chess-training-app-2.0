@@ -1,5 +1,7 @@
 'use client'
 
+import Link from 'next/link'
+
 import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css'
 
@@ -59,12 +61,20 @@ export default function XpDisplay(props: XpDisplayProps) {
       </div>
 
       {displayLink && (
-        <a
-          href="/about/ranks-and-badges"
-          className="text-sm text-white underline hover:no-underline"
-        >
-          View All Ranks
-        </a>
+        <div className="flex justify-between gap-2">
+          <Link
+            className="text-white underline text-sm hover:no-underline"
+            href="/members"
+          >
+            View Leaderboard
+          </Link>
+          <Link
+            href="/about/ranks-and-badges"
+            className="text-sm text-white underline hover:no-underline"
+          >
+            View All Ranks
+          </Link>
+        </div>
       )}
     </div>
   )
