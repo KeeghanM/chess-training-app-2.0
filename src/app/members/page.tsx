@@ -74,7 +74,7 @@ export default async function MembersPage({
                     member.username
                   )}
                 </td>
-                <td>{member.experience}</td>
+                <td>{member.experience.toLocaleString('en-GB')}</td>
                 <td>
                   <strong>{rank.rank.rank}:</strong> {rank.rank.name}
                 </td>
@@ -90,7 +90,7 @@ export default async function MembersPage({
             </StyledLink>
           )}
           {members.length === resultsPerPage && (
-            <StyledLink href={`/members?page=${pageNumber - 1}`}>
+            <StyledLink href={`/members?page=${pageNumber + 1}`}>
               Next Page
             </StyledLink>
           )}
