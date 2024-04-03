@@ -65,7 +65,15 @@ export default async function MembersPage({
                 }
                 key={member.id}
               >
-                <td>{member.username}</td>
+                <td>
+                  {member.public ? (
+                    <StyledLink href={`/members/${member.username}`}>
+                      {member.username}
+                    </StyledLink>
+                  ) : (
+                    member.username
+                  )}
+                </td>
                 <td>{member.experience}</td>
                 <td>
                   <strong>{rank.rank.rank}:</strong> {rank.rank.name}

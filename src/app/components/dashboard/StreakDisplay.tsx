@@ -58,7 +58,7 @@ export default function StreakDisplay(props: StreakDisplayProps) {
         href="/dashboard/badges"
         className="text-sm text-white underline hover:no-underline"
       >
-        View All Your Badges ({props.badges.length})
+        Your Badges ({props.badges.length})
       </a>
     </div>
   )
