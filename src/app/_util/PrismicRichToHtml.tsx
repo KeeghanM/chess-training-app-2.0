@@ -86,7 +86,7 @@ export function PrismicRichToHtml(content: RichTextContent) {
 
   switch (content.type) {
     case 'paragraph':
-      return <p dangerouslySetInnerHTML={html} />
+      return <p className="mb-4 md:mb-6" dangerouslySetInnerHTML={html} />
     case 'heading1':
       return (
         <Heading as="h1">
@@ -127,7 +127,7 @@ export function PrismicRichToHtml(content: RichTextContent) {
         </div>
       )
     default:
-      return <p dangerouslySetInnerHTML={html} />
+      return <p className="mb-4 md:mb-6" dangerouslySetInnerHTML={html} />
   }
 }
 

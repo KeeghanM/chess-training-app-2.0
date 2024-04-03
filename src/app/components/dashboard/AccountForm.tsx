@@ -17,7 +17,7 @@ import Spinner from '~/app/components/general/Spinner'
 export default function AccountForm(props: { profile: UserProfile }) {
   const { user } = useKindeBrowserClient()
 
-  const [username, setUsernameame] = useState(
+  const [username, setUsername] = useState(
     props.profile.username ?? user?.email ?? '',
   )
   const [fullname, setFullame] = useState(props.profile.fullName ?? '')
@@ -51,8 +51,10 @@ export default function AccountForm(props: { profile: UserProfile }) {
     setSuccess(false)
 
     if (!username) return setError('Username is required')
-    if (fullname && fullname.length > 50)
-      return setError('Full name must be less than 50 characters')
+    if (username.includes('@'))
+      return setError('Username cannot contain the "@" symbol')
+    if (fullname.length > 0 && fullname.length > 150)
+      return setError('Full name must be less than 150 characters')
     if (description && description.length > 1000)
       return setError('Bio must be less than 1000 characters')
     if (highestOnlineRating && highestOnlineRating < 100)
@@ -123,7 +125,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
               type="text"
               className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               value={username}
-              onChange={(e) => setUsernameame(e.target.value)}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div>

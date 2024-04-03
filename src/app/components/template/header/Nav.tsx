@@ -6,8 +6,8 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs'
-import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types'
 import Tippy from '@tippyjs/react'
+import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
 import 'tippy.js/dist/tippy.css'
 
 import CalculateXpRank from '~/app/_util/CalculateXpRank'
