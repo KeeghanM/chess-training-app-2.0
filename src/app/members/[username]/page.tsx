@@ -23,7 +23,7 @@ export default async function MemberPage({
   })
   await prisma.$disconnect()
 
-  if (!account || account.public == false) {
+  if (!account) {
     redirect('/404')
   }
 
@@ -34,50 +34,59 @@ export default async function MemberPage({
           <Link className="text-purple-700 hover:underline" href="/">
             Home
           </Link>
-          <Link className="text-purple-700 hover:underline" href="/">
+          <Link className="text-purple-700 hover:underline" href="/members">
             /Members
           </Link>
           /{username}
         </p>
       </div>
       <Container>
-        <div className="bg-gray-100 p-2 flex flex-col gap-2">
-          <div className="flex items-center gap-2 flex-col md:flex-row">
-            <Heading as={'h1'}>{account.username}</Heading>
-            {account.fullName && (
-              <p className="italic text-sm">({account.fullName})</p>
+        {account.public ? (
+          <div className="bg-gray-100 p-2 flex flex-col gap-2">
+            <div className="flex items-center gap-2 flex-col md:flex-row">
+              <Heading as={'h1'}>{account.username}</Heading>
+              {account.fullName && (
+                <p className="italic text-sm">({account.fullName})</p>
+              )}
+            </div>
+            <div className="w-fit">
+              <XpDisplay
+                displayLink={false}
+                data={CalculateXpRank(account.experience)}
+              />
+            </div>
+            {account.description && (
+              <p className="bg-purple-700 text-white p-2">
+                {account.description}
+              </p>
+            )}
+            {account.highestOTBRating && (
+              <p>
+                <span className="font-bold">OTB Rating:</span>{' '}
+                {account.highestOTBRating}
+              </p>
+            )}
+            {account.highestOnlineRating && (
+              <p>
+                <span className="font-bold">Online Rating:</span>{' '}
+                {account.highestOnlineRating}
+              </p>
+            )}
+            {account.puzzleRating && (
+              <p>
+                <span className="font-bold">Puzzle Rating:</span>{' '}
+                {account.puzzleRating}
+              </p>
             )}
           </div>
-          <div className="w-fit">
-            <XpDisplay
-              displayLink={false}
-              data={CalculateXpRank(account.experience)}
-            />
+        ) : (
+          <div className="bg-gray-100 p-2">
+            <Heading as={'h1'}>{account.username}</Heading>
+            <p className="text-gray-600">
+              This user has chosen to keep their profile private.
+            </p>
           </div>
-          {account.description && (
-            <p className="bg-purple-700 text-white p-2">
-              {account.description}
-            </p>
-          )}
-          {account.highestOTBRating && (
-            <p>
-              <span className="font-bold">OTB Rating:</span>{' '}
-              {account.highestOTBRating}
-            </p>
-          )}
-          {account.highestOnlineRating && (
-            <p>
-              <span className="font-bold">Online Rating:</span>{' '}
-              {account.highestOnlineRating}
-            </p>
-          )}
-          {account.puzzleRating && (
-            <p>
-              <span className="font-bold">Puzzle Rating:</span>{' '}
-              {account.puzzleRating}
-            </p>
-          )}
-        </div>
+        )}
       </Container>
     </>
   )
