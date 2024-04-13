@@ -22,6 +22,8 @@ import type { Group } from '@prisma/client'
 
 import Heading from '~/app/components/_elements/heading'
 
+import SortableItem from '~/app/_util/SortableItem'
+
 import type { LineWithMoves } from './GroupEditor'
 import GroupEditor from './GroupEditor'
 
@@ -34,12 +36,15 @@ export default function GroupsListEditor(props: {
 }) {
   const [parent] = useAutoAnimate()
   const [lines, setLines] = useState(props.lines)
-  const [items, setItems] = useState(props.lines.map((line) => line.id))
+  const [groupListItems, setGroupListItems] = useState(
+    props.groups.map((group) => group.id),
+  )
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 15,
+      },
     }),
   )
   const [groups, setGroups] = useState(props.groups)
@@ -48,17 +53,17 @@ export default function GroupsListEditor(props: {
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
     if (active && over && active.id !== over.id) {
-      const oldIndex = items.indexOf(Number(active.id))
-      const newIndex = items.indexOf(Number(over.id))
-      setItems((items) => {
+      const oldIndex = groupListItems.indexOf(active.id as string)
+      const newIndex = groupListItems.indexOf(over.id as string)
+      setGroupListItems((items) => {
         return arrayMove(items, oldIndex, newIndex)
       })
-      setLines((lines) => {
-        const newLines = arrayMove(lines, oldIndex, newIndex)
-        newLines.forEach((line, i) => {
-          line.sortOrder = i
+      setGroups((groups) => {
+        const newGroups = arrayMove(groups, oldIndex, newIndex)
+        newGroups.forEach((group, i) => {
+          group.sortOrder = i
         })
-        return newLines
+        return newGroups
       })
     }
   }
@@ -101,22 +106,35 @@ export default function GroupsListEditor(props: {
         collisionDetection={closestCenter}
         onDragEnd={handleDragEnd}
       >
-        <SortableContext items={items} strategy={verticalListSortingStrategy}>
+        <SortableContext
+          items={groupListItems}
+          strategy={verticalListSortingStrategy}
+        >
           <div className="flex flex-col gap-2" ref={parent}>
             {open &&
               groups.map((group) => (
-                <GroupEditor
-                  group={group}
-                  lines={lines}
-                  updateGroup={(group) => {
-                    setGroups(
-                      groups.map((g) => (g.id === group.id ? group : g)),
-                    )
-                    props.setGroups(
-                      groups.map((g) => (g.id === group.id ? group : g)),
-                    )
-                  }}
-                />
+                <SortableItem id={group.id} key={group.id}>
+                  <GroupEditor
+                    group={group}
+                    lines={lines.filter((line) => line.groupId == group.id)}
+                    updateGroup={(group) => {
+                      setGroups(
+                        groups.map((g) => (g.id === group.id ? group : g)),
+                      )
+                      props.setGroups(
+                        groups.map((g) => (g.id === group.id ? group : g)),
+                      )
+                    }}
+                    updateLines={(newLines) => {
+                      setLines(
+                        lines.map(
+                          (line) =>
+                            newLines.find((l) => l.id === line.id) ?? line,
+                        ),
+                      )
+                    }}
+                  />
+                </SortableItem>
               ))}
           </div>
         </SortableContext>
