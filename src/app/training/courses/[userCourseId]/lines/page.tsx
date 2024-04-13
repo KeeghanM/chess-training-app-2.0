@@ -75,15 +75,9 @@ export default async function CourseTrainPage({
     }
   })()
 
-  await prisma.$disconnect()
-
   if (!userCourse || !userLines) {
     redirect('/404')
   }
-
-  const groups = [
-    ...new Set(userLines.map((line) => line.line.group.groupName)),
-  ]
 
   return (
     <>

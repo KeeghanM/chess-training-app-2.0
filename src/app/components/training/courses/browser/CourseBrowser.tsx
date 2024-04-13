@@ -2,18 +2,12 @@
 
 import { useState } from 'react'
 
-import type {
-  Comment,
-  Course,
-  Group,
-  Line,
-  Move,
-  UserLine,
-} from '@prisma/client'
+import type { Comment, Group, Line, Move, UserLine } from '@prisma/client'
 
 import Heading from '~/app/components/_elements/heading'
 
-import GroupDisplay from '../lines/GroupDisplay'
+import GroupBrowser from './GroupBrowser'
+import GroupListItem from './GroupListItem'
 
 export type UserLineWithData = UserLine & {
   line: Line & {
@@ -44,10 +38,11 @@ export default function CourseBrowser(props: CourseBrowserProps) {
       return { id: group.id, name: group.groupName }
     }),
   )
-
   const [search, setSearch] = useState('')
+  const [openGroupId, setOpenGroupId] = useState<string | undefined>()
+
   return (
-    <div className="flex flex-col gap-1 lg:flex-row">
+    <div className="flex flex-col gap-1 md:flex-row">
       <div className="max-h-[80vh] overflow-y-auto">
         <Heading as="h3">Groups</Heading>
         <div className="flex items-center gap-2 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] p-2">
@@ -59,7 +54,7 @@ export default function CourseBrowser(props: CourseBrowserProps) {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 lg:max-w-500px">
           {groups
             .filter((group) =>
               group.name.toLowerCase().includes(search.toLowerCase()),
@@ -68,15 +63,26 @@ export default function CourseBrowser(props: CourseBrowserProps) {
               const lines = props.lines.filter(
                 (line) => line.line.groupId === group.id,
               )
-
               return (
-                <GroupDisplay key={group.id} name={group.name} lines={lines} />
+                <GroupListItem
+                  key={group.id}
+                  name={group.name}
+                  lines={lines}
+                  onClick={() => setOpenGroupId(group.id)}
+                />
               )
             })}
         </div>
       </div>
-      <div></div>
-      <div></div>
+      <div className="flex-1 flex flex-col">
+        <GroupBrowser
+          lines={
+            openGroupId
+              ? lines.filter((line) => line.line.groupId === openGroupId)
+              : []
+          }
+        />
+      </div>
     </div>
   )
 }

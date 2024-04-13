@@ -2,16 +2,14 @@
 
 import Tippy from '@tippyjs/react'
 
-import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
-
-import type { UserLineWithData } from '../browser/CourseBrowser'
-import type { Line } from '../create/parse/ParsePGNtoLineData'
+import type { UserLineWithData } from './CourseBrowser'
 
 // TODO: Add a "Train by group" button
 
-export default function GroupDisplay(props: {
+export default function GroupListItem(props: {
   name: string
   lines: UserLineWithData[]
+  onClick: () => void
 }) {
   const { name, lines } = props
 
@@ -48,7 +46,10 @@ export default function GroupDisplay(props: {
   return (
     <div className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300">
       <div className="flex items-center justify-between text-white gap-2 p-2 text-base">
-        <div className="flex items-center gap-2 text-orange-500  hover:underline cursor-pointer transition-all duration-200">
+        <div
+          className="flex items-center gap-2 text-orange-500  hover:underline cursor-pointer transition-all duration-200"
+          onClick={props.onClick}
+        >
           <h2 className="font-bold">{name}</h2>
           <svg
             xmlns="http://www.w3.org/2000/svg"
