@@ -688,6 +688,21 @@ export default function CourseTrainer(props: {
     })
   }, [nextLine])
 
+  // Listen for spacebar as a way to press the "next" button
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === ' ') {
+        e.preventDefault()
+        if (nextLine && !autoNext) startNextLine()
+        if (teaching) resetTeachingMove()
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [nextLine, autoNext, teaching])
+
   // Last check to ensure we have a user
   if (!user) return null
 

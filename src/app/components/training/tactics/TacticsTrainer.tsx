@@ -450,6 +450,20 @@ export default function TacticsTrainer(props: {
     }
   }, [gameReady, game, currentPuzzle])
 
+  // Listen for spacebar as a way to press the "next" button
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === ' ') {
+        e.preventDefault()
+        if (puzzleFinished && puzzleStatus == 'correct') goToNextPuzzle()
+      }
+    }
+    window.addEventListener('keydown', handleKeyPress)
+    return () => {
+      window.removeEventListener('keydown', handleKeyPress)
+    }
+  }, [puzzleFinished, puzzleStatus])
+
   // Last check to ensure we have a user
   if (!user) return null
 
