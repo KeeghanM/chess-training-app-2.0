@@ -76,7 +76,7 @@ export default async function ArticlesPage() {
                         "url": "https://chesstraining.app/_next/image?url=%2Fchesstrainingapplogo.png&w=64&q=75"
                         }
                     },
-                    "description": "${asText(article.data.introduction)}"
+                    "description": "${asText(article.data.introduction)?.replaceAll('"', '\\"')}"
                     }
                 `,
                   }}
