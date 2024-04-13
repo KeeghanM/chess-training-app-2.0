@@ -7,9 +7,8 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 
 import Button from '~/app/components/_elements/button'
-import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
-import GroupDisplay from '~/app/components/training/courses/lines/GroupDisplay'
+import CourseBrowser from '~/app/components/training/courses/browser/CourseBrowser'
 
 export default async function CourseTrainPage({
   params,
@@ -95,23 +94,13 @@ export default async function CourseTrainPage({
           alt: 'Wooden chess pieces on a chess board',
         }}
       />
-      <div className="dark:bg-slate-800">
-        <Container>
-          <div className="w-fit mx-auto mb-4">
-            <Link href={`/training/courses/`}>
-              <Button variant="accent">Back to courses</Button>
-            </Link>
-          </div>
-          <div className="flex flex-col gap-2">
-            {groups.map((group) => {
-              const lines = userLines.filter(
-                (line) => line.line.group.groupName == group,
-              )
-
-              return <GroupDisplay name={group} lines={lines} />
-            })}
-          </div>
-        </Container>
+      <div className="dark:bg-slate-800 p-2 md:p-4 lg:px-6">
+        {/* <div className="w-fit mx-auto mb-4">
+          <Link href={`/training/courses/`}>
+            <Button variant="accent">Back to courses</Button>
+          </Link>
+        </div> */}
+        <CourseBrowser lines={userLines} />
       </div>
     </>
   )
