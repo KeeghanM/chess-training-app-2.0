@@ -58,6 +58,7 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
           groups: groups.map((group) => ({
             id: group.id,
             groupName: group.groupName,
+            sortOrder: group.sortOrder,
           })),
         }),
       })

@@ -27,6 +27,7 @@ export async function PATCH(request: Request) {
     groups: {
       id: string
       groupName: string
+      sortOrder: number
     }[]
   }
 
@@ -52,6 +53,7 @@ export async function PATCH(request: Request) {
             },
             data: {
               groupName: group.groupName,
+              sortOrder: group.sortOrder,
             },
           })
         }),

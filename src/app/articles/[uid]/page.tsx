@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import type { ContentRelationshipField } from '@prismicio/client'
+import { type ContentRelationshipField, asText } from '@prismicio/client'
 import Prismic from '~/prismicio'
 
 import Container from '~/app/components/_elements/container'
@@ -78,6 +78,36 @@ export default async function Page({ params }: { params: Params }) {
             PrismicRichToHtml(c),
           )}
         </article>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: `{
+                    "@context": "https://schema.org",
+                    "@type": "Article",
+                    "headline": "${page.data.title}",
+                    "datePublished": "${new Date(
+                      page.first_publication_date,
+                    ).toISOString()}",
+                    "dateModified": "${new Date(
+                      page.last_publication_date,
+                    ).toISOString()}",
+                    "author": {
+                        "@type": "Person",
+                        "name": "${author.data.name}"
+                    },
+                    "publisher": {
+                        "@type": "Organization",
+                        "name": "ChessTraining.app",
+                        "logo": {
+                        "@type": "ImageObject",
+                        "url": "https://chesstraining.app/_next/image?url=%2Fchesstrainingapplogo.png&w=64&q=75"
+                        }
+                    },
+                    "description": "${asText(page.data.introduction)?.replaceAll('"', '\\"')}"
+                    }
+                `,
+          }}
+        ></script>
       </Container>
       <CtaRow
         title="Ready to Elevate Your Chess Game?"

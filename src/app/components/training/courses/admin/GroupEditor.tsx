@@ -2,6 +2,21 @@
 
 import { useEffect, useState } from 'react'
 
+import {
+  DndContext,
+  type DragEndEvent,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import type { Group, Line, Move } from '@prisma/client'
 
@@ -15,30 +30,62 @@ export default function GroupEditor(props: {
   group: Group
   lines: LineWithMoves[]
   updateGroup: (group: Group) => void
+  updateLines: (lines: LineWithMoves[]) => void
 }) {
   const [parent] = useAutoAnimate()
   const [open, setOpen] = useState(false)
-  const [group, setGroup] = useState(props.group)
+  const [lineItems, setLineItems] = useState(props.lines.map((line) => line.id))
 
-  useEffect(() => {
-    props.updateGroup(group)
-  }, [group])
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  )
+
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event
+    if (active && over && active.id !== over.id) {
+      const oldIndex = lineItems.indexOf(active.id as number)
+      const newIndex = lineItems.indexOf(over.id as number)
+      setLineItems((items) => {
+        return arrayMove(items, oldIndex, newIndex)
+      })
+
+      // Update the sortOrder of the lines
+      const newLines = arrayMove(props.lines, oldIndex, newIndex)
+      newLines.forEach((line, i) => {
+        line.sortOrder = i
+      })
+      props.updateLines(newLines)
+    }
+  }
 
   return (
     <div
-      key={group.id}
+      key={props.group.id}
       ref={parent}
       className="flex flex-col gap-4 text-white p-2 bg-purple-600 "
     >
       <div className="flex items-center gap-1 p-1">
-        <p className="font-bold w-10">
-          {props.lines.filter((line) => line.groupId == group.id).length}x
-        </p>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          className="w-fit"
+        >
+          <path
+            fill="currentColor"
+            d="M9 3h2v2H9zm4 0h2v2h-2zM9 7h2v2H9zm4 0h2v2h-2zm-4 4h2v2H9zm4 0h2v2h-2zm-4 4h2v2H9zm4 0h2v2h-2zm-4 4h2v2H9zm4 0h2v2h-2z"
+          />
+        </svg>
+        <p className="font-bold w-10">{props.lines.length}x</p>
         <input
           className="w-full border-b border-gray-300 px-4 py-2 bg-[rgba(255,255,255,0.2)] text-white font-bold"
-          value={group.groupName}
+          value={props.group.groupName}
           onChange={(e) =>
-            setGroup((group) => ({ ...group, groupName: e.target.value }))
+            props.updateGroup({ ...props.group, groupName: e.target.value })
           }
           type="text"
         />
@@ -50,7 +97,7 @@ export default function GroupEditor(props: {
           onClick={() => setOpen(!open)}
           className={
             (open ? '-rotate-180' : '-rotate-90') +
-            ' transition-all duration-200 cursor-pointer hover:text-orange-500'
+            ' transition-all duration-200 cursor-pointer hover:text-orange-500 z-10'
           }
         >
           <path
@@ -59,14 +106,24 @@ export default function GroupEditor(props: {
           />
         </svg>
       </div>
-      {open &&
-        props.lines
-          .filter((line) => line.groupId == group.id)
-          .map((line) => (
-            <SortableItem id={line.id}>
-              <LineDisplay line={line} />
-            </SortableItem>
-          ))}
+      {open && (
+        <DndContext
+          sensors={sensors}
+          collisionDetection={closestCenter}
+          onDragEnd={handleDragEnd}
+        >
+          <SortableContext
+            items={lineItems}
+            strategy={verticalListSortingStrategy}
+          >
+            {props.lines.map((line) => (
+              <SortableItem id={line.id} key={line.id}>
+                <LineDisplay line={line} />
+              </SortableItem>
+            ))}
+          </SortableContext>
+        </DndContext>
+      )}
     </div>
   )
 }
