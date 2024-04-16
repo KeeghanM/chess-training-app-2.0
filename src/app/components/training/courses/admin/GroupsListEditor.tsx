@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react'
 import type { DragEndEvent } from '@dnd-kit/core'
 import {
   DndContext,
-  KeyboardSensor,
   PointerSensor,
   closestCenter,
   useSensor,
@@ -14,7 +13,6 @@ import {
 import {
   SortableContext,
   arrayMove,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
@@ -112,30 +110,32 @@ export default function GroupsListEditor(props: {
         >
           <div className="flex flex-col gap-2" ref={parent}>
             {open &&
-              groups.map((group) => (
-                <SortableItem id={group.id} key={group.id}>
-                  <GroupEditor
-                    group={group}
-                    lines={lines.filter((line) => line.groupId == group.id)}
-                    updateGroup={(group) => {
-                      setGroups(
-                        groups.map((g) => (g.id === group.id ? group : g)),
-                      )
-                      props.setGroups(
-                        groups.map((g) => (g.id === group.id ? group : g)),
-                      )
-                    }}
-                    updateLines={(newLines) => {
-                      setLines(
-                        lines.map(
-                          (line) =>
-                            newLines.find((l) => l.id === line.id) ?? line,
-                        ),
-                      )
-                    }}
-                  />
-                </SortableItem>
-              ))}
+              groups
+                .sort((a, b) => a.sortOrder - b.sortOrder)
+                .map((group) => (
+                  <SortableItem id={group.id} key={group.id}>
+                    <GroupEditor
+                      group={group}
+                      lines={lines.filter((line) => line.groupId == group.id)}
+                      updateGroup={(group) => {
+                        setGroups(
+                          groups.map((g) => (g.id === group.id ? group : g)),
+                        )
+                        props.setGroups(
+                          groups.map((g) => (g.id === group.id ? group : g)),
+                        )
+                      }}
+                      updateLines={(newLines) => {
+                        setLines(
+                          lines.map(
+                            (line) =>
+                              newLines.find((l) => l.id === line.id) ?? line,
+                          ),
+                        )
+                      }}
+                    />
+                  </SortableItem>
+                ))}
           </div>
         </SortableContext>
       </DndContext>

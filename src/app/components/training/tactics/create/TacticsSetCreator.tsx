@@ -1,8 +1,6 @@
 'use client'
 
-import Link from 'next/link'
-
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { TacticsSet, TacticsSetRound } from '@prisma/client'
@@ -12,7 +10,6 @@ import Select from 'react-select'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
 import GetPremiumButton from '~/app/components/ecomm/GetPremiumButton'
 import Spinner from '~/app/components/general/Spinner'
