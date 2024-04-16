@@ -24,6 +24,7 @@ import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 import XpTracker from '~/app/components/general/XpTracker'
 
+import getArrows from '~/app/_util/StringToArrows'
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 import Heading from '../../_elements/heading'
@@ -653,31 +654,7 @@ export default function CourseTrainer(props: {
     else setShowComment(false)
 
     if (currentMove.arrows && teaching) {
-      // arrows format: "Ga1b3,Gf2b8,Ra1a8"
-      const moveArrows = currentMove.arrows.split(',')
-      const getColour = (code: string) => {
-        switch (code) {
-          case 'G':
-            return 'green'
-          case 'R':
-            return 'red'
-          case 'Y':
-            return 'yellow'
-          case 'B':
-            return 'blue'
-          case 'O':
-            return 'orange'
-          default:
-            return 'green'
-        }
-      }
-      const newArrows = moveArrows.map((arrow) => {
-        const colour = getColour(arrow.charAt(0))
-        const from = arrow.charAt(1) + arrow.charAt(2)
-        const to = arrow.charAt(3) + arrow.charAt(4)
-        return [from, to, colour] as Arrow
-      })
-      setArrows(newArrows)
+      setArrows(getArrows(currentMove.arrows))
     } else {
       setArrows([])
     }

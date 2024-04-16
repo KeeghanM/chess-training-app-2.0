@@ -1,30 +1,18 @@
 'use client'
 
-import { useState } from 'react'
-
-import { useAutoAnimate } from '@formkit/auto-animate/react'
-import type { Comment, Group, Move, UserLine } from '@prisma/client'
 import Tippy from '@tippyjs/react'
 
-import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
-
-import type { Line } from '../create/parse/ParsePGNtoLineData'
+import type { UserLineWithData } from './CourseBrowser'
 
 // TODO: Add a "Train by group" button
 
-export default function GroupDisplay(props: {
+export default function GroupListItem(props: {
   name: string
-  lines: (UserLine & {
-    line: {
-      group: Group
-      moves: (Move & { comment: Comment | null })[]
-      sortOrder: number
-    }
-  })[]
+  lines: UserLineWithData[]
+  onClick: () => void
+  open: boolean
 }) {
-  const { name, lines } = props
-  const [parent] = useAutoAnimate()
-  const [open, setOpen] = useState(false)
+  const { name, lines, open } = props
 
   const { linesLearned, linesLearning, linesHard, linesUnseen } = lines.reduce(
     (acc, line) => {
@@ -58,14 +46,20 @@ export default function GroupDisplay(props: {
 
   return (
     <div
-      ref={parent}
-      className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300"
-      key={name}
+      className={
+        'flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 ' +
+        (open
+          ? 'bg-orange-500 bg-opacity-10'
+          : 'bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]')
+      }
     >
       <div className="flex items-center justify-between text-white gap-2 p-2 text-base">
         <div
-          onClick={() => setOpen(!open)}
-          className="flex items-center gap-2 text-orange-500  hover:underline cursor-pointer transition-all duration-200"
+          className={
+            'flex items-center gap-2 text-orange-500 transition-all duration-200' +
+            (!open ? ' hover:underline cursor-pointer' : '')
+          }
+          onClick={() => (!open ? props.onClick() : null)}
         >
           <h2 className="font-bold">{name}</h2>
           <svg
@@ -73,7 +67,7 @@ export default function GroupDisplay(props: {
             width="32"
             height="32"
             viewBox="0 0 32 32"
-            className={open ? '-rotate-180' : '-rotate-90'}
+            className="-rotate-90"
           >
             <path
               fill="currentColor"
@@ -107,49 +101,6 @@ export default function GroupDisplay(props: {
           </Tippy>
         </div>
       </div>
-      {open && (
-        <div className="flex flex-col gap-1 p-2">
-          {lines
-            .sort((a, b) => a.line.sortOrder - b.line.sortOrder)
-            .map((line) => {
-              const niceLine = {
-                moves: line.line.moves.map((move) => ({
-                  notation: move.move,
-                  turn: '',
-                })),
-              } as Line
-
-              const lineColor = (() => {
-                if (line.timesTrained == 0) return 'bg-purple-500'
-                else if (
-                  line.currentStreak > 4 &&
-                  line.timesCorrect >= line.timesWrong
-                )
-                  return 'bg-[#4ade80]'
-                else if (
-                  line.currentStreak <= 4 &&
-                  line.timesTrained > 0 &&
-                  line.timesCorrect >= line.timesWrong
-                )
-                  return 'bg-[#2563eb]'
-                else if (line.timesWrong > line.timesCorrect)
-                  return 'bg-[#ff3030]'
-                else return 'bg-gray-400'
-              })()
-
-              return (
-                <div
-                  key={line.id}
-                  className={
-                    'p-2 text-black dark:text-white bg-opacity-30 ' + lineColor
-                  }
-                >
-                  {PrettyPrintLine({ line: niceLine })}
-                </div>
-              )
-            })}
-        </div>
-      )}
     </div>
   )
 }
