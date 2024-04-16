@@ -13,8 +13,6 @@ import ChessBoard from '../../ChessBoard'
 import { UserLineWithData } from './CourseBrowser'
 import PgnBrowser from './PgnBrowser'
 
-// TODO: Add sound toggle
-// TODO: Add highlights to the board, especially for the current/latest move
 export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
   const pgn = BuildPGN(
     props.lines.map((line) =>
@@ -37,10 +35,14 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [currentMove, setCurrentMove] = useState<Move | undefined>()
   const [arrows, setArrows] = useState<Arrow[]>([])
+  const [highlightSquares, setHighlightSquares] = useState<
+    Record<string, { backgroundColor: string }>
+  >({})
 
   useEffect(() => {
     if (!currentMove) {
       setArrows([])
+      setHighlightSquares({})
       return
     }
     const newGame = new Chess()
@@ -55,8 +57,17 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
         break
     }
 
+    const lastMove = newGame.history({ verbose: true })[
+      newGame.history().length - 1
+    ]!
+
+    setHighlightSquares({
+      [lastMove.to]: { backgroundColor: 'rgba(126,34,206, 0.3)' },
+      [lastMove.from]: { backgroundColor: 'rgba(126,34,206, 0.3)' },
+    })
     setPosition(newGame.fen())
     setGame(newGame)
+
     if (currentMove.arrows) {
       setArrows(getArrows(currentMove.arrows))
     } else {
@@ -83,10 +94,10 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
           position={position}
           orientation={orientation}
           readyForInput={false}
-          additionalSquares={{}}
+          additionalSquares={highlightSquares}
           additionalArrows={arrows}
           enableArrows={true}
-          enableHighlights={false}
+          enableHighlights={true}
           soundEnabled={soundEnabled}
           moveMade={null}
         />
