@@ -52,7 +52,7 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
   }, [currentMove])
 
   return (
-    <div className="flex gap-2">
+    <div className="flex gap-2 flex-col lg:flex-row">
       <div>
         <ChessBoard
           game={game}
@@ -67,7 +67,7 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
           moveMade={null}
         />
       </div>
-      <div>
+      <div className="flex-1 max-w-[500px]">
         <PgnBrowser
           pgn={pgn}
           moveSelected={setCurrentMove}
