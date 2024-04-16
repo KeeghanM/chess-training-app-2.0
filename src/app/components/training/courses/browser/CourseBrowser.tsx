@@ -4,8 +4,6 @@ import { useState } from 'react'
 
 import type { Comment, Group, Line, Move, UserLine } from '@prisma/client'
 
-import Heading from '~/app/components/_elements/heading'
-
 import GroupBrowser from './GroupBrowser'
 import GroupListItem from './GroupListItem'
 

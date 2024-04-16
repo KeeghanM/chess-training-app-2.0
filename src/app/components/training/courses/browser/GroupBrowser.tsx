@@ -3,16 +3,17 @@
 import { useEffect, useState } from 'react'
 
 import { Chess } from 'chess.js'
+import { Arrow } from 'react-chessboard/dist/chessboard/types'
 
 import type { Move } from '~/app/_util/BuildPgn'
 import BuildPGN from '~/app/_util/BuildPgn'
+import getArrows from '~/app/_util/StringToArrows'
 
 import ChessBoard from '../../ChessBoard'
 import { UserLineWithData } from './CourseBrowser'
 import PgnBrowser from './PgnBrowser'
 
 // TODO: Add sound toggle
-// TODO: Add arrows to the board
 // TODO: Add highlights to the board, especially for the current/latest move
 export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
   const pgn = BuildPGN(
@@ -35,9 +36,13 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
   const [orientation, setOrientation] = useState<'white' | 'black'>('white')
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [currentMove, setCurrentMove] = useState<Move | undefined>()
+  const [arrows, setArrows] = useState<Arrow[]>([])
 
   useEffect(() => {
-    if (!currentMove) return
+    if (!currentMove) {
+      setArrows([])
+      return
+    }
     const newGame = new Chess()
     const line = props.lines.find((line) => line.id === currentMove.lineId)!
     for (const move of line.line.moves) {
@@ -52,6 +57,11 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
 
     setPosition(newGame.fen())
     setGame(newGame)
+    if (currentMove.arrows) {
+      setArrows(getArrows(currentMove.arrows))
+    } else {
+      setArrows([])
+    }
   }, [currentMove])
 
   useEffect(() => {
@@ -74,8 +84,8 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
           orientation={orientation}
           readyForInput={false}
           additionalSquares={{}}
-          additionalArrows={[]}
-          enableArrows={false}
+          additionalArrows={arrows}
+          enableArrows={true}
           enableHighlights={false}
           soundEnabled={soundEnabled}
           moveMade={null}
