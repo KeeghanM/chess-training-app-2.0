@@ -9,13 +9,18 @@ type PgnBrowserProps = {
 }
 export default function PgnBrowser(props: PgnBrowserProps) {
   return (
-    <div className="flex flex-wrap gap-1 max-h-[50vh] overflow-y-auto text-sm">
+    <div className="flex text-xs h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white flex-1 overflow-y-auto">
       {props.pgn.moves.map((move) => (
         <div
+          key={move.number.toString() + move.colour ? 'w' : 'b' + move.notation}
           onClick={() => props.moveSelected(move)}
           className={
-            'flex flex-wrap gap-0.5 ' +
-            (props.currentMove == move ? 'bg-purple-700 bg-opacity-30' : '')
+            'flex gap-0.5 ' +
+            (props.currentMove?.number == move.number &&
+            props.currentMove?.colour == move.colour &&
+            props.currentMove?.notation == move.notation
+              ? 'bg-purple-700 bg-opacity-30 p-1'
+              : '')
           }
         >
           {/* Move.colour is a boolean, where true == white */}
