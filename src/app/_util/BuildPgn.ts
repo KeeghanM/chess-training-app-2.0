@@ -79,6 +79,9 @@ export default function BuildPGN(lines: LineMove[][]): PGN {
           }
         }
 
+        // If we found the move in a variation, we move to the next move in the line
+        if (found) break
+
         // If we reach this point, we know that the move is not in the first position of any variation
         // So we add a new variation and switch to that
         existingMove.variations.push([

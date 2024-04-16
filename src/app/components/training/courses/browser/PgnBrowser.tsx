@@ -7,6 +7,8 @@ type PgnBrowserProps = {
   moveSelected: (move: Move) => void
   currentMove?: Move
 }
+
+// TODO: Add arrow keys to navigate moves
 export default function PgnBrowser(props: PgnBrowserProps) {
   const { pgn, moveSelected, currentMove } = props
 
@@ -14,7 +16,8 @@ export default function PgnBrowser(props: PgnBrowserProps) {
     return (
       move.number == currentMove?.number &&
       move.colour == currentMove?.colour &&
-      move.notation == currentMove?.notation
+      move.notation == currentMove?.notation &&
+      move.lineId == currentMove?.lineId
     )
   }
 

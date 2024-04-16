@@ -11,6 +11,9 @@ import ChessBoard from '../../ChessBoard'
 import { UserLineWithData } from './CourseBrowser'
 import PgnBrowser from './PgnBrowser'
 
+// TODO: Add sound toggle
+// TODO: Add arrows to the board
+// TODO: Add highlights to the board, especially for the current/latest move
 export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
   const pgn = BuildPGN(
     props.lines.map((line) =>
