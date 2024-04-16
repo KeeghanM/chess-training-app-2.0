@@ -51,6 +51,17 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
     setGame(newGame)
   }, [currentMove])
 
+  useEffect(() => {
+    setCurrentMove(undefined)
+    setGame(new Chess())
+    setPosition(new Chess().fen())
+    if (props.lines[0]) {
+      setOrientation(
+        props.lines[0]!.line.colour.toLowerCase() as 'white' | 'black',
+      )
+    }
+  }, [props.lines])
+
   return (
     <div className="flex gap-2 flex-col lg:flex-row">
       <div>

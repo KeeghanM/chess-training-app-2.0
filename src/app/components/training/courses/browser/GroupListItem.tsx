@@ -10,8 +10,9 @@ export default function GroupListItem(props: {
   name: string
   lines: UserLineWithData[]
   onClick: () => void
+  open: boolean
 }) {
-  const { name, lines } = props
+  const { name, lines, open } = props
 
   const { linesLearned, linesLearning, linesHard, linesUnseen } = lines.reduce(
     (acc, line) => {
@@ -44,11 +45,21 @@ export default function GroupListItem(props: {
   )
 
   return (
-    <div className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300">
+    <div
+      className={
+        'flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 ' +
+        (open
+          ? 'bg-orange-500 bg-opacity-10'
+          : 'bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]')
+      }
+    >
       <div className="flex items-center justify-between text-white gap-2 p-2 text-base">
         <div
-          className="flex items-center gap-2 text-orange-500  hover:underline cursor-pointer transition-all duration-200"
-          onClick={props.onClick}
+          className={
+            'flex items-center gap-2 text-orange-500 transition-all duration-200' +
+            (!open ? ' hover:underline cursor-pointer' : '')
+          }
+          onClick={() => (!open ? props.onClick() : null)}
         >
           <h2 className="font-bold">{name}</h2>
           <svg

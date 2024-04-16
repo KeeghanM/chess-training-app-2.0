@@ -58,7 +58,9 @@ export default function PgnBrowser(props: PgnBrowserProps) {
             <span className="text-xs col-span-2 bg-gray-200 text-black italic p-1">
               {move.comment}
             </span>
-            <div className="flex items-center justify-center">...</div>
+            {move.colour && (
+              <div className="flex items-center justify-center">...</div>
+            )}
           </>
         )}
         {move.variations.map((variation) => (

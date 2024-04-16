@@ -39,22 +39,14 @@ export default function CourseBrowser(props: CourseBrowserProps) {
     }),
   )
   const [search, setSearch] = useState('')
-  const [openGroupId, setOpenGroupId] = useState<string | undefined>()
+  const [openGroupId, setOpenGroupId] = useState<string | undefined>(
+    props.lines[0]?.line.groupId,
+  )
 
   return (
     <div className="flex flex-col gap-1 md:flex-row">
-      <div className="max-h-[80vh] overflow-y-auto">
-        <Heading as="h3">Groups</Heading>
-        <div className="flex items-center gap-2 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] p-2">
-          <p>Search</p>
-          <input
-            className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-        <div className="flex flex-col gap-2 lg:max-w-500px">
+      <div className="border lg:border-4 border-purple-700 bg-purple-700 bg-opacity-20 text-black dark:text-white p-2">
+        <div className="flex flex-col gap-2 lg:max-w-500px overflow-y-auto max-h-full">
           {groups
             .filter((group) =>
               group.name.toLowerCase().includes(search.toLowerCase()),
@@ -69,6 +61,7 @@ export default function CourseBrowser(props: CourseBrowserProps) {
                   name={group.name}
                   lines={lines}
                   onClick={() => setOpenGroupId(group.id)}
+                  open={openGroupId === group.id}
                 />
               )
             })}

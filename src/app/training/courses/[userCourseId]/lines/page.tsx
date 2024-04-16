@@ -7,6 +7,7 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 
 import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import CourseBrowser from '~/app/components/training/courses/browser/CourseBrowser'
 
@@ -81,19 +82,13 @@ export default async function CourseTrainPage({
 
   return (
     <>
-      <PageHeader
-        title={userCourse.course.courseName}
-        image={{
-          src: '/images/hero.avif',
-          alt: 'Wooden chess pieces on a chess board',
-        }}
-      />
       <div className="dark:bg-slate-800 p-2 md:p-4 lg:px-6">
-        {/* <div className="w-fit mx-auto mb-4">
-          <Link href={`/training/courses/`}>
+        <Heading as="h1">
+          {userCourse.course.courseName}
+          <Link className="ml-2" href={`/training/courses/`}>
             <Button variant="accent">Back to courses</Button>
           </Link>
-        </div> */}
+        </Heading>
         <CourseBrowser lines={userLines} />
       </div>
     </>
