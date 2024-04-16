@@ -8,7 +8,6 @@ import * as Sentry from '@sentry/nextjs'
 
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
-import PageHeader from '~/app/components/_layouts/pageHeader'
 import CourseBrowser from '~/app/components/training/courses/browser/CourseBrowser'
 
 export default async function CourseTrainPage({

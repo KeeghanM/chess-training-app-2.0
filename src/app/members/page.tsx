@@ -10,7 +10,7 @@ import CalculateXpRank from '../_util/CalculateXpRank'
 export default async function MembersPage({
   searchParams,
 }: {
-  searchParams?: { [key: string]: string | string[] | undefined }
+  searchParams?: Record<string, string | string[]>
 }) {
   const pageNumber = searchParams?.page
     ? parseInt(searchParams.page as string)
