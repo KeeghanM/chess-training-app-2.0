@@ -1,7 +1,5 @@
 'use client'
 
-import { useState } from 'react'
-
 import { Move, PGN } from '~/app/_util/BuildPgn'
 
 type PgnBrowserProps = {
@@ -34,15 +32,35 @@ export default function PgnBrowser(props: PgnBrowserProps) {
             moveSelected(move)
           }}
           className={
-            'cursor-pointer' +
+            'cursor-pointer hover:bg-purple-800 hover:bg-opacity-50' +
             (mainLine ? ' border border-black px-1 py-0.5' : '') +
-            (isCurrentMove(move) ? ' font-bold bg-orange-500' : '')
+            (isCurrentMove(move) ? ' !bg-orange-500' : '')
           }
         >
           {move.colour && <span>{move.number}. </span>}
           {ellipses && <span>{move.number}... </span>}
-          <span>{move.notation}</span>
+          <span>
+            {move.notation}
+            {!mainLine && move.comment ? (
+              <span className="italic text-xs text-gray-300">
+                {move.comment}
+              </span>
+            ) : (
+              ''
+            )}
+          </span>
         </span>
+        {move.comment && mainLine && (
+          <>
+            {move.colour && (
+              <div className="flex items-center justify-center">...</div>
+            )}
+            <span className="text-xs col-span-2 bg-gray-200 text-black italic p-1">
+              {move.comment}
+            </span>
+            <div className="flex items-center justify-center">...</div>
+          </>
+        )}
         {move.variations.map((variation) => (
           <Variation moves={variation} />
         ))}
@@ -61,7 +79,7 @@ export default function PgnBrowser(props: PgnBrowserProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 auto-rows-min w-full text-xs h-full border lg:border-4 border-purple-700 bg-purple-700 bg-opacity-20 text-black dark:text-white flex-1 max-h-[70vh] overflow-y-auto">
+    <div className="grid grid-cols-2 auto-rows-min w-full text-sm h-full border lg:border-4 border-purple-700 bg-purple-700 bg-opacity-20 text-black dark:text-white flex-1 max-h-[70vh] overflow-y-auto">
       {pgn.moves.map((move) => (
         <Move mainLine={true} move={move} />
       ))}
