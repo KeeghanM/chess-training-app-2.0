@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import type { DragEndEvent } from '@dnd-kit/core'
 import {
@@ -25,18 +25,19 @@ import SortableItem from '~/app/_util/SortableItem'
 import type { LineWithMoves } from './GroupEditor'
 import GroupEditor from './GroupEditor'
 
-// TODO: Make the actual groups sortable too, not just the lines within them
 export default function GroupsListEditor(props: {
   groups: Group[]
-  lines: LineWithMoves[]
   setGroups: (groups: Group[]) => void
-  updateLines: (lines: LineWithMoves[]) => void
+  lines: LineWithMoves[]
+  setLines: (lines: LineWithMoves[]) => void
+  addIdToDelete: (id: number) => void
 }) {
+  const { groups, setGroups, lines, setLines, addIdToDelete } = props
   const [parent] = useAutoAnimate()
-  const [lines, setLines] = useState(props.lines)
   const [groupListItems, setGroupListItems] = useState(
-    props.groups.map((group) => group.id),
+    groups.map((group) => group.id),
   )
+  const [open, setOpen] = useState(false)
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -45,8 +46,6 @@ export default function GroupsListEditor(props: {
       },
     }),
   )
-  const [groups, setGroups] = useState(props.groups)
-  const [open, setOpen] = useState(false)
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event
@@ -56,23 +55,13 @@ export default function GroupsListEditor(props: {
       setGroupListItems((items) => {
         return arrayMove(items, oldIndex, newIndex)
       })
-      setGroups((groups) => {
-        const newGroups = arrayMove(groups, oldIndex, newIndex)
-        newGroups.forEach((group, i) => {
-          group.sortOrder = i
-        })
-        return newGroups
+      const newGroups = arrayMove(groups, oldIndex, newIndex)
+      newGroups.forEach((group, i) => {
+        group.sortOrder = i
       })
+      setGroups(newGroups)
     }
   }
-
-  useEffect(() => {
-    props.setGroups(groups)
-  }, [groups])
-
-  useEffect(() => {
-    props.updateLines(lines)
-  }, [lines])
 
   return (
     <>
@@ -117,15 +106,12 @@ export default function GroupsListEditor(props: {
                     <GroupEditor
                       group={group}
                       lines={lines.filter((line) => line.groupId == group.id)}
-                      updateGroup={(group) => {
+                      setGroup={(group) => {
                         setGroups(
                           groups.map((g) => (g.id === group.id ? group : g)),
                         )
-                        props.setGroups(
-                          groups.map((g) => (g.id === group.id ? group : g)),
-                        )
                       }}
-                      updateLines={(newLines) => {
+                      setLines={(newLines) => {
                         setLines(
                           lines.map(
                             (line) =>
@@ -133,6 +119,7 @@ export default function GroupsListEditor(props: {
                           ),
                         )
                       }}
+                      addIdToDelete={addIdToDelete}
                     />
                   </SortableItem>
                 ))}
