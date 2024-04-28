@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-import { Group, Line, Move, UserLine } from '@prisma/client'
+import type { Group, Line, Move, UserLine } from '@prisma/client'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
@@ -50,6 +50,7 @@ export default function LineRow({
       if (data.message !== 'Lines updated') {
         throw new Error('Failed to mark line for review')
       }
+      onUpdate(lineId)
     } catch (e) {
       if (e instanceof Error) setError(e.message)
       else setError('An error occurred')

@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from 'react'
 
-import LineRow, { ScheduleLine } from './LineRow'
+import LineRow from './LineRow'
+import type { ScheduleLine } from './LineRow'
 
 type LineListProps = {
   userLines: ScheduleLine[]
@@ -22,7 +23,7 @@ export default function LineList({ userLines, courseId }: LineListProps) {
     <div className="flex flex-col gap-2">
       {lines
         .sort((a, b) => {
-          if (a.revisionDate || b.revisionDate) {
+          if (a.revisionDate ?? b.revisionDate) {
             if ((a.revisionDate ?? Infinity) < (b.revisionDate ?? Infinity))
               return -1
             if ((a.revisionDate ?? Infinity) > (b.revisionDate ?? Infinity))

@@ -2,8 +2,6 @@
 
 import { useState } from 'react'
 
-import Button from '~/app/components/_elements/button'
-
 export default function Info() {
   const [open, setOpen] = useState(false)
   return (
