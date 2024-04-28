@@ -112,9 +112,9 @@ export default function CourseTrainer(props: {
   const [correctSound] = useSound('/sfx/correct.mp3') as [() => void]
 
   const getNextLine = (lines: PrismaUserLine[]) => {
-    // Sorts the lines in order or priority
+    // Sorts the lines in order of priority
     // 1. Lines with a "revisionDate" in the past, sorted by date (oldest first)
-    // 2. Lines with no "revisionDate", sorted by their sortOrder
+    // 2. Lines with no "revisionDate", sorted by their groups sortOrder and then by their own sortOrder
     const now = new Date()
 
     const dueLines = lines
@@ -124,7 +124,13 @@ export default function CourseTrainer(props: {
 
     const unseenLines = lines
       .filter((line) => !line.revisionDate)
-      .sort((a, b) => a.line.sortOrder - b.line.sortOrder)
+      .sort((a, b) => {
+        if (a.line.group.sortOrder < b.line.group.sortOrder) return -1
+        if (a.line.group.sortOrder > b.line.group.sortOrder) return 1
+        if (a.line.sortOrder < b.line.sortOrder) return -1
+        if (a.line.sortOrder > b.line.sortOrder) return 1
+        return 0
+      })
     if (unseenLines.length > 0) return unseenLines[0]
 
     return null
@@ -553,7 +559,7 @@ export default function CourseTrainer(props: {
     return nextLine ? (
       <button
         key={index + '_pgn'}
-        className="h-max max-h-fit bg-none px-1 py-1 text-white hover:bg-purple-800"
+        className="h-max max-h-fit bg-none px-1 py-1 hover:bg-purple-800"
         onClick={() => {
           const newGame = new Chess()
           for (let i = 0; i <= index; i++) {

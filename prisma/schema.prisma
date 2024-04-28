@@ -68,6 +68,7 @@ model Line {
     colour    String
     groupId   String
     sortOrder Int
+    trainable Boolean    @default(true)
     createdAt DateTime   @default(now())
     updatedAt DateTime   @updatedAt
     course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)

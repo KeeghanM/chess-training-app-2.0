@@ -1,11 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import {
   DndContext,
   type DragEndEvent,
-  KeyboardSensor,
   PointerSensor,
   closestCenter,
   useSensor,
@@ -14,7 +13,6 @@ import {
 import {
   SortableContext,
   arrayMove,
-  sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
@@ -29,17 +27,24 @@ export type LineWithMoves = Line & { moves: Move[] }
 export default function GroupEditor(props: {
   group: Group
   lines: LineWithMoves[]
-  updateGroup: (group: Group) => void
-  updateLines: (lines: LineWithMoves[]) => void
+  setGroup: (group: Group) => void
+  setLines: (lines: LineWithMoves[]) => void
+  addIdToDelete: (newIds: number) => void
 }) {
+  const { group, lines, setGroup, setLines, addIdToDelete } = props
   const [parent] = useAutoAnimate()
   const [open, setOpen] = useState(false)
-  const [lineItems, setLineItems] = useState(props.lines.map((line) => line.id))
+  const [hiddenLineIds, setHiddenLineIds] = useState<number[]>([])
+  const [lineItems, setLineItems] = useState(lines.map((line) => line.id))
+  const linesToDisplay = useMemo(() => {
+    return lines.filter((line) => !hiddenLineIds.includes(line.id))
+  }, [lines, hiddenLineIds])
 
   const sensors = useSensors(
-    useSensor(PointerSensor),
-    useSensor(KeyboardSensor, {
-      coordinateGetter: sortableKeyboardCoordinates,
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 15,
+      },
     }),
   )
 
@@ -53,17 +58,17 @@ export default function GroupEditor(props: {
       })
 
       // Update the sortOrder of the lines
-      const newLines = arrayMove(props.lines, oldIndex, newIndex)
+      const newLines = arrayMove(lines, oldIndex, newIndex)
       newLines.forEach((line, i) => {
         line.sortOrder = i
       })
-      props.updateLines(newLines)
+      setLines(newLines)
     }
   }
 
   return (
     <div
-      key={props.group.id}
+      key={group.id}
       ref={parent}
       className="flex flex-col gap-4 text-white p-2 bg-purple-600 "
     >
@@ -80,13 +85,11 @@ export default function GroupEditor(props: {
             d="M9 3h2v2H9zm4 0h2v2h-2zM9 7h2v2H9zm4 0h2v2h-2zm-4 4h2v2H9zm4 0h2v2h-2zm-4 4h2v2H9zm4 0h2v2h-2zm-4 4h2v2H9zm4 0h2v2h-2z"
           />
         </svg>
-        <p className="font-bold w-10">{props.lines.length}x</p>
+        <p className="font-bold w-10">{lines.length}x</p>
         <input
           className="w-full border-b border-gray-300 px-4 py-2 bg-[rgba(255,255,255,0.2)] text-white font-bold"
-          value={props.group.groupName}
-          onChange={(e) =>
-            props.updateGroup({ ...props.group, groupName: e.target.value })
-          }
+          value={group.groupName}
+          onChange={(e) => setGroup({ ...group, groupName: e.target.value })}
           type="text"
         />
         <svg
@@ -116,9 +119,19 @@ export default function GroupEditor(props: {
             items={lineItems}
             strategy={verticalListSortingStrategy}
           >
-            {props.lines.map((line) => (
+            {linesToDisplay.map((line) => (
               <SortableItem id={line.id} key={line.id}>
-                <LineDisplay line={line} />
+                <LineDisplay
+                  line={line}
+                  onChange={(line) => {
+                    setLines(lines.map((l) => (l.id === line.id ? line : l)))
+                  }}
+                  onDelete={() => {
+                    setLines(lines.filter((l) => l.id !== line.id))
+                    addIdToDelete(line.id)
+                    setHiddenLineIds([...hiddenLineIds, line.id])
+                  }}
+                />
               </SortableItem>
             ))}
           </SortableContext>

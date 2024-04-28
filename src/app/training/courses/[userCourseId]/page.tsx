@@ -46,6 +46,9 @@ export default async function CourseTrainPage({
         where: {
           userId: user.id,
           userCourseId,
+          line: {
+            trainable: true,
+          },
         },
         include: {
           line: {
