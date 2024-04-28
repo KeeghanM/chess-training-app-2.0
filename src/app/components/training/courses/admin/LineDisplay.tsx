@@ -45,7 +45,7 @@ export default function LineDisplay(props: {
           />
         </svg>
       </div>
-      {PrettyPrintLine({ line: niceLine })}
+      {<PrettyPrintLine line={niceLine} />}
       <div className="flex flex-col gap-1">
         <select
           value={line.trainable ? 1 : 0}

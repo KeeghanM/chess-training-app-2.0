@@ -136,13 +136,13 @@ export default function CourseListItem(props: {
                     <p className="text-gray-300">
                       {userCourse?.linesUnseen} lines unseen
                     </p>
-                    <p className="text-[#4ade80]">
+                    <p className="text-green-500">
                       {userCourse?.linesLearned} lines learned
                     </p>
-                    <p className="text-[#2563eb]">
+                    <p className="text-blue-600">
                       {userCourse?.linesLearning} lines learning
                     </p>
-                    <p className="text-[#ff3030]">
+                    <p className="text-red-500">
                       {userCourse?.linesHard} lines hard
                     </p>
                   </div>
