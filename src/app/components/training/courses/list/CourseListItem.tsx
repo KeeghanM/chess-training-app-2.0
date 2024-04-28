@@ -11,6 +11,8 @@ import Tippy from '@tippyjs/react'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
+import StyledLink from '~/app/components/_elements/styledLink'
+import PremiumSubscribe from '~/app/components/ecomm/PremiumSubscribe'
 import Spinner from '~/app/components/general/Spinner'
 import TimeSince from '~/app/components/general/TimeSince'
 
@@ -25,6 +27,7 @@ export default function CourseListItem(props: {
   courseId: string
   courseName: string
   update: () => void
+  hasPremium: boolean
 }) {
   const router = useRouter()
   const [userCourse, setUserCourse] = useState<PrismaUserCourse | null>(null)
@@ -133,13 +136,13 @@ export default function CourseListItem(props: {
                     <p className="text-gray-300">
                       {userCourse?.linesUnseen} lines unseen
                     </p>
-                    <p className="text-[#4ade80]">
+                    <p className="text-green-500">
                       {userCourse?.linesLearned} lines learned
                     </p>
-                    <p className="text-[#2563eb]">
+                    <p className="text-blue-600">
                       {userCourse?.linesLearning} lines learning
                     </p>
-                    <p className="text-[#ff3030]">
+                    <p className="text-red-500">
                       {userCourse?.linesHard} lines hard
                     </p>
                   </div>
@@ -185,6 +188,44 @@ export default function CourseListItem(props: {
                       ? 'line to learn.'
                       : 'lines to learn.'}
                   </p>
+                  {props.hasPremium ? (
+                    <Link
+                      className="text-xs underline hover:no-underline text-purple-700 dark:text-purple-400"
+                      href={`/training/courses/${userCourse?.id}/schedule`}
+                    >
+                      Edit revision schedule
+                    </Link>
+                  ) : (
+                    <PremiumSubscribe
+                      title="View Revision Schedule"
+                      trigger={
+                        <p className="text-xs underline hover:no-underline text-purple-700 dark:text-purple-400">
+                          Edit revision schedule
+                        </p>
+                      }
+                    >
+                      <p>
+                        With premium, you can view and edit the revision
+                        schedule, allowing you to bring forward the next review
+                        date for lines you're struggling with. In the future, we
+                        will also be adding the ability to customise the
+                        revision schedule to your liking.
+                      </p>
+                      <p>
+                        This is super useful if you're preparing for a
+                        tournament or just want to revise everything.
+                      </p>
+                      <p className="font-bold p-4 rounded bg-green-200">
+                        It's only £2.99/month to upgrade to premium!{' '}
+                        <StyledLink href="/premium">Learn more.</StyledLink>
+                      </p>
+                      <p>
+                        In addition to this, you also get both unlimited tactics
+                        sets and openings courses plus a <strong>5%</strong>{' '}
+                        discount on all products.
+                      </p>
+                    </PremiumSubscribe>
+                  )}
                 </div>
               </Tippy>
             </div>

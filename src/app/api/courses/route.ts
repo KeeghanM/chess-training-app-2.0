@@ -18,12 +18,14 @@ export async function PATCH(request: Request) {
     shortDescription,
     lines,
     groups,
+    linesToDelete,
   } = (await request.json()) as {
     courseId: string
     courseName: string
     courseDescription: string
     shortDescription: string
-    lines: { id: number; sortOrder: number }[]
+    lines: { id: number; sortOrder: number; trainable: boolean }[]
+    linesToDelete: number[]
     groups: {
       id: string
       groupName: string
@@ -67,10 +69,19 @@ export async function PATCH(request: Request) {
             },
             data: {
               sortOrder: line.sortOrder,
+              trainable: line.trainable,
             },
           })
         }),
       )
+
+      await prisma.line.deleteMany({
+        where: {
+          id: {
+            in: linesToDelete,
+          },
+        },
+      })
 
       await prisma.course.update({
         where: {

@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import type { Course, Group } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
@@ -28,6 +28,10 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
   const [saving, setSaving] = useState(false)
   const [hasHadChanges, setHasHadChanges] = useState(false)
   const [lines, setLines] = useState(course.lines)
+  const sortedLines = useMemo(() => {
+    return [...lines].sort((a, b) => a.sortOrder - b.sortOrder)
+  }, [lines])
+  const [linesToDelete, setLinesToDelete] = useState<number[]>([])
   const [groups, setGroups] = useState(course.groups)
   const [courseName, setCourseName] = useState(course.courseName)
   const [courseDescription, setCourseDescription] = useState(
@@ -43,6 +47,7 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
 
     setSaving(true)
     try {
+      console.log(lines)
       const res = await fetch('/api/courses', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -51,9 +56,11 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
           courseName,
           courseDescription,
           shortDescription,
+          linesToDelete,
           lines: lines.map((line) => ({
             id: line.id,
             sortOrder: line.sortOrder,
+            trainable: line.trainable,
           })),
           groups: groups.map((group) => ({
             id: group.id,
@@ -65,6 +72,9 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
       const json = (await res.json()) as ResponseJson
       if (json?.message != 'Course updated')
         throw new Error(json.message ?? 'Course not updated')
+
+      setLines(lines.filter((line) => !linesToDelete.includes(line.id)))
+      setLinesToDelete([])
     } catch (e) {
       Sentry.captureException(e)
     }
@@ -87,7 +97,8 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
       courseDescription != course.courseDescription ||
       lines != course.lines ||
       groups != course.groups ||
-      shortDescription != course.shortDescription
+      shortDescription != course.shortDescription ||
+      linesToDelete.length > 0
     ) {
       setHasHadChanges(true)
     } else {
@@ -149,9 +160,10 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
       </div>
       <GroupsListEditor
         groups={groups}
-        lines={lines.sort((a, b) => a.sortOrder - b.sortOrder)}
+        lines={sortedLines}
         setGroups={setGroups}
-        updateLines={setLines}
+        setLines={setLines}
+        addIdToDelete={(id) => setLinesToDelete([...linesToDelete, id])}
       />
     </div>
   )

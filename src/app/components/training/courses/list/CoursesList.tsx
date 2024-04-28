@@ -13,8 +13,8 @@ import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
 import Spinner from '~/app/components/general/Spinner'
 
+import PremiumSubscribe from '../../../ecomm/PremiumSubscribe'
 import CourseListItem from './CourseListItem'
-import PremiumSubscribe from './PremiumSubscribe'
 
 export type PrismaUserCourse = UserCourse & {
   course: Course
@@ -74,13 +74,49 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
             </Button>
           </Link>
         ) : (
-          <PremiumSubscribe maxCourses={maxCourses} />
+          <PremiumSubscribe
+            title="Create a new course"
+            trigger={
+              <Button variant="primary">
+                Create New Course
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="currentColor"
+                    d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
+                  />
+                </svg>
+              </Button>
+            }
+          >
+            <p>
+              You have reached the maximum number of courses ({maxCourses}) you
+              can create as a free user.
+            </p>
+            <p className="italic">
+              Either delete/archive some of your existing courses or upgrade to
+              premium.
+            </p>
+            <p className="font-bold p-4 rounded bg-green-200">
+              It's only £2.99/month to upgrade to premium!{' '}
+              <StyledLink href="/premium">Learn more.</StyledLink>
+            </p>
+            <p>
+              You get both unlimited tactics sets and openings courses plus a{' '}
+              <strong>5%</strong> discount on all products.
+            </p>
+          </PremiumSubscribe>
         )}
+
         <Link href="/courses">
           <Button variant="secondary">Browse Courses</Button>
         </Link>
         <Link
-          className="text-sm text-purple-700 hover:text-purple-600 underline md:ml-auto"
+          className="text-sm text-purple-700 hover:text-purple-600 dark:text-purple-400 underline md:ml-auto"
           href="/training/courses/archived"
         >
           View archived courses
@@ -117,6 +153,7 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
                 courseId={course.id}
                 courseName={course.course.courseName}
                 update={fetchCourses}
+                hasPremium={hasUnlimitedCourses}
               />
             ))
         ) : (

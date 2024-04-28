@@ -84,9 +84,9 @@ export default function GroupListItem(props: {
             content={
               <div className="flex flex-col gap-2">
                 <p className="text-gray-300">{linesUnseen} lines unseen</p>
-                <p className="text-[#4ade80]">{linesLearned} lines learned</p>
-                <p className="text-[#2563eb]">{linesLearning} lines learning</p>
-                <p className="text-[#ff3030]">{linesHard} lines hard</p>
+                <p className="text-green-500">{linesLearned} lines learned</p>
+                <p className="text-blue-600">{linesLearning} lines learning</p>
+                <p className="text-red-500">{linesHard} lines hard</p>
               </div>
             }
           >

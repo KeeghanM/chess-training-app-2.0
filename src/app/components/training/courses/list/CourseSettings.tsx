@@ -68,7 +68,7 @@ export default function CourseSettings(props: CourseSettingsProps) {
   return (
     <AlertDialog.Root open={open} onOpenChange={setOpen}>
       <AlertDialog.Trigger>
-        <div className="text-white hover:text-orange-500 transition-colors duration-300 group">
+        <div className="text-black dark:text-white hover:text-orange-500 transition-colors duration-300 group">
           {/* Outline Cog */}
           <svg
             xmlns="http://www.w3.org/2000/svg"
