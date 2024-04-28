@@ -46,6 +46,7 @@ export default function ResetButtons({ groups, courseId }: ResetButtonProps) {
         throw new Error('Failed to mark group for review')
       }
       setOpen(false)
+      window.location.reload()
     } catch (e) {
       if (e instanceof Error) setError(e.message)
       else setError('An error occurred')
@@ -75,6 +76,7 @@ export default function ResetButtons({ groups, courseId }: ResetButtonProps) {
       if (data.message !== 'Lines updated') {
         throw new Error('Failed to mark group for review')
       }
+      window.location.reload()
     } catch (e) {
       if (e instanceof Error) setError(e.message)
       else setError('An error occurred')

@@ -193,20 +193,23 @@ export default function CourseListItem(props: {
                       className="text-xs underline hover:no-underline text-purple-700 dark:text-purple-400"
                       href={`/training/courses/${userCourse?.id}/schedule`}
                     >
-                      View revision schedule
+                      Edit revision schedule
                     </Link>
                   ) : (
                     <PremiumSubscribe
                       title="View Revision Schedule"
                       trigger={
                         <p className="text-xs underline hover:no-underline text-purple-700 dark:text-purple-400">
-                          View revision schedule
+                          Edit revision schedule
                         </p>
                       }
                     >
                       <p>
-                        With premium, you can view the revision schedule as well
-                        as set all lines to be revised.
+                        With premium, you can view and edit the revision
+                        schedule, allowing you to bring forward the next review
+                        date for lines you're struggling with. In the future, we
+                        will also be adding the ability to customise the
+                        revision schedule to your liking.
                       </p>
                       <p>
                         This is super useful if you're preparing for a

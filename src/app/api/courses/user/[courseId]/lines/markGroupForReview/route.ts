@@ -20,6 +20,24 @@ export async function POST(
   if (!groupId) return errorResponse('Missing groupId', 400)
 
   try {
+    const minDate = await prisma.userLine.findFirst({
+      where: {
+        userId: user.id,
+        userCourseId: courseId,
+      },
+      orderBy: {
+        revisionDate: 'asc',
+      },
+      select: {
+        revisionDate: true,
+      },
+    })
+
+    // Subtract 1 second from the minDate to ensure that the line is marked for review
+    const adjustedDate = minDate?.revisionDate
+      ? new Date(minDate.revisionDate.getTime() - 1000)
+      : new Date()
+
     await prisma.userLine.updateMany({
       where: {
         userId: user.id,
@@ -27,7 +45,7 @@ export async function POST(
         line: { groupId: groupId },
       },
       data: {
-        revisionDate: new Date(),
+        revisionDate: adjustedDate,
       },
     })
 

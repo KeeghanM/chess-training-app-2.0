@@ -14,10 +14,14 @@ export async function POST(
   if (!user) return errorResponse('Unauthorized', 401)
 
   const { courseId } = params
-  const { lineId } = (await request.json()) as { lineId: number }
+  const { lineId, minDate } = (await request.json()) as {
+    lineId: number
+    minDate: Date
+  }
 
   if (!courseId) return errorResponse('Missing courseId', 400)
   if (lineId === undefined) return errorResponse('Missing lineId', 400)
+  if (!minDate) return errorResponse('Missing minDate', 400)
 
   try {
     await prisma.userLine.update({
@@ -26,7 +30,7 @@ export async function POST(
         id: lineId,
       },
       data: {
-        revisionDate: new Date(),
+        revisionDate: minDate,
       },
     })
 

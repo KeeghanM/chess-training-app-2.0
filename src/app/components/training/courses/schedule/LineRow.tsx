@@ -10,7 +10,7 @@ import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
 import Spinner from '~/app/components/general/Spinner'
 import type { Line as NiceLine } from '~/app/components/training/courses/create/parse/ParsePGNtoLineData'
 
-type ScheduleLine = UserLine & {
+export type ScheduleLine = UserLine & {
   line: Line & {
     group: Group
     moves: Move[]
@@ -20,9 +20,13 @@ type ScheduleLine = UserLine & {
 export default function LineRow({
   line,
   courseId,
+  minDate,
+  onUpdate,
 }: {
   line: ScheduleLine
   courseId: string
+  onUpdate: (id: number) => void
+  minDate: Date
 }) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -38,7 +42,7 @@ export default function LineRow({
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ lineId }),
+          body: JSON.stringify({ lineId, minDate }),
         },
       )
 

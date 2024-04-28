@@ -8,7 +8,10 @@ import * as Sentry from '@sentry/nextjs'
 import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
-import LineRow from '~/app/components/training/courses/schedule/LineRow'
+import PageHeader from '~/app/components/_layouts/pageHeader'
+import { TextWall } from '~/app/components/_layouts/textWall'
+import Info from '~/app/components/training/courses/schedule/Info'
+import LineList from '~/app/components/training/courses/schedule/LineList'
 import ResetButtons from '~/app/components/training/courses/schedule/ResetButtons'
 
 import { getUserServer } from '~/app/_util/getUserServer'
@@ -91,9 +94,17 @@ export default async function CourseSchedulePage({
 
   return (
     <>
-      <div className="dark:bg-slate-800 p-2 md:p-4 lg:px-6">
+      <PageHeader
+        title={`${userCourse.course.courseName}`}
+        subTitle="Revision Schedule"
+        image={{
+          src: '/images/hero.avif',
+          alt: 'Wooden Chess pieces on a chess board',
+        }}
+      />
+      <div className="dark:bg-slate-800">
         <Container>
-          <Heading as="h1">"{userCourse.course.courseName}" Schedule</Heading>
+          <Info />
           <div className="flex flex-col lg:flex-row gap-2 mb-4">
             <ResetButtons groups={uniqueGroups} courseId={userCourse.id} />
             <Link href={`/training/courses/`}>
@@ -102,29 +113,25 @@ export default async function CourseSchedulePage({
               </Button>
             </Link>
           </div>
-          <div className="flex flex-col gap-2">
-            {userLines
-              .sort((a, b) => {
-                if (a.revisionDate || b.revisionDate) {
-                  if (
-                    (a.revisionDate ?? Infinity) < (b.revisionDate ?? Infinity)
-                  )
-                    return -1
-                  if (
-                    (a.revisionDate ?? Infinity) > (b.revisionDate ?? Infinity)
-                  )
-                    return 1
-                }
-                if (a.line.group.sortOrder < b.line.group.sortOrder) return -1
-                if (a.line.group.sortOrder > b.line.group.sortOrder) return 1
-                if (a.line.sortOrder < b.line.sortOrder) return -1
-                if (a.line.sortOrder > b.line.sortOrder) return 1
-                return 0
-              })
-              .map((line) => (
-                <LineRow key={line.id} line={line} courseId={userCourse.id} />
-              ))}
+          <div className="flex flex-col text-black dark:text-white md:flex-row gap-2 md:gap-4 mb-2">
+            <div className="flex gap-1 items-center">
+              <div className="w-4 h-4 bg-gray-300"></div>
+              <p>Unseen</p>
+            </div>
+            <div className="flex gap-1 items-center">
+              <div className="w-4 h-4 bg-green-500"></div>
+              <p>Learned</p>
+            </div>
+            <div className="flex gap-1 items-center">
+              <div className="w-4 h-4 bg-blue-600"></div>
+              <p>Learning</p>
+            </div>
+            <div className="flex gap-1 items-center">
+              <div className="w-4 h-4 bg-red-500"></div>
+              <p>Hard</p>
+            </div>
           </div>
+          <LineList userLines={userLines} courseId={userCourse.id} />
         </Container>
       </div>
     </>
