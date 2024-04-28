@@ -1,16 +1,16 @@
 'use client'
 
-import type { CuratedSet } from '@prisma/client'
-import * as Sentry from '@sentry/react'
 import { useEffect, useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
+import type { CuratedSet } from '@prisma/client'
+import * as Sentry from '@sentry/react'
 
-import GenerateSlug from '~/app/_util/GenerateSlug'
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import Spinner from '~/app/components/general/Spinner'
-import TextEditor from '~/app/components/general/TextEditor'
+import Button from '@/app/components/_elements/button'
+import Spinner from '@/app/components/general/Spinner'
+import TextEditor from '@/app/components/general/TextEditor'
 
+import GenerateSlug from '@/app/_util/GenerateSlug'
 
 export default function SetEditor(props: { set: CuratedSet }) {
   const { set } = props

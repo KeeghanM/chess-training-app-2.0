@@ -1,7 +1,11 @@
 'use client'
 
+import { useRouter } from 'next/navigation'
 
+import { useEffect, useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
+import type { PrismaUserLine } from '@/app/training/courses/[userCourseId]/page'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { Comment, Move, UserFen } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
@@ -9,31 +13,24 @@ import Tippy from '@tippyjs/react'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
 import type { Move as ChessMove } from 'chess.js'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import type { Arrow } from 'react-chessboard/dist/chessboard/types'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 // @ts-expect-error - No types available
 import useSound from 'use-sound'
 
+import ThemeSwitch from '@/app/components//template/header/ThemeSwitch'
+import Button from '@/app/components/_elements/button'
+import Spinner from '@/app/components/general/Spinner'
+import XpTracker from '@/app/components/general/XpTracker'
 
-
+import getArrows from '@/app/_util/StringToArrows'
+import trackEventOnClient from '@/app/_util/trackEventOnClient'
 
 import Heading from '../../_elements/heading'
 import StyledLink from '../../_elements/styledLink'
 import ChessBoard from '../ChessBoard'
-
 import type { PrismaUserCourse } from './list/CoursesList'
-
-import getArrows from '~/app/_util/StringToArrows'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import type { ResponseJson } from '~/app/api/responses'
-import ThemeSwitch from '~/app/components//template/header/ThemeSwitch'
-import Button from '~/app/components/_elements/button'
-import Spinner from '~/app/components/general/Spinner'
-import XpTracker from '~/app/components/general/XpTracker'
-import type { PrismaUserLine } from '~/app/training/courses/[userCourseId]/page'
 
 // TODO: Add delay on wrong move jumping
 // TODO: Modal for confirming exit
@@ -89,7 +86,10 @@ export default function CourseTrainer(props: {
   const [incorrectCounter, setIncorrectCounter] = useState(0)
 
   // Tracking/Stats State
-  interface trainingFen { fen: string; commentId?: number }
+  interface trainingFen {
+    fen: string
+    commentId?: number
+  }
   const [existingFens, setExistingFens] = useState<trainingFen[]>(
     props.userFens.map((fen) => {
       return { fen: fen.fen, commentId: fen.commentId ?? undefined }
@@ -561,7 +561,7 @@ export default function CourseTrainer(props: {
 
     return nextLine ? (
       <button
-        key={`${index  }_pgn`}
+        key={`${index}_pgn`}
         className="h-max max-h-fit bg-none px-1 py-1 hover:bg-purple-800"
         onClick={() => {
           const newGame = new Chess()
@@ -575,7 +575,7 @@ export default function CourseTrainer(props: {
         <FlexText />
       </button>
     ) : (
-      <div key={`${index  }_pgn`} className="px-1 py-1">
+      <div key={`${index}_pgn`} className="px-1 py-1">
         <FlexText />
       </div>
     )
@@ -709,9 +709,11 @@ export default function CourseTrainer(props: {
     </div>
   ) : (
     <div className="relative border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
-      {loading ? <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
+      {loading ? (
+        <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
           <Spinner />
-        </div> : null}
+        </div>
+      ) : null}
       <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
         <div className="flex flex-col gap-2">
           <p className="font-bold">{currentLine?.line.group.groupName}</p>
@@ -838,7 +840,8 @@ export default function CourseTrainer(props: {
           <XpTracker counter={xpCounter} type="line" />
         </div>
         <div className="flex flex-col gap-2 flex-1 p-2">
-          {showComment ? <p
+          {showComment ? (
+            <p
               className=" p-2 bg-purple-900 overflow-y-auto text-sm"
               style={{
                 maxHeight:
@@ -847,7 +850,8 @@ export default function CourseTrainer(props: {
               }}
             >
               {currentMove?.comment?.comment}
-            </p> : null}
+            </p>
+          ) : null}
           <div
             className="flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white flex-1 overflow-y-auto"
             style={{
@@ -869,10 +873,13 @@ export default function CourseTrainer(props: {
             />
             <span>Auto Next on correct</span>
           </label>
-          {teaching ? <Button variant="primary" onClick={resetTeachingMove}>
+          {teaching ? (
+            <Button variant="primary" onClick={resetTeachingMove}>
               Got it!
-            </Button> : null}
-          {nextLine && !autoNext ? <Button
+            </Button>
+          ) : null}
+          {nextLine && !autoNext ? (
+            <Button
               disabled={status == 'loading'}
               variant="primary"
               onClick={async () => {
@@ -880,7 +887,8 @@ export default function CourseTrainer(props: {
               }}
             >
               Next Line {status == 'loading' && <Spinner />}
-            </Button> : null}
+            </Button>
+          ) : null}
           <Button
             variant="danger"
             onClick={() => router.push('/training/courses/')}

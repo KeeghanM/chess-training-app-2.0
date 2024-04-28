@@ -1,6 +1,6 @@
 import Image from 'next/image'
 
-import Heading from '~/app/components/_elements/heading'
+import Heading from '@/app/components/_elements/heading'
 
 interface PageHeaderProps {
   title: string
@@ -26,9 +26,11 @@ export default function PageHeader(props: PageHeaderProps) {
         <Heading as="h1" color="text-white">
           {props.title}
         </Heading>
-        {props.subTitle ? <Heading as="h2" bold={false} color="text-orange-500">
+        {props.subTitle ? (
+          <Heading as="h2" bold={false} color="text-orange-500">
             {props.subTitle}
-          </Heading> : null}
+          </Heading>
+        ) : null}
       </div>
     </div>
   )

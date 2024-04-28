@@ -1,7 +1,5 @@
+import { prisma } from '@/server/db'
 import * as Sentry from '@sentry/nextjs'
-
-import { prisma } from '~/server/db'
-
 
 export async function AddCourseToUser(courseId: string, userId: string) {
   if (!userId) return false

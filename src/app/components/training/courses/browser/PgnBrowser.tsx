@@ -1,6 +1,6 @@
 'use client'
 
-import type { Move, PGN } from '~/app/_util/BuildPgn'
+import type { Move, PGN } from '@/app/_util/BuildPgn'
 
 interface PgnBrowserProps {
   pgn: PGN
@@ -30,12 +30,10 @@ export default function PgnBrowser(props: PgnBrowserProps) {
     return (
       <>
         <span
-          key={move.number.toString() + move.colour ? 'w' : `b${  move.notation}`}
-          className={
-            `cursor-pointer hover:bg-purple-800 hover:bg-opacity-50${ 
-            mainLine ? ' border border-black px-1 py-0.5' : '' 
-            }${isCurrentMove(move) ? ' !bg-orange-500' : ''}`
-          }
+          key={move.number.toString() + move.colour ? 'w' : `b${move.notation}`}
+          className={`cursor-pointer hover:bg-purple-800 hover:bg-opacity-50${
+            mainLine ? ' border border-black px-1 py-0.5' : ''
+          }${isCurrentMove(move) ? ' !bg-orange-500' : ''}`}
           onClick={() => {
             moveSelected(move)
           }}
@@ -53,13 +51,19 @@ export default function PgnBrowser(props: PgnBrowserProps) {
             )}
           </span>
         </span>
-        {move.comment && mainLine ? <>
-            {move.colour ? <div className="flex items-center justify-center">...</div> : null}
+        {move.comment && mainLine ? (
+          <>
+            {move.colour ? (
+              <div className="flex items-center justify-center">...</div>
+            ) : null}
             <span className="text-xs col-span-2 bg-gray-200 text-black italic p-1">
               {move.comment}
             </span>
-            {move.colour ? <div className="flex items-center justify-center">...</div> : null}
-          </> : null}
+            {move.colour ? (
+              <div className="flex items-center justify-center">...</div>
+            ) : null}
+          </>
+        ) : null}
         {move.variations.map((variation) => (
           <Variation moves={variation} />
         ))}

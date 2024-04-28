@@ -1,16 +1,20 @@
-import { type ContentRelationshipField, asText } from '@prismicio/client'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { PrismicRichToHtml } from '~/app/_util/PrismicRichToHtml'
-import type { RichTextContent } from '~/app/_util/PrismicRichToHtml'
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
-import CtaRow from '~/app/components/_layouts/ctaRow'
-import Prismic from '~/prismicio'
+import Prismic from '@/prismicio'
+import { type ContentRelationshipField, asText } from '@prismicio/client'
 
-interface Params { uid: string }
+import Container from '@/app/components/_elements/container'
+import Heading from '@/app/components/_elements/heading'
+import CtaRow from '@/app/components/_layouts/ctaRow'
+
+import { PrismicRichToHtml } from '@/app/_util/PrismicRichToHtml'
+import type { RichTextContent } from '@/app/_util/PrismicRichToHtml'
+
+interface Params {
+  uid: string
+}
 
 export default async function Page({ params }: { params: Params }) {
   const page = await Prismic.getByUID('article', params.uid, {
@@ -69,7 +73,9 @@ export default async function Page({ params }: { params: Params }) {
             </p>
           </div>
         </div>
-        {page.data.introduction[0] ? PrismicRichToHtml(page.data.introduction[0] as RichTextContent) : null}
+        {page.data.introduction[0]
+          ? PrismicRichToHtml(page.data.introduction[0] as RichTextContent)
+          : null}
         <article className="leading-7">
           {page.data.slices[0].primary.content.map((c: RichTextContent) =>
             PrismicRichToHtml(c),
@@ -104,7 +110,7 @@ export default async function Page({ params }: { params: Params }) {
                 `,
           }}
           type="application/ld+json"
-         />
+        />
       </Container>
       <CtaRow
         background="dark"

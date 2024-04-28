@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
-import Button from '~/app/components/_elements/button'
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
+import Button from '@/app/components/_elements/button'
+import Container from '@/app/components/_elements/container'
+import Heading from '@/app/components/_elements/heading'
 
 interface CtaRowProps {
   title: string
@@ -31,9 +31,11 @@ export default function CtaRow(props: CtaRowProps) {
             <Link href={props.cta.link}>
               <Button variant="primary">{props.cta.text}</Button>
             </Link>
-            {props.secondary ? <Link href={props.secondary.link}>
+            {props.secondary ? (
+              <Link href={props.secondary.link}>
                 <Button variant="secondary">{props.secondary.text}</Button>
-              </Link> : null}
+              </Link>
+            ) : null}
           </div>
         </div>
       </Container>

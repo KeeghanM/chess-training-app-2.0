@@ -1,16 +1,18 @@
 'use client'
 
-import * as Sentry from '@sentry/nextjs'
 import { useState } from 'react'
+
+import type { ResponseJson } from '@/app/api/responses'
+import * as Sentry from '@sentry/nextjs'
+
+import Button from '@/app/components/_elements/button'
+import Heading from '@/app/components/_elements/heading'
 
 import {
   MiscBadges,
   StreakBadges,
   TacticStreakBadges,
-} from '~/app/_util/RanksAndBadges'
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
+} from '@/app/_util/RanksAndBadges'
 
 export default function BadgeCreator() {
   const [open, setOpen] = useState(false)
@@ -46,8 +48,10 @@ export default function BadgeCreator() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError('')
-    if (!name || !description || !category)
-      { setError('All fields are required'); return; }
+    if (!name || !description || !category) {
+      setError('All fields are required')
+      return
+    }
 
     const newBadge = await createBadge(name, description, category)
     if (newBadge) {
@@ -141,7 +145,8 @@ export default function BadgeCreator() {
         <Button variant="danger" onClick={() => setOpen(!open)}>
           Load Code Badges
         </Button>
-        {open ? <>
+        {open ? (
+          <>
             <p className="text-red-500">
               This will load in all badges that are stored in arrays in code. DO
               NOT USE UNLESS YOU KNOW WHAT YOURE DOING.
@@ -149,7 +154,8 @@ export default function BadgeCreator() {
             <Button variant="warning" onClick={loadCodeBadges}>
               Create Code Badges
             </Button>
-          </> : null}
+          </>
+        ) : null}
       </div>
     </div>
   )

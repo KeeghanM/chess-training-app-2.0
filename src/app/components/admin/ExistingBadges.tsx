@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect, useState } from 'react'
 
 import type { DragEndEvent } from '@dnd-kit/core'
 import {
@@ -18,11 +19,10 @@ import {
 } from '@dnd-kit/sortable'
 import type { Badge } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
-import { useEffect, useState } from 'react'
 
+import Heading from '@/app/components/_elements/heading'
 
-import SortableItem from '~/app/_util/SortableItem'
-import Heading from '~/app/components/_elements/heading'
+import SortableItem from '@/app/_util/SortableItem'
 
 export default function ExistingBadges(props: { existingBadges: Badge[] }) {
   const [existingBadges, setExistingBadges] = useState(props.existingBadges)

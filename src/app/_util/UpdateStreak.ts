@@ -1,10 +1,9 @@
-
+import { prisma } from '@/server/db'
 import * as Sentry from '@sentry/nextjs'
 
-import { AddBadgeToUser } from './AddBadge'
+import { StreakBadges } from '@/app/_util/RanksAndBadges'
 
-import { StreakBadges } from '~/app/_util/RanksAndBadges'
-import { prisma } from '~/server/db'
+import { AddBadgeToUser } from './AddBadge'
 
 export async function UpdateStreak(userId: string) {
   if (!userId) return
@@ -57,8 +56,6 @@ export async function UpdateStreak(userId: string) {
       // Add the badge to the user
       await AddBadgeToUser(userId, badge.name)
     }
-
-    
   } catch (e) {
     Sentry.captureException(e)
   } finally {

@@ -1,16 +1,15 @@
-import { useAutoAnimate } from '@formkit/auto-animate/react'
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import { useState } from 'react'
 
+import { useAutoAnimate } from '@formkit/auto-animate/react'
+import * as AlertDialog from '@radix-ui/react-alert-dialog'
+
+import Button from '@/app/components/_elements/button'
+import Heading from '@/app/components/_elements/heading'
+import PrettyPrintLine from '@/app/components/general/PrettyPrintLine'
+
+import trackEventOnClient from '@/app/_util/trackEventOnClient'
 
 import type { Line } from './parse/ParsePGNtoLineData'
-
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
-import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
-
-
 
 // TODO: Add informational lines
 // TODO: Add priority lines
@@ -71,7 +70,8 @@ export const GroupItem = (props: {
         </div>
       </div>
 
-      {setAllOpen ? <div className="fixed inset-0 z-[99999] grid place-items-center bg-[rgba(0,0,0,0.3)]">
+      {setAllOpen ? (
+        <div className="fixed inset-0 z-[99999] grid place-items-center bg-[rgba(0,0,0,0.3)]">
           <div
             className="absolute inset-0"
             onClick={() => setSetAllOpen(false)}
@@ -108,9 +108,11 @@ export const GroupItem = (props: {
               </Button>
             </div>
           </div>
-        </div> : null}
+        </div>
+      ) : null}
 
-      {open ? <div className="flex flex-col gap-2">
+      {open ? (
+        <div className="flex flex-col gap-2">
           {lines
             .filter((line) => line.tags[selectedGroup] === groupKey)
             .map((line) => {
@@ -184,7 +186,8 @@ export const GroupItem = (props: {
                 </div>
               )
             })}
-        </div> : null}
+        </div>
+      ) : null}
     </div>
   )
 }

@@ -82,6 +82,5 @@
       "tailwindcss": {},
       "autoprefixer": {}
     }
-  },
-  "prettier": "prettier.config.mjs"
+  }
 }

@@ -1,14 +1,16 @@
 'use client'
 
-import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs'
-import Tippy from '@tippyjs/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
+
 import { useState } from 'react'
+
+import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs'
+import Tippy from '@tippyjs/react'
+import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
 import 'tippy.js/dist/tippy.css'
 
-import CalculateXpRank from '~/app/_util/CalculateXpRank'
+import CalculateXpRank from '@/app/_util/CalculateXpRank'
 
 export default function Nav(props: {
   user: KindeUser | null
@@ -91,7 +93,8 @@ export default function Nav(props: {
           </div>
         </Link>
         <div className="relative flex items-center space-x-3 lg:order-2 lg:space-x-0">
-          {user ? <>
+          {user ? (
+            <>
               <Tippy content="Your Profile">
                 <button
                   className="flex overflow-hidden rounded-full text-sm focus:ring-4 focus:ring-gray-600 lg:me-0"
@@ -118,11 +121,12 @@ export default function Nav(props: {
                   </svg>
                 </button>
               </Tippy>
-              {userOpen ? <>
+              {userOpen ? (
+                <>
                   <div
                     className="fixed inset-0 z-10"
                     onClick={() => setUserOpen(false)}
-                   />
+                  />
                   <div className="absolute right-0 top-8 z-50 my-4 list-none divide-y divide-gray-600 bg-slate-700 text-base shadow-lg border-b-4 border-purple-700">
                     <div className="px-4 py-3">
                       <span className="block text-sm  text-white">
@@ -165,8 +169,10 @@ export default function Nav(props: {
                       </li>
                     </ul>
                   </div>
-                </> : null}
-            </> : null}
+                </>
+              ) : null}
+            </>
+          ) : null}
 
           <button
             className="inline-flex h-10 w-10 p-2 items-center justify-center text-sm text-white hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-gray-200 lg:hidden"
@@ -191,23 +197,24 @@ export default function Nav(props: {
             </svg>
           </button>
         </div>
-        {menuOpen ? <div
+        {menuOpen ? (
+          <div
             className="fixed inset-0 z-10 bg-[rgba(0,0,0,0.3)]"
             onClick={() => setMenuOpen(false)}
-           /> : null}
+          />
+        ) : null}
         <nav
-          className={
-            `${menuOpen
+          className={`${
+            menuOpen
               ? 'absolute left-0 right-0 top-[100px] z-50 mx-auto w-screen max-w-screen-sm px-2 shadow-lg lg:p-0'
-              : 'hidden' 
-            } items-center justify-between lg:order-1 lg:ml-auto lg:flex lg:w-auto `
-          }
+              : 'hidden'
+          } items-center justify-between lg:order-1 lg:ml-auto lg:flex lg:w-auto `}
         >
           {openSub != '' && (
             <div
               className="fixed inset-0 z-10 hidden lg:block"
               onClick={() => setOpenSub('')}
-             />
+            />
           )}
           <ul className="relative mt-4 flex flex-col divide-y divide-gray-600 border border-gray-100 bg-gray-50 p-4 font-medium rtl:space-x-reverse lg:mt-0 lg:flex-row lg:items-center lg:divide-none lg:border-0 lg:bg-transparent lg:p-0">
             {links.map((link) =>
@@ -237,12 +244,11 @@ export default function Nav(props: {
                     </svg>
                   </button>
                   <div
-                    className={
-                      `z-50 w-full divide-y divide-gray-600 bg-gray-50 font-normal lg:w-44 lg:shadow ${ 
+                    className={`z-50 w-full divide-y divide-gray-600 bg-gray-50 font-normal lg:w-44 lg:shadow ${
                       openSub === link.name
                         ? 'block lg:absolute lg:top-10'
-                        : 'hidden'}`
-                    }
+                        : 'hidden'
+                    }`}
                   >
                     <ul className="w-full divide-y divide-gray-300 py-2 text-sm text-gray-700">
                       {link.subLinks.map((subLink) => (

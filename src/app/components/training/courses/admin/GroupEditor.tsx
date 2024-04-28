@@ -1,5 +1,6 @@
 'use client'
 
+import { useMemo, useState } from 'react'
 
 import {
   DndContext,
@@ -16,12 +17,10 @@ import {
 } from '@dnd-kit/sortable'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import type { Group, Line, Move } from '@prisma/client'
-import { useMemo, useState } from 'react'
 
+import SortableItem from '@/app/_util/SortableItem'
 
 import LineDisplay from './LineDisplay'
-
-import SortableItem from '~/app/_util/SortableItem'
 
 export type LineWithMoves = Line & { moves: Move[] }
 
@@ -98,10 +97,9 @@ export default function GroupEditor(props: {
           viewBox="0 0 32 32"
           width="32"
           xmlns="http://www.w3.org/2000/svg"
-          className={
-            `${open ? '-rotate-180' : '-rotate-90' 
-            } transition-all duration-200 cursor-pointer hover:text-orange-500 z-10`
-          }
+          className={`${
+            open ? '-rotate-180' : '-rotate-90'
+          } transition-all duration-200 cursor-pointer hover:text-orange-500 z-10`}
           onClick={() => setOpen(!open)}
         >
           <path
@@ -110,7 +108,8 @@ export default function GroupEditor(props: {
           />
         </svg>
       </div>
-      {open ? <DndContext
+      {open ? (
+        <DndContext
           collisionDetection={closestCenter}
           sensors={sensors}
           onDragEnd={handleDragEnd}
@@ -135,7 +134,8 @@ export default function GroupEditor(props: {
               </SortableItem>
             ))}
           </SortableContext>
-        </DndContext> : null}
+        </DndContext>
+      ) : null}
     </div>
   )
 }

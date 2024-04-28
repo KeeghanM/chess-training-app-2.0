@@ -1,8 +1,6 @@
-
+import { errorResponse, successResponse } from '@/app/api/responses'
+import { prisma } from '@/server/db'
 import * as Sentry from '@sentry/nextjs'
-
-import { errorResponse, successResponse } from '~/app/api/responses'
-import { prisma } from '~/server/db'
 
 export async function POST(request: Request) {
   const { name } = (await request.json()) as { name: string }

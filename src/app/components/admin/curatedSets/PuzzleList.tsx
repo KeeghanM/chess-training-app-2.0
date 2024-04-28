@@ -1,15 +1,12 @@
 'use client'
 
-
-import * as Sentry from '@sentry/react'
 import { useEffect, useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
+import * as Sentry from '@sentry/react'
 
 import Spinner from '../../general/Spinner'
-
 import type { CuratedSetPuzzle } from './CuratedSetsBrowser'
-
-import type { ResponseJson } from '~/app/api/responses'
 
 export default function PuzzleList(props: {
   setId: string
@@ -59,10 +56,9 @@ export default function PuzzleList(props: {
             .map((puzzle) => (
               <li
                 key={puzzle.puzzleid}
-                className={
-                  `cursor-pointer bg-gray-50 border-b border-slate-500 hover:bg-orange-200 p-2 text-sm${ 
-                  props.selectedId == puzzle.puzzleid ? ' bg-purple-200' : ''}`
-                }
+                className={`cursor-pointer bg-gray-50 border-b border-slate-500 hover:bg-orange-200 p-2 text-sm${
+                  props.selectedId == puzzle.puzzleid ? ' bg-purple-200' : ''
+                }`}
                 onClick={() => props.selectPuzzle(puzzle)}
               >
                 {puzzle.puzzleid} ({puzzle.rating} - {puzzle.moves.length}{' '}

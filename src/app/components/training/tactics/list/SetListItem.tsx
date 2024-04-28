@@ -1,21 +1,21 @@
 'use client'
 
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import { useRouter } from 'next/navigation'
+
 import { useEffect, useState } from 'react'
 
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+
+import Button from '@/app/components/_elements/button'
+import Spinner from '@/app/components/general/Spinner'
+import TimeSince from '@/app/components/general/TimeSince'
+import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator'
+
+import toHHMMSS from '@/app/_util/toHHMMSS'
+import trackEventOnClient from '@/app/_util/trackEventOnClient'
 
 import SetListEdit from './SetListEdit'
 import SetListStats from './SetListStats'
-
-import toHHMMSS from '~/app/_util/toHHMMSS'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import Button from '~/app/components/_elements/button'
-import Spinner from '~/app/components/general/Spinner'
-import TimeSince from '~/app/components/general/TimeSince'
-import type { PrismaTacticsSet } from '~/app/components/training/tactics/create/TacticsSetCreator'
-
-
 
 export default function SetListItem(props: {
   set: PrismaTacticsSet
@@ -99,12 +99,14 @@ export default function SetListItem(props: {
             </p>
             <p>{toHHMMSS(currentRound?.timeSpent ?? 0)}</p>
           </div>
-          {set.rating ? <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+          {set.rating ? (
+            <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
               <p className="font-bold py-1 px-2 border-b border-gray-300 dark:border-slate-600">
                 Rating
               </p>
               <p>{set.rating}</p>
-            </div> : null}
+            </div>
+          ) : null}
         </div>
         <div className="flex flex-col gap-2 md:flex-row md:justify-center">
           <Button

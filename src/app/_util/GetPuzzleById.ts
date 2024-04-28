@@ -1,8 +1,7 @@
-
+import { prisma } from '@/server/db'
 import * as Sentry from '@sentry/nextjs'
 
-import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
-import { prisma } from '~/server/db'
+import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer'
 
 export default async function getPuzzleById(puzzleid: string) {
   let puzzle: TrainingPuzzle | undefined
@@ -31,7 +30,7 @@ export default async function getPuzzleById(puzzleid: string) {
       const params = { id: puzzleid }
       const paramsString = new URLSearchParams(params).toString()
       const resp = await fetch(
-        `https://chess-puzzles.p.rapidapi.com/?${  paramsString}`,
+        `https://chess-puzzles.p.rapidapi.com/?${paramsString}`,
         {
           method: 'GET',
           headers: {

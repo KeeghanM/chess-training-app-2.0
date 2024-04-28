@@ -1,18 +1,18 @@
 'use client'
 
+import Link from 'next/link'
 
+import { useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { UserProfile } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
-import Link from 'next/link'
-import { useState } from 'react'
 
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
-import Spinner from '~/app/components/general/Spinner'
+import Button from '@/app/components/_elements/button'
+import Heading from '@/app/components/_elements/heading'
+import Spinner from '@/app/components/general/Spinner'
 
 export default function AccountForm(props: { profile: UserProfile }) {
   const { user } = useKindeBrowserClient()
@@ -50,25 +50,46 @@ export default function AccountForm(props: { profile: UserProfile }) {
     setError('')
     setSuccess(false)
 
-    if (!username) { setError('Username is required'); return; }
-    if (username.includes('@'))
-      { setError('Username cannot contain the "@" symbol'); return; }
-    if (fullname.length > 0 && fullname.length > 150)
-      { setError('Full name must be less than 150 characters'); return; }
-    if (description && description.length > 1000)
-      { setError('Bio must be less than 1000 characters'); return; }
-    if (highestOnlineRating && highestOnlineRating < 100)
-      { setError('Highest online rating must be at least 100'); return; }
-    if (highestOnlineRating && highestOnlineRating > 3500)
-      { setError('Highest online rating must be at most 3500'); return; }
-    if (highestOTBRating && highestOTBRating < 100)
-      { setError('Highest OTB rating must be at least 100'); return; }
-    if (highestOTBRating && highestOTBRating > 3500)
-      { setError('Highest OTB rating must be at most 3500'); return; }
-    if (!puzzleRating || puzzleRating < 500)
-      { setError('Puzzle rating must be at least 500'); return; }
-    if (puzzleRating > 3500)
-      { setError('Puzzle rating must be at most 3500'); return; }
+    if (!username) {
+      setError('Username is required')
+      return
+    }
+    if (username.includes('@')) {
+      setError('Username cannot contain the "@" symbol')
+      return
+    }
+    if (fullname.length > 0 && fullname.length > 150) {
+      setError('Full name must be less than 150 characters')
+      return
+    }
+    if (description && description.length > 1000) {
+      setError('Bio must be less than 1000 characters')
+      return
+    }
+    if (highestOnlineRating && highestOnlineRating < 100) {
+      setError('Highest online rating must be at least 100')
+      return
+    }
+    if (highestOnlineRating && highestOnlineRating > 3500) {
+      setError('Highest online rating must be at most 3500')
+      return
+    }
+    if (highestOTBRating && highestOTBRating < 100) {
+      setError('Highest OTB rating must be at least 100')
+      return
+    }
+    if (highestOTBRating && highestOTBRating > 3500) {
+      setError('Highest OTB rating must be at most 3500')
+      return
+    }
+    if (!puzzleRating || puzzleRating < 500) {
+      setError('Puzzle rating must be at least 500')
+      return
+    }
+    if (puzzleRating > 3500) {
+      setError('Puzzle rating must be at most 3500')
+      return
+    }
 
     try {
       const res = await fetch('/api/profile', {
@@ -262,9 +283,11 @@ export default function AccountForm(props: { profile: UserProfile }) {
             'Save'
           )}
         </Button>
-        {error ? <div className="bg-red-400 p-2 text-sm italic text-black">
+        {error ? (
+          <div className="bg-red-400 p-2 text-sm italic text-black">
             {error}
-          </div> : null}
+          </div>
+        ) : null}
       </form>
     </div>
   )

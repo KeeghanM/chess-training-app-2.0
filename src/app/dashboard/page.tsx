@@ -1,23 +1,21 @@
-
-
-import { Tour } from '@frigade/react'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 
+import { prisma } from '@/server/db'
+import { Tour } from '@frigade/react'
+
+import PremiumDisplay from '../components/dashboard/PremiumDisplay'
+import Container from '@/app/components/_elements/container'
+import Heading from '@/app/components/_elements/heading'
+import StreakDisplay from '@/app/components/dashboard/StreakDisplay'
+import ToolGrid from '@/app/components/dashboard/ToolGrid'
+import XpDisplay from '@/app/components/dashboard/XpDisplay'
+import ThemeSwitch from '@/app/components/template/header/ThemeSwitch'
 
 import CalculateStreakBadge from '../_util/CalculateStreakBadge'
 import CalculateXpRank from '../_util/CalculateXpRank'
 import { getUserServer } from '../_util/getUserServer'
-import PremiumDisplay from '../components/dashboard/PremiumDisplay'
-
-import { PostHogClient } from '~/app/_util/trackEventOnServer'
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
-import StreakDisplay from '~/app/components/dashboard/StreakDisplay'
-import ToolGrid from '~/app/components/dashboard/ToolGrid'
-import XpDisplay from '~/app/components/dashboard/XpDisplay'
-import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
-import { prisma } from '~/server/db'
+import { PostHogClient } from '@/app/_util/trackEventOnServer'
 
 export interface Tool {
   name: string
@@ -224,7 +222,8 @@ export default async function Dashboard() {
               <ToolGrid key={tool.name} tool={tool} />
             ))}
         </div>
-        {isStaff ? <div>
+        {isStaff ? (
+          <div>
             <Heading as="h2" color="text-purple-700">
               Staff Tools
             </Heading>
@@ -233,7 +232,8 @@ export default async function Dashboard() {
                 <ToolGrid key={tool.name} tool={tool} />
               ))}
             </div>
-          </div> : null}
+          </div>
+        ) : null}
       </div>
     </>
   )

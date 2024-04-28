@@ -1,7 +1,7 @@
-
-
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import Link from 'next/link'
+
+import { prisma } from '@/server/db'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 
 import Button from '../components/_elements/button'
 import Container from '../components/_elements/container'
@@ -9,9 +9,7 @@ import StyledLink from '../components/_elements/styledLink'
 import BigText from '../components/_layouts/bigText'
 import PageHeader from '../components/_layouts/pageHeader'
 import GetCourse from '../components/ecomm/GetCourse'
-
-import Heading from '~/app/components/_elements/heading'
-import { prisma } from '~/server/db'
+import Heading from '@/app/components/_elements/heading'
 
 export const metadata = {
   title:
@@ -48,7 +46,7 @@ export default async function Courses() {
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
         }}
-       />
+      />
       <BigText color="secondary" size="small">
         Learn about Natural Play Learning, our innovative chess training method{' '}
         <StyledLink href="/about/features/natural-play-learning">

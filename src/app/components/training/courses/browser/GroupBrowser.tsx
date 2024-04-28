@@ -1,18 +1,17 @@
 'use client'
 
-import { Chess } from 'chess.js'
 import { useEffect, useState } from 'react'
+
+import { Chess } from 'chess.js'
 import type { Arrow } from 'react-chessboard/dist/chessboard/types'
 
-import ChessBoard from '../../ChessBoard'
+import type { Move } from '@/app/_util/BuildPgn'
+import BuildPGN from '@/app/_util/BuildPgn'
+import getArrows from '@/app/_util/StringToArrows'
 
+import ChessBoard from '../../ChessBoard'
 import type { UserLineWithData } from './CourseBrowser'
 import PgnBrowser from './PgnBrowser'
-
-import type { Move } from '~/app/_util/BuildPgn'
-import BuildPGN from '~/app/_util/BuildPgn'
-import getArrows from '~/app/_util/StringToArrows'
-
 
 export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
   const pgn = BuildPGN(

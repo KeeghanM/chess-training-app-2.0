@@ -1,14 +1,12 @@
-
-import { asHTML, asText } from '@prismicio/client'
-import type { ContentRelationshipField } from '@prismicio/client'
 import Link from 'next/link'
 
+import Prismic from '@/prismicio'
+import { asHTML, asText } from '@prismicio/client'
+import type { ContentRelationshipField } from '@prismicio/client'
 
 import Button from '../components/_elements/button'
 import Container from '../components/_elements/container'
 import Heading from '../components/_elements/heading'
-
-import Prismic from '~/prismicio'
 
 export const metadata = {
   title: 'Read the latest Articles on Chess Improvement',
@@ -82,7 +80,7 @@ export default async function ArticlesPage() {
                 `,
                   }}
                   type="application/ld+json"
-                 />
+                />
                 <div className="px-2 py-1 border-b border-gray-300 font-bold text-orange-500">
                   <Link
                     className="hover:underline"

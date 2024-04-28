@@ -1,20 +1,19 @@
 'use client'
 
-import { useAutoAnimate } from '@formkit/auto-animate/react'
-import * as Tabs from '@radix-ui/react-tabs'
 import { useEffect, useState } from 'react'
 
+import { useAutoAnimate } from '@formkit/auto-animate/react'
+import * as Tabs from '@radix-ui/react-tabs'
+
+import Button from '@/app/components/_elements/button'
+import Container from '@/app/components/_elements/container'
+import Heading from '@/app/components/_elements/heading'
+import Spinner from '@/app/components/general/Spinner'
+
+import trackEventOnClient from '@/app/_util/trackEventOnClient'
 
 import { GroupItem } from './GroupItem'
 import type { Line } from './parse/ParsePGNtoLineData'
-
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import Button from '~/app/components/_elements/button'
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
-import Spinner from '~/app/components/general/Spinner'
-
-
 
 export default function GroupSelector(props: {
   lines: Line[]
@@ -80,24 +79,22 @@ export default function GroupSelector(props: {
     if (!selectedGroup) return
 
     setGroupedLineCounts(
-      lines.reduce<Record<string, number>>(
-        (prev, curr) => {
-          const tag = curr.tags[selectedGroup]!
-          if (prev[tag]) {
-            prev[tag]++
-          } else {
-            prev[tag] = 1
-          }
-          return prev
-        },
-        {},
-      ),
+      lines.reduce<Record<string, number>>((prev, curr) => {
+        const tag = curr.tags[selectedGroup]!
+        if (prev[tag]) {
+          prev[tag]++
+        } else {
+          prev[tag] = 1
+        }
+        return prev
+      }, {}),
     )
   }, [selectedGroup, lines])
 
   return (
     <Container>
-      {needsPrompt && !hasPrompted ? <div className="fixed inset-0 z-[99999] grid place-items-center bg-[rgba(0,0,0,0.3)]">
+      {needsPrompt && !hasPrompted ? (
+        <div className="fixed inset-0 z-[99999] grid place-items-center bg-[rgba(0,0,0,0.3)]">
           <div
             className="absolute inset-0"
             onClick={() => setHasPrompted(true)}
@@ -129,7 +126,8 @@ export default function GroupSelector(props: {
               Okay, got it!
             </Button>
           </div>
-        </div> : null}
+        </div>
+      ) : null}
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
@@ -174,12 +172,11 @@ export default function GroupSelector(props: {
                 <Tabs.Trigger
                   key={group}
                   value={group}
-                  className={
-                    `border-b-2 px-2 py-1 hover:border-purple-700 hover:bg-purple-200 md:px-4 md:py-2 ${ 
+                  className={`border-b-2 px-2 py-1 hover:border-purple-700 hover:bg-purple-200 md:px-4 md:py-2 ${
                     selectedGroup === group
                       ? 'border-purple-700 bg-purple-100'
-                      : 'border-gray-300 dark:bg-slate-700 dark:text-white'}`
-                  }
+                      : 'border-gray-300 dark:bg-slate-700 dark:text-white'
+                  }`}
                 >
                   {group}
                 </Tabs.Trigger>

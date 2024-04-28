@@ -1,11 +1,11 @@
-
+import { errorResponse, successResponse } from '@/app/api/responses'
+import { prisma } from '@/server/db'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 
-import { UpdateStreak } from '~/app/_util/UpdateStreak'
-import { errorResponse, successResponse } from '~/app/api/responses'
-import type { availableTypes } from '~/app/components/general/XpTracker'
-import { prisma } from '~/server/db'
+import type { availableTypes } from '@/app/components/general/XpTracker'
+
+import { UpdateStreak } from '@/app/_util/UpdateStreak'
 
 export async function PUT(request: Request) {
   const session = getKindeServerSession(request)

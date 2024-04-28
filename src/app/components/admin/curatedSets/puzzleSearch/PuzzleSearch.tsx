@@ -2,15 +2,13 @@
 
 import { useEffect, useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
 
+import Spinner from '@/app/components/general/Spinner'
 
 import type { CuratedSetPuzzle } from '../CuratedSetsBrowser'
-
 import CreateCustom from './CreateCustom'
 import LiChessSearch from './LiChessSearch'
-
-import type { ResponseJson } from '~/app/api/responses'
-import Spinner from '~/app/components/general/Spinner'
 
 export default function PuzzleSearch(props: {
   setPuzzle: (puzzle: CuratedSetPuzzle) => void
@@ -41,23 +39,21 @@ export default function PuzzleSearch(props: {
     <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white max-h-[70vh]">
       <div className="flex items-center justify-around text-sm">
         <p
-          className={
-            `font-bold text-white px-4 py-1 ${ 
+          className={`font-bold text-white px-4 py-1 ${
             mode === 'LiChess'
               ? 'bg-green-500'
-              : 'bg-gray-700 hover:bg-purple-600 cursor-pointer'}`
-          }
+              : 'bg-gray-700 hover:bg-purple-600 cursor-pointer'
+          }`}
           onClick={() => setMode('LiChess')}
         >
           LiChess
         </p>
         <p
-          className={
-            `font-bold text-white px-4 py-1 ${ 
+          className={`font-bold text-white px-4 py-1 ${
             mode === 'Custom'
               ? 'bg-green-500'
-              : 'bg-gray-700 hover:bg-purple-600 cursor-pointer'}`
-          }
+              : 'bg-gray-700 hover:bg-purple-600 cursor-pointer'
+          }`}
           onClick={() => setMode('Custom')}
         >
           Custom
@@ -75,12 +71,11 @@ export default function PuzzleSearch(props: {
               {puzzles.map((puzzle) => (
                 <li
                   key={puzzle.puzzleid}
-                  className={
-                    `cursor-pointer bg-gray-50 border-b border-slate-500 hover:bg-orange-200 p-2 text-sm${ 
+                  className={`cursor-pointer bg-gray-50 border-b border-slate-500 hover:bg-orange-200 p-2 text-sm${
                     selectedPuzzle?.puzzleid == puzzle.puzzleid
                       ? ' bg-purple-200'
-                      : ''}`
-                  }
+                      : ''
+                  }`}
                   onClick={() => {
                     setSelectedPuzzle(puzzle)
                     props.setPuzzle(puzzle)

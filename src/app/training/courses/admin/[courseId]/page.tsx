@@ -1,13 +1,12 @@
-
-
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import * as Sentry from '@sentry/nextjs'
 import { redirect } from 'next/navigation'
 
-import Container from '~/app/components/_elements/container'
-import PageHeader from '~/app/components/_layouts/pageHeader'
-import CourseAdminPanel from '~/app/components/training/courses/admin/AdminPanel'
-import { prisma } from '~/server/db'
+import { prisma } from '@/server/db'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import * as Sentry from '@sentry/nextjs'
+
+import Container from '@/app/components/_elements/container'
+import PageHeader from '@/app/components/_layouts/pageHeader'
+import CourseAdminPanel from '@/app/components/training/courses/admin/AdminPanel'
 
 export default async function CourseAdminPage({
   params,

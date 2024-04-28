@@ -1,10 +1,9 @@
-
+import { errorResponse, successResponse } from '@/app/api/responses'
+import { prisma } from '@/server/db'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 
-import getPuzzleById from '~/app/_util/GetPuzzleById'
-import { errorResponse, successResponse } from '~/app/api/responses'
-import { prisma } from '~/server/db'
+import getPuzzleById from '@/app/_util/GetPuzzleById'
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request)
@@ -107,7 +106,7 @@ export async function PATCH(request: Request) {
       !isCustom && hasChange
         ? await prisma.customPuzzle.create({
             data: {
-              id: `cta_${  curatedSetPuzzle.puzzleid}`,
+              id: `cta_${curatedSetPuzzle.puzzleid}`,
               fen: puzzleData.fen,
               rating,
               directStart: puzzleData.directStart ?? false,

@@ -1,20 +1,21 @@
 'use client'
 
+import { useState } from 'react'
+
+import type { ResponseJson } from '@/app/api/responses'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { TacticsSet, TacticsSetRound } from '@prisma/client'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import * as Sentry from '@sentry/nextjs'
-import { useState } from 'react'
 import Select from 'react-select'
 
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import StyledLink from '~/app/components/_elements/styledLink'
-import GetPremiumButton from '~/app/components/ecomm/GetPremiumButton'
-import Spinner from '~/app/components/general/Spinner'
-import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
+import Button from '@/app/components/_elements/button'
+import StyledLink from '@/app/components/_elements/styledLink'
+import GetPremiumButton from '@/app/components/ecomm/GetPremiumButton'
+import Spinner from '@/app/components/general/Spinner'
+import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer'
 
+import trackEventOnClient from '@/app/_util/trackEventOnClient'
 
 export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] }
 interface TacticsSetCreatorProps {
@@ -181,7 +182,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       const json = (await resp.json()) as ResponseJson
 
       if (json.message != 'Set Created') {
-        setError(`Oops! Something went wrong: ${  json?.message}`)
+        setError(`Oops! Something went wrong: ${json?.message}`)
         return
       }
 
@@ -352,7 +353,9 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                     Cancel
                   </Button>
                 </div>
-                {message ? <p className="italic text-red-500">{message}</p> : null}
+                {message ? (
+                  <p className="italic text-red-500">{message}</p>
+                ) : null}
                 {error ? <p className="italic text-red-500">{error}</p> : null}
               </>
             ) : (

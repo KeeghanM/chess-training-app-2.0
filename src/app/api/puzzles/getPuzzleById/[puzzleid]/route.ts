@@ -1,9 +1,8 @@
+import { errorResponse, successResponse } from '@/app/api/responses'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 
-import getPuzzleById from '~/app/_util/GetPuzzleById'
-import { errorResponse, successResponse } from '~/app/api/responses'
-
+import getPuzzleById from '@/app/_util/GetPuzzleById'
 
 export async function GET(
   request: Request,

@@ -1,14 +1,13 @@
-
-
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import * as Sentry from '@sentry/nextjs'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
-import CourseBrowser from '~/app/components/training/courses/browser/CourseBrowser'
-import { prisma } from '~/server/db'
+import { prisma } from '@/server/db'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import * as Sentry from '@sentry/nextjs'
+
+import Button from '@/app/components/_elements/button'
+import Heading from '@/app/components/_elements/heading'
+import CourseBrowser from '@/app/components/training/courses/browser/CourseBrowser'
 
 export default async function CourseTrainPage({
   params,
@@ -81,13 +80,13 @@ export default async function CourseTrainPage({
 
   return (
     <div className="dark:bg-slate-800 p-2 md:p-4 lg:px-6">
-        <Heading as="h1">
-          {userCourse.course.courseName}
-          <Link className="ml-2" href="/training/courses/">
-            <Button variant="accent">Back to courses</Button>
-          </Link>
-        </Heading>
-        <CourseBrowser lines={userLines} />
-      </div>
+      <Heading as="h1">
+        {userCourse.course.courseName}
+        <Link className="ml-2" href="/training/courses/">
+          <Button variant="accent">Back to courses</Button>
+        </Link>
+      </Heading>
+      <CourseBrowser lines={userLines} />
+    </div>
   )
 }

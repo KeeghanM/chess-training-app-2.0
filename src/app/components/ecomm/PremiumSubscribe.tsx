@@ -1,9 +1,9 @@
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import { useState } from 'react'
 
+import * as AlertDialog from '@radix-ui/react-alert-dialog'
 
-import Button from '~/app/components/_elements/button'
-import GetPremiumButton from '~/app/components/ecomm/GetPremiumButton'
+import Button from '@/app/components/_elements/button'
+import GetPremiumButton from '@/app/components/ecomm/GetPremiumButton'
 
 export default function PremiumSubscribe(props: {
   title: string

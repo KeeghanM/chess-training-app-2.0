@@ -1,8 +1,8 @@
 import Link from 'next/link'
 
-import BigText from '~/app/components/_layouts/bigText'
-import CtaRow from '~/app/components/_layouts/ctaRow'
-import Hero from '~/app/components/_layouts/hero'
+import BigText from '@/app/components/_layouts/bigText'
+import CtaRow from '@/app/components/_layouts/ctaRow'
+import Hero from '@/app/components/_layouts/hero'
 
 export const metadata = {
   title: 'Explore Chess Training Tools & Features at ChessTraining.app',
@@ -102,10 +102,10 @@ export default async function FeaturesPage() {
         <ol className="text-orange-500 p-2 bg-[rgba(0,0,0,0.3)]">
           {features.map((feature, index) => (
             <li
-              key={`li${  index.toString()}`}
+              key={`li${index.toString()}`}
               className="cursor-pointer hover:underline"
             >
-              <Link href={`#${  feature.anchor}`}>
+              <Link href={`#${feature.anchor}`}>
                 {index + 1}. {feature.name}
               </Link>
             </li>
@@ -116,7 +116,7 @@ export default async function FeaturesPage() {
         <>
           <a className="anchor" id={feature.anchor} />
           <CtaRow
-            key={`feature-${  index.toString()}`}
+            key={`feature-${index.toString()}`}
             background={index % 2 == 0 ? 'dark' : 'light'}
             title={feature.name}
             cta={{
@@ -125,7 +125,7 @@ export default async function FeaturesPage() {
             }}
           >
             {feature.description.map((paragraph, index) => (
-              <p key={`desc-${  index.toString()}`} className="flex-1">
+              <p key={`desc-${index.toString()}`} className="flex-1">
                 {paragraph}
               </p>
             ))}

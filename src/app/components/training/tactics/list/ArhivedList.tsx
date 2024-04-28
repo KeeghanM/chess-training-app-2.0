@@ -1,17 +1,18 @@
 'use client'
 
-import * as Sentry from '@sentry/nextjs'
 import Link from 'next/link'
+
 import { useEffect, useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
+import { env } from '@/env'
+import * as Sentry from '@sentry/nextjs'
 import 'tippy.js/dist/tippy.css'
+
+import Button from '@/app/components/_elements/button'
+import Spinner from '@/app/components/general/Spinner'
+
 import type { PrismaTacticsSet } from '../create/TacticsSetCreator'
-
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import Spinner from '~/app/components/general/Spinner'
-import { env } from '~/env'
-
 
 export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
   const [sets, setSets] = useState<PrismaTacticsSet[]>([])
@@ -81,10 +82,9 @@ export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
         </div>
       ) : (
         <div
-          className={
-            `flex flex-col gap-4 ${ 
-            sets.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : ''}`
-          }
+          className={`flex flex-col gap-4 ${
+            sets.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : ''
+          }`}
         >
           {sets.length > 0 ? (
             sets.map((set, index) => (

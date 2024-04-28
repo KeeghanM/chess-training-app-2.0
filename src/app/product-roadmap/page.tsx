@@ -1,6 +1,6 @@
-import StyledLink from '~/app/components/_elements/styledLink'
-import BigText from '~/app/components/_layouts/bigText'
-import { TextWall } from '~/app/components/_layouts/textWall'
+import StyledLink from '@/app/components/_elements/styledLink'
+import BigText from '@/app/components/_layouts/bigText'
+import { TextWall } from '@/app/components/_layouts/textWall'
 
 export const metadata = {
   title: 'Explore Our Open Product Roadmap at ChessTraining.app',
@@ -49,7 +49,7 @@ export default async function ProductRoadmap() {
         height="60vh"
         src="https://starter.productboard.com/chesstraining-starter/1-chesstraining-app"
         width="100%"
-       />
+      />
       <BigText color="accent">
         If there is anything not on here you'd like to see{' '}
         <StyledLink href="/contact">get in touch</StyledLink>

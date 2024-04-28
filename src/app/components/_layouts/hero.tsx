@@ -1,8 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
+import Button from '@/app/components/_elements/button'
+import Heading from '@/app/components/_elements/heading'
 
 interface HeroProps {
   title: string
@@ -38,12 +38,16 @@ export default function Hero(props: HeroProps) {
         </Heading>
         <div className="md:max-w-[50%]">{props.children}</div>
         <div className="flex gap-4">
-          {props.cta ? <Link href={props.cta.link}>
+          {props.cta ? (
+            <Link href={props.cta.link}>
               <Button variant="primary">{props.cta.text}</Button>
-            </Link> : null}
-          {props.secondary ? <Link href={props.secondary.link}>
+            </Link>
+          ) : null}
+          {props.secondary ? (
+            <Link href={props.secondary.link}>
               <Button variant="secondary">{props.secondary.text}</Button>
-            </Link> : null}
+            </Link>
+          ) : null}
         </div>
       </div>
     </div>

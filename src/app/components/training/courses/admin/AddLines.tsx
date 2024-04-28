@@ -1,22 +1,22 @@
 'use client'
 
-import type { Course, Move } from '@prisma/client'
-import * as Sentry from '@sentry/nextjs'
 import Link from 'next/link'
+
 import { useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
+import type { Course, Move } from '@prisma/client'
+import * as Sentry from '@sentry/nextjs'
+
+import Button from '@/app/components/_elements/button'
+import Heading from '@/app/components/_elements/heading'
+import StyledLink from '@/app/components/_elements/styledLink'
+
+import trackEventOnClient from '@/app/_util/trackEventOnClient'
 
 import GroupSelector from '../create/GroupSelector'
 import PgnToLinesForm from '../create/PgnToLinesForm'
 import type { Line } from '../create/parse/ParsePGNtoLineData'
-
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
-import StyledLink from '~/app/components/_elements/styledLink'
-
-
 
 type FullCourseData = Course & {
   lines: (Line & { moves: Move[] })[]

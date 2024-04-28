@@ -1,9 +1,9 @@
 'use client'
 
-import * as Sentry from '@sentry/nextjs'
 import { useEffect, useState } from 'react'
 
-import type { ResponseJson } from '~/app/api/responses'
+import type { ResponseJson } from '@/app/api/responses'
+import * as Sentry from '@sentry/nextjs'
 
 export type availableTypes = 'line' | 'tactic'
 export default function XpTracker(props: {

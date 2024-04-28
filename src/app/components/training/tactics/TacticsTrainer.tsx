@@ -1,33 +1,32 @@
 'use client'
 
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+import { useEffect, useState } from 'react'
+
+import type { ResponseJson } from '@/app/api/responses'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { Puzzle } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
 import type { Move } from 'chess.js'
 import { Chess } from 'chess.js'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 // @ts-expect-error - No types available
 import useSound from 'use-sound'
 
+import Button from '@/app/components/_elements/button'
+import Spinner from '@/app/components/general/Spinner'
+import TimeSince from '@/app/components/general/TimeSince'
+import XpTracker from '@/app/components/general/XpTracker'
+import ThemeSwitch from '@/app/components/template/header/ThemeSwitch'
+
+import trackEventOnClient from '@/app/_util/trackEventOnClient'
+
 import ChessBoard from '../ChessBoard'
-
 import type { PrismaTacticsSet } from './create/TacticsSetCreator'
-
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import Spinner from '~/app/components/general/Spinner'
-import TimeSince from '~/app/components/general/TimeSince'
-import XpTracker from '~/app/components/general/XpTracker'
-import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
-
-
-
 
 export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
   puzzles: Puzzle[]
@@ -356,7 +355,7 @@ export default function TacticsTrainer(props: {
     if (puzzleFinished) {
       return (
         <button
-          key={`btn${  moveNumber.toString()  }${move  }${moveColour}`}
+          key={`btn${moveNumber.toString()}${move}${moveColour}`}
           className="h-max max-h-fit bg-none px-1 py-1 hover:bg-purple-800 hover:text-white"
           onClick={async () => {
             const newGame = new Chess(currentPuzzle!.fen)
@@ -370,16 +369,15 @@ export default function TacticsTrainer(props: {
           <FlexText />
         </button>
       )
-    } 
-      return (
-        <div
-          key={moveNumber.toString() + move + moveColour}
-          className="px-1 py-1 text-black dark:text-white"
-        >
-          <FlexText />
-        </div>
-      )
-    
+    }
+    return (
+      <div
+        key={moveNumber.toString() + move + moveColour}
+        className="px-1 py-1 text-black dark:text-white"
+      >
+        <FlexText />
+      </div>
+    )
   })
 
   const exit = async () => {
@@ -387,7 +385,6 @@ export default function TacticsTrainer(props: {
     increaseTimeTaken()
     trackEventOnClient('tactics_set_closed', {})
     router.push('/training/tactics/list')
-    
   }
 
   // Here are all our useEffect functions
@@ -470,9 +467,11 @@ export default function TacticsTrainer(props: {
 
   return (
     <div className="relative border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
-      {loading ? <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
+      {loading ? (
+        <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
           <Spinner />
-        </div> : null}
+        </div>
+      ) : null}
       <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
         <p className="text-lg font-bold">{props.set.name}</p>
         <div className="flex items-center gap-2 text-black dark:text-white">
@@ -675,9 +674,11 @@ export default function TacticsTrainer(props: {
                   </span>
                 </Link>
               </div>
-              {currentPuzzle?.comment ? <p className="p-2 border lg:border-4 border-orange-500 bg-orange-500 bg-opacity-20 text-black dark:text-white text-sm overflow-y-auto">
+              {currentPuzzle?.comment ? (
+                <p className="p-2 border lg:border-4 border-orange-500 bg-orange-500 bg-opacity-20 text-black dark:text-white text-sm overflow-y-auto">
                   {currentPuzzle.comment}
-                </p> : null}
+                </p>
+              ) : null}
             </>
           )}
           <div className="flex flex-1 flex-col-reverse gap-2 lg:flex-col">
@@ -704,17 +705,17 @@ export default function TacticsTrainer(props: {
                 )
               ) : (
                 <Button
-                    variant="secondary"
-                    onClick={async () => {
-                      setPuzzleStatus('incorrect')
-                      setReadyForInput(false)
-                      await showIncorrectSequence()
-                      setReadyForInput(true)
-                      setPuzzleFinished(true)
-                    }}
-                  >
-                    Skip/Show Solution
-                  </Button>
+                  variant="secondary"
+                  onClick={async () => {
+                    setPuzzleStatus('incorrect')
+                    setReadyForInput(false)
+                    await showIncorrectSequence()
+                    setReadyForInput(true)
+                    setPuzzleFinished(true)
+                  }}
+                >
+                  Skip/Show Solution
+                </Button>
               )}
 
               <Button variant="danger" onClick={exit}>

@@ -1,7 +1,6 @@
+import { getUserServer } from '@/app/_util/getUserServer'
+
 import Nav from './Nav'
-
-import { getUserServer } from '~/app/_util/getUserServer'
-
 
 export default async function Header() {
   const { user, profile } = await getUserServer()

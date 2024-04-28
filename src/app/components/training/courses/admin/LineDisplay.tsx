@@ -1,11 +1,10 @@
 'use client'
 
+import Button from '@/app/components/_elements/button'
+import PrettyPrintLine from '@/app/components/general/PrettyPrintLine'
+import type { Line } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData'
+
 import type { LineWithMoves } from './GroupEditor'
-
-import Button from '~/app/components/_elements/button'
-import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
-import type { Line } from '~/app/components/training/courses/create/parse/ParsePGNtoLineData'
-
 
 export default function LineDisplay(props: {
   line: LineWithMoves

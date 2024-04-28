@@ -2,13 +2,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-import { createUserProfile, getUserServer } from '~/app/_util/getUserServer'
-import { trackEventOnServer } from '~/app/_util/trackEventOnServer'
-import Button from '~/app/components/_elements/button'
-import Container from '~/app/components/_elements/container'
-import StyledLink from '~/app/components/_elements/styledLink'
-import PageHeader from '~/app/components/_layouts/pageHeader'
+import Button from '@/app/components/_elements/button'
+import Container from '@/app/components/_elements/container'
+import StyledLink from '@/app/components/_elements/styledLink'
+import PageHeader from '@/app/components/_layouts/pageHeader'
 
+import { createUserProfile, getUserServer } from '@/app/_util/getUserServer'
+import { trackEventOnServer } from '@/app/_util/trackEventOnServer'
 
 export default async function NewUserWelcome() {
   const { user, profile } = await getUserServer()

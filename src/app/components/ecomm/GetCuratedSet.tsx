@@ -1,17 +1,15 @@
 'use client'
 
-
-
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import Tippy from '@tippyjs/react'
 import Link from 'next/link'
+
 import { useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import Tippy from '@tippyjs/react'
 
 import Button from '../_elements/button'
 import Spinner from '../general/Spinner'
-
-import type { ResponseJson } from '~/app/api/responses'
 
 export default function GetCuratedSet(props: {
   setId: string

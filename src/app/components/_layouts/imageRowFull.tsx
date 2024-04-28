@@ -1,5 +1,5 @@
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
+import Container from '@/app/components/_elements/container'
+import Heading from '@/app/components/_elements/heading'
 
 interface ImageRowProps {
   heading: string
@@ -15,17 +15,14 @@ interface ImageRowProps {
 export default function ImageRowFull(props: ImageRowProps) {
   return (
     <div
-      className={
-        `relative flex flex-col items-center justify-center py-4 md:flex-row md:py-6 lg:py-12${ 
-        props.imageSide === 'left' ? '' : ' md:flex-row-reverse' 
-        }${props.background === 'light' ? ' bg-white' : ' bg-purple-100'}`
-      }
+      className={`relative flex flex-col items-center justify-center py-4 md:flex-row md:py-6 lg:py-12${
+        props.imageSide === 'left' ? '' : ' md:flex-row-reverse'
+      }${props.background === 'light' ? ' bg-white' : ' bg-purple-100'}`}
     >
       <div
-        className={
-          `w-full md:absolute md:inset-0 md:w-1/2${ 
-          props.imageSide === 'left' ? '' : ' md:ml-auto'}`
-        }
+        className={`w-full md:absolute md:inset-0 md:w-1/2${
+          props.imageSide === 'left' ? '' : ' md:ml-auto'
+        }`}
       >
         <img
           alt={props.image.alt}
@@ -34,10 +31,9 @@ export default function ImageRowFull(props: ImageRowProps) {
         />
       </div>
       <div
-        className={
-          `w-full md:w-1/2${ 
-          props.imageSide === 'left' ? ' md:ml-auto' : ' md:mr-auto'}`
-        }
+        className={`w-full md:w-1/2${
+          props.imageSide === 'left' ? ' md:ml-auto' : ' md:mr-auto'
+        }`}
       >
         <Container>
           <Heading as="h2">{props.heading}</Heading>

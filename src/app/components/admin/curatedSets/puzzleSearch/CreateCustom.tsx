@@ -1,14 +1,14 @@
 'use client'
 
+import { useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
 import { parse } from '@mliebelt/pgn-parser'
 import type { ParseTree } from '@mliebelt/pgn-parser'
-import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import Spinner from '~/app/components/general/Spinner'
+import Button from '@/app/components/_elements/button'
+import Spinner from '@/app/components/general/Spinner'
 
 export default function CreateCustom(props: { onLoad: () => void }) {
   const [loading, setLoading] = useState(false)
@@ -42,7 +42,7 @@ export default function CreateCustom(props: { onLoad: () => void }) {
 
       parsed.map((game) =>
         puzzles.push({
-          id: `cta_${  uuidv4().split('-')[4]}`,
+          id: `cta_${uuidv4().split('-')[4]}`,
           fen: game.tags!.FEN,
           moves: game.moves.map((m) => m.notation.notation).join(','),
           rating: 1500,

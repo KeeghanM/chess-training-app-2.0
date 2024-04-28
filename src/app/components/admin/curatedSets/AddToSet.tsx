@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
 
 import Button from '../../_elements/button'
 import Spinner from '../../general/Spinner'
-
-import type { ResponseJson } from '~/app/api/responses'
 
 export default function AddToSet(props: { setId: string; puzzleId?: string }) {
   const { setId, puzzleId } = props

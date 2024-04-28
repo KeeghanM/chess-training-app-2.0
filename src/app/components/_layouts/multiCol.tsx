@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
+import Button from '@/app/components/_elements/button'
+import Heading from '@/app/components/_elements/heading'
 
 interface MultiColItemProps {
   title: string
@@ -43,11 +43,13 @@ export const MultiCol = (props: MultiColProps) => {
         <div className="flex flex-col gap-4 md:flex-row md:gap-6">
           {props.children}
         </div>
-        {props.cta ? <div className="">
+        {props.cta ? (
+          <div className="">
             <Link href={props.cta.link}>
               <Button variant="accent">{props.cta.text}</Button>
             </Link>
-          </div> : null}
+          </div>
+        ) : null}
       </div>
     </div>
   )

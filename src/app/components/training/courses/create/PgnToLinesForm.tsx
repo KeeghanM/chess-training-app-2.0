@@ -1,17 +1,16 @@
 'use client'
 
+import { useState } from 'react'
 
 import { parse as PGNParse } from '@mliebelt/pgn-parser'
 import * as Sentry from '@sentry/nextjs'
-import { useState } from 'react'
 
+import Button from '@/app/components/_elements/button'
 
+import trackEventOnClient from '@/app/_util/trackEventOnClient'
 
 import { ParsePGNtoLineData } from './parse/ParsePGNtoLineData'
 import type { Line } from './parse/ParsePGNtoLineData'
-
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import Button from '~/app/components/_elements/button'
 
 export default function PgnToLinesForm(props: {
   finished: (lines: Line[]) => void
@@ -47,11 +46,20 @@ export default function PgnToLinesForm(props: {
     setStatus('loading')
 
     try {
-      if (string == '') { handleError('PGN is empty'); return; }
-      if (!validPGN(string)) { handleError('Invalid PGN'); return; }
+      if (string == '') {
+        handleError('PGN is empty')
+        return
+      }
+      if (!validPGN(string)) {
+        handleError('Invalid PGN')
+        return
+      }
 
       const lines = ParsePGNtoLineData(string)
-      if (!lines) { handleError('Something went wrong'); return; }
+      if (!lines) {
+        handleError('Something went wrong')
+        return
+      }
 
       trackEventOnClient('create_course_pgn_imported', {})
       props.finished(lines)
@@ -100,7 +108,9 @@ export default function PgnToLinesForm(props: {
           Go Back
         </Button>
       </div>
-      {error ? <p className="text-red-500">Something went wrong: {error}</p> : null}
+      {error ? (
+        <p className="text-red-500">Something went wrong: {error}</p>
+      ) : null}
     </div>
   )
 }

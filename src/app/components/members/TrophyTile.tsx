@@ -1,10 +1,9 @@
 import Link from 'next/link'
 
+import CalculateXpRank from '@/app/_util/CalculateXpRank'
 
 import Heading from '../_elements/heading'
 import XpDisplay from '../dashboard/XpDisplay'
-
-import CalculateXpRank from '~/app/_util/CalculateXpRank'
 
 export default function TrophyTile(props: {
   placement: number
@@ -161,14 +160,13 @@ export default function TrophyTile(props: {
 
   return (
     <div
-      className={
-        `flex flex-col gap-2 mt-auto p-4 bg-slate-800 text-white font-bold items-center${ 
+      className={`flex flex-col gap-2 mt-auto p-4 bg-slate-800 text-white font-bold items-center${
         placement === 1
           ? ' md:order-2 '
           : placement === 2
             ? ' md:order-1 '
-            : ' md:order-3 '}`
-      }
+            : ' md:order-3 '
+      }`}
     >
       <div>
         <Trophy placement={placement} />

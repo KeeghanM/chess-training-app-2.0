@@ -1,4 +1,4 @@
-
+import { prisma } from '@/server/db'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 
@@ -8,8 +8,6 @@ import {
   CreateCheckoutSession,
   getProductDetails,
 } from '../functions/CreateCheckoutSession'
-
-import { prisma } from '~/server/db'
 
 export async function POST(request: Request) {
   try {

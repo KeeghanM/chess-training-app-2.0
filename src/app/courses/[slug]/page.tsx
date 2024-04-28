@@ -1,5 +1,7 @@
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
-
+import { prisma } from '@/server/db'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import type {
   Course,
@@ -9,14 +11,11 @@ import type {
   UserProfile,
 } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
 
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
-import StyledLink from '~/app/components/_elements/styledLink'
-import GetCourse from '~/app/components/ecomm/GetCourse'
-import { prisma } from '~/server/db'
+import Container from '@/app/components/_elements/container'
+import Heading from '@/app/components/_elements/heading'
+import StyledLink from '@/app/components/_elements/styledLink'
+import GetCourse from '@/app/components/ecomm/GetCourse'
 
 export default async function CoursePage({
   params,
@@ -170,10 +169,12 @@ export default async function CoursePage({
             slug={course.slug}
             userCourseId={userCourse?.active ? userCourse.id : undefined}
           />
-          {course.courseDescription ? <article
+          {course.courseDescription ? (
+            <article
               dangerouslySetInnerHTML={{ __html: course.courseDescription }}
               className="p-4 bg-gray-100"
-            /> : null}
+            />
+          ) : null}
           <div className="p-4 bg-gray-100">
             <Heading as="h2">Course Contents</Heading>
             <ul>

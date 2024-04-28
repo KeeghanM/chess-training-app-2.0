@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation'
 
-import { getUserServer } from '~/app/_util/getUserServer'
-import Container from '~/app/components/_elements/container'
-import PageHeader from '~/app/components/_layouts/pageHeader'
-import VisualisationTrainer from '~/app/components/training/visualisation/VisualisationTrainer'
+import Container from '@/app/components/_elements/container'
+import PageHeader from '@/app/components/_layouts/pageHeader'
+import VisualisationTrainer from '@/app/components/training/visualisation/VisualisationTrainer'
 
+import { getUserServer } from '@/app/_util/getUserServer'
 
 export default async function VisualisationTrainPage() {
   const { user } = await getUserServer()

@@ -1,16 +1,15 @@
-
-
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import Link from 'next/link'
 
-import Button from '~/app/components/_elements/button'
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
-import StyledLink from '~/app/components/_elements/styledLink'
-import PageHeader from '~/app/components/_layouts/pageHeader'
-import { TextWall } from '~/app/components/_layouts/textWall'
-import GetCuratedSet from '~/app/components/ecomm/GetCuratedSet'
-import { prisma } from '~/server/db'
+import { prisma } from '@/server/db'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+
+import Button from '@/app/components/_elements/button'
+import Container from '@/app/components/_elements/container'
+import Heading from '@/app/components/_elements/heading'
+import StyledLink from '@/app/components/_elements/styledLink'
+import PageHeader from '@/app/components/_layouts/pageHeader'
+import { TextWall } from '@/app/components/_layouts/textWall'
+import GetCuratedSet from '@/app/components/ecomm/GetCuratedSet'
 
 export const metadata = {
   title: 'Curated Chess Tactics Training Sets at ChessTraining.app',

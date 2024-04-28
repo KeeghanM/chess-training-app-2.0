@@ -1,11 +1,12 @@
 'use client'
 
-import * as Sentry from '@sentry/nextjs'
 import { useState } from 'react'
 
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import Spinner from '~/app/components/general/Spinner'
+import type { ResponseJson } from '@/app/api/responses'
+import * as Sentry from '@sentry/nextjs'
+
+import Button from '@/app/components/_elements/button'
+import Spinner from '@/app/components/general/Spinner'
 
 export default function ReportIssueForm() {
   const [sendEmail, setSendEmail] = useState(false)
@@ -158,7 +159,7 @@ export default function ReportIssueForm() {
                   <label>Email</label>
                   <input
                     className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-                    placeholder={`${player?.split(' ')[0]  }@chesstraining.app`}
+                    placeholder={`${player?.split(' ')[0]}@chesstraining.app`}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -202,7 +203,9 @@ export default function ReportIssueForm() {
                   )}
                 </Button>
               </div>
-              {error ? <div className="text-sm italic text-red-500">{error}</div> : null}
+              {error ? (
+                <div className="text-sm italic text-red-500">{error}</div>
+              ) : null}
             </form>
           )}
         </>

@@ -1,15 +1,14 @@
-import * as Sentry from '@sentry/react'
-import Tippy from '@tippyjs/react'
 import { useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
+import * as Sentry from '@sentry/react'
+import Tippy from '@tippyjs/react'
+
+import Button from '@/app/components/_elements/button'
+import Spinner from '@/app/components/general/Spinner'
 
 import type { CuratedSetPuzzle } from '../CuratedSetsBrowser'
 import themes from '../themes'
-
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import Spinner from '~/app/components/general/Spinner'
-
 
 export default function LiChessSearch(props: {
   setPuzzle: (puzzle: CuratedSetPuzzle) => void
@@ -128,11 +127,9 @@ export default function LiChessSearch(props: {
           .map((theme, index) => (
             <Tippy key={theme.id} content={theme.description}>
               <p
-                className={
-                  `cursor-pointer p-1 hover:font-bold text-black ${ 
-                  index % 2 == 0 ? ' bg-gray-200' : ' bg-gray-50' 
-                  }${selectedThemes.includes(theme.id) ? ' bg-green-200' : ''}`
-                }
+                className={`cursor-pointer p-1 hover:font-bold text-black ${
+                  index % 2 == 0 ? ' bg-gray-200' : ' bg-gray-50'
+                }${selectedThemes.includes(theme.id) ? ' bg-green-200' : ''}`}
                 onClick={() => toggleTheme(theme.id)}
               >
                 {theme.name}

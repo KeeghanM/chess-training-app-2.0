@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 
-import Button from '~/app/components/_elements/button'
-import type { Tool } from '~/app/dashboard/page'
+import type { Tool } from '@/app/dashboard/page'
 
+import Button from '@/app/components/_elements/button'
 
 export default function ToolGrid(props: { tool: Tool }) {
   const { tool } = props
@@ -13,10 +13,9 @@ export default function ToolGrid(props: { tool: Tool }) {
     <div className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300">
       <div
         id={tool.id}
-        className={
-          `px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold${ 
-          tool.active ? ' text-orange-500' : ''}`
-        }
+        className={`px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold${
+          tool.active ? ' text-orange-500' : ''
+        }`}
       >
         {tool.active ? (
           <Link href={tool.trainingLink}>{tool.name}</Link>
@@ -37,9 +36,11 @@ export default function ToolGrid(props: { tool: Tool }) {
             Coming Soon
           </Button>
         )}
-        {tool.learnMoreLink ? <Link href={tool.learnMoreLink}>
+        {tool.learnMoreLink ? (
+          <Link href={tool.learnMoreLink}>
             <Button variant="secondary">Learn More</Button>
-          </Link> : null}
+          </Link>
+        ) : null}
       </div>
     </div>
   )

@@ -1,8 +1,10 @@
-import { getUserServer } from '~/app/_util/getUserServer'
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
-import PageHeader from '~/app/components/_layouts/pageHeader'
-import { prisma } from '~/server/db'
+import { prisma } from '@/server/db'
+
+import Container from '@/app/components/_elements/container'
+import Heading from '@/app/components/_elements/heading'
+import PageHeader from '@/app/components/_layouts/pageHeader'
+
+import { getUserServer } from '@/app/_util/getUserServer'
 
 export default async function BadgesPage() {
   const { badges } = await getUserServer()
@@ -53,13 +55,12 @@ export default async function BadgesPage() {
                 .map((badge) => (
                   <div
                     key={badge.name}
-                    className={
-                      `flex flex-col items-center justify-start gap-1 p-2 text-white${ 
+                    className={`flex flex-col items-center justify-start gap-1 p-2 text-white${
                       badges.filter((b) => b.badgeName === badge.name).length >
                       0
                         ? ' border-4 border-orange-500 bg-purple-700'
-                        : ' bg-gray-600'}`
-                    }
+                        : ' bg-gray-600'
+                    }`}
                   >
                     <p className="text-center font-bold text-white">
                       {badge.name}

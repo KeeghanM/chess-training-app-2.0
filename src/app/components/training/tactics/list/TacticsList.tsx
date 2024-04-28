@@ -1,20 +1,21 @@
 'use client'
 
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import * as Sentry from '@sentry/nextjs'
 import Link from 'next/link'
+
 import { useEffect, useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
+import { env } from '@/env'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import * as Sentry from '@sentry/nextjs'
+
+import Button from '@/app/components/_elements/button'
+import Container from '@/app/components/_elements/container'
+import Spinner from '@/app/components/general/Spinner'
+import type { PrismaTacticsSet } from '@/app/components/training/tactics//create/TacticsSetCreator'
+import TacticsSetCreator from '@/app/components/training/tactics//create/TacticsSetCreator'
+
 import SetListItem from './SetListItem'
-
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import Container from '~/app/components/_elements/container'
-import Spinner from '~/app/components/general/Spinner'
-import type { PrismaTacticsSet } from '~/app/components/training/tactics//create/TacticsSetCreator'
-import TacticsSetCreator from '~/app/components/training/tactics//create/TacticsSetCreator'
-import { env } from '~/env'
-
 
 export default function TacticsList(props: { hasUnlimitedSets: boolean }) {
   const { hasUnlimitedSets } = props
@@ -79,7 +80,8 @@ export default function TacticsList(props: { hasUnlimitedSets: boolean }) {
           setCount={sets.length}
           setCreated={addSet}
         />
-        {false ? <>
+        {false ? (
+          <>
             <Link href="/training/tactics/curated-sets">
               <Button variant="secondary">Browse Curated Sets</Button>
             </Link>
@@ -89,7 +91,8 @@ export default function TacticsList(props: { hasUnlimitedSets: boolean }) {
             >
               View archived sets
             </Link>
-          </> : null}
+          </>
+        ) : null}
       </div>
       <div className="mt-4 flex flex-col gap-4">
         {loading ? (

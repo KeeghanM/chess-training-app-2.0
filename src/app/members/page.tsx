@@ -1,10 +1,11 @@
-import CalculateXpRank from '../_util/CalculateXpRank'
+import { prisma } from '@/server/db'
+
 import Container from '../components/_elements/container'
 import StyledLink from '../components/_elements/styledLink'
 import PageHeader from '../components/_layouts/pageHeader'
 import TrophyTile from '../components/members/TrophyTile'
 
-import { prisma } from '~/server/db'
+import CalculateXpRank from '../_util/CalculateXpRank'
 
 export default async function MembersPage({
   searchParams,
@@ -65,9 +66,7 @@ export default async function MembersPage({
             return (
               <tr
                 key={member.id}
-                className={
-                  `text-center ${  index % 2 === 0 ? 'bg-gray-100' : ''}`
-                }
+                className={`text-center ${index % 2 === 0 ? 'bg-gray-100' : ''}`}
               >
                 <td>
                   {member.public ? (

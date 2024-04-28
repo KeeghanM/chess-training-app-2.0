@@ -1,10 +1,9 @@
 import * as Sentry from '@sentry/nextjs'
 
+import { getUserServer } from '@/app/_util/getUserServer'
 
 import { errorResponse, successResponse } from '../../responses'
 import { CreateCheckoutSession } from '../functions/CreateCheckoutSession'
-
-import { getUserServer } from '~/app/_util/getUserServer'
 
 export async function POST(request: Request) {
   try {

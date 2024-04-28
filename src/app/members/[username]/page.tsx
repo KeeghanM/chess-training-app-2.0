@@ -1,11 +1,13 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-import CalculateXpRank from '~/app/_util/CalculateXpRank'
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
-import XpDisplay from '~/app/components/dashboard/XpDisplay'
-import { prisma } from '~/server/db'
+import { prisma } from '@/server/db'
+
+import Container from '@/app/components/_elements/container'
+import Heading from '@/app/components/_elements/heading'
+import XpDisplay from '@/app/components/dashboard/XpDisplay'
+
+import CalculateXpRank from '@/app/_util/CalculateXpRank'
 
 export default async function MemberPage({
   params,
@@ -43,7 +45,9 @@ export default async function MemberPage({
           <div className="bg-gray-100 p-2 flex flex-col gap-2">
             <div className="flex items-center gap-2 flex-col md:flex-row">
               <Heading as="h1">{account.username}</Heading>
-              {account.fullName ? <p className="italic text-sm">({account.fullName})</p> : null}
+              {account.fullName ? (
+                <p className="italic text-sm">({account.fullName})</p>
+              ) : null}
             </div>
             <div className="w-fit">
               <XpDisplay
@@ -51,21 +55,29 @@ export default async function MemberPage({
                 displayLink={false}
               />
             </div>
-            {account.description ? <p className="bg-purple-700 text-white p-2">
+            {account.description ? (
+              <p className="bg-purple-700 text-white p-2">
                 {account.description}
-              </p> : null}
-            {account.highestOTBRating ? <p>
+              </p>
+            ) : null}
+            {account.highestOTBRating ? (
+              <p>
                 <span className="font-bold">OTB Rating:</span>{' '}
                 {account.highestOTBRating}
-              </p> : null}
-            {account.highestOnlineRating ? <p>
+              </p>
+            ) : null}
+            {account.highestOnlineRating ? (
+              <p>
                 <span className="font-bold">Online Rating:</span>{' '}
                 {account.highestOnlineRating}
-              </p> : null}
-            {account.puzzleRating ? <p>
+              </p>
+            ) : null}
+            {account.puzzleRating ? (
+              <p>
                 <span className="font-bold">Puzzle Rating:</span>{' '}
                 {account.puzzleRating}
-              </p> : null}
+              </p>
+            ) : null}
           </div>
         ) : (
           <div className="bg-gray-100 p-2">

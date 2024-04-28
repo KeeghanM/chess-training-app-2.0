@@ -1,7 +1,6 @@
+import { errorResponse, successResponse } from '@/app/api/responses'
 import * as Sentry from '@sentry/nextjs'
 import nodemailer from 'nodemailer'
-
-import { errorResponse, successResponse } from '~/app/api/responses'
 
 export async function POST(request: Request) {
   try {
@@ -29,7 +28,7 @@ export async function POST(request: Request) {
     await transporter.sendMail({
       from: `${name} <${email}>`,
       to: 'product@chesstraining.app',
-      subject: `Issue Reported: ${  issue}`,
+      subject: `Issue Reported: ${issue}`,
       text: `From: ${name} <${email}>
 Issue Type: ${issue}
 Message:

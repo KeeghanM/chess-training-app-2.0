@@ -1,23 +1,23 @@
 'use client'
 
+import Link from 'next/link'
+
+import { useState } from 'react'
+
+import type { ResponseJson } from '@/app/api/responses'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
-import Link from 'next/link'
-import { useState } from 'react'
 
+import Button from '@/app/components/_elements/button'
+import Heading from '@/app/components/_elements/heading'
+import StyledLink from '@/app/components/_elements/styledLink'
+import Spinner from '@/app/components/general/Spinner'
+
+import trackEventOnClient from '@/app/_util/trackEventOnClient'
 
 import type { PrismaUserCourse } from './CoursesList'
-
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
-import StyledLink from '~/app/components/_elements/styledLink'
-import Spinner from '~/app/components/general/Spinner'
-
-
 
 interface CourseSettingsProps {
   userCourse: PrismaUserCourse
@@ -39,8 +39,7 @@ export default function CourseSettings(props: CourseSettingsProps) {
     if (!userCourse) return
 
     const confirmString =
-      !userCourse.course.published &&
-      userCourse.course.createdBy == user?.id
+      !userCourse.course.published && userCourse.course.createdBy == user?.id
         ? 'Are you sure you want to archive this course? This will DELETE the course ENTIRELY.'
         : 'Are you sure you want to archive this course? This will remove your progress.'
     if (!confirm(confirmString)) return

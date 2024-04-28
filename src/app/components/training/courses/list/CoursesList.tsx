@@ -1,21 +1,20 @@
 'use client'
 
-import type { Course, UserCourse, UserLine } from '@prisma/client'
-import * as Sentry from '@sentry/nextjs'
 import Link from 'next/link'
+
 import { useEffect, useState } from 'react'
 
+import type { ResponseJson } from '@/app/api/responses'
+import type { Course, UserCourse, UserLine } from '@prisma/client'
+import * as Sentry from '@sentry/nextjs'
+
+import Button from '@/app/components/_elements/button'
+import Heading from '@/app/components/_elements/heading'
+import StyledLink from '@/app/components/_elements/styledLink'
+import Spinner from '@/app/components/general/Spinner'
 
 import PremiumSubscribe from '../../../ecomm/PremiumSubscribe'
-
 import CourseListItem from './CourseListItem'
-
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
-import StyledLink from '~/app/components/_elements/styledLink'
-import Spinner from '~/app/components/general/Spinner'
-
 
 export type PrismaUserCourse = UserCourse & {
   course: Course

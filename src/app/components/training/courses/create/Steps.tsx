@@ -1,4 +1,4 @@
-import NumberIcon from '~/app/components/general/NumberIcon'
+import NumberIcon from '@/app/components/general/NumberIcon'
 
 export default function Steps(props: { currentStep: string }) {
   const { currentStep } = props

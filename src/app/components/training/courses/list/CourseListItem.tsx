@@ -1,25 +1,25 @@
 'use client'
 
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+import { useEffect, useState } from 'react'
+
+import type { ResponseJson } from '@/app/api/responses'
 import type { Course, UserCourse } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 
+import Button from '@/app/components/_elements/button'
+import StyledLink from '@/app/components/_elements/styledLink'
+import PremiumSubscribe from '@/app/components/ecomm/PremiumSubscribe'
+import Spinner from '@/app/components/general/Spinner'
+import TimeSince from '@/app/components/general/TimeSince'
+
+import trackEventOnClient from '@/app/_util/trackEventOnClient'
 
 import CourseSettings from './CourseSettings'
 import type { PrismaUserCourse } from './CoursesList'
-
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import StyledLink from '~/app/components/_elements/styledLink'
-import PremiumSubscribe from '~/app/components/ecomm/PremiumSubscribe'
-import Spinner from '~/app/components/general/Spinner'
-import TimeSince from '~/app/components/general/TimeSince'
-
-
 
 // TODO: Add revision schedule viewer
 
@@ -42,9 +42,9 @@ export default function CourseListItem(props: {
     setOpening(true)
     trackEventOnClient('course_opened', {})
     router.push(
-      `/training/courses/${ 
-        userCourse.id 
-        }${mode == 'learn' ? '?mode=newOnly' : ''}`,
+      `/training/courses/${
+        userCourse.id
+      }${mode == 'learn' ? '?mode=newOnly' : ''}`,
     )
   }
 
@@ -160,9 +160,11 @@ export default function CourseListItem(props: {
               <Tippy
                 disabled={Boolean(userCourse?.lines?.length)}
                 content={
-                  nextReview ? <p>
+                  nextReview ? (
+                    <p>
                       Next review in <TimeSince date={nextReview} />
-                    </p> : null
+                    </p>
+                  ) : null
                 }
               >
                 <div className="flex flex-col gap-1">

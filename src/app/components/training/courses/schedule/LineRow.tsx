@@ -1,13 +1,14 @@
 'use client'
 
-import type { Group, Line, Move, UserLine } from '@prisma/client'
 import { useState } from 'react'
 
-import type { ResponseJson } from '~/app/api/responses'
-import Button from '~/app/components/_elements/button'
-import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
-import Spinner from '~/app/components/general/Spinner'
-import type { Line as NiceLine } from '~/app/components/training/courses/create/parse/ParsePGNtoLineData'
+import type { ResponseJson } from '@/app/api/responses'
+import type { Group, Line, Move, UserLine } from '@prisma/client'
+
+import Button from '@/app/components/_elements/button'
+import PrettyPrintLine from '@/app/components/general/PrettyPrintLine'
+import Spinner from '@/app/components/general/Spinner'
+import type { Line as NiceLine } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData'
 
 export type ScheduleLine = UserLine & {
   line: Line & {
@@ -81,13 +82,11 @@ export default function LineRow({
 
   return (
     <div
-      className={
-        `border-4 bg-purple-700 bg-opacity-20 text-black dark:text-white py-2 flex flex-col md:flex-row gap-2 justify-between ${ 
-        status === 'unseen' ? 'border-gray-300' : '' 
-        }${status === 'learning' ? 'border-blue-600' : '' 
-        }${status === 'learned' ? 'border-green-500' : '' 
-        }${status === 'hard' ? 'border-red-500' : ''}`
-      }
+      className={`border-4 bg-purple-700 bg-opacity-20 text-black dark:text-white py-2 flex flex-col md:flex-row gap-2 justify-between ${
+        status === 'unseen' ? 'border-gray-300' : ''
+      }${status === 'learning' ? 'border-blue-600' : ''}${
+        status === 'learned' ? 'border-green-500' : ''
+      }${status === 'hard' ? 'border-red-500' : ''}`}
     >
       <div className="px-2">
         <h3 className="text-sm border-b w-full mb-2 text-orange-500 italic">
