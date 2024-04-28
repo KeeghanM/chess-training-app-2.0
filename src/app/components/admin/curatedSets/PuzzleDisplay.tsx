@@ -92,7 +92,7 @@ export default function PuzzleDisplay(props: {
     return (
       <button
         key={'btn' + moveNumber.toString() + move + moveColour}
-        className="h-max max-h-fit bg-none px-1 py-1 text-black dark:text-white hover:bg-purple-800 hover:text-white"
+        className="h-max max-h-fit bg-none px-1 py-1 hover:bg-purple-800 hover:text-white"
         onClick={() => {
           const newGame = new Chess(props.puzzle!.fen)
           for (let i = 0; i <= index; i++) {
@@ -160,7 +160,7 @@ export default function PuzzleDisplay(props: {
           {/* PGN Display */}
           <div className="flex flex-1 h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
             <button
-              className="h-max max-h-fit bg-none px-1 py-1 text-black dark:text-white hover:bg-purple-800 hover:text-white"
+              className="h-max max-h-fit bg-none p-1 hover:bg-purple-800 hover:text-white"
               onClick={() => {
                 setPosition(props.puzzle!.fen)
               }}

@@ -356,7 +356,7 @@ export default function TacticsTrainer(props: {
       return (
         <button
           key={'btn' + moveNumber.toString() + move + moveColour}
-          className="h-max max-h-fit bg-none px-1 py-1 text-black dark:text-white hover:bg-purple-800 hover:text-white"
+          className="h-max max-h-fit bg-none px-1 py-1 hover:bg-purple-800 hover:text-white"
           onClick={async () => {
             const newGame = new Chess(currentPuzzle!.fen)
             for (let i = 0; i <= index; i++) {

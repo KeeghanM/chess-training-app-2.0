@@ -258,7 +258,7 @@ export default function EndgameTrainer() {
       return (
         <button
           key={'btn' + moveNumber.toString() + move + moveColour}
-          className="h-max max-h-fit bg-none px-1 py-1 text-white hover:bg-purple-800"
+          className="h-max max-h-fit bg-none p-1 hover:bg-purple-800"
           onClick={async () => {
             const newGame = new Chess(currentPuzzle!.fen)
             for (let i = 0; i <= index; i++) {

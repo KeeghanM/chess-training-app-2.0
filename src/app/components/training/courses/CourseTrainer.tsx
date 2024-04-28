@@ -553,7 +553,7 @@ export default function CourseTrainer(props: {
     return nextLine ? (
       <button
         key={index + '_pgn'}
-        className="h-max max-h-fit bg-none px-1 py-1 text-white hover:bg-purple-800"
+        className="h-max max-h-fit bg-none px-1 py-1 hover:bg-purple-800"
         onClick={() => {
           const newGame = new Chess()
           for (let i = 0; i <= index; i++) {
