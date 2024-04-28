@@ -1,10 +1,9 @@
 'use client'
 
+import * as Sentry from '@sentry/nextjs'
 import { useState } from 'react'
 
-import * as Sentry from '@sentry/nextjs'
 import type { ResponseJson } from '~/app/api/responses'
-
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 
@@ -92,8 +91,8 @@ export default function ContactForm() {
           <p>
             The fastest way to reach us is via our{' '}
             <span
-              onClick={openChat}
               className="cursor-pointer font-bold text-purple-700 underline hover:no-underline"
+              onClick={openChat}
             >
               Live Chat
             </span>{' '}
@@ -102,15 +101,15 @@ export default function ContactForm() {
           </p>
           <p>
             <span
-              onClick={openChat}
               className="cursor-pointer font-bold text-purple-700 underline hover:no-underline"
+              onClick={openChat}
             >
               Chat with us now
             </span>{' '}
             or would you rather{' '}
             <span
-              onClick={() => setSendEmail(true)}
               className="cursor-pointer font-bold text-purple-700 underline hover:no-underline"
+              onClick={() => setSendEmail(true)}
             >
               use our contact form
             </span>
@@ -133,34 +132,34 @@ export default function ContactForm() {
                   <label>Name</label>
                   <input
                     className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                    placeholder={player}
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder={player}
                   />
                 </div>
                 <div>
                   <label>Email</label>
                   <input
                     className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                    placeholder={`${player?.split(' ')[0]  }@chesstraining.app`}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder={player?.split(' ')[0] + '@chesstraining.app'}
                   />
                 </div>
               </div>
               <div>
                 <label>Message</label>
                 <textarea
-                  rows={6}
                   className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
+                  rows={6}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                 />
               </div>
               <div>
-                <Button variant="primary" disabled={loading}>
+                <Button disabled={loading} variant="primary">
                   {loading ? (
                     <>
                       Sending <Spinner />
@@ -170,9 +169,7 @@ export default function ContactForm() {
                   )}
                 </Button>
               </div>
-              {error && (
-                <div className="text-sm italic text-red-500">{error}</div>
-              )}
+              {error ? <div className="text-sm italic text-red-500">{error}</div> : null}
             </form>
           )}
         </>

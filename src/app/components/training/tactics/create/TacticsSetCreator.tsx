@@ -1,21 +1,20 @@
 'use client'
 
-import { useState } from 'react'
-
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { TacticsSet, TacticsSetRound } from '@prisma/client'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import * as Sentry from '@sentry/nextjs'
+import { useState } from 'react'
 import Select from 'react-select'
-import type { ResponseJson } from '~/app/api/responses'
 
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import StyledLink from '~/app/components/_elements/styledLink'
 import GetPremiumButton from '~/app/components/ecomm/GetPremiumButton'
 import Spinner from '~/app/components/general/Spinner'
 import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
 
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] }
 interface TacticsSetCreatorProps {
@@ -174,7 +173,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name: name,
+          name,
           puzzleIds,
           rating,
         }),
@@ -182,7 +181,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       const json = (await resp.json()) as ResponseJson
 
       if (json.message != 'Set Created') {
-        setError('Oops! Something went wrong: ' + json?.message)
+        setError(`Oops! Something went wrong: ${  json?.message}`)
         return
       }
 
@@ -216,23 +215,23 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
     <div className="flex flex-col items-center gap-1 md:flex-row md:gap-4">
       <AlertDialog.Root open={open} onOpenChange={setOpen}>
         <Button
+          className="flex items-center gap-2 bg-purple-700 px-4 py-2 text-white hover:bg-purple-600"
           variant="primary"
           onClick={() => {
             setOpen(true)
             trackEventOnClient('create_tactics_set_opened', {})
           }}
-          className="flex items-center gap-2 bg-purple-700 px-4 py-2 text-white hover:bg-purple-600"
         >
           <p>Create New Set</p>
           <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
             height="24"
             viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              fill="currentColor"
               d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
+              fill="currentColor"
             />
           </svg>
         </Button>
@@ -251,8 +250,8 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   <div className="">
                     <label>Set Name</label>
                     <input
-                      type="text"
                       className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                      type="text"
                       value={name}
                       onInput={(e) => {
                         setName(e.currentTarget.value)
@@ -262,10 +261,10 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   <div className="">
                     <label htmlFor="">Set Size</label>
                     <input
-                      type="number"
                       className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-                      min={'20'}
-                      max={'500'}
+                      max="500"
+                      min="20"
+                      type="number"
                       value={size}
                       onChange={(e) => {
                         setSize(parseInt(e.currentTarget.value))
@@ -279,11 +278,11 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   <div className="">
                     <label>Your Rating</label>
                     <input
-                      type="number"
                       className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-                      min={'500'}
-                      max={'3000'}
-                      step={'10'}
+                      max="3000"
+                      min="500"
+                      step="10"
+                      type="number"
                       value={rating}
                       onInput={(e) => {
                         setRating(parseInt(e.currentTarget.value))
@@ -316,12 +315,9 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   <div className="">
                     <label>Themes to include</label>
                     <Select
+                      isMulti
                       className="bg-gray-100 text-black"
                       defaultValue={[]}
-                      isMulti
-                      name={'themes'}
-                      // @ts-expect-error - react-select types are wrong
-                      options={options}
                       onChange={(e) => {
                         const themes = e.map(
                           (theme: { label: string; value: string }) =>
@@ -329,6 +325,9 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                         )
                         setThemesList(themes)
                       }}
+                      name={'themes'}
+                      // @ts-expect-error - react-select types are wrong
+                      options={options}
                     />
                     <p className="text-sm italic">
                       Leave blank for a random mix of all
@@ -337,9 +336,9 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                 </div>
                 <div className="flex gap-4">
                   <Button
+                    disabled={loading}
                     variant="primary"
                     onClick={async () => await createSet()}
-                    disabled={loading}
                   >
                     {loading ? (
                       <>
@@ -353,8 +352,8 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                     Cancel
                   </Button>
                 </div>
-                {message && <p className="italic text-red-500">{message}</p>}
-                {error && <p className="italic text-red-500">{error}</p>}
+                {message ? <p className="italic text-red-500">{message}</p> : null}
+                {error ? <p className="italic text-red-500">{error}</p> : null}
               </>
             ) : (
               <div className="flex flex-col gap-2">

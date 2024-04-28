@@ -1,21 +1,20 @@
 'use client'
 
-import Link from 'next/link'
-
-import { useEffect, useState } from 'react'
-
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
-import type { ResponseJson } from '~/app/api/responses'
-import { env } from '~/env'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
+import SetListItem from './SetListItem'
+
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
 import Spinner from '~/app/components/general/Spinner'
 import type { PrismaTacticsSet } from '~/app/components/training/tactics//create/TacticsSetCreator'
 import TacticsSetCreator from '~/app/components/training/tactics//create/TacticsSetCreator'
+import { env } from '~/env'
 
-import SetListItem from './SetListItem'
 
 export default function TacticsList(props: { hasUnlimitedSets: boolean }) {
   const { hasUnlimitedSets } = props
@@ -74,14 +73,13 @@ export default function TacticsList(props: { hasUnlimitedSets: boolean }) {
     <Container>
       <div className="flex items-center gap-2">
         <TacticsSetCreator
-          setCount={sets.length}
-          maxSets={env.NEXT_PUBLIC_MAX_SETS}
-          setCreated={addSet}
-          loading={loading}
           hasUnlimitedSets={hasUnlimitedSets}
+          loading={loading}
+          maxSets={env.NEXT_PUBLIC_MAX_SETS}
+          setCount={sets.length}
+          setCreated={addSet}
         />
-        {false && (
-          <>
+        {false ? <>
             <Link href="/training/tactics/curated-sets">
               <Button variant="secondary">Browse Curated Sets</Button>
             </Link>
@@ -91,8 +89,7 @@ export default function TacticsList(props: { hasUnlimitedSets: boolean }) {
             >
               View archived sets
             </Link>
-          </>
-        )}
+          </> : null}
       </div>
       <div className="mt-4 flex flex-col gap-4">
         {loading ? (

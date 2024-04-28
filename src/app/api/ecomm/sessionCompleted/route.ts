@@ -1,14 +1,15 @@
-import { headers } from 'next/headers'
 
-import { prisma } from '~/server/db'
 
 import * as Sentry from '@sentry/nextjs'
+import { headers } from 'next/headers'
 import Stripe from 'stripe'
 
 import { errorResponse, successResponse } from '../../responses'
 import { AddCourseToUser } from '../functions/AddCourseToUser'
 import { AddCuratedSetToUser } from '../functions/AddCuratedSetToUser'
 import SubscribeUser from '../functions/SubscribeUser'
+
+import { prisma } from '~/server/db'
 
 export async function POST(request: Request) {
   try {
@@ -88,6 +89,6 @@ export async function POST(request: Request) {
   } catch (e) {
     // Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
-    else return errorResponse('Unknown error', 500)
+    return errorResponse('Unknown error', 500)
   }
 }

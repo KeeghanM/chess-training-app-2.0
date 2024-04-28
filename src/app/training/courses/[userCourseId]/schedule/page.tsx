@@ -1,18 +1,15 @@
+import * as Sentry from '@sentry/nextjs'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-import { prisma } from '~/server/db'
-
-import * as Sentry from '@sentry/nextjs'
-
+import { getUserServer } from '~/app/_util/getUserServer'
 import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import Info from '~/app/components/training/courses/schedule/Info'
 import LineList from '~/app/components/training/courses/schedule/LineList'
 import ResetButtons from '~/app/components/training/courses/schedule/ResetButtons'
-
-import { getUserServer } from '~/app/_util/getUserServer'
+import { prisma } from '~/server/db'
 
 export default async function CourseSchedulePage({
   params,
@@ -93,8 +90,8 @@ export default async function CourseSchedulePage({
   return (
     <>
       <PageHeader
-        title={`${userCourse.course.courseName}`}
         subTitle="Revision Schedule"
+        title={`${userCourse.course.courseName}`}
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden Chess pieces on a chess board',
@@ -104,8 +101,8 @@ export default async function CourseSchedulePage({
         <Container>
           <Info />
           <div className="flex flex-col lg:flex-row gap-2 mb-4">
-            <ResetButtons groups={uniqueGroups} courseId={userCourse.id} />
-            <Link href={`/training/courses/`}>
+            <ResetButtons courseId={userCourse.id} groups={uniqueGroups} />
+            <Link href="/training/courses/">
               <Button className="w-full" variant="secondary">
                 Back to courses
               </Button>
@@ -113,23 +110,23 @@ export default async function CourseSchedulePage({
           </div>
           <div className="flex flex-col text-black dark:text-white md:flex-row gap-2 md:gap-4 mb-2">
             <div className="flex gap-1 items-center">
-              <div className="w-4 h-4 bg-gray-300"></div>
+              <div className="w-4 h-4 bg-gray-300" />
               <p>Unseen</p>
             </div>
             <div className="flex gap-1 items-center">
-              <div className="w-4 h-4 bg-green-500"></div>
+              <div className="w-4 h-4 bg-green-500" />
               <p>Learned</p>
             </div>
             <div className="flex gap-1 items-center">
-              <div className="w-4 h-4 bg-blue-600"></div>
+              <div className="w-4 h-4 bg-blue-600" />
               <p>Learning</p>
             </div>
             <div className="flex gap-1 items-center">
-              <div className="w-4 h-4 bg-red-500"></div>
+              <div className="w-4 h-4 bg-red-500" />
               <p>Hard</p>
             </div>
           </div>
-          <LineList userLines={userLines} courseId={userCourse.id} />
+          <LineList courseId={userCourse.id} userLines={userLines} />
         </Container>
       </div>
     </>

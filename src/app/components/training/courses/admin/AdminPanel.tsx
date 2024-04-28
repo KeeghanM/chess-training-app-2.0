@@ -1,21 +1,21 @@
 'use client'
 
-import Link from 'next/link'
-
-import { useEffect, useMemo, useState } from 'react'
-
 import type { Course, Group } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
-import 'tippy.js/dist/tippy.css'
-import type { ResponseJson } from '~/app/api/responses'
+import Link from 'next/link'
+import { useEffect, useMemo, useState } from 'react'
 
+
+import 'tippy.js/dist/tippy.css'
+import type { LineWithMoves } from './GroupEditor'
+import GroupsListEditor from './GroupsListEditor'
+
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 import TextEditor from '~/app/components/general/TextEditor'
 
-import type { LineWithMoves } from './GroupEditor'
-import GroupsListEditor from './GroupsListEditor'
 
 interface CourseAdminPanelProps {
   course: Course & {
@@ -112,22 +112,20 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
         <label className="font-bold">Course Name:</label>
         <input
           className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+          type="text"
           value={courseName}
           onChange={(e) => setCourseName(e.target.value)}
-          type="text"
         />
       </div>
-      {course.published && (
-        <div>
+      {course.published ? <div>
           <label className="font-bold">Short Description:</label>
           <textarea
-            rows={3}
             className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+            rows={3}
             value={shortDescription}
             onChange={(e) => setShortDescription(e.target.value)}
           />
-        </div>
-      )}
+        </div> : null}
       <div>
         <label className="font-bold">Course Description:</label>
         <TextEditor value={courseDescription} onChange={setCourseDescription} />
@@ -159,11 +157,11 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
         </Tippy>
       </div>
       <GroupsListEditor
+        addIdToDelete={(id) => setLinesToDelete([...linesToDelete, id])}
         groups={groups}
         lines={sortedLines}
         setGroups={setGroups}
         setLines={setLines}
-        addIdToDelete={(id) => setLinesToDelete([...linesToDelete, id])}
       />
     </div>
   )

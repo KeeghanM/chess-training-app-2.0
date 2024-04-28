@@ -1,13 +1,13 @@
 'use client'
 
+import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import { useState } from 'react'
 
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
 
+import toHHMMSS from '~/app/_util/toHHMMSS'
 import Button from '~/app/components/_elements/button'
 import type { PrismaTacticsSet } from '~/app/components/training/tactics/create/TacticsSetCreator'
 
-import toHHMMSS from '~/app/_util/toHHMMSS'
 
 export default function SetListStats(props: { set: PrismaTacticsSet }) {
   const { set } = props
@@ -38,8 +38,8 @@ export default function SetListStats(props: { set: PrismaTacticsSet }) {
                   <li
                     key={index}
                     className={
-                      'flex flex-col gap-2 p-2 ' +
-                      (index % 2 == 0 ? 'bg-gray-100' : '')
+                      `flex flex-col gap-2 p-2 ${ 
+                      index % 2 == 0 ? 'bg-gray-100' : ''}`
                     }
                   >
                     <p className="font-bold">Round #{round.roundNumber}</p>

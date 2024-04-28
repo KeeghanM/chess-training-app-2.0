@@ -1,32 +1,33 @@
 'use client'
 
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-
-import { useEffect, useState } from 'react'
-
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { Puzzle } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
 import type { Move } from 'chess.js'
 import { Chess } from 'chess.js'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 // @ts-expect-error - No types available
 import useSound from 'use-sound'
-import type { ResponseJson } from '~/app/api/responses'
 
+import ChessBoard from '../ChessBoard'
+
+import type { PrismaTacticsSet } from './create/TacticsSetCreator'
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 import TimeSince from '~/app/components/general/TimeSince'
 import XpTracker from '~/app/components/general/XpTracker'
 import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
 
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-import ChessBoard from '../ChessBoard'
-import type { PrismaTacticsSet } from './create/TacticsSetCreator'
+
 
 export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
   puzzles: Puzzle[]
@@ -355,7 +356,7 @@ export default function TacticsTrainer(props: {
     if (puzzleFinished) {
       return (
         <button
-          key={'btn' + moveNumber.toString() + move + moveColour}
+          key={`btn${  moveNumber.toString()  }${move  }${moveColour}`}
           className="h-max max-h-fit bg-none px-1 py-1 hover:bg-purple-800 hover:text-white"
           onClick={async () => {
             const newGame = new Chess(currentPuzzle!.fen)
@@ -369,7 +370,7 @@ export default function TacticsTrainer(props: {
           <FlexText />
         </button>
       )
-    } else {
+    } 
       return (
         <div
           key={moveNumber.toString() + move + moveColour}
@@ -378,7 +379,7 @@ export default function TacticsTrainer(props: {
           <FlexText />
         </div>
       )
-    }
+    
   })
 
   const exit = async () => {
@@ -386,7 +387,7 @@ export default function TacticsTrainer(props: {
     increaseTimeTaken()
     trackEventOnClient('tactics_set_closed', {})
     router.push('/training/tactics/list')
-    return
+    
   }
 
   // Here are all our useEffect functions
@@ -443,7 +444,7 @@ export default function TacticsTrainer(props: {
       } else {
         // The first move is the opponents
         setOrientation(game.turn() == 'w' ? 'black' : 'white') // reversed because the first move is opponents
-        const firstMove = currentPuzzle?.moves[0]
+        const firstMove = currentPuzzle.moves[0]
         const timeoutId = makeFirstMove(firstMove!)
         return () => clearTimeout(timeoutId)
       }
@@ -469,11 +470,9 @@ export default function TacticsTrainer(props: {
 
   return (
     <div className="relative border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
-      {loading && (
-        <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
+      {loading ? <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
           <Spinner />
-        </div>
-      )}
+        </div> : null}
       <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
         <p className="text-lg font-bold">{props.set.name}</p>
         <div className="flex items-center gap-2 text-black dark:text-white">
@@ -485,34 +484,34 @@ export default function TacticsTrainer(props: {
             <Tippy content={`Sound ${soundEnabled ? 'On' : 'Off'}`}>
               {soundEnabled ? (
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
                   height="24"
                   viewBox="0 0 16 16"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
+                    d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
                     fill="none"
                     stroke="currentColor"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="1.5"
-                    d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
                   />
                 </svg>
               ) : (
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
                   height="24"
                   viewBox="0 0 16 16"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
+                    d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
                     fill="none"
                     stroke="currentColor"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="1.5"
-                    d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
                   />
                 </svg>
               )}
@@ -563,35 +562,35 @@ export default function TacticsTrainer(props: {
           </div>
           <div>
             <ChessBoard
+              enableArrows
+              enableHighlights
+              additionalArrows={[]}
+              additionalSquares={{}}
               game={game}
-              position={position}
+              moveMade={handleMove}
               orientation={orientation}
+              position={position}
               readyForInput={readyForInput}
               soundEnabled={soundEnabled}
-              additionalSquares={{}}
-              moveMade={handleMove}
-              additionalArrows={[]}
-              enableHighlights={true}
-              enableArrows={true}
             />
-            <XpTracker counter={xpCounter} type={'tactic'} />
+            <XpTracker counter={xpCounter} type="tactic" />
           </div>
         </div>
         <div className="flex w-full flex-col gap-2 p-1">
           {!puzzleFinished && (
             <p className="flex items-center gap-2 text-black dark:text-white">
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
                 height="20"
                 viewBox="0 0 24 24"
+                width="20"
+                xmlns="http://www.w3.org/2000/svg"
                 className={
                   orientation === 'white'
                     ? 'text-white'
                     : 'rotate-180 transform text-black'
                 }
               >
-                <path fill="currentColor" d="M1 21h22L12 2" />
+                <path d="M1 21h22L12 2" fill="currentColor" />
               </svg>
               {orientation === 'white' ? 'White' : 'Black'} to move
             </p>
@@ -599,15 +598,15 @@ export default function TacticsTrainer(props: {
           {puzzleStatus === 'correct' && (
             <div className="z-50 flex flex-wrap  items-center gap-2 text-black dark:text-white">
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
+                className="text-lime-500"
                 height="24"
                 viewBox="0 0 512 512"
-                className="text-lime-500"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  fill="currentColor"
                   d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2h144c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48h-97.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192h64c17.7 0 32 14.3 32 32v224c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
+                  fill="currentColor"
                 />
               </svg>
               <p>Correct!</p>
@@ -618,18 +617,18 @@ export default function TacticsTrainer(props: {
                 <span className="flex flex-row items-center gap-1 text-sm text-black dark:text-white underline">
                   Lichess
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
                     height="16"
                     viewBox="0 0 24 24"
+                    width="16"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
+                      d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
                       fill="none"
                       stroke="currentColor"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                       strokeWidth="2"
-                      d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
                     />
                   </svg>
                 </span>
@@ -640,15 +639,15 @@ export default function TacticsTrainer(props: {
             <>
               <div className="z-50 flex flex-wrap items-center gap-2 text-black dark:text-white">
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
+                  className="text-red-500"
                   height="24"
                   viewBox="0 0 512 512"
-                  className="text-red-500"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    fill="currentColor"
                     d="M313.4 479.1c26-5.2 42.9-30.5 37.7-56.5l-2.3-11.4c-5.3-26.7-15.1-52.1-28.8-75.2h144c26.5 0 48-21.5 48-48c0-18.5-10.5-34.6-25.9-42.6C497 236.6 504 223.1 504 208c0-23.4-16.8-42.9-38.9-47.1c4.4-7.3 6.9-15.8 6.9-24.9c0-21.3-13.9-39.4-33.1-45.6c.7-3.3 1.1-6.8 1.1-10.4c0-26.5-21.5-48-48-48h-97.5c-19 0-37.5 5.6-53.3 16.1l-38.5 25.7C176 91.6 160 121.6 160 153.7v111.2c0 29.2 13.3 56.7 36 75l7.4 5.9c26.5 21.2 44.6 51 51.2 84.2l2.3 11.4c5.2 26 30.5 42.9 56.5 37.7zM32 384h64c17.7 0 32-14.3 32-32V128c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32v224c0 17.7 14.3 32 32 32z"
+                    fill="currentColor"
                   />
                 </svg>
                 <p>Incorrect!</p>
@@ -659,28 +658,26 @@ export default function TacticsTrainer(props: {
                   <span className="flex flex-row items-center gap-1 text-sm text-black dark:text-white underline">
                     Lichess
                     <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
                       height="16"
                       viewBox="0 0 24 24"
+                      width="16"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
+                        d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
                         fill="none"
                         stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth="2"
-                        d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
                       />
                     </svg>
                   </span>
                 </Link>
               </div>
-              {currentPuzzle?.comment && (
-                <p className="p-2 border lg:border-4 border-orange-500 bg-orange-500 bg-opacity-20 text-black dark:text-white text-sm overflow-y-auto">
-                  {currentPuzzle?.comment}
-                </p>
-              )}
+              {currentPuzzle?.comment ? <p className="p-2 border lg:border-4 border-orange-500 bg-orange-500 bg-opacity-20 text-black dark:text-white text-sm overflow-y-auto">
+                  {currentPuzzle.comment}
+                </p> : null}
             </>
           )}
           <div className="flex flex-1 flex-col-reverse gap-2 lg:flex-col">
@@ -706,8 +703,7 @@ export default function TacticsTrainer(props: {
                   </Button>
                 )
               ) : (
-                <>
-                  <Button
+                <Button
                     variant="secondary"
                     onClick={async () => {
                       setPuzzleStatus('incorrect')
@@ -719,7 +715,6 @@ export default function TacticsTrainer(props: {
                   >
                     Skip/Show Solution
                   </Button>
-                </>
               )}
 
               <Button variant="danger" onClick={exit}>

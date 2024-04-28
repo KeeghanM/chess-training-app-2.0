@@ -1,14 +1,14 @@
-import { redirect } from 'next/navigation'
 
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import type { Comment, Group, Line, Move, UserLine } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
+import { redirect } from 'next/navigation'
 
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import CourseTrainer from '~/app/components/training/courses/CourseTrainer'
+import { prisma } from '~/server/db'
 
 export type PrismaUserLine = UserLine & {
   line: Line & {
@@ -111,13 +111,11 @@ export default async function CourseTrainPage({
       />
       <div className="dark:bg-slate-800">
         <Container>
-          {userCourse && (
-            <CourseTrainer
+          {userCourse ? <CourseTrainer
               userCourse={userCourse}
-              userLines={userLines}
               userFens={userFens}
-            />
-          )}
+              userLines={userLines}
+            /> : null}
         </Container>
       </div>
     </>

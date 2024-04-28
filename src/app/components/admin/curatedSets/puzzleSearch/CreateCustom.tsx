@@ -1,12 +1,12 @@
 'use client'
 
-import { useState } from 'react'
 
 import { parse } from '@mliebelt/pgn-parser'
 import type { ParseTree } from '@mliebelt/pgn-parser'
+import { useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import type { ResponseJson } from '~/app/api/responses'
 
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 
@@ -42,12 +42,12 @@ export default function CreateCustom(props: { onLoad: () => void }) {
 
       parsed.map((game) =>
         puzzles.push({
-          id: 'cta_' + uuidv4().split('-')[4],
+          id: `cta_${  uuidv4().split('-')[4]}`,
           fen: game.tags!.FEN,
           moves: game.moves.map((m) => m.notation.notation).join(','),
           rating: 1500,
           comment: game.gameComment?.comment ?? '',
-          directStart: directStart,
+          directStart,
         }),
       )
 
@@ -74,7 +74,7 @@ export default function CreateCustom(props: { onLoad: () => void }) {
 
   return (
     <>
-      <Button variant="primary" onClick={importCustom} disabled={loading}>
+      <Button disabled={loading} variant="primary" onClick={importCustom}>
         {loading ? (
           <>
             Importing... <Spinner />
@@ -83,7 +83,7 @@ export default function CreateCustom(props: { onLoad: () => void }) {
           'Import Custom Puzzle(s)'
         )}
       </Button>
-      {error && <p className="text-red-500">{error}</p>}
+      {error ? <p className="text-red-500">{error}</p> : null}
     </>
   )
 }

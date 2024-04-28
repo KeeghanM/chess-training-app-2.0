@@ -1,9 +1,5 @@
 'use client'
 
-import Link from 'next/link'
-
-import { useEffect, useState } from 'react'
-
 import { Tour, useFlow } from '@frigade/react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
@@ -11,21 +7,23 @@ import Tippy from '@tippyjs/react'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
 import type { Square } from 'chess.js'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { Chessboard } from 'react-chessboard'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 import 'tippy.js/dist/tippy.css'
 // @ts-expect-error - No types available
 import useSound from 'use-sound'
-import type { ResponseJson } from '~/app/api/responses'
 
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 import XpTracker from '~/app/components/general/XpTracker'
 import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
 import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
 
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export default function VisualisationTrainer() {
   const { user } = useKindeBrowserClient()
@@ -141,9 +139,7 @@ export default function VisualisationTrainer() {
     if (status == 'correct') {
       setXpCounter(xpCounter + 1)
       if (soundEnabled) correctSound()
-    } else {
-      if (soundEnabled) incorrectSound()
-    }
+    } else if (soundEnabled) incorrectSound()
 
     setStartSquare(undefined)
 
@@ -239,7 +235,7 @@ export default function VisualisationTrainer() {
     if (puzzleFinished) {
       return (
         <button
-          key={'btn' + moveNumber.toString() + move + moveColour}
+          key={`btn${  moveNumber.toString()  }${move  }${moveColour}`}
           className="h-max max-h-fit bg-none p-1 hover:bg-purple-800"
           onClick={async () => {
             const newGame = new Chess(currentPuzzle!.fen)
@@ -253,7 +249,7 @@ export default function VisualisationTrainer() {
           <FlexText />
         </button>
       )
-    } else {
+    } 
       return (
         <div
           key={moveNumber.toString() + move + moveColour}
@@ -262,7 +258,7 @@ export default function VisualisationTrainer() {
           <FlexText />
         </div>
       )
-    }
+    
   })
 
   const exit = async () => {
@@ -329,8 +325,7 @@ export default function VisualisationTrainer() {
     <>
       <Tour flowId="flow_FudOixipuMiWOaP7" />
       {mode == 'settings' ? (
-        <>
-          <div className="border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
+        <div className="border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
             <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
               <p id="tooltip-0">Adjust your settings</p>
             </div>
@@ -339,11 +334,11 @@ export default function VisualisationTrainer() {
                 <div>
                   <label className="font-bold">Your Rating</label>
                   <input
-                    type="number"
                     className="w-full border border-gray-300 bg-gray-100 px-4 py-1 text-black"
-                    min={'500'}
-                    max={'3000'}
-                    step={'10'}
+                    max="3000"
+                    min="500"
+                    step="10"
+                    type="number"
                     value={rating}
                     onInput={(e) => {
                       setRating(parseInt(e.currentTarget.value))
@@ -379,8 +374,8 @@ export default function VisualisationTrainer() {
                   <label className="font-bold">Moves to visualise</label>
                 </Tippy>
                 <select
-                  id="tooltip-1"
                   className="w-fit ml-2 border border-gray-300 px-4 py-1 bg-gray-100 text-black"
+                  id="tooltip-1"
                   value={length}
                   onChange={(e) => setLength(parseInt(e.currentTarget.value))}
                 >
@@ -400,22 +395,16 @@ export default function VisualisationTrainer() {
               >
                 Start Training
               </Button>
-              {error && (
-                <p className="bg-red-500 italic text-sm p-2 text-white">
+              {error ? <p className="bg-red-500 italic text-sm p-2 text-white">
                   {error}
-                </p>
-              )}
+                </p> : null}
             </div>
           </div>
-        </>
       ) : (
-        <>
-          <div className="relative border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
-            {loading && (
-              <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
+        <div className="relative border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
+            {loading ? <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
                 <Spinner />
-              </div>
-            )}
+              </div> : null}
             <div className="flex flex-wrap items-center justify-between text-sm">
               <div className="flex gap-1 p-2 pb-0 justify-center text-xs md:text-sm lg:text-base">
                 <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
@@ -431,15 +420,15 @@ export default function VisualisationTrainer() {
                   <p>{getDifficulty()}</p>
                 </div>
                 <p
+                  className="cursor-pointer underline hover:no-underline"
                   onClick={async () => {
                     await flow.restart()
                     setMode('settings')
                   }}
-                  className="cursor-pointer underline hover:no-underline"
                 >
                   How to use?
                 </p>
-                <XpTracker counter={xpCounter} type={'tactic'} />
+                <XpTracker counter={xpCounter} type="tactic" />
               </div>
               <div className="flex items-center gap-2 w-fit mx-auto md:mx-0">
                 <ThemeSwitch />
@@ -450,34 +439,34 @@ export default function VisualisationTrainer() {
                   <Tippy content={`Sound ${soundEnabled ? 'On' : 'Off'}`}>
                     {soundEnabled ? (
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
                         height="24"
                         viewBox="0 0 16 16"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
+                          d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
                           fill="none"
                           stroke="currentColor"
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth="1.5"
-                          d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
                         />
                       </svg>
                     ) : (
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
                         height="24"
                         viewBox="0 0 16 16"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
+                          d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
                           fill="none"
                           stroke="currentColor"
                           strokeLinecap="round"
                           strokeLinejoin="round"
                           strokeWidth="1.5"
-                          d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
                         />
                       </svg>
                     )}
@@ -486,11 +475,12 @@ export default function VisualisationTrainer() {
               </div>
             </div>
             <div className="flex flex-col gap-4 lg:flex-row p-2">
-              <div id="tooltip-3" className="relative cursor-pointer">
+              <div className="relative cursor-pointer" id="tooltip-3">
                 <Chessboard // This is the visible board, set at the start position
                   arePiecesDraggable={false}
-                  position={displayPosition}
                   boardOrientation={orientation}
+                  customSquareStyles={{ ...selectedSquares }}
+                  position={displayPosition}
                   boardWidth={Math.min(
                     windowSize.height / 1.5,
                     windowSize.width - 120,
@@ -498,24 +488,23 @@ export default function VisualisationTrainer() {
                   customBoardStyle={{
                     marginInline: 'auto',
                   }}
-                  customSquareStyles={{ ...selectedSquares }}
                 />
                 <div className="absolute inset-0 opacity-0">
                   <Chessboard // This is the hidden board for the moves
-                    onSquareClick={squareClicked}
-                    onSquareRightClick={() => {
-                      setStartSquare(undefined)
-                      setSelectedSquares({})
-                    }}
                     arePiecesDraggable={false}
-                    position={position}
                     boardOrientation={orientation}
+                    position={position}
                     boardWidth={Math.min(
                       windowSize.height / 1.5,
                       windowSize.width - 120,
                     )}
                     customBoardStyle={{
                       marginInline: 'auto',
+                    }}
+                    onSquareClick={squareClicked}
+                    onSquareRightClick={() => {
+                      setStartSquare(undefined)
+                      setSelectedSquares({})
                     }}
                   />
                 </div>
@@ -524,32 +513,32 @@ export default function VisualisationTrainer() {
                 <div className="flex flex-row items-center gap-2">
                   <p className="flex items-center gap-2 ">
                     <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
                       height="24"
                       viewBox="0 0 24 24"
+                      width="24"
+                      xmlns="http://www.w3.org/2000/svg"
                       className={
                         orientation === 'white'
                           ? 'text-white'
                           : 'rotate-180 transform text-black'
                       }
                     >
-                      <path fill="currentColor" d="M1 21h22L12 2" />
+                      <path d="M1 21h22L12 2" fill="currentColor" />
                     </svg>
                     {orientation === 'white' ? 'White' : 'Black'} to move
                   </p>
                   {puzzleStatus === 'correct' && (
                     <div className="z-50 flex flex-wrap  items-center gap-2">
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
+                        className="text-lime-500"
                         height="24"
                         viewBox="0 0 512 512"
-                        className="text-lime-500"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          fill="currentColor"
                           d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2h144c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48h-97.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192h64c17.7 0 32 14.3 32 32v224c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
+                          fill="currentColor"
                         />
                       </svg>
                       <p>Correct!</p>
@@ -560,18 +549,18 @@ export default function VisualisationTrainer() {
                         <span className="flex flex-row items-center gap-1 text-sm underline">
                           Lichess
                           <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
                             height="16"
                             viewBox="0 0 24 24"
+                            width="16"
+                            xmlns="http://www.w3.org/2000/svg"
                           >
                             <path
+                              d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
                               fill="none"
                               stroke="currentColor"
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth="2"
-                              d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
                             />
                           </svg>
                         </span>
@@ -581,15 +570,15 @@ export default function VisualisationTrainer() {
                   {puzzleStatus === 'incorrect' && (
                     <div className="z-50 flex flex-wrap items-center gap-2">
                       <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="24"
+                        className="text-red-500"
                         height="24"
                         viewBox="0 0 512 512"
-                        className="text-red-500"
+                        width="24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
-                          fill="currentColor"
                           d="M313.4 479.1c26-5.2 42.9-30.5 37.7-56.5l-2.3-11.4c-5.3-26.7-15.1-52.1-28.8-75.2h144c26.5 0 48-21.5 48-48c0-18.5-10.5-34.6-25.9-42.6C497 236.6 504 223.1 504 208c0-23.4-16.8-42.9-38.9-47.1c4.4-7.3 6.9-15.8 6.9-24.9c0-21.3-13.9-39.4-33.1-45.6c.7-3.3 1.1-6.8 1.1-10.4c0-26.5-21.5-48-48-48h-97.5c-19 0-37.5 5.6-53.3 16.1l-38.5 25.7C176 91.6 160 121.6 160 153.7v111.2c0 29.2 13.3 56.7 36 75l7.4 5.9c26.5 21.2 44.6 51 51.2 84.2l2.3 11.4c5.2 26 30.5 42.9 56.5 37.7zM32 384h64c17.7 0 32-14.3 32-32V128c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32v224c0 17.7 14.3 32 32 32z"
+                          fill="currentColor"
                         />
                       </svg>
                       <p>Incorrect!</p>
@@ -600,18 +589,18 @@ export default function VisualisationTrainer() {
                         <span className="flex flex-row items-center gap-1 text-sm underline">
                           Lichess
                           <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
                             height="16"
                             viewBox="0 0 24 24"
+                            width="16"
+                            xmlns="http://www.w3.org/2000/svg"
                           >
                             <path
+                              d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
                               fill="none"
                               stroke="currentColor"
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth="2"
-                              d="M10 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4m-8-2l8-8m0 0v5m0-5h-5"
                             />
                           </svg>
                         </span>
@@ -621,8 +610,8 @@ export default function VisualisationTrainer() {
                 </div>
                 <div className="flex flex-1 flex-col-reverse gap-2 lg:flex-col">
                   <div
-                    id="tooltip-2"
                     className="flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white"
+                    id="tooltip-2"
                   >
                     {PgnDisplay.map((item) => item)}
                   </div>
@@ -671,7 +660,6 @@ export default function VisualisationTrainer() {
               </div>
             </div>
           </div>
-        </>
       )}
     </>
   )

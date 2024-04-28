@@ -1,11 +1,11 @@
 // Add new lines to a course
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
-import { errorResponse, successResponse } from '~/app/api/responses'
 
+import { errorResponse, successResponse } from '~/app/api/responses'
 import type { CleanMove } from '~/app/components/training/courses/create/parse/ParsePGNtoLineData'
+import { prisma } from '~/server/db'
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request)
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
         const transformedMoves = line.moves.map((move, index) => ({
           move: move.notation,
           moveNumber: Math.ceil((index + 1) / 2),
-          colour: index % 2 === 0 ? true : false, // True for white, false for black
+          colour: index % 2 === 0, // True for white, false for black
           arrows: move.arrows,
           comment: move.comment
             ? { create: { comment: move.comment.trim() } } // Create a comment in the comment table if there is one
@@ -104,7 +104,7 @@ export async function POST(request: Request) {
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
-    else return errorResponse('Unknown error', 500)
+    return errorResponse('Unknown error', 500)
   } finally {
     await prisma.$disconnect()
   }

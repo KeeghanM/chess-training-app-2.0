@@ -45,11 +45,11 @@ export default async function ProductRoadmap() {
         </div>
       </TextWall>
       <iframe
+        className="mx-auto h-[70vh]"
+        height="60vh"
         src="https://starter.productboard.com/chesstraining-starter/1-chesstraining-app"
         width="100%"
-        height="60vh"
-        className="mx-auto h-[70vh]"
-      ></iframe>
+       />
       <BigText color="accent">
         If there is anything not on here you'd like to see{' '}
         <StyledLink href="/contact">get in touch</StyledLink>

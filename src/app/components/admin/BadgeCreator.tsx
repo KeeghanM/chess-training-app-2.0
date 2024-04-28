@@ -1,18 +1,16 @@
 'use client'
 
-import { useState } from 'react'
-
 import * as Sentry from '@sentry/nextjs'
-import type { ResponseJson } from '~/app/api/responses'
-
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
+import { useState } from 'react'
 
 import {
   MiscBadges,
   StreakBadges,
   TacticStreakBadges,
 } from '~/app/_util/RanksAndBadges'
+import type { ResponseJson } from '~/app/api/responses'
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
 
 export default function BadgeCreator() {
   const [open, setOpen] = useState(false)
@@ -49,7 +47,7 @@ export default function BadgeCreator() {
     e.preventDefault()
     setError('')
     if (!name || !description || !category)
-      return setError('All fields are required')
+      { setError('All fields are required'); return; }
 
     const newBadge = await createBadge(name, description, category)
     if (newBadge) {
@@ -98,16 +96,16 @@ export default function BadgeCreator() {
 
   return (
     <div>
-      <Heading as={'h2'}>Create a new badge</Heading>
+      <Heading as="h2">Create a new badge</Heading>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div>
           <label>Name</label>
           <input
             className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-            type="text"
             id="name"
             name="name"
             placeholder="Name"
+            type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
@@ -116,10 +114,10 @@ export default function BadgeCreator() {
           <label>Description</label>
           <input
             className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-            type="text"
             id="description"
             name="description"
             placeholder="Description"
+            type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -128,23 +126,22 @@ export default function BadgeCreator() {
           <label>Category</label>
           <input
             className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-            type="text"
             id="category"
             name="category"
             placeholder="category"
+            type="text"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           />
         </div>
         <Button variant="primary">Create</Button>
       </form>
-      {error && <p className="text-red-500">{error}</p>}
+      {error ? <p className="text-red-500">{error}</p> : null}
       <div className="mt-4 flex flex-col gap-2">
-        <Button onClick={() => setOpen(!open)} variant="danger">
+        <Button variant="danger" onClick={() => setOpen(!open)}>
           Load Code Badges
         </Button>
-        {open && (
-          <>
+        {open ? <>
             <p className="text-red-500">
               This will load in all badges that are stored in arrays in code. DO
               NOT USE UNLESS YOU KNOW WHAT YOURE DOING.
@@ -152,8 +149,7 @@ export default function BadgeCreator() {
             <Button variant="warning" onClick={loadCodeBadges}>
               Create Code Badges
             </Button>
-          </>
-        )}
+          </> : null}
       </div>
     </div>
   )

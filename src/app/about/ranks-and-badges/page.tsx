@@ -1,13 +1,13 @@
-import Heading from '~/app/components/_elements/heading'
-import PageHeader from '~/app/components/_layouts/pageHeader'
-import { TextWall } from '~/app/components/_layouts/textWall'
-
 import {
   MiscBadges,
   StreakBadges,
   TacticStreakBadges,
   XpRanks,
 } from '~/app/_util/RanksAndBadges'
+import Heading from '~/app/components/_elements/heading'
+import PageHeader from '~/app/components/_layouts/pageHeader'
+import { TextWall } from '~/app/components/_layouts/textWall'
+
 
 export default async function RankAndBadgesPage() {
   const ranks = Array.from(new Set(XpRanks.map((rank) => rank.rank)))
@@ -32,7 +32,7 @@ export default async function RankAndBadgesPage() {
           alt: 'Wooden chess pieces on a chess board',
         }}
       />
-      <TextWall title="How do they work?" background="light">
+      <TextWall background="light" title="How do they work?">
         <p>
           Ranks are earned by gaining experience points (XP). You gain XP by
           training on the site. This can be from any of our trainers, whether
@@ -46,7 +46,7 @@ export default async function RankAndBadgesPage() {
         </p>
       </TextWall>
       <a className="anchor" id="ranks" />
-      <TextWall title="Ranks" background="dark">
+      <TextWall background="dark" title="Ranks">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {ranks.map((rank, index) => (
             <div key={index}>
@@ -62,18 +62,18 @@ export default async function RankAndBadgesPage() {
           ))}
         </div>
       </TextWall>
-      <TextWall title="Badges" background="light">
+      <TextWall background="light" title="Badges">
         <div>
           <a className="anchor" id="badges" />
-          <Heading as={'h3'}>Daily Streaks</Heading>
+          <Heading as="h3">Daily Streaks</Heading>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {StreakBadges.map((b) => BadgeElem(b.name, b.description))}
           </div>
-          <Heading as={'h3'}>Tactics Streaks</Heading>
+          <Heading as="h3">Tactics Streaks</Heading>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {TacticStreakBadges.map((b) => BadgeElem(b.name, b.description))}
           </div>
-          <Heading as={'h3'}>Miscellaneous</Heading>
+          <Heading as="h3">Miscellaneous</Heading>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {MiscBadges.map((b) => BadgeElem(b.name, b.description))}
           </div>

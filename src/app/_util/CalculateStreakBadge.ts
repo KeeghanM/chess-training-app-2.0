@@ -17,9 +17,9 @@ export default function CalculateStreakBadge(profile: UserProfile) {
   const trainedToday = timeSinceLastTrained < oneDay && timeSinceLastTrained > 0
 
   return {
-    streakBadge: streakBadge,
-    currentStreak: currentStreak,
-    bestStreak: bestStreak,
-    trainedToday: trainedToday,
+    streakBadge,
+    currentStreak,
+    bestStreak,
+    trainedToday,
   }
 }

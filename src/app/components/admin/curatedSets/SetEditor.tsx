@@ -1,16 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
 import type { CuratedSet } from '@prisma/client'
 import * as Sentry from '@sentry/react'
-import type { ResponseJson } from '~/app/api/responses'
+import { useEffect, useState } from 'react'
 
+
+import GenerateSlug from '~/app/_util/GenerateSlug'
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 import TextEditor from '~/app/components/general/TextEditor'
 
-import GenerateSlug from '~/app/_util/GenerateSlug'
 
 export default function SetEditor(props: { set: CuratedSet }) {
   const { set } = props
@@ -128,15 +128,15 @@ export default function SetEditor(props: { set: CuratedSet }) {
         <div className="flex flex-row items-center gap-4">
           <label htmlFor="published">Published</label>
           <input
+            checked={published}
             className="border border-gray-300 px-4 py-2 bg-gray-100 text-black"
             id="published"
             type="checkbox"
-            checked={published}
             onChange={(e) => setPublished(e.target.checked)}
           />
         </div>
       </div>
-      <Button variant="primary" onClick={updateSet} disabled={status != 'idle'}>
+      <Button disabled={status != 'idle'} variant="primary" onClick={updateSet}>
         {status == 'saving' ? (
           <>
             Saving <Spinner />
@@ -145,7 +145,7 @@ export default function SetEditor(props: { set: CuratedSet }) {
           'Save'
         )}
       </Button>
-      {error && <p className="text-red-500">{error}</p>}
+      {error ? <p className="text-red-500">{error}</p> : null}
     </div>
   )
 }

@@ -17,7 +17,7 @@ export interface Line {
   moves: CleanMove[]
 }
 
-export function ParsePGNtoLineData(pgnString: string) {
+export const ParsePGNtoLineData = (pgnString: string) => {
   if (!pgnString) return null
 
   // Parse PGN String, and reject request if it is invalid
@@ -87,8 +87,8 @@ function recursiveParse(
     const cleanMove: CleanMove = {
       notation: move.notation.notation,
       turn: move.turn,
-      comment: move.commentDiag?.comment?.trim() ?? undefined,
-      arrows: move.commentDiag?.colorArrows?.join(',') ?? undefined,
+      comment: move.commentDiag.comment?.trim() ?? undefined,
+      arrows: move.commentDiag.colorArrows?.join(',') ?? undefined,
     }
     movesList.push(cleanMove)
   }

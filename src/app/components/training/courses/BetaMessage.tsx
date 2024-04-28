@@ -26,7 +26,7 @@ export default function BetaMessage() {
         <div
           className="fixed inset-0 bg-black opacity-30 z-[9999]"
           onClick={close}
-        ></div>
+         />
         <div className="fixed inset-0 flex items-center justify-center z-[9999] px-2">
           <div className="bg-white max-w-screen-sm max-h-[80vh] p-2 md:p-4 flex flex-col gap-2 overflow-y-auto">
             <Heading as="h2">Welcome to the beta!</Heading>

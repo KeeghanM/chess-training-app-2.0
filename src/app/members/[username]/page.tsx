@@ -1,13 +1,11 @@
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-import { prisma } from '~/server/db'
-
+import CalculateXpRank from '~/app/_util/CalculateXpRank'
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import XpDisplay from '~/app/components/dashboard/XpDisplay'
-
-import CalculateXpRank from '~/app/_util/CalculateXpRank'
+import { prisma } from '~/server/db'
 
 export default async function MemberPage({
   params,
@@ -44,44 +42,34 @@ export default async function MemberPage({
         {account.public ? (
           <div className="bg-gray-100 p-2 flex flex-col gap-2">
             <div className="flex items-center gap-2 flex-col md:flex-row">
-              <Heading as={'h1'}>{account.username}</Heading>
-              {account.fullName && (
-                <p className="italic text-sm">({account.fullName})</p>
-              )}
+              <Heading as="h1">{account.username}</Heading>
+              {account.fullName ? <p className="italic text-sm">({account.fullName})</p> : null}
             </div>
             <div className="w-fit">
               <XpDisplay
-                displayLink={false}
                 data={CalculateXpRank(account.experience)}
+                displayLink={false}
               />
             </div>
-            {account.description && (
-              <p className="bg-purple-700 text-white p-2">
+            {account.description ? <p className="bg-purple-700 text-white p-2">
                 {account.description}
-              </p>
-            )}
-            {account.highestOTBRating && (
-              <p>
+              </p> : null}
+            {account.highestOTBRating ? <p>
                 <span className="font-bold">OTB Rating:</span>{' '}
                 {account.highestOTBRating}
-              </p>
-            )}
-            {account.highestOnlineRating && (
-              <p>
+              </p> : null}
+            {account.highestOnlineRating ? <p>
                 <span className="font-bold">Online Rating:</span>{' '}
                 {account.highestOnlineRating}
-              </p>
-            )}
-            {account.puzzleRating && (
-              <p>
+              </p> : null}
+            {account.puzzleRating ? <p>
                 <span className="font-bold">Puzzle Rating:</span>{' '}
                 {account.puzzleRating}
-              </p>
-            )}
+              </p> : null}
           </div>
         ) : (
           <div className="bg-gray-100 p-2">
-            <Heading as={'h1'}>{account.username}</Heading>
+            <Heading as="h1">{account.username}</Heading>
             <p className="text-gray-600">
               This user has chosen to keep their profile private.
             </p>

@@ -1,24 +1,25 @@
+
+
+import { Tour } from '@frigade/react'
 import Image from 'next/image'
 import { redirect } from 'next/navigation'
 
-import { prisma } from '~/server/db'
 
-import { Tour } from '@frigade/react'
-
+import CalculateStreakBadge from '../_util/CalculateStreakBadge'
+import CalculateXpRank from '../_util/CalculateXpRank'
+import { getUserServer } from '../_util/getUserServer'
 import PremiumDisplay from '../components/dashboard/PremiumDisplay'
+
+import { PostHogClient } from '~/app/_util/trackEventOnServer'
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import StreakDisplay from '~/app/components/dashboard/StreakDisplay'
 import ToolGrid from '~/app/components/dashboard/ToolGrid'
 import XpDisplay from '~/app/components/dashboard/XpDisplay'
 import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
+import { prisma } from '~/server/db'
 
-import CalculateStreakBadge from '../_util/CalculateStreakBadge'
-import CalculateXpRank from '../_util/CalculateXpRank'
-import { getUserServer } from '../_util/getUserServer'
-import { PostHogClient } from '~/app/_util/trackEventOnServer'
-
-export type Tool = {
+export interface Tool {
   name: string
   description: string[]
   trainingLink: string
@@ -180,14 +181,14 @@ export default async function Dashboard() {
       <div className="relative">
         <div className="absolute inset-0">
           <Image
-            fill={true}
+            fill
+            alt="Chess board with pieces set up"
             className="object-cover object-center w-full h-full filter grayscale brightness-[.3]"
             src="/images/hero.avif"
-            alt="Chess board with pieces set up"
           />
         </div>
         <Container size="wide">
-          <Heading color="text-white" as={'h1'}>
+          <Heading as="h1" color="text-white">
             Welcome back,{' '}
             <span id="tooltip-6">
               {user.given_name ?? profile.username ?? user.email}
@@ -195,12 +196,12 @@ export default async function Dashboard() {
             <PremiumDisplay isPremium={isPremium} />
           </Heading>
           <div
-            id="tooltip-0"
             className="flex flex-col flex-wrap gap-2 md:flex-row"
+            id="tooltip-0"
           >
             <StreakDisplay
-              data={CalculateStreakBadge(profile)}
               badges={badges}
+              data={CalculateStreakBadge(profile)}
             />
             <XpDisplay data={CalculateXpRank(profile.experience)} />
           </div>
@@ -220,21 +221,19 @@ export default async function Dashboard() {
               return 0
             })
             .map((tool) => (
-              <ToolGrid tool={tool} key={tool.name} />
+              <ToolGrid key={tool.name} tool={tool} />
             ))}
         </div>
-        {isStaff && (
-          <div>
-            <Heading color="text-purple-700" as={'h2'}>
+        {isStaff ? <div>
+            <Heading as="h2" color="text-purple-700">
               Staff Tools
             </Heading>
             <div className="mb-2 grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {staffTools.map((tool) => (
-                <ToolGrid tool={tool} key={tool.name} />
+                <ToolGrid key={tool.name} tool={tool} />
               ))}
             </div>
-          </div>
-        )}
+          </div> : null}
       </div>
     </>
   )

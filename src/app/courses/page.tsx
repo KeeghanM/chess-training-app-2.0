@@ -1,8 +1,7 @@
-import Link from 'next/link'
 
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import Link from 'next/link'
 
 import Button from '../components/_elements/button'
 import Container from '../components/_elements/container'
@@ -10,7 +9,9 @@ import StyledLink from '../components/_elements/styledLink'
 import BigText from '../components/_layouts/bigText'
 import PageHeader from '../components/_layouts/pageHeader'
 import GetCourse from '../components/ecomm/GetCourse'
+
 import Heading from '~/app/components/_elements/heading'
+import { prisma } from '~/server/db'
 
 export const metadata = {
   title:
@@ -41,14 +42,14 @@ export default async function Courses() {
   return (
     <>
       <PageHeader
+        subTitle="The best way to improve your Chess Openings and beyond"
         title="Study Chess Openings with Natural Play Learning"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
         }}
-        subTitle="The best way to improve your Chess Openings and beyond"
-      ></PageHeader>
-      <BigText size="small" color="secondary">
+       />
+      <BigText color="secondary" size="small">
         Learn about Natural Play Learning, our innovative chess training method{' '}
         <StyledLink href="/about/features/natural-play-learning">
           here
@@ -90,20 +91,20 @@ export default async function Courses() {
                   )}
                 </p>
                 <div
-                  className="p-2"
                   dangerouslySetInnerHTML={{
                     __html: course.shortDescription ?? '',
                   }}
+                  className="p-2"
                 />
                 <div className="flex flex-col md:flex-row gap-2 p-2 items-center justify-center">
                   <GetCourse
                     courseId={course.id}
                     price={course.price}
+                    showPrice={false}
                     slug={course.slug}
                     userCourseId={
                       userCourses.find((c) => c.courseId === course.id)?.id
                     }
-                    showPrice={false}
                   />
                   <Link href={`/courses/${course.slug}`}>
                     <Button variant="secondary">View Course</Button>

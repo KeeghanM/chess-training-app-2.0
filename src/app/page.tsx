@@ -55,15 +55,15 @@ export default async function Home() {
           alt: 'Chess board with pieces set up',
         }}
       >
-        <Heading color="text-orange-500" as="h2">
+        <Heading as="h2" color="text-orange-500">
           Discover the power of science backed chess training - Available for
           free forever!
         </Heading>
       </Hero>
       <ImageRowFull
+        background="light"
         heading="The definitive destination for chess enthusiasts of all skill levels"
         imageSide="left"
-        background="light"
         image={{
           src: '/images/chess_group_detailed.png',
           alt: 'Abstract art of a varied group of people learning chess',
@@ -97,9 +97,9 @@ export default async function Home() {
         </div>
       </ImageRowFull>
       <ImageRowFull
+        background="light"
         heading="Introducing Natural Play Learning"
         imageSide="right"
-        background="light"
         image={{
           src: '/images/two_women_playing_chess.png',
           alt: 'Two women sat down studying chess surrounded by abstract art chess pieces',
@@ -130,8 +130,8 @@ export default async function Home() {
         journey.
       </BigText>
       <MultiCol
-        title="Our Training Tools"
         background="light"
+        title="Our Training Tools"
         cta={{
           text: 'See all features',
           link: '/about/features',
@@ -198,14 +198,14 @@ export default async function Home() {
         </MultiColItem>
       </MultiCol>
       <CtaRow
-        title="Ready to transform your chess game?"
-        cta={{ text: 'Sign Up Now', link: '/auth/signin' }}
         background="dark"
+        cta={{ text: 'Sign Up Now', link: '/auth/signin' }}
+        title="Ready to transform your chess game?"
       >
         <p>Sign up now for free and start your journey to chess mastery.</p>
       </CtaRow>
       <div className="item flex flex-col items-center pb-6 md:pb-12">
-        <MultiCol title="What Our Members Say" background="light">
+        <MultiCol background="light" title="What Our Members Say">
           {reviews
             .sort((a, b) => {
               return new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -219,21 +219,21 @@ export default async function Home() {
         </MultiCol>
         <div
           className="trustpilot-widget"
-          data-locale="en-GB"
-          data-template-id="56278e9abfbbba0bdcd568bc"
           data-businessunit-id="6577973a318437a64285f90c"
+          data-locale="en-GB"
           data-style-height="52px"
           data-style-width="100%"
+          data-template-id="56278e9abfbbba0bdcd568bc"
         >
           <a
             href="https://uk.trustpilot.com/review/chesstraining.app"
-            target="_blank"
             rel="noopener"
+            target="_blank"
           >
             Trustpilot
           </a>
         </div>
-        <Link target="_blank" href="https://www.buymeacoffee.com/keeghanm">
+        <Link href="https://www.buymeacoffee.com/keeghanm" target="_blank">
           <Button variant="primary">Support us with Coffee</Button>
         </Link>
       </div>

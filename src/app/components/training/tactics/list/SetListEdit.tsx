@@ -1,17 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import * as Sentry from '@sentry/nextjs'
 import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
-import type { ResponseJson } from '~/app/api/responses'
+import { useEffect, useState } from 'react'
 
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 import type { PrismaTacticsSet } from '~/app/components/training/tactics/create/TacticsSetCreator'
 
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export default function SetListEdit(props: {
   set: PrismaTacticsSet
@@ -128,7 +127,7 @@ export default function SetListEdit(props: {
                 </Button>
               </AlertDialog.Action>
               <AlertDialog.Cancel>
-                <Button variant="primary" disabled={loading}>
+                <Button disabled={loading} variant="primary">
                   Keep The Set
                 </Button>
               </AlertDialog.Cancel>
@@ -171,7 +170,7 @@ export default function SetListEdit(props: {
                 </Button>
               </AlertDialog.Action>
               <AlertDialog.Cancel>
-                <Button variant="primary" disabled={loading}>
+                <Button disabled={loading} variant="primary">
                   Keep The Set
                 </Button>
               </AlertDialog.Cancel>
@@ -202,8 +201,8 @@ export default function SetListEdit(props: {
                 <div className="">
                   <label>Set Name</label>
                   <input
-                    type="text"
                     className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                    type="text"
                     value={name}
                     onInput={(e) => {
                       setName(e.currentTarget.value)
@@ -214,8 +213,8 @@ export default function SetListEdit(props: {
               <div className="flex flex-col md:flex-row gap-2">
                 {!set.curatedSetId && (
                   <Button
-                    variant="primary"
                     disabled={loading}
+                    variant="primary"
                     onClick={updateSet}
                   >
                     {loading ? (

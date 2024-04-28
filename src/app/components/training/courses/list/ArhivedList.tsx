@@ -1,18 +1,17 @@
 'use client'
 
+import * as Sentry from '@sentry/nextjs'
 import Link from 'next/link'
-
 import { useEffect, useState } from 'react'
 
-import * as Sentry from '@sentry/nextjs'
 import 'tippy.js/dist/tippy.css'
-import type { ResponseJson } from '~/app/api/responses'
-import { env } from '~/env'
+import type { PrismaUserCourse } from './CoursesList'
 
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
+import { env } from '~/env'
 
-import type { PrismaUserCourse } from './CoursesList'
 
 export default function ArchivedList(props: { hasUnlimitedCourses: boolean }) {
   const [courses, setCourses] = useState<PrismaUserCourse[]>([])
@@ -76,7 +75,7 @@ export default function ArchivedList(props: { hasUnlimitedCourses: boolean }) {
       </div>
       {loading ? (
         <div className="relative dark:text-white w-full h-16 flex items-center justify-center">
-          <div className="absolute inset-0 bg-gray-500 opacity-30"></div>
+          <div className="absolute inset-0 bg-gray-500 opacity-30" />
           <p className="flex items-center gap-4">
             Loading... <Spinner />
           </p>
@@ -84,8 +83,8 @@ export default function ArchivedList(props: { hasUnlimitedCourses: boolean }) {
       ) : (
         <div
           className={
-            'flex flex-col gap-4 ' +
-            (courses.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : '')
+            `flex flex-col gap-4 ${ 
+            courses.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : ''}`
           }
         >
           {courses.length > 0 ? (
@@ -97,11 +96,11 @@ export default function ArchivedList(props: { hasUnlimitedCourses: boolean }) {
                 <p>{course.course.courseName}</p>
 
                 <Button
+                  variant="primary"
                   disabled={
                     (activeCount >= maxCourses && !hasUnlimitedCourses) ||
                     restoring
                   }
-                  variant="primary"
                   onClick={() => restoreCourse(course.id)}
                 >
                   {restoring ? (

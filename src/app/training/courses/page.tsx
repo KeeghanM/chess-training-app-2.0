@@ -1,11 +1,11 @@
 import { redirect } from 'next/navigation'
 
+import { getUserServer } from '~/app/_util/getUserServer'
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import BetaMessage from '~/app/components/training/courses/BetaMessage'
 import CourseList from '~/app/components/training/courses/list/CoursesList'
 
-import { getUserServer } from '~/app/_util/getUserServer'
 
 export const metadata = {
   title: 'Your Courses - ChessTraining.app',
@@ -19,8 +19,8 @@ export default async function Courses() {
   return (
     <>
       <PageHeader
-        title="Opening Courses"
         subTitle="Your Courses"
+        title="Opening Courses"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',

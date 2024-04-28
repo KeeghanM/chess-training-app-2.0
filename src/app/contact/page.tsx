@@ -8,8 +8,7 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <>
-      <Container>
+    <Container>
         <Heading as="h1">Contact Us</Heading>
         <p className="mb-4">
           We'd love to hear from you! If you have any questions, comments, or
@@ -17,6 +16,5 @@ export default function ContactPage() {
         </p>
         <ContactForm />
       </Container>
-    </>
   )
 }

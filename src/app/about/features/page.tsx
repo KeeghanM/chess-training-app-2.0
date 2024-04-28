@@ -102,10 +102,10 @@ export default async function FeaturesPage() {
         <ol className="text-orange-500 p-2 bg-[rgba(0,0,0,0.3)]">
           {features.map((feature, index) => (
             <li
-              key={'li' + index.toString()}
+              key={`li${  index.toString()}`}
               className="cursor-pointer hover:underline"
             >
-              <Link href={'#' + feature.anchor}>
+              <Link href={`#${  feature.anchor}`}>
                 {index + 1}. {feature.name}
               </Link>
             </li>
@@ -114,18 +114,18 @@ export default async function FeaturesPage() {
       </Hero>
       {features.map((feature, index) => (
         <>
-          <a id={feature.anchor} className="anchor" />
+          <a className="anchor" id={feature.anchor} />
           <CtaRow
-            title={feature.name}
+            key={`feature-${  index.toString()}`}
             background={index % 2 == 0 ? 'dark' : 'light'}
-            key={'feature-' + index.toString()}
+            title={feature.name}
             cta={{
               text: 'Learn More',
               link: feature.link,
             }}
           >
             {feature.description.map((paragraph, index) => (
-              <p className="flex-1" key={'desc-' + index.toString()}>
+              <p key={`desc-${  index.toString()}`} className="flex-1">
                 {paragraph}
               </p>
             ))}

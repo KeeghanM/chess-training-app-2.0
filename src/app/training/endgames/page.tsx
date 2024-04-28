@@ -16,27 +16,27 @@ export default async function Endgames() {
     <>
       <Hero
         title="Endgame Training"
-        image={{
-          src: '/images/hero.avif',
-          alt: 'Strategic chess endgame setup on a chess board',
-        }}
         cta={{
           text: 'Start Training',
           link: '/training/endgames/train',
         }}
+        image={{
+          src: '/images/hero.avif',
+          alt: 'Strategic chess endgame setup on a chess board',
+        }}
       >
-        <Heading color="text-orange-500" as="h2">
+        <Heading as="h2" color="text-orange-500">
           Master your endgame strategy with ChessTraining.app's Endgame Trainer.
         </Heading>
       </Hero>
       <ImageRowFull
-        heading="Understanding Chess Endgames"
         background="light"
+        heading="Understanding Chess Endgames"
+        imageSide="left"
         image={{
           src: '/images/man_chess_1.png',
           alt: 'A player deeply focused on a chess endgame scenario',
         }}
-        imageSide="left"
       >
         <a id="about" />
         <p>
@@ -56,13 +56,13 @@ export default async function Endgames() {
         </p>
       </ImageRowFull>
       <ImageRowFull
-        heading="How to Use the Endgame Trainer"
         background="light"
+        heading="How to Use the Endgame Trainer"
+        imageSide="right"
         image={{
           src: '/images/woman_chess_4.png',
           alt: 'A chess enthusiast analyzing endgame strategies',
         }}
-        imageSide="right"
       >
         <p>
           You can choose between queen, rook, knight, bishop, and pawn endgames.
@@ -80,12 +80,12 @@ export default async function Endgames() {
         </p>
       </ImageRowFull>
       <CtaRow
+        background="dark"
         title="Are You Ready to Master Chess Endgames?"
         cta={{
           text: 'Start Your Endgame Mastery',
           link: '/training/endgames/train',
         }}
-        background="dark"
       >
         <p>
           The endgame trainer is free to use for all ChessTraining.app members.

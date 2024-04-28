@@ -1,18 +1,17 @@
 'use client'
 
+import * as Sentry from '@sentry/nextjs'
 import Link from 'next/link'
-
 import { useEffect, useState } from 'react'
 
-import * as Sentry from '@sentry/nextjs'
 import 'tippy.js/dist/tippy.css'
-import type { ResponseJson } from '~/app/api/responses'
-import { env } from '~/env'
+import type { PrismaTacticsSet } from '../create/TacticsSetCreator'
 
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
+import { env } from '~/env'
 
-import type { PrismaTacticsSet } from '../create/TacticsSetCreator'
 
 export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
   const [sets, setSets] = useState<PrismaTacticsSet[]>([])
@@ -75,7 +74,7 @@ export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
       </div>
       {loading ? (
         <div className="relative dark:text-white w-full h-16 flex items-center justify-center">
-          <div className="absolute inset-0 bg-gray-500 opacity-30"></div>
+          <div className="absolute inset-0 bg-gray-500 opacity-30" />
           <p className="flex items-center gap-4">
             Loading... <Spinner />
           </p>
@@ -83,8 +82,8 @@ export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
       ) : (
         <div
           className={
-            'flex flex-col gap-4 ' +
-            (sets.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : '')
+            `flex flex-col gap-4 ${ 
+            sets.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : ''}`
           }
         >
           {sets.length > 0 ? (
@@ -96,10 +95,10 @@ export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
                 <p>{set.name}</p>
 
                 <Button
+                  variant="primary"
                   disabled={
                     (activeCount >= maxSets && !hasUnlimitedSets) || restoring
                   }
-                  variant="primary"
                   onClick={() => restoreSet(set.id)}
                 >
                   {restoring ? (

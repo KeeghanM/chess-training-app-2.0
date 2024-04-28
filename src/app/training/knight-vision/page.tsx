@@ -11,16 +11,16 @@ export default function KnightVision() {
   return (
     <>
       <PageHeader
-        title="Knight Vision"
         subTitle="Coming soon!"
+        title="Knight Vision"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
         }}
       />
       <CtaRow
-        title="Curious?"
         background="light"
+        title="Curious?"
         cta={{
           text: 'View our roadmap',
           link: '/product-roadmap',

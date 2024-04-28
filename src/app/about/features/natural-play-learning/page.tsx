@@ -19,29 +19,29 @@ export default async function NaturalPlayLearningPage() {
   return (
     <>
       <Hero
-        title={'Master Chess Openings with Natural Play Learning'}
+        title="Master Chess Openings with Natural Play Learning"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden Chess pieces on a chess board',
         }}
       >
-        <Heading color="text-orange-500" as={'h2'}>
+        <Heading as="h2" color="text-orange-500">
           Welcome to a Revolutionary Chess Training Experience
         </Heading>
       </Hero>
-      <BigText size="small" color="primary">
+      <BigText color="primary" size="small">
         At ChessTraining.app, we're redefining the way you learn chess openings.
         Our unique Natural Play Learning method is here to transform your
         understanding and mastery of chess openings.
       </BigText>
       <ImageRowFull
+        background="light"
+        heading="Courses Powered by Natural Play Learning"
+        imageSide="right"
         image={{
           src: '/images/man_chess_computer_3.png',
           alt: 'A person sat at a computer studying and improving their chess',
         }}
-        imageSide="right"
-        heading="Courses Powered by Natural Play Learning"
-        background="light"
       >
         <p>
           Our Course Trainer is specifically designed to help you learn chess
@@ -84,13 +84,13 @@ export default async function NaturalPlayLearningPage() {
         for free!
       </BigText>
       <ImageRowFull
+        background="light"
+        heading="What is Natural Play Learning?"
+        imageSide="left"
         image={{
           src: '/images/man_frustrated_3.png',
           alt: 'A man sat at a desk frustrated yet determined to improve his chess',
         }}
-        imageSide="left"
-        heading="What is Natural Play Learning?"
-        background="light"
       >
         <p>
           Natural Play Learning is a groundbreaking technique developed
@@ -125,7 +125,7 @@ export default async function NaturalPlayLearningPage() {
           </li>
         </ul>
       </ImageRowFull>
-      <TextWall title="Why choose Natural Play Learning?" background="dark">
+      <TextWall background="dark" title="Why choose Natural Play Learning?">
         <ul>
           <li>
             <strong>Faster Learning:</strong> Absorb and comprehend chess
@@ -146,9 +146,9 @@ export default async function NaturalPlayLearningPage() {
         </ul>
       </TextWall>
       <CtaRow
-        title="Ready to transform your chess game?"
-        cta={{ text: 'Sign Up Now', link: '/auth/signin' }}
         background="light"
+        cta={{ text: 'Sign Up Now', link: '/auth/signin' }}
+        title="Ready to transform your chess game?"
       >
         <p>Sign up now for free and start your journey to chess mastery.</p>
       </CtaRow>

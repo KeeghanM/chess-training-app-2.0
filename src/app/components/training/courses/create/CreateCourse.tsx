@@ -1,25 +1,26 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 
-import { useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/nextjs'
-import type { ResponseJson } from '~/app/api/responses'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
-import Button from '~/app/components/_elements/button'
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
 
-import GenerateSlug from '~/app/_util/GenerateSlug'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 import DetailsForm from './DetailsForm'
 import GroupSelector from './GroupSelector'
 import PgnToLinesForm from './PgnToLinesForm'
 import Steps from './Steps'
 import type { Line } from './parse/ParsePGNtoLineData'
+
+import GenerateSlug from '~/app/_util/GenerateSlug'
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+import type { ResponseJson } from '~/app/api/responses'
+import Button from '~/app/components/_elements/button'
+import Container from '~/app/components/_elements/container'
+import Heading from '~/app/components/_elements/heading'
 
 export default function CreateCourseForm() {
   const router = useRouter()
@@ -70,21 +71,19 @@ export default function CreateCourseForm() {
     <div className="dark:bg-slate-800">
       <Container>
         <div className="bg-gray-100 dark:bg-slate-900 p-2 md:p-4">
-          {courseName && (
-            <Heading as={'h2'} color="text-orange-500">
+          {courseName ? <Heading as="h2" color="text-orange-500">
               {courseName}
-            </Heading>
-          )}
+            </Heading> : null}
           <Steps currentStep={currentStep} />
           {currentStep == 'name' && (
             <DetailsForm
+              courseName={courseName}
+              description={description}
               finished={(name, description) => {
                 setCourseName(name)
                 setDescription(description)
                 setCurrentStep('import')
               }}
-              courseName={courseName}
-              description={description}
             />
           )}
           {currentStep == 'import' && (
@@ -111,17 +110,17 @@ export default function CreateCourseForm() {
           )}
           {currentStep == 'error' && (
             <>
-              <Heading as={'h2'} color="text-red-500">
+              <Heading as="h2" color="text-red-500">
                 Error: Something went wrong
               </Heading>
               <Button
+                variant="danger"
                 onClick={() => {
                   setCurrentStep('name')
                   setCourseName('')
                   setDescription('')
                   setLines([])
                 }}
-                variant="danger"
               >
                 Try again
               </Button>

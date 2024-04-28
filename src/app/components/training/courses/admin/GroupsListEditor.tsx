@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 
 import type { DragEndEvent } from '@dnd-kit/core'
 import {
@@ -17,13 +16,15 @@ import {
 } from '@dnd-kit/sortable'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import type { Group } from '@prisma/client'
+import { useState } from 'react'
 
-import Heading from '~/app/components/_elements/heading'
 
-import SortableItem from '~/app/_util/SortableItem'
 
 import type { LineWithMoves } from './GroupEditor'
 import GroupEditor from './GroupEditor'
+
+import SortableItem from '~/app/_util/SortableItem'
+import Heading from '~/app/components/_elements/heading'
 
 export default function GroupsListEditor(props: {
   groups: Group[]
@@ -67,43 +68,43 @@ export default function GroupsListEditor(props: {
     <>
       <Heading as="h2" color="text-white">
         <span
-          onClick={() => setOpen(!open)}
           className="flex items-center gap-2 cursor-pointer hover:text-orange-500"
+          onClick={() => setOpen(!open)}
         >
           Groups{' '}
           <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
             height="32"
             viewBox="0 0 32 32"
+            width="32"
+            xmlns="http://www.w3.org/2000/svg"
             className={
-              (open ? '-rotate-180' : '-rotate-90') +
-              ' transition-all duration-200'
+              `${open ? '-rotate-180' : '-rotate-90' 
+              } transition-all duration-200`
             }
           >
             <path
-              fill="currentColor"
               d="M16 22L6 12l1.4-1.4l8.6 8.6l8.6-8.6L26 12z"
+              fill="currentColor"
             />
           </svg>
         </span>
       </Heading>
       <DndContext
-        sensors={sensors}
         collisionDetection={closestCenter}
+        sensors={sensors}
         onDragEnd={handleDragEnd}
       >
         <SortableContext
           items={groupListItems}
           strategy={verticalListSortingStrategy}
         >
-          <div className="flex flex-col gap-2" ref={parent}>
-            {open &&
-              groups
+          <div ref={parent} className="flex flex-col gap-2">
+            {open ? groups
                 .sort((a, b) => a.sortOrder - b.sortOrder)
                 .map((group) => (
-                  <SortableItem id={group.id} key={group.id}>
+                  <SortableItem key={group.id} id={group.id}>
                     <GroupEditor
+                      addIdToDelete={addIdToDelete}
                       group={group}
                       lines={lines.filter((line) => line.groupId == group.id)}
                       setGroup={(group) => {
@@ -119,10 +120,9 @@ export default function GroupsListEditor(props: {
                           ),
                         )
                       }}
-                      addIdToDelete={addIdToDelete}
                     />
                   </SortableItem>
-                ))}
+                )) : null}
           </div>
         </SortableContext>
       </DndContext>

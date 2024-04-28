@@ -1,9 +1,10 @@
 import * as Sentry from '@sentry/nextjs'
 
-import { getUserServer } from '~/app/_util/getUserServer'
 
 import { errorResponse, successResponse } from '../../responses'
 import { CreateCheckoutSession } from '../functions/CreateCheckoutSession'
+
+import { getUserServer } from '~/app/_util/getUserServer'
 
 export async function POST(request: Request) {
   try {
@@ -32,6 +33,6 @@ export async function POST(request: Request) {
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
-    else return errorResponse('Something went wrong', 500)
+    return errorResponse('Something went wrong', 500)
   }
 }

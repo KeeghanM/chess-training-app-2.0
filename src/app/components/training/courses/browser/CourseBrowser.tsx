@@ -1,8 +1,8 @@
 'use client'
 
+import type { Comment, Group, Line, Move, UserLine } from '@prisma/client'
 import { useState } from 'react'
 
-import type { Comment, Group, Line, Move, UserLine } from '@prisma/client'
 
 import GroupBrowser from './GroupBrowser'
 import GroupListItem from './GroupListItem'
@@ -14,7 +14,7 @@ export type UserLineWithData = UserLine & {
   }
 }
 
-export type CourseBrowserProps = {
+export interface CourseBrowserProps {
   lines: UserLineWithData[]
 }
 
@@ -56,10 +56,10 @@ export default function CourseBrowser(props: CourseBrowserProps) {
               return (
                 <GroupListItem
                   key={group.id}
-                  name={group.name}
                   lines={lines}
-                  onClick={() => setOpenGroupId(group.id)}
+                  name={group.name}
                   open={openGroupId === group.id}
+                  onClick={() => setOpenGroupId(group.id)}
                 />
               )
             })}

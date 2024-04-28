@@ -8,7 +8,7 @@ interface TextWallProps {
   children: React.ReactNode
 }
 
-export function TextWall(props: TextWallProps) {
+export const TextWall = (props: TextWallProps) => {
   return (
     <div
       className={`w-full py-6 ${

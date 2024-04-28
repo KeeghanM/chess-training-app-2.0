@@ -1,10 +1,10 @@
-import { prisma } from '~/server/db'
 
 import * as Sentry from '@sentry/nextjs'
-import { errorResponse, successResponse } from '~/app/api/responses'
-import { env } from '~/env'
 
 import { getUserServer } from '~/app/_util/getUserServer'
+import { errorResponse, successResponse } from '~/app/api/responses'
+import { env } from '~/env'
+import { prisma } from '~/server/db'
 
 export async function GET() {
   const { user, isPremium } = await getUserServer()

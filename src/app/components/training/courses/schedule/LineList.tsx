@@ -5,7 +5,7 @@ import { useMemo, useState } from 'react'
 import LineRow from './LineRow'
 import type { ScheduleLine } from './LineRow'
 
-type LineListProps = {
+interface LineListProps {
   userLines: ScheduleLine[]
   courseId: string
 }
@@ -38,8 +38,8 @@ export default function LineList({ userLines, courseId }: LineListProps) {
         .map((line) => (
           <LineRow
             key={line.id}
-            line={line}
             courseId={courseId}
+            line={line}
             minDate={minDate}
             onUpdate={(id) => {
               const newLines = lines.map((l) => {

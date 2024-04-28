@@ -1,18 +1,16 @@
+import { type ContentRelationshipField, asText } from '@prismicio/client'
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 
-import { type ContentRelationshipField, asText } from '@prismicio/client'
-import Prismic from '~/prismicio'
-
+import { PrismicRichToHtml } from '~/app/_util/PrismicRichToHtml'
+import type { RichTextContent } from '~/app/_util/PrismicRichToHtml'
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import CtaRow from '~/app/components/_layouts/ctaRow'
+import Prismic from '~/prismicio'
 
-import { PrismicRichToHtml } from '~/app/_util/PrismicRichToHtml'
-import type { RichTextContent } from '~/app/_util/PrismicRichToHtml'
-
-type Params = { uid: string }
+interface Params { uid: string }
 
 export default async function Page({ params }: { params: Params }) {
   const page = await Prismic.getByUID('article', params.uid, {
@@ -48,8 +46,8 @@ export default async function Page({ params }: { params: Params }) {
             </p>
             <p className="p-1">
               <Link
-                href={`/articles/author/${author.data.uid}`}
                 className="hover:no-underline text-purple-700 underline"
+                href={`/articles/author/${author.data.uid}`}
               >
                 {author.data.name}
               </Link>
@@ -71,15 +69,13 @@ export default async function Page({ params }: { params: Params }) {
             </p>
           </div>
         </div>
-        {page.data.introduction[0] &&
-          PrismicRichToHtml(page.data.introduction[0] as RichTextContent)}
+        {page.data.introduction[0] ? PrismicRichToHtml(page.data.introduction[0] as RichTextContent) : null}
         <article className="leading-7">
           {page.data.slices[0].primary.content.map((c: RichTextContent) =>
             PrismicRichToHtml(c),
           )}
         </article>
         <script
-          type="application/ld+json"
           dangerouslySetInnerHTML={{
             __html: `{
                     "@context": "https://schema.org",
@@ -107,11 +103,12 @@ export default async function Page({ params }: { params: Params }) {
                     }
                 `,
           }}
-        ></script>
+          type="application/ld+json"
+         />
       </Container>
       <CtaRow
-        title="Ready to Elevate Your Chess Game?"
         background="dark"
+        title="Ready to Elevate Your Chess Game?"
         cta={{
           text: 'Start Training Now',
           link: '/auth/signin',

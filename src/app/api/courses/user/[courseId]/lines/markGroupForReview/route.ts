@@ -1,8 +1,9 @@
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
+
 import { errorResponse, successResponse } from '~/app/api/responses'
+import { prisma } from '~/server/db'
 
 export async function POST(
   request: Request,
@@ -42,7 +43,7 @@ export async function POST(
       where: {
         userId: user.id,
         userCourseId: courseId,
-        line: { groupId: groupId },
+        line: { groupId },
       },
       data: {
         revisionDate: adjustedDate,
@@ -53,7 +54,7 @@ export async function POST(
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
-    else return errorResponse('Unknown error', 500)
+    return errorResponse('Unknown error', 500)
   } finally {
     await prisma.$disconnect()
   }

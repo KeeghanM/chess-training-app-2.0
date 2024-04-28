@@ -1,6 +1,5 @@
 'use client'
 
-import { useMemo, useState } from 'react'
 
 import {
   DndContext,
@@ -17,10 +16,12 @@ import {
 } from '@dnd-kit/sortable'
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import type { Group, Line, Move } from '@prisma/client'
+import { useMemo, useState } from 'react'
 
-import SortableItem from '~/app/_util/SortableItem'
 
 import LineDisplay from './LineDisplay'
+
+import SortableItem from '~/app/_util/SortableItem'
 
 export type LineWithMoves = Line & { moves: Move[] }
 
@@ -74,45 +75,44 @@ export default function GroupEditor(props: {
     >
       <div className="flex items-center gap-1 p-1">
         <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
+          className="w-fit"
           height="24"
           viewBox="0 0 24 24"
-          className="w-fit"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
         >
           <path
-            fill="currentColor"
             d="M9 3h2v2H9zm4 0h2v2h-2zM9 7h2v2H9zm4 0h2v2h-2zm-4 4h2v2H9zm4 0h2v2h-2zm-4 4h2v2H9zm4 0h2v2h-2zm-4 4h2v2H9zm4 0h2v2h-2z"
+            fill="currentColor"
           />
         </svg>
         <p className="font-bold w-10">{lines.length}x</p>
         <input
           className="w-full border-b border-gray-300 px-4 py-2 bg-[rgba(255,255,255,0.2)] text-white font-bold"
+          type="text"
           value={group.groupName}
           onChange={(e) => setGroup({ ...group, groupName: e.target.value })}
-          type="text"
         />
         <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="32"
           height="32"
           viewBox="0 0 32 32"
-          onClick={() => setOpen(!open)}
+          width="32"
+          xmlns="http://www.w3.org/2000/svg"
           className={
-            (open ? '-rotate-180' : '-rotate-90') +
-            ' transition-all duration-200 cursor-pointer hover:text-orange-500 z-10'
+            `${open ? '-rotate-180' : '-rotate-90' 
+            } transition-all duration-200 cursor-pointer hover:text-orange-500 z-10`
           }
+          onClick={() => setOpen(!open)}
         >
           <path
-            fill="currentColor"
             d="M16 22L6 12l1.4-1.4l8.6 8.6l8.6-8.6L26 12z"
+            fill="currentColor"
           />
         </svg>
       </div>
-      {open && (
-        <DndContext
-          sensors={sensors}
+      {open ? <DndContext
           collisionDetection={closestCenter}
+          sensors={sensors}
           onDragEnd={handleDragEnd}
         >
           <SortableContext
@@ -120,7 +120,7 @@ export default function GroupEditor(props: {
             strategy={verticalListSortingStrategy}
           >
             {linesToDisplay.map((line) => (
-              <SortableItem id={line.id} key={line.id}>
+              <SortableItem key={line.id} id={line.id}>
                 <LineDisplay
                   line={line}
                   onChange={(line) => {
@@ -135,8 +135,7 @@ export default function GroupEditor(props: {
               </SortableItem>
             ))}
           </SortableContext>
-        </DndContext>
-      )}
+        </DndContext> : null}
     </div>
   )
 }

@@ -1,8 +1,8 @@
 'use client'
 
+import * as Sentry from '@sentry/nextjs'
 import { useEffect, useState } from 'react'
 
-import * as Sentry from '@sentry/nextjs'
 import type { ResponseJson } from '~/app/api/responses'
 
 export type availableTypes = 'line' | 'tactic'

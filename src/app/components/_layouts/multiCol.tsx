@@ -18,11 +18,11 @@ interface MultiColProps {
   children: React.ReactNode
 }
 
-export function MultiColItem(props: MultiColItemProps) {
+export const MultiColItem = (props: MultiColItemProps) => {
   return (
     <div className="flex flex-1 flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)]">
       <div className="px-2 py-1 border-b border-gray-300 font-bold">
-        <Heading as={'h3'} color="text-orange-500 !m-0 !p-0">
+        <Heading as="h3" color="text-orange-500 !m-0 !p-0">
           {props.title}
         </Heading>
       </div>
@@ -31,7 +31,7 @@ export function MultiColItem(props: MultiColItemProps) {
   )
 }
 
-export function MultiCol(props: MultiColProps) {
+export const MultiCol = (props: MultiColProps) => {
   return (
     <div
       className={`w-full ${
@@ -39,17 +39,15 @@ export function MultiCol(props: MultiColProps) {
       }`}
     >
       <div className="flex flex-col items-center justify-center gap-4 px-4 py-6 md:px-6 md:py-12 lg:px-12">
-        {props.title && <Heading as={'h2'}>{props.title}</Heading>}
+        {props.title ? <Heading as="h2">{props.title}</Heading> : null}
         <div className="flex flex-col gap-4 md:flex-row md:gap-6">
           {props.children}
         </div>
-        {props.cta && (
-          <div className="">
+        {props.cta ? <div className="">
             <Link href={props.cta.link}>
               <Button variant="accent">{props.cta.text}</Button>
             </Link>
-          </div>
-        )}
+          </div> : null}
       </div>
     </div>
   )

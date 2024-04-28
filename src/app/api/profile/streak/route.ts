@@ -1,8 +1,9 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
-import { errorResponse, successResponse } from '~/app/api/responses'
 
 import { UpdateStreak } from '~/app/_util/UpdateStreak'
+import { errorResponse, successResponse } from '~/app/api/responses'
+
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request)
@@ -17,6 +18,6 @@ export async function POST(request: Request) {
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
-    else return errorResponse('Unknown error', 500)
+    return errorResponse('Unknown error', 500)
   }
 }

@@ -1,7 +1,6 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-
 import { useState } from 'react'
 
 import 'react-quill/dist/quill.snow.css'
@@ -62,9 +61,9 @@ export default function TextEditor(props: {
     <div className="relative">
       <ReactQuill
         className="bg-white text-black"
-        theme="snow"
-        modules={modules}
         formats={formats}
+        modules={modules}
+        theme="snow"
         value={value}
         onChange={handleChange}
       />

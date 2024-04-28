@@ -1,13 +1,11 @@
 'use client'
 
-import Image from 'next/image'
-import Link from 'next/link'
-
-import { useState } from 'react'
-
 import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs'
 import Tippy from '@tippyjs/react'
+import Image from 'next/image'
+import Link from 'next/link'
 import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
+import { useState } from 'react'
 import 'tippy.js/dist/tippy.css'
 
 import CalculateXpRank from '~/app/_util/CalculateXpRank'
@@ -77,11 +75,11 @@ export default function Nav(props: {
         <Link href={user ? '/dashboard' : '/'}>
           <div className="flex items-center">
             <Image
-              src="/chesstrainingapplogo.png"
               alt="ChessTraining.app"
               className="my-1 mx-2 h-auto"
-              width={50}
               height={50}
+              src="/chesstrainingapplogo.png"
+              width={50}
             />
             <div>
               <h2 className="text-base flex flex-col gap-0 leading-none">
@@ -93,20 +91,19 @@ export default function Nav(props: {
           </div>
         </Link>
         <div className="relative flex items-center space-x-3 lg:order-2 lg:space-x-0">
-          {user && (
-            <>
+          {user ? <>
               <Tippy content="Your Profile">
                 <button
-                  type="button"
                   className="flex overflow-hidden rounded-full text-sm focus:ring-4 focus:ring-gray-600 lg:me-0"
+                  type="button"
                   onClick={() => setUserOpen(!userOpen)}
                 >
                   <span className="sr-only">Open user menu</span>
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="40"
                     height="40"
                     viewBox="0 0 24 24"
+                    width="40"
+                    xmlns="http://www.w3.org/2000/svg"
                   >
                     <g
                       fill="none"
@@ -121,12 +118,11 @@ export default function Nav(props: {
                   </svg>
                 </button>
               </Tippy>
-              {userOpen && (
-                <>
+              {userOpen ? <>
                   <div
                     className="fixed inset-0 z-10"
                     onClick={() => setUserOpen(false)}
-                  ></div>
+                   />
                   <div className="absolute right-0 top-8 z-50 my-4 list-none divide-y divide-gray-600 bg-slate-700 text-base shadow-lg border-b-4 border-purple-700">
                     <div className="px-4 py-3">
                       <span className="block text-sm  text-white">
@@ -140,21 +136,21 @@ export default function Nav(props: {
                         {rank?.rank.name})
                       </span>
                     </div>
-                    <ul className="py-2" aria-labelledby="user-menu-button">
+                    <ul aria-labelledby="user-menu-button" className="py-2">
                       <li>
                         <Link
+                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-white"
                           href="/dashboard"
                           onClick={() => setUserOpen(false)}
-                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-white"
                         >
                           Dashboard
                         </Link>
                       </li>
                       <li>
                         <Link
+                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-white"
                           href="/dashboard/settings"
                           onClick={() => setUserOpen(false)}
-                          className="block px-4 py-2 text-sm text-gray-200 hover:bg-gray-600 hover:text-white"
                         >
                           Settings
                         </Link>
@@ -169,95 +165,91 @@ export default function Nav(props: {
                       </li>
                     </ul>
                   </div>
-                </>
-              )}
-            </>
-          )}
+                </> : null}
+            </> : null}
 
           <button
-            type="button"
             className="inline-flex h-10 w-10 p-2 items-center justify-center text-sm text-white hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-gray-200 lg:hidden"
+            type="button"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             <span className="sr-only">Open main menu</span>
             <svg
-              className="h-10 w-10"
               aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
+              className="h-10 w-10"
               fill="none"
               viewBox="0 0 17 14"
+              xmlns="http://www.w3.org/2000/svg"
             >
               <path
+                d="M1 1h15M1 7h15M1 13h15"
                 stroke="currentColor"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="2"
-                d="M1 1h15M1 7h15M1 13h15"
               />
             </svg>
           </button>
         </div>
-        {menuOpen && (
-          <div
+        {menuOpen ? <div
             className="fixed inset-0 z-10 bg-[rgba(0,0,0,0.3)]"
             onClick={() => setMenuOpen(false)}
-          ></div>
-        )}
+           /> : null}
         <nav
           className={
-            (menuOpen
+            `${menuOpen
               ? 'absolute left-0 right-0 top-[100px] z-50 mx-auto w-screen max-w-screen-sm px-2 shadow-lg lg:p-0'
-              : 'hidden') +
-            ' items-center justify-between lg:order-1 lg:ml-auto lg:flex lg:w-auto '
+              : 'hidden' 
+            } items-center justify-between lg:order-1 lg:ml-auto lg:flex lg:w-auto `
           }
         >
           {openSub != '' && (
             <div
               className="fixed inset-0 z-10 hidden lg:block"
               onClick={() => setOpenSub('')}
-            ></div>
+             />
           )}
           <ul className="relative mt-4 flex flex-col divide-y divide-gray-600 border border-gray-100 bg-gray-50 p-4 font-medium rtl:space-x-reverse lg:mt-0 lg:flex-row lg:items-center lg:divide-none lg:border-0 lg:bg-transparent lg:p-0">
             {links.map((link) =>
               link.subLinks ? (
                 <div key={link.name} className="relative">
                   <button
+                    className="flex w-full items-center justify-between px-4 py-2 text-gray-900 hover:bg-orange-100 lg:w-auto lg:border-0 lg:text-white lg:hover:bg-slate-600"
                     onClick={() =>
                       setOpenSub(openSub === link.name ? '' : link.name)
                     }
-                    className="flex w-full items-center justify-between px-4 py-2 text-gray-900 hover:bg-orange-100 lg:w-auto lg:border-0 lg:text-white lg:hover:bg-slate-600"
                   >
                     {link.name}{' '}
                     <svg
-                      className="ms-2.5 h-2.5 w-2.5"
                       aria-hidden="true"
-                      xmlns="http://www.w3.org/2000/svg"
+                      className="ms-2.5 h-2.5 w-2.5"
                       fill="none"
                       viewBox="0 0 10 6"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
+                        d="m1 1 4 4 4-4"
                         stroke="currentColor"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth="2"
-                        d="m1 1 4 4 4-4"
                       />
                     </svg>
                   </button>
                   <div
                     className={
-                      'z-50 w-full divide-y divide-gray-600 bg-gray-50 font-normal lg:w-44 lg:shadow ' +
-                      (openSub === link.name
+                      `z-50 w-full divide-y divide-gray-600 bg-gray-50 font-normal lg:w-44 lg:shadow ${ 
+                      openSub === link.name
                         ? 'block lg:absolute lg:top-10'
-                        : 'hidden')
+                        : 'hidden'}`
                     }
                   >
                     <ul className="w-full divide-y divide-gray-300 py-2 text-sm text-gray-700">
                       {link.subLinks.map((subLink) => (
                         <Link
                           key={subLink.name}
-                          href={subLink.href}
                           className="block w-full px-4 py-2 hover:bg-orange-100"
+                          href={subLink.href}
                           onClick={() => {
                             setMenuOpen(false)
                             setOpenSub('')
@@ -285,23 +277,23 @@ export default function Nav(props: {
             )}
             {!user ? (
               <Link
+                className="block cursor-pointer bg-orange-500 px-4 py-2 text-white hover:bg-orange-400 lg:ml-2"
+                href="/auth/signin"
                 onClick={() => {
                   setMenuOpen(false)
                   setOpenSub('')
                 }}
-                className="block cursor-pointer bg-orange-500 px-4 py-2 text-white hover:bg-orange-400 lg:ml-2"
-                href="/auth/signin"
               >
                 Login/Register
               </Link>
             ) : (
               <Link
+                className="block cursor-pointer bg-orange-500 px-4 py-2 text-white hover:bg-orange-400 lg:ml-2"
+                href="/dashboard"
                 onClick={() => {
                   setMenuOpen(false)
                   setOpenSub('')
                 }}
-                className="block cursor-pointer bg-orange-500 px-4 py-2 text-white hover:bg-orange-400 lg:ml-2"
-                href="/dashboard"
               >
                 Dashboard
               </Link>

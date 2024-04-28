@@ -1,10 +1,11 @@
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
 import Stripe from 'stripe'
 import { v4 as uuidv4 } from 'uuid'
+
+import { prisma } from '~/server/db'
 
 export async function getUserServer() {
   const { getUser, isAuthenticated, getPermissions } = getKindeServerSession()
@@ -55,13 +56,13 @@ export async function createUserProfile(user: KindeUser) {
     })
     if (profile) return // already exists
 
-    const username = 'User' + uuidv4().slice(0, 8)
+    const username = `User${  uuidv4().slice(0, 8)}`
     const data = { id: user.id, username }
 
     // TODO: We need to have a retry mechanism here
     // for if the Username isn't unique (it's possible)
     await prisma.userProfile.create({
-      data: data,
+      data,
     })
 
     if (!user.email) return

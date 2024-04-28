@@ -2,13 +2,13 @@
 
 import { ThemeProvider } from 'next-themes'
 
-export function ThemeSwitchProvider({
+export const ThemeSwitchProvider = ({
   children,
 }: {
   children: React.ReactNode
-}) {
+}) => {
   return (
-    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+    <ThemeProvider enableSystem attribute="class" defaultTheme="system">
       {children}
     </ThemeProvider>
   )

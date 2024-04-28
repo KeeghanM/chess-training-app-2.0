@@ -2,9 +2,9 @@
 
 import Link from 'next/link'
 
+import Button from '~/app/components/_elements/button'
 import type { Tool } from '~/app/dashboard/page'
 
-import Button from '~/app/components/_elements/button'
 
 export default function ToolGrid(props: { tool: Tool }) {
   const { tool } = props
@@ -14,8 +14,8 @@ export default function ToolGrid(props: { tool: Tool }) {
       <div
         id={tool.id}
         className={
-          'px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold' +
-          (tool.active ? ' text-orange-500' : '')
+          `px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold${ 
+          tool.active ? ' text-orange-500' : ''}`
         }
       >
         {tool.active ? (
@@ -33,15 +33,13 @@ export default function ToolGrid(props: { tool: Tool }) {
             <Button variant="primary">{tool.buttonText}</Button>
           </Link>
         ) : (
-          <Button variant="secondary" disabled={true}>
+          <Button disabled variant="secondary">
             Coming Soon
           </Button>
         )}
-        {tool.learnMoreLink && (
-          <Link href={tool.learnMoreLink}>
+        {tool.learnMoreLink ? <Link href={tool.learnMoreLink}>
             <Button variant="secondary">Learn More</Button>
-          </Link>
-        )}
+          </Link> : null}
       </div>
     </div>
   )

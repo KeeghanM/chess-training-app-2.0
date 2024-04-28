@@ -27,8 +27,8 @@ export default function AboutUsPage() {
           easy-to-use tool for improving your chess skills.
         </p>
       </Hero>
-      <a id="our-mission" className="anchor" />
-      <TextWall title="Our Mission" background="light">
+      <a className="anchor" id="our-mission" />
+      <TextWall background="light" title="Our Mission">
         <p>
           Our mission is to provide an accessible, high-quality chess training
           experience for everyone. We believe in the transformative power of
@@ -37,8 +37,8 @@ export default function AboutUsPage() {
           levels improve their game through innovative, user-friendly tools.
         </p>
       </TextWall>
-      <a id="our-vision" className="anchor" />
-      <TextWall title="Our Vision" background="dark">
+      <a className="anchor" id="our-vision" />
+      <TextWall background="dark" title="Our Vision">
         <p>
           We envision a world where anyone, regardless of their background or
           resources, has access to top-tier chess training. Our vision extends
@@ -48,8 +48,8 @@ export default function AboutUsPage() {
           forefront of chess training technology.
         </p>
       </TextWall>
-      <a id="our-values" className="anchor" />
-      <MultiCol title="Our Values" background="light">
+      <a className="anchor" id="our-values" />
+      <MultiCol background="light" title="Our Values">
         <MultiColItem title="Accessibility">
           ChessTraining.app is, and always will be, free to use. We're committed
           to breaking down barriers in the chess world.
@@ -67,8 +67,8 @@ export default function AboutUsPage() {
           experience for our users every day.
         </MultiColItem>
       </MultiCol>
-      <a id="our-culture" className="anchor" />
-      <TextWall title="Our Culture" background="dark">
+      <a className="anchor" id="our-culture" />
+      <TextWall background="dark" title="Our Culture">
         <p>
           At ChessTraining.app, we're a team of chess aficionados and tech
           enthusiasts. We foster a culture of openness, collaboration, and
@@ -81,8 +81,8 @@ export default function AboutUsPage() {
           </StyledLink>
         </p>
       </TextWall>
-      <a id="our-story" className="anchor" />
-      <TextWall title="Our Story" background="light">
+      <a className="anchor" id="our-story" />
+      <TextWall background="light" title="Our Story">
         <p>
           ChessTraining.app started as a personal project by Keeghan, fueled by
           his own needs and desires in his chess journey. Recognizing a gap in

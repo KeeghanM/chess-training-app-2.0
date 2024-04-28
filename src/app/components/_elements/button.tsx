@@ -36,15 +36,15 @@ export default function Button(props: ButtonProps) {
 
   return (
     <button
+      disabled={props.disabled}
       id={props.id}
       className={
-        'flex min-w-[145px] items-center justify-center gap-2 text-sm ' +
-        styles[props.variant] +
-        (props.disabled ? ' cursor-not-allowed opacity-50' : '') +
-        (props.className ? ' ' + props.className : '')
+        `flex min-w-[145px] items-center justify-center gap-2 text-sm ${ 
+        styles[props.variant] 
+        }${props.disabled ? ' cursor-not-allowed opacity-50' : '' 
+        }${props.className ? ` ${  props.className}` : ''}`
       }
       onClick={props.onClick ? props.onClick : undefined}
-      disabled={props.disabled}
     >
       {props.children}
     </button>

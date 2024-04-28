@@ -27,7 +27,7 @@ export const successResponse = (
   )
 }
 
-export type ResponseJson = {
+export interface ResponseJson {
   message: string
   data?: Record<string, unknown>
 }

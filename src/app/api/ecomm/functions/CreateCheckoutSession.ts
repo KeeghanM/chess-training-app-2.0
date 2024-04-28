@@ -1,8 +1,9 @@
-import { prisma } from '~/server/db'
 
 import * as Sentry from '@sentry/nextjs'
 import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
 import Stripe from 'stripe'
+
+import { prisma } from '~/server/db'
 
 type ProductType = 'curatedSet' | 'course' | 'subscription'
 
@@ -111,9 +112,9 @@ export async function getProductDetails(
       return { price: course.price, name: course.courseName }
     } else if (productType === 'subscription') {
       return { price: 299, name: 'Premium Subscription' }
-    } else {
+    } 
       throw new Error('Invalid product type')
-    }
+    
   } catch (e) {
     return { price: undefined, name: undefined }
   }

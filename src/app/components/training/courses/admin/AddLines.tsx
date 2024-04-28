@@ -1,22 +1,22 @@
 'use client'
 
-import Link from 'next/link'
-
-import { useState } from 'react'
-
 import type { Course, Move } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
-import type { ResponseJson } from '~/app/api/responses'
+import Link from 'next/link'
+import { useState } from 'react'
 
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
-import StyledLink from '~/app/components/_elements/styledLink'
-
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 import GroupSelector from '../create/GroupSelector'
 import PgnToLinesForm from '../create/PgnToLinesForm'
 import type { Line } from '../create/parse/ParsePGNtoLineData'
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+import type { ResponseJson } from '~/app/api/responses'
+import Button from '~/app/components/_elements/button'
+import Heading from '~/app/components/_elements/heading'
+import StyledLink from '~/app/components/_elements/styledLink'
+
+
 
 type FullCourseData = Course & {
   lines: (Line & { moves: Move[] })[]
@@ -97,7 +97,7 @@ export default function AddLines(props: { courseId: string }) {
     <div className="p-4 bg-slate-900">
       {step === 'error' && (
         <>
-          <Heading color="text-red-500" as={'h2'}>
+          <Heading as="h2" color="text-red-500">
             Oops! Something went wrong
           </Heading>
           <p className="text-white">
@@ -111,31 +111,31 @@ export default function AddLines(props: { courseId: string }) {
       )}
       {step === 'pgn' && (
         <PgnToLinesForm
-          finished={async (lines) => {
-            await processLines(lines)
-          }}
           back={() => {
             history.back()
+          }}
+          finished={async (lines) => {
+            await processLines(lines)
           }}
         />
       )}
       {step === 'groups' && (
         <GroupSelector
-          lines={lines}
           back={() => setStep('pgn')}
           finished={uploadLines}
+          lines={lines}
         />
       )}
       {step === 'success' && (
         <div className="flex flex-col gap-2">
-          <Heading color="text-green-500" as={'h2'}>
+          <Heading as="h2" color="text-green-500">
             Success!
           </Heading>
           <p className="text-white">
             Your new lines were successfully added to the course.
           </p>
           <div className="flex gap-2">
-            <Link href={`/training/courses/`}>
+            <Link href="/training/courses/">
               <Button variant="primary">Back to course list</Button>
             </Link>
             <Link href={`/training/courses/admin/${props.courseId}`}>

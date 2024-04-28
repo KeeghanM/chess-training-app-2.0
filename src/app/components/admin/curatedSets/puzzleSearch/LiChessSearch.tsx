@@ -1,14 +1,15 @@
-import { useState } from 'react'
-
 import * as Sentry from '@sentry/react'
 import Tippy from '@tippyjs/react'
-import type { ResponseJson } from '~/app/api/responses'
+import { useState } from 'react'
 
-import Button from '~/app/components/_elements/button'
-import Spinner from '~/app/components/general/Spinner'
 
 import type { CuratedSetPuzzle } from '../CuratedSetsBrowser'
 import themes from '../themes'
+
+import type { ResponseJson } from '~/app/api/responses'
+import Button from '~/app/components/_elements/button'
+import Spinner from '~/app/components/general/Spinner'
+
 
 export default function LiChessSearch(props: {
   setPuzzle: (puzzle: CuratedSetPuzzle) => void
@@ -42,7 +43,7 @@ export default function LiChessSearch(props: {
         const json = (await resp.json()) as ResponseJson
         if (json.message != 'Puzzle found') throw new Error(json.message)
 
-        puzzle = json.data!.puzzle as CuratedSetPuzzle
+        puzzle = json.data!.puzzle
       } else {
         const themesString =
           selectedThemes.length > 0
@@ -81,16 +82,16 @@ export default function LiChessSearch(props: {
         <label htmlFor="rating">Rating</label>
         <input
           className="w-full border border-gray-300 px-2 py-1 bg-gray-100 text-black"
-          type="number"
           id="rating"
           name="rating"
           placeholder="Rating"
+          type="number"
           value={rating}
           onChange={(e) => setRating(parseInt(e.target.value))}
         />
       </div>
       <div className="flex flex-row items-center gap-1">
-        <label htmlFor="themeTypeToggle" className="min-w-fit flex-1">
+        <label className="min-w-fit flex-1" htmlFor="themeTypeToggle">
           Theme Match
         </label>
         <select
@@ -110,10 +111,10 @@ export default function LiChessSearch(props: {
         </p>
         <input
           className="w-full border border-gray-300 px-2 py-1 bg-gray-100 text-black"
-          type="text"
           id="filter"
           name="filter"
           placeholder="Search themes"
+          type="text"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
         />
@@ -125,14 +126,14 @@ export default function LiChessSearch(props: {
               theme.id.includes(filter) || selectedThemes.includes(theme.id),
           )
           .map((theme, index) => (
-            <Tippy content={theme.description} key={theme.id}>
+            <Tippy key={theme.id} content={theme.description}>
               <p
-                onClick={() => toggleTheme(theme.id)}
                 className={
-                  'cursor-pointer p-1 hover:font-bold text-black ' +
-                  (index % 2 == 0 ? ' bg-gray-200' : ' bg-gray-50') +
-                  (selectedThemes.includes(theme.id) ? ' bg-green-200' : '')
+                  `cursor-pointer p-1 hover:font-bold text-black ${ 
+                  index % 2 == 0 ? ' bg-gray-200' : ' bg-gray-50' 
+                  }${selectedThemes.includes(theme.id) ? ' bg-green-200' : ''}`
                 }
+                onClick={() => toggleTheme(theme.id)}
               >
                 {theme.name}
               </p>
@@ -143,15 +144,15 @@ export default function LiChessSearch(props: {
         <label htmlFor="puzzleId">PuzzleId</label>
         <input
           className="w-full border border-gray-300 px-2 py-1 dark:bg-gray-100"
-          type="text"
           id="puzzleId"
           name="puzzleId"
           placeholder="Overrides all the above"
+          type="text"
           value={puzzleId}
           onChange={(e) => setPuzzleId(e.target.value)}
         />
       </div>
-      <Button onClick={getPuzzle} variant="primary" disabled={loading}>
+      <Button disabled={loading} variant="primary" onClick={getPuzzle}>
         {loading ? (
           <>
             Searching... <Spinner />
@@ -160,7 +161,7 @@ export default function LiChessSearch(props: {
           'Search'
         )}
       </Button>
-      {error && <p className="text-red-500">{error}</p>}
+      {error ? <p className="text-red-500">{error}</p> : null}
     </>
   )
 }

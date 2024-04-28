@@ -1,19 +1,20 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import * as Tabs from '@radix-ui/react-tabs'
+import { useEffect, useState } from 'react'
 
+
+import { GroupItem } from './GroupItem'
+import type { Line } from './parse/ParsePGNtoLineData'
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
 
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-import { GroupItem } from './GroupItem'
-import type { Line } from './parse/ParsePGNtoLineData'
 
 export default function GroupSelector(props: {
   lines: Line[]
@@ -79,7 +80,7 @@ export default function GroupSelector(props: {
     if (!selectedGroup) return
 
     setGroupedLineCounts(
-      lines.reduce(
+      lines.reduce<Record<string, number>>(
         (prev, curr) => {
           const tag = curr.tags[selectedGroup]!
           if (prev[tag]) {
@@ -89,21 +90,20 @@ export default function GroupSelector(props: {
           }
           return prev
         },
-        {} as Record<string, number>,
+        {},
       ),
     )
   }, [selectedGroup, lines])
 
   return (
     <Container>
-      {needsPrompt && !hasPrompted && (
-        <div className="fixed inset-0 z-[99999] grid place-items-center bg-[rgba(0,0,0,0.3)]">
+      {needsPrompt && !hasPrompted ? <div className="fixed inset-0 z-[99999] grid place-items-center bg-[rgba(0,0,0,0.3)]">
           <div
             className="absolute inset-0"
             onClick={() => setHasPrompted(true)}
           />
           <div className="flex fixed bg-white p-2 z-50 max-w-[95vw] md:max-w-md min-w-md flex-col gap-2 shadow-lg">
-            <Heading color="text-red-500" as={'h4'}>
+            <Heading as="h4" color="text-red-500">
               Grouping by Colour
             </Heading>
             <p>
@@ -129,13 +129,12 @@ export default function GroupSelector(props: {
               Okay, got it!
             </Button>
           </div>
-        </div>
-      )}
+        </div> : null}
 
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <div className="flex flex-row flex-wrap items-baseline gap-2 text-sm dark:text-white">
-            <Heading as={'h4'}>Stats:</Heading>
+            <Heading as="h4">Stats:</Heading>
             <p>
               <span>Total Lines:</span>{' '}
               <span className="font-bold">{lines.length}</span>
@@ -169,18 +168,18 @@ export default function GroupSelector(props: {
               })
             }}
           >
-            <Heading as={'h4'}>Grouping Options:</Heading>
+            <Heading as="h4">Grouping Options:</Heading>
             <Tabs.List className="flex gap-2 flex-wrap">
               {groupOptions.map((group) => (
                 <Tabs.Trigger
                   key={group}
-                  className={
-                    'border-b-2 px-2 py-1 hover:border-purple-700 hover:bg-purple-200 md:px-4 md:py-2 ' +
-                    (selectedGroup === group
-                      ? 'border-purple-700 bg-purple-100'
-                      : 'border-gray-300 dark:bg-slate-700 dark:text-white')
-                  }
                   value={group}
+                  className={
+                    `border-b-2 px-2 py-1 hover:border-purple-700 hover:bg-purple-200 md:px-4 md:py-2 ${ 
+                    selectedGroup === group
+                      ? 'border-purple-700 bg-purple-100'
+                      : 'border-gray-300 dark:bg-slate-700 dark:text-white'}`
+                  }
                 >
                   {group}
                 </Tabs.Trigger>
@@ -191,10 +190,10 @@ export default function GroupSelector(props: {
             {Object.keys(groupedLineCounts).map((key) => (
               <GroupItem
                 key={key}
+                count={groupedLineCounts[key]!}
+                groupKey={key}
                 lines={lines}
                 selectedGroup={selectedGroup}
-                groupKey={key}
-                count={groupedLineCounts[key]!}
                 updateLines={(newLines) => setLines(newLines)}
               />
             ))}

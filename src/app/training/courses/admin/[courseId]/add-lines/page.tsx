@@ -1,13 +1,13 @@
-import { redirect } from 'next/navigation'
 
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
+import { redirect } from 'next/navigation'
 
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import AddLines from '~/app/components/training/courses/admin/AddLines'
+import { prisma } from '~/server/db'
 
 export default async function AddLinesPage({
   params,
@@ -54,8 +54,8 @@ export default async function AddLinesPage({
   return (
     <>
       <PageHeader
-        title={course.courseName}
         subTitle="Add Lines"
+        title={course.courseName}
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',

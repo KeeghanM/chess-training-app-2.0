@@ -1,17 +1,16 @@
 'use client'
 
-import { useState } from 'react'
-
 import type { CuratedSet } from '@prisma/client'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import * as Sentry from '@sentry/react'
-import type { ResponseJson } from '~/app/api/responses'
+import { useState } from 'react'
 
+import GenerateSlug from '~/app/_util/GenerateSlug'
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
 
-import GenerateSlug from '~/app/_util/GenerateSlug'
 
 export default function SetCreator(props: {
   onCreate: (set: CuratedSet) => void
@@ -63,7 +62,7 @@ export default function SetCreator(props: {
           onClick={close}
         />
         <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 bg-white p-4 shadow-md md:p-6 flex flex-col gap-4">
-          <Heading as={'h2'}>Create new set</Heading>
+          <Heading as="h2">Create new set</Heading>
           <div className="flex max-h-[60vh] flex-col gap-2 overflow-y-auto">
             <div className="">
               <label htmlFor="name">Name</label>
@@ -81,9 +80,9 @@ export default function SetCreator(props: {
               Cancel
             </Button>
             <Button
+              disabled={status != 'idle'}
               variant="primary"
               onClick={createSet}
-              disabled={status != 'idle'}
             >
               {status == 'saving' ? (
                 <>
@@ -94,7 +93,7 @@ export default function SetCreator(props: {
               )}
             </Button>
           </div>
-          {error && <p className="text-red-500">{error}</p>}
+          {error ? <p className="text-red-500">{error}</p> : null}
         </AlertDialog.Content>
       </AlertDialog.Portal>
     </AlertDialog.Root>

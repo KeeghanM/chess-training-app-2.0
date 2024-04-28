@@ -1,6 +1,7 @@
+import * as Sentry from '@sentry/nextjs'
+
 import { prisma } from '~/server/db'
 
-import * as Sentry from '@sentry/nextjs'
 
 export async function AddCuratedSetToUser(setId: string, userId: string) {
   if (!setId || !userId) return false
@@ -21,7 +22,7 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
       let userTacticsSet = await prisma.tacticsSet.findFirst({
         where: {
           curatedSetId: setId,
-          userId: userId,
+          userId,
         },
       })
 
@@ -33,7 +34,7 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
         userTacticsSet = await prisma.tacticsSet.create({
           data: {
             name: curatedSet.name,
-            userId: userId,
+            userId,
             curatedSetId: curatedSet.id,
             size: curatedSet.size,
             puzzles: {

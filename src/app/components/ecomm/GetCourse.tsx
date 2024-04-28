@@ -1,15 +1,17 @@
 'use client'
 
-import Link from 'next/link'
 
-import { useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import Tippy from '@tippyjs/react'
-import type { ResponseJson } from '~/app/api/responses'
+import Link from 'next/link'
+import { useState } from 'react'
+
 
 import Button from '../_elements/button'
 import Spinner from '../general/Spinner'
+
+import type { ResponseJson } from '~/app/api/responses'
 
 export default function GetCourse(props: {
   courseId: string
@@ -74,7 +76,7 @@ export default function GetCourse(props: {
           'Get for Free'
         )}
       </Button>
-      {error && <p className="text-red-500">{error}</p>}
+      {error ? <p className="text-red-500">{error}</p> : null}
     </>
   )
 }

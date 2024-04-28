@@ -1,6 +1,7 @@
+import * as Sentry from '@sentry/nextjs'
+
 import { prisma } from '~/server/db'
 
-import * as Sentry from '@sentry/nextjs'
 
 export async function AddCourseToUser(courseId: string, userId: string) {
   if (!userId) return false
@@ -22,7 +23,7 @@ export async function AddCourseToUser(courseId: string, userId: string) {
 
       let userCourse = await prisma.userCourse.findFirst({
         where: {
-          userId: userId,
+          userId,
           courseId: course.id,
         },
       })
@@ -32,7 +33,7 @@ export async function AddCourseToUser(courseId: string, userId: string) {
       if (!userCourse) {
         userCourse = await prisma.userCourse.create({
           data: {
-            userId: userId,
+            userId,
             courseId: course.id,
             linesUnseen: course.lines.length,
           },
@@ -56,7 +57,7 @@ export async function AddCourseToUser(courseId: string, userId: string) {
         course.lines.map(async (line) => {
           await prisma.userLine.create({
             data: {
-              userId: userId,
+              userId,
               userCourseId: userCourse.id,
               lineId: line.id,
             },

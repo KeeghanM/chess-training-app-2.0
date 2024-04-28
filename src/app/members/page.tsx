@@ -1,11 +1,10 @@
-import { prisma } from '~/server/db'
-
+import CalculateXpRank from '../_util/CalculateXpRank'
 import Container from '../components/_elements/container'
 import StyledLink from '../components/_elements/styledLink'
 import PageHeader from '../components/_layouts/pageHeader'
 import TrophyTile from '../components/members/TrophyTile'
 
-import CalculateXpRank from '../_util/CalculateXpRank'
+import { prisma } from '~/server/db'
 
 export default async function MembersPage({
   searchParams,
@@ -34,12 +33,12 @@ export default async function MembersPage({
   return (
     <>
       <PageHeader
+        subTitle="How do you rank among the best?"
         title="Members Leaderboard"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
         }}
-        subTitle="How do you rank among the best?"
       />
       <Container>
         {topThree.length > 0 && (
@@ -47,10 +46,10 @@ export default async function MembersPage({
             {topThree.map((member, index) => (
               <TrophyTile
                 key={member.id}
-                username={member.username}
-                xp={member.experience}
                 placement={index + 1}
                 published={member.public}
+                username={member.username}
+                xp={member.experience}
               />
             ))}
           </div>
@@ -65,10 +64,10 @@ export default async function MembersPage({
             const rank = CalculateXpRank(member.experience)
             return (
               <tr
-                className={
-                  'text-center ' + (index % 2 === 0 ? 'bg-gray-100' : '')
-                }
                 key={member.id}
+                className={
+                  `text-center ${  index % 2 === 0 ? 'bg-gray-100' : ''}`
+                }
               >
                 <td>
                   {member.public ? (

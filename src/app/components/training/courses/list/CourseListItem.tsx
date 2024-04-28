@@ -1,25 +1,25 @@
 'use client'
 
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-
-import { useEffect, useState } from 'react'
-
 import type { Course, UserCourse } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
-import type { ResponseJson } from '~/app/api/responses'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
+
+import CourseSettings from './CourseSettings'
+import type { PrismaUserCourse } from './CoursesList'
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import StyledLink from '~/app/components/_elements/styledLink'
 import PremiumSubscribe from '~/app/components/ecomm/PremiumSubscribe'
 import Spinner from '~/app/components/general/Spinner'
 import TimeSince from '~/app/components/general/TimeSince'
 
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-import CourseSettings from './CourseSettings'
-import type { PrismaUserCourse } from './CoursesList'
 
 // TODO: Add revision schedule viewer
 
@@ -42,9 +42,9 @@ export default function CourseListItem(props: {
     setOpening(true)
     trackEventOnClient('course_opened', {})
     router.push(
-      '/training/courses/' +
-        userCourse?.id +
-        (mode == 'learn' ? '?mode=newOnly' : ''),
+      `/training/courses/${ 
+        userCourse.id 
+        }${mode == 'learn' ? '?mode=newOnly' : ''}`,
     )
   }
 
@@ -74,8 +74,8 @@ export default function CourseListItem(props: {
 
   return (
     <div
-      className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300"
       key={props.courseId}
+      className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300"
     >
       {loading ? (
         <div className="flex flex-col gap-2 p-2">
@@ -89,13 +89,13 @@ export default function CourseListItem(props: {
           </div>
           <div className="flex flex-col md:flex-row gap-2 items-center">
             <div className="flex flex-col md:flex-row gap-2 items-center">
-              <div className="grid h-16 w-16 place-items-center rounded-full bg-gray-300 dark:bg-slate-700"></div>
+              <div className="grid h-16 w-16 place-items-center rounded-full bg-gray-300 dark:bg-slate-700" />
             </div>
             <div className="flex flex-col md:flex-row gap-2 md:ml-auto">
-              <Button variant="primary" disabled>
+              <Button disabled variant="primary">
                 <Spinner />
               </Button>
-              <Button variant="secondary" disabled>
+              <Button disabled variant="secondary">
                 <Spinner />
               </Button>
             </div>
@@ -117,15 +117,15 @@ export default function CourseListItem(props: {
                 Last trained{' '}
                 {userCourse?.lastTrained ? (
                   <TimeSince
+                    date={new Date(userCourse.lastTrained)}
                     text="ago"
-                    date={new Date(userCourse?.lastTrained)}
                   />
                 ) : (
                   'never'
                 )}
               </span>
             </p>
-            <CourseSettings userCourse={userCourse!} update={props.update} />
+            <CourseSettings update={props.update} userCourse={userCourse!} />
           </div>
           <div className="flex flex-col md:flex-row p-2 items-center gap-2">
             <div className="flex flex-col md:flex-row gap-2 items-center">
@@ -154,18 +154,16 @@ export default function CourseListItem(props: {
                     background: conicGradient,
                   }}
                 >
-                  <div className="h-4 w-4 rounded-full bg-gray-300 dark:bg-slate-700"></div>
+                  <div className="h-4 w-4 rounded-full bg-gray-300 dark:bg-slate-700" />
                 </div>
               </Tippy>
               <Tippy
+                disabled={Boolean(userCourse?.lines?.length)}
                 content={
-                  nextReview && (
-                    <p>
+                  nextReview ? <p>
                       Next review in <TimeSince date={nextReview} />
-                    </p>
-                  )
+                    </p> : null
                 }
-                disabled={!!userCourse?.lines?.length}
               >
                 <div className="flex flex-col gap-1">
                   <p className="text-sm italic">
@@ -231,9 +229,9 @@ export default function CourseListItem(props: {
             </div>
             <div className="flex flex-col md:flex-row gap-2 md:ml-auto">
               <Button
+                disabled={userCourse?.lines?.length == 0 || opening}
                 variant="primary"
                 onClick={() => openCourse('revise')}
-                disabled={userCourse?.lines?.length == 0 || opening}
               >
                 {opening ? (
                   <>

@@ -1,14 +1,12 @@
+import * as Sentry from '@sentry/nextjs'
 import { useState } from 'react'
 
-import * as Sentry from '@sentry/nextjs'
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import type { ResponseJson } from '~/app/api/responses'
-
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
 import TextEditor from '~/app/components/general/TextEditor'
-
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export default function DetailsForm(props: {
   finished: (name: string, description: string) => void
@@ -73,14 +71,14 @@ export default function DetailsForm(props: {
         <Heading as="h3">Give your course a name</Heading>
         <input
           className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-          type="text"
           placeholder="Ruy Lopez: For white"
+          type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
       </div>
       <div>
-        <Heading as={'h3'}>
+        <Heading as="h3">
           and a helpful description{' '}
           <span className="text-xs text-black dark:text-gray-300">
             (if you want)
@@ -95,7 +93,7 @@ export default function DetailsForm(props: {
             {status == 'loading' && <Spinner />}
           </span>
         </Button>
-        {error && <p className="text-red-500">{error}</p>}
+        {error ? <p className="text-red-500">{error}</p> : null}
       </div>
     </div>
   )

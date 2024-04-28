@@ -1,8 +1,6 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
 
-import { useEffect, useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import type { Comment, Move, UserFen } from '@prisma/client'
@@ -11,26 +9,31 @@ import Tippy from '@tippyjs/react'
 import { useWindowSize } from '@uidotdev/usehooks'
 import { Chess } from 'chess.js'
 import type { Move as ChessMove } from 'chess.js'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import type { Arrow } from 'react-chessboard/dist/chessboard/types'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 // @ts-expect-error - No types available
 import useSound from 'use-sound'
-import type { ResponseJson } from '~/app/api/responses'
-import type { PrismaUserLine } from '~/app/training/courses/[userCourseId]/page'
 
-import ThemeSwitch from '~/app/components//template/header/ThemeSwitch'
-import Button from '~/app/components/_elements/button'
-import Spinner from '~/app/components/general/Spinner'
-import XpTracker from '~/app/components/general/XpTracker'
 
-import getArrows from '~/app/_util/StringToArrows'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
+
 
 import Heading from '../../_elements/heading'
 import StyledLink from '../../_elements/styledLink'
 import ChessBoard from '../ChessBoard'
+
 import type { PrismaUserCourse } from './list/CoursesList'
+
+import getArrows from '~/app/_util/StringToArrows'
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
+import type { ResponseJson } from '~/app/api/responses'
+import ThemeSwitch from '~/app/components//template/header/ThemeSwitch'
+import Button from '~/app/components/_elements/button'
+import Spinner from '~/app/components/general/Spinner'
+import XpTracker from '~/app/components/general/XpTracker'
+import type { PrismaUserLine } from '~/app/training/courses/[userCourseId]/page'
 
 // TODO: Add delay on wrong move jumping
 // TODO: Modal for confirming exit
@@ -86,7 +89,7 @@ export default function CourseTrainer(props: {
   const [incorrectCounter, setIncorrectCounter] = useState(0)
 
   // Tracking/Stats State
-  type trainingFen = { fen: string; commentId?: number }
+  interface trainingFen { fen: string; commentId?: number }
   const [existingFens, setExistingFens] = useState<trainingFen[]>(
     props.userFens.map((fen) => {
       return { fen: fen.fen, commentId: fen.commentId ?? undefined }
@@ -528,7 +531,7 @@ export default function CourseTrainer(props: {
       // log the previous fen as one we've seen and done right.
       game.undo()
       const commentId = currentLineMoves[game.history().length]?.comment?.id
-      const trainedFen = { fen: game.fen(), commentId: commentId }
+      const trainedFen = { fen: game.fen(), commentId }
       setTrainedFens((prevTrainedFens) => [...prevTrainedFens, trainedFen])
       game.move(playerMove)
 
@@ -558,7 +561,7 @@ export default function CourseTrainer(props: {
 
     return nextLine ? (
       <button
-        key={index + '_pgn'}
+        key={`${index  }_pgn`}
         className="h-max max-h-fit bg-none px-1 py-1 hover:bg-purple-800"
         onClick={() => {
           const newGame = new Chess()
@@ -572,7 +575,7 @@ export default function CourseTrainer(props: {
         <FlexText />
       </button>
     ) : (
-      <div key={index + '_pgn'} className="px-1 py-1">
+      <div key={`${index  }_pgn`} className="px-1 py-1">
         <FlexText />
       </div>
     )
@@ -602,7 +605,7 @@ export default function CourseTrainer(props: {
 
   useEffect(() => {
     if (!currentLine || !currentLineMoves) return
-    const ourColour = currentLine.line.colour === 'White' ? true : false
+    const ourColour = currentLine.line.colour === 'White'
     const isOurMove = (move: PrismaMove) => move.colour === ourColour
     const lastIndex = currentLineMoves.reduce(
       (lastIndex, move, currentIndex) => {
@@ -656,7 +659,7 @@ export default function CourseTrainer(props: {
 
   useEffect(() => {
     if (!currentMove) return
-    if ((teaching || nextLine) && currentMove?.comment) setShowComment(true)
+    if ((teaching || nextLine) && currentMove.comment) setShowComment(true)
     else setShowComment(false)
 
     if (currentMove.arrows && teaching) {
@@ -706,30 +709,28 @@ export default function CourseTrainer(props: {
     </div>
   ) : (
     <div className="relative border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
-      {loading && (
-        <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
+      {loading ? <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
           <Spinner />
-        </div>
-      )}
+        </div> : null}
       <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
         <div className="flex flex-col gap-2">
           <p className="font-bold">{currentLine?.line.group.groupName}</p>
           <div className="flex gap-2 md:gap-4 lg:gap-6 flex-wrap italic text-sm text-gray-600 dark:text-gray-400">
             <p className="flex items-center gap-1">
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
+                className="text-orange-500"
                 height="24"
                 viewBox="0 0 32 32"
-                className="text-orange-500"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  fill="currentColor"
                   d="M16 30a14 14 0 1 1 14-14a14 14 0 0 1-14 14m0-26a12 12 0 1 0 12 12A12 12 0 0 0 16 4"
+                  fill="currentColor"
                 />
                 <path
-                  fill="currentColor"
                   d="M20.59 22L15 16.41V7h2v8.58l5 5.01z"
+                  fill="currentColor"
                 />
               </svg>
               <span>
@@ -746,30 +747,30 @@ export default function CourseTrainer(props: {
             <p className="flex items-center gap-1">
               <p className="mr-1">Moves:</p>
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
+                className="text-lime-500"
                 height="16"
                 viewBox="0 0 512 512"
-                className="text-lime-500"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  fill="currentColor"
                   d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2h144c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48h-97.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192h64c17.7 0 32 14.3 32 32v224c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
+                  fill="currentColor"
                 />
               </svg>
               <span className="text-xs">{correctCounter} correct</span>
             </p>
             <p className="flex items-center gap-1">
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
+                className="text-red-500"
                 height="16"
                 viewBox="0 0 512 512"
-                className="text-red-500"
+                width="16"
+                xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  fill="currentColor"
                   d="M313.4 479.1c26-5.2 42.9-30.5 37.7-56.5l-2.3-11.4c-5.3-26.7-15.1-52.1-28.8-75.2h144c26.5 0 48-21.5 48-48c0-18.5-10.5-34.6-25.9-42.6C497 236.6 504 223.1 504 208c0-23.4-16.8-42.9-38.9-47.1c4.4-7.3 6.9-15.8 6.9-24.9c0-21.3-13.9-39.4-33.1-45.6c.7-3.3 1.1-6.8 1.1-10.4c0-26.5-21.5-48-48-48h-97.5c-19 0-37.5 5.6-53.3 16.1l-38.5 25.7C176 91.6 160 121.6 160 153.7v111.2c0 29.2 13.3 56.7 36 75l7.4 5.9c26.5 21.2 44.6 51 51.2 84.2l2.3 11.4c5.2 26 30.5 42.9 56.5 37.7zM32 384h64c17.7 0 32-14.3 32-32V128c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32v224c0 17.7 14.3 32 32 32z"
+                  fill="currentColor"
                 />
               </svg>
               <span className="text-xs">{incorrectCounter} incorrect</span>
@@ -785,34 +786,34 @@ export default function CourseTrainer(props: {
             <Tippy content={`Sound ${soundEnabled ? 'On' : 'Off'}`}>
               {soundEnabled ? (
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
                   height="24"
                   viewBox="0 0 16 16"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
+                    d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
                     fill="none"
                     stroke="currentColor"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="1.5"
-                    d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm9 .5s1 .5 1 1.75s-1 1.75-1 1.75"
                   />
                 </svg>
               ) : (
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
                   height="24"
                   viewBox="0 0 16 16"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
+                    d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
                     fill="none"
                     stroke="currentColor"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="1.5"
-                    d="M1.75 5.75v4.5h2.5l4 3V2.75l-4 3zm12.5 0l-3.5 4.5m0-4.5l3.5 4.5"
                   />
                 </svg>
               )}
@@ -823,42 +824,38 @@ export default function CourseTrainer(props: {
       <div className="flex flex-col md:flex-row">
         <div>
           <ChessBoard
+            enableArrows
+            enableHighlights
+            additionalArrows={arrows}
+            additionalSquares={highlightSquares}
             game={game}
-            position={position}
+            moveMade={handleMove}
             orientation={orientation}
+            position={position}
             readyForInput={interactive}
             soundEnabled={soundEnabled}
-            additionalSquares={highlightSquares}
-            moveMade={handleMove}
-            additionalArrows={arrows}
-            enableHighlights={true}
-            enableArrows={true}
           />
-          <XpTracker counter={xpCounter} type={'line'} />
+          <XpTracker counter={xpCounter} type="line" />
         </div>
         <div className="flex flex-col gap-2 flex-1 p-2">
-          {showComment && (
-            <p
+          {showComment ? <p
+              className=" p-2 bg-purple-900 overflow-y-auto text-sm"
               style={{
                 maxHeight:
                   Math.min(windowSize.height / 1.75, windowSize.width - 50) *
                   0.5,
               }}
-              className=" p-2 bg-purple-900 overflow-y-auto text-sm"
             >
               {currentMove?.comment?.comment}
-            </p>
-          )}
+            </p> : null}
           <div
+            className="flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white flex-1 overflow-y-auto"
             style={{
               maxHeight: showComment
                 ? Math.min(windowSize.height / 1.75, windowSize.width - 50) *
                   0.5
                 : '100%',
             }}
-            className={
-              'flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white flex-1 overflow-y-auto'
-            }
           >
             {PgnDisplay.map((item) => item)}
           </div>
@@ -872,22 +869,18 @@ export default function CourseTrainer(props: {
             />
             <span>Auto Next on correct</span>
           </label>
-          {teaching && (
-            <Button variant="primary" onClick={resetTeachingMove}>
+          {teaching ? <Button variant="primary" onClick={resetTeachingMove}>
               Got it!
-            </Button>
-          )}
-          {nextLine && !autoNext && (
-            <Button
-              variant="primary"
+            </Button> : null}
+          {nextLine && !autoNext ? <Button
               disabled={status == 'loading'}
+              variant="primary"
               onClick={async () => {
                 await startNextLine()
               }}
             >
               Next Line {status == 'loading' && <Spinner />}
-            </Button>
-          )}
+            </Button> : null}
           <Button
             variant="danger"
             onClick={() => router.push('/training/courses/')}

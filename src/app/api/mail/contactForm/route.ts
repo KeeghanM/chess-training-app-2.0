@@ -1,5 +1,6 @@
 import * as Sentry from '@sentry/nextjs'
 import nodemailer from 'nodemailer'
+
 import { errorResponse, successResponse } from '~/app/api/responses'
 
 export async function POST(request: Request) {
@@ -28,7 +29,7 @@ export async function POST(request: Request) {
     await transporter.sendMail({
       from: `${name} <${email}>`,
       to: process.env.SMTP_USER,
-      subject: subject,
+      subject,
       text: `From: ${name} <${email}>
 Message:
 ${message}`,
@@ -38,6 +39,6 @@ ${message}`,
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
-    else return errorResponse('Unknown error', 500)
+    return errorResponse('Unknown error', 500)
   }
 }

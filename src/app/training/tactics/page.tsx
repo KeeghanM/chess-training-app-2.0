@@ -19,27 +19,27 @@ export default async function Tactics() {
     <>
       <Hero
         title="Chess Tactics Training"
-        image={{
-          src: '/images/hero.avif',
-          alt: 'Wooden chess pieces on a chess board',
-        }}
         cta={{
           text: 'Start Training',
           link: '/training/tactics/list',
         }}
+        image={{
+          src: '/images/hero.avif',
+          alt: 'Wooden chess pieces on a chess board',
+        }}
       >
-        <Heading color="text-orange-500" as="h2">
+        <Heading as="h2" color="text-orange-500">
           Train Your Chess Tactics to Master Level
         </Heading>
       </Hero>
       <ImageRowFull
-        heading="How to use the Tactics Trainer"
         background="light"
+        heading="How to use the Tactics Trainer"
+        imageSide="right"
         image={{
           src: '/images/woman_studying_2.png',
           alt: 'A woman studying chess while sat at a desk',
         }}
-        imageSide="right"
       >
         <p>
           In our Chess Tactics Trainer we have implemented the{' '}
@@ -60,13 +60,13 @@ export default async function Tactics() {
         </p>
       </ImageRowFull>
       <ImageRowFull
-        heading="What is the Woodpecker Method"
         background="light"
+        heading="What is the Woodpecker Method"
+        imageSide="left"
         image={{
           src: '/images/man_chess_computer.png',
           alt: 'A man sat at a computer studying and improving his chess',
         }}
-        imageSide="left"
       >
         <a id="about" />
         <p>
@@ -90,12 +90,12 @@ export default async function Tactics() {
       </ImageRowFull>
 
       <CtaRow
+        background="dark"
         title="Ready to take your game to the next level?"
         cta={{
           text: 'Start Training',
           link: '/training/tactics/list',
         }}
-        background="dark"
       >
         <p>Create up to three puzzles sets for free. No costs. Forever.</p>
       </CtaRow>

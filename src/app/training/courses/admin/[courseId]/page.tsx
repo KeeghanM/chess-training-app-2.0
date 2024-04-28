@@ -1,13 +1,13 @@
-import { redirect } from 'next/navigation'
 
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
+import { redirect } from 'next/navigation'
 
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import CourseAdminPanel from '~/app/components/training/courses/admin/AdminPanel'
+import { prisma } from '~/server/db'
 
 export default async function CourseAdminPage({
   params,
@@ -62,8 +62,8 @@ export default async function CourseAdminPage({
   return (
     <>
       <PageHeader
-        title={course.courseName}
         subTitle="Admin Panel"
+        title={course.courseName}
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',

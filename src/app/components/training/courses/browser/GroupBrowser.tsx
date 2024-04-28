@@ -1,17 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
 import { Chess } from 'chess.js'
+import { useEffect, useState } from 'react'
 import type { Arrow } from 'react-chessboard/dist/chessboard/types'
+
+import ChessBoard from '../../ChessBoard'
+
+import type { UserLineWithData } from './CourseBrowser'
+import PgnBrowser from './PgnBrowser'
 
 import type { Move } from '~/app/_util/BuildPgn'
 import BuildPGN from '~/app/_util/BuildPgn'
 import getArrows from '~/app/_util/StringToArrows'
 
-import ChessBoard from '../../ChessBoard'
-import type { UserLineWithData } from './CourseBrowser'
-import PgnBrowser from './PgnBrowser'
 
 export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
   const pgn = BuildPGN(
@@ -90,23 +91,23 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
     <div className="flex gap-2 flex-col lg:flex-row">
       <div>
         <ChessBoard
-          game={game}
-          position={position}
-          orientation={orientation}
-          readyForInput={false}
-          additionalSquares={highlightSquares}
+          enableArrows
+          enableHighlights
           additionalArrows={arrows}
-          enableArrows={true}
-          enableHighlights={true}
-          soundEnabled={soundEnabled}
+          additionalSquares={highlightSquares}
+          game={game}
           moveMade={null}
+          orientation={orientation}
+          position={position}
+          readyForInput={false}
+          soundEnabled={soundEnabled}
         />
       </div>
       <div className="flex-1 max-w-[500px]">
         <PgnBrowser
-          pgn={pgn}
-          moveSelected={setCurrentMove}
           currentMove={currentMove}
+          moveSelected={setCurrentMove}
+          pgn={pgn}
         />
       </div>
     </div>

@@ -1,15 +1,15 @@
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
 
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
 import GetCuratedSet from '~/app/components/ecomm/GetCuratedSet'
+import { prisma } from '~/server/db'
 
 export default async function CuratedSetPage({
   params,
@@ -91,31 +91,27 @@ export default async function CuratedSetPage({
             </ul>
           </div>
           <GetCuratedSet
-            setId={set.id}
+            showPrice
             price={set.price}
+            setId={set.id}
             slug={set.slug}
             userSetId={userSetId}
-            showPrice={true}
           />
-          {set.description && (
-            <article
-              className="p-4 bg-gray-100"
+          {set.description ? <article
               dangerouslySetInnerHTML={{ __html: set.description }}
-            />
-          )}
-          {set.description && (
-            <div className="p-4 bg-gray-100">
+              className="p-4 bg-gray-100"
+            /> : null}
+          {set.description ? <div className="p-4 bg-gray-100">
               <Heading as="h2">Ready to go?</Heading>
               <p>Ready to take your game to the next level?</p>
               <GetCuratedSet
-                setId={set.id}
+                showPrice
                 price={set.price}
+                setId={set.id}
                 slug={set.slug}
                 userSetId={userSetId}
-                showPrice={true}
               />
-            </div>
-          )}
+            </div> : null}
         </div>
       </Container>
     </>

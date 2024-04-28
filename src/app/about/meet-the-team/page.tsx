@@ -68,7 +68,7 @@ export default function MeetTheTeam() {
           alt: 'Wooden Chess pieces on a chess board',
         }}
       />
-      <MultiCol title="Meet the Team" background="light">
+      <MultiCol background="light" title="Meet the Team">
         {teamMembers.map((member, index) => (
           <MultiColItem key={index} title={member.name}>
             <Heading as="h4" color="text-[rgba(0,0,0,0.5)]">

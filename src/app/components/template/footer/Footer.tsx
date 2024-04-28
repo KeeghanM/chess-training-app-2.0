@@ -113,12 +113,12 @@ export default function Footer() {
       <div className="flex flex-col justify-evenly gap-4 md:flex-row md:gap-6">
         {sections.map((section, i) => (
           <div key={i} className="flex flex-col gap-2">
-            <Heading as={'h3'}>{section.title}</Heading>
+            <Heading as="h3">{section.title}</Heading>
             {section.links.map((link, i) => (
               <Link
                 key={i}
-                href={link.url}
                 className="flex items-center gap-2 hover:underline"
+                href={link.url}
               >
                 {link.icon}
                 <span>{link.text}</span>

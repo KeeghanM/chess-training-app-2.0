@@ -1,6 +1,7 @@
+import * as Sentry from '@sentry/nextjs'
+
 import { prisma } from '~/server/db'
 
-import * as Sentry from '@sentry/nextjs'
 
 export async function AddBadgeToUser(userId: string, name: string) {
   if (!name || !userId) return
@@ -15,7 +16,7 @@ export async function AddBadgeToUser(userId: string, name: string) {
     const existingBadge = await prisma.userBadge.findFirst({
       where: {
         badgeName: name,
-        userId: userId,
+        userId,
       },
     })
     if (existingBadge) return
@@ -24,10 +25,10 @@ export async function AddBadgeToUser(userId: string, name: string) {
     await prisma.userBadge.create({
       data: {
         badgeName: name,
-        userId: userId,
+        userId,
       },
     })
-    return
+    
   } catch (e) {
     Sentry.captureException(e)
   } finally {
@@ -48,7 +49,7 @@ export async function RemoveBadgeFromUser(userId: string, name: string) {
     const existingBadge = await prisma.userBadge.findFirst({
       where: {
         badgeName: name,
-        userId: userId,
+        userId,
       },
     })
     if (!existingBadge) return
@@ -59,7 +60,7 @@ export async function RemoveBadgeFromUser(userId: string, name: string) {
         id: existingBadge.id,
       },
     })
-    return
+    
   } catch (e) {
     Sentry.captureException(e)
   } finally {

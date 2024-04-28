@@ -15,28 +15,28 @@ export default async function VisualisationPage() {
     <>
       <Hero
         title="Visualisation Training"
-        image={{
-          src: '/images/hero.avif',
-          alt: 'Wooden chess pieces on a chess board',
-        }}
         cta={{
           text: 'Start Visualizing',
           link: '/training/visualisation/train',
         }}
+        image={{
+          src: '/images/hero.avif',
+          alt: 'Wooden chess pieces on a chess board',
+        }}
       >
-        <Heading color="text-orange-500" as="h2">
+        <Heading as="h2" color="text-orange-500">
           Enhance your chess foresight with ChessTraining.app's Visualisation
           Trainer.
         </Heading>
       </Hero>
       <ImageRowFull
-        heading="Why Visualisation Training Matters"
         background="light"
+        heading="Why Visualisation Training Matters"
+        imageSide="left"
         image={{
           src: '/images/woman_frustrated_2.png',
           alt: 'A female chess player pulling her hair in frustration',
         }}
-        imageSide="left"
       >
         <p>
           Do you struggle to see past two or three moves? Find long calculations
@@ -55,13 +55,13 @@ export default async function VisualisationPage() {
         </p>
       </ImageRowFull>
       <ImageRowFull
-        heading="How to Use the Visualisation Trainer"
         background="light"
+        heading="How to Use the Visualisation Trainer"
+        imageSide="right"
         image={{
           src: '/images/man_chess_2.png',
           alt: 'A user engaging with the Visualisation Trainer interface',
         }}
-        imageSide="right"
       >
         <p>
           You'll be presented with a position and a list of moves. Visualize the
@@ -81,12 +81,12 @@ export default async function VisualisationPage() {
         </p>
       </ImageRowFull>
       <CtaRow
+        background="dark"
         title="Ready to Sharpen Your Visualization Skills?"
         cta={{
           text: 'Start Visualizing',
           link: '/training/visualisation/list',
         }}
-        background="dark"
       >
         <p>
           Improve your ability to foresee complex scenarios and tactics. Begin

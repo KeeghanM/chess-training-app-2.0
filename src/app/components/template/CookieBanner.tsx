@@ -1,14 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import { usePostHog } from 'posthog-js/react'
+import { useEffect, useState } from 'react'
 
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export default function CookieBanner() {
   const [showBanner, setShowBanner] = useState(false)
@@ -41,19 +41,18 @@ export default function CookieBanner() {
   }
 
   return (
-    <>
-      <div className="fixed inset-0 z-[5000] grid place-items-center">
+    <div className="fixed inset-0 z-[5000] grid place-items-center">
         <div
-          onClick={acceptCookies}
           className="fixed inset-0 bg-[rgba(0,0,0,0.5)] "
-        ></div>
+          onClick={acceptCookies}
+         />
         <div className="z-[9999] flex max-h-[90vh] w-[850px] max-w-[90vw] flex-col items-center gap-4 bg-slate-800 p-4 text-sm text-white shadow-md md:p-6 lg:px-24">
           <Heading as="h3">
             We're all about the 🍪cookies🍪, but only the good kind! 🎉
           </Heading>
           <div
-            className="flex flex-col items-center gap-2 overflow-y-scroll"
             ref={parent}
+            className="flex flex-col items-center gap-2 overflow-y-scroll"
           >
             <p>
               Here at ChessTraining.app, our cookie use is all about making your
@@ -70,8 +69,7 @@ export default function CookieBanner() {
                 Read More
               </p>
             )}
-            {readMore && (
-              <>
+            {readMore ? <>
                 <p>
                   Our trusty sidekick in this endeavor is PostHog, a product
                   analytics platform. It helps us track events like
@@ -91,8 +89,7 @@ export default function CookieBanner() {
                 >
                   Hide
                 </p>
-              </>
-            )}
+              </> : null}
           </div>
           <div className="flex flex-col gap-4 md:flex-row">
             <Button variant="success" onClick={acceptCookies}>
@@ -104,6 +101,5 @@ export default function CookieBanner() {
           </div>
         </div>
       </div>
-    </>
   )
 }

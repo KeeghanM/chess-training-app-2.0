@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 
 import type { DragEndEvent } from '@dnd-kit/core'
 import {
@@ -19,10 +18,11 @@ import {
 } from '@dnd-kit/sortable'
 import type { Badge } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
+import { useEffect, useState } from 'react'
 
-import Heading from '~/app/components/_elements/heading'
 
 import SortableItem from '~/app/_util/SortableItem'
+import Heading from '~/app/components/_elements/heading'
 
 export default function ExistingBadges(props: { existingBadges: Badge[] }) {
   const [existingBadges, setExistingBadges] = useState(props.existingBadges)
@@ -80,11 +80,11 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
 
   return (
     <>
-      <Heading as={'h2'}>Existing badges</Heading>
+      <Heading as="h2">Existing badges</Heading>
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4">
         <DndContext
-          sensors={sensors}
           collisionDetection={closestCenter}
+          sensors={sensors}
           onDragEnd={handleDragEnd}
         >
           {categories.map((category) => {
@@ -93,10 +93,10 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
               .map((badge) => badge.name)
             return (
               <div key={category}>
-                <Heading as={'h3'}>{category}</Heading>
+                <Heading as="h3">{category}</Heading>
                 <SortableContext
-                  items={items}
                   id={category}
+                  items={items}
                   strategy={verticalListSortingStrategy}
                 >
                   <div className="flex flex-col gap-1">
@@ -104,7 +104,7 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
                       .filter((badge) => badge.category === category)
                       .map((badge) => (
                         <SortableItem id={badge.name}>
-                          <p className="bg-gray-200 p-1" key={badge.name}>
+                          <p key={badge.name} className="bg-gray-200 p-1">
                             <strong>{badge.name}</strong> - {badge.description}
                           </p>
                         </SortableItem>

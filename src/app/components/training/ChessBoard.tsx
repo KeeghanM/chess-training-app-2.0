@@ -1,11 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 
 import { useWindowSize } from '@uidotdev/usehooks'
-import type { Chess } from 'chess.js'
-import type { Move, Piece, Square } from 'chess.js'
+import type { Chess , Move, Piece, Square } from 'chess.js'
 import useSound from 'node_modules/use-sound/dist'
+import { useEffect, useState } from 'react'
 import { Chessboard } from 'react-chessboard'
 import type {
   Arrow,
@@ -77,7 +76,7 @@ export default function ChessBoard(props: ChessBoardProps) {
     const pieceType = pieceString.split('')[1]
 
     if (
-      lastMovePiece?.type === 'p' &&
+      lastMovePiece.type === 'p' &&
       ((pieceColor == 'w' && targetRank === '8' && sourceCol == targetCol) ||
         (pieceColor == 'b' && targetRank === '1' && sourceCol == targetCol))
     ) {
@@ -138,7 +137,7 @@ export default function ChessBoard(props: ChessBoardProps) {
     // if we click our own piece
     // then set the start square and clicked piece
     // (highlighting is handled by a useEffect)
-    if (piece?.color === game.turn()) {
+    if (piece.color === game.turn()) {
       setStartSquare(clickedSquare)
       setClickedPiece(piece)
       return
@@ -171,7 +170,7 @@ export default function ChessBoard(props: ChessBoardProps) {
         clickedSquare,
         clickedPiece.type + clickedPiece.color,
       )
-      return
+      
     }
   }
 
@@ -229,28 +228,18 @@ export default function ChessBoard(props: ChessBoardProps) {
   return (
     <div className="m-2">
       <Chessboard
-        onPieceDrop={handlePieceDrop}
-        onSquareClick={handleSquareClick}
-        onSquareRightClick={() => {
-          setStartSquare(undefined)
-          setClickedPiece(undefined)
-        }}
-        promotionToSquare={moveTo}
-        onDragOverSquare={(square) => {
-          if (!startSquare) {
-            setStartSquare(square)
-          }
-          setMoveTo(square)
-        }}
-        showPromotionDialog={showPromotionDialog}
-        onPromotionPieceSelect={handlePromotionSelection}
         arePiecesDraggable={props.readyForInput}
-        position={props.position}
         boardOrientation={props.orientation}
+        position={props.position}
+        promotionToSquare={moveTo}
+        showPromotionDialog={showPromotionDialog}
         boardWidth={Math.min(
           (windowSize.height ?? 800) * 0.7,
           (windowSize.width ?? 300) * 0.9,
         )}
+        customArrows={
+          props.enableArrows ? [...props.additionalArrows, ...arrows] : []
+        }
         customBoardStyle={{
           marginInline: 'auto',
         }}
@@ -259,9 +248,19 @@ export default function ChessBoard(props: ChessBoardProps) {
             ? { ...optionSquares, ...props.additionalSquares }
             : {}
         }
-        customArrows={
-          props.enableArrows ? [...props.additionalArrows, ...arrows] : []
-        }
+        onPieceDrop={handlePieceDrop}
+        onPromotionPieceSelect={handlePromotionSelection}
+        onSquareClick={handleSquareClick}
+        onDragOverSquare={(square) => {
+          if (!startSquare) {
+            setStartSquare(square)
+          }
+          setMoveTo(square)
+        }}
+        onSquareRightClick={() => {
+          setStartSquare(undefined)
+          setClickedPiece(undefined)
+        }}
       />
     </div>
   )

@@ -1,12 +1,14 @@
-import Link from 'next/link'
 
 import { asHTML, asText } from '@prismicio/client'
 import type { ContentRelationshipField } from '@prismicio/client'
-import Prismic from '~/prismicio'
+import Link from 'next/link'
+
 
 import Button from '../components/_elements/button'
 import Container from '../components/_elements/container'
 import Heading from '../components/_elements/heading'
+
+import Prismic from '~/prismicio'
 
 export const metadata = {
   title: 'Read the latest Articles on Chess Improvement',
@@ -48,11 +50,10 @@ export default async function ArticlesPage() {
             }
             return (
               <div
-                className="flex flex-col gap-0 mb-4 border border-gray-300 shadow-md bg-[rgba(0,0,0,0.03)]  hover:shadow-lg transition-shadow duration-300"
                 key={article.id}
+                className="flex flex-col gap-0 mb-4 border border-gray-300 shadow-md bg-[rgba(0,0,0,0.03)]  hover:shadow-lg transition-shadow duration-300"
               >
                 <script
-                  type="application/ld+json"
                   dangerouslySetInnerHTML={{
                     __html: `{
                     "@context": "https://schema.org",
@@ -80,7 +81,8 @@ export default async function ArticlesPage() {
                     }
                 `,
                   }}
-                ></script>
+                  type="application/ld+json"
+                 />
                 <div className="px-2 py-1 border-b border-gray-300 font-bold text-orange-500">
                   <Link
                     className="hover:underline"
@@ -96,8 +98,8 @@ export default async function ArticlesPage() {
                     </p>
                     <p className="p-1">
                       <Link
-                        href={`/articles/author/${author.data.uid}`}
                         className="hover:no-underline text-purple-700 underline"
+                        href={`/articles/author/${author.data.uid}`}
                       >
                         {author.data.name}
                       </Link>
@@ -119,10 +121,10 @@ export default async function ArticlesPage() {
                   </div>
                 </div>
                 <div
-                  className="p-2"
                   dangerouslySetInnerHTML={{
                     __html: asHTML(article.data.introduction) ?? '',
                   }}
+                  className="p-2"
                 />
                 <Link className="p-2 mx-auto" href={`/articles/${article.uid}`}>
                   <Button variant="primary">Read More</Button>

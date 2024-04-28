@@ -1,10 +1,8 @@
-import { prisma } from '~/server/db'
-
+import { getUserServer } from '~/app/_util/getUserServer'
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import PageHeader from '~/app/components/_layouts/pageHeader'
-
-import { getUserServer } from '~/app/_util/getUserServer'
+import { prisma } from '~/server/db'
 
 export default async function BadgesPage() {
   const { badges } = await getUserServer()
@@ -33,12 +31,12 @@ export default async function BadgesPage() {
     <>
       <PageHeader
         title="Your Badges"
-        subTitle={`
-          You have ${badges.length} out of ${allBadges.length} possible badges`}
         image={{
           src: '/images/hero.avif',
           alt: 'Chess board with pieces set up',
         }}
+        subTitle={`
+          You have ${badges.length} out of ${allBadges.length} possible badges`}
       />
       <Container>
         <p>
@@ -47,23 +45,23 @@ export default async function BadgesPage() {
         </p>
         {categories.map((category) => (
           <div key={category}>
-            <Heading as={'h2'}>{category}</Heading>
+            <Heading as="h2">{category}</Heading>
             <div className="grid grid-cols-2 gap-1 md:grid-cols-3 lg:grid-cols-4">
               {allBadges
                 .filter((badge) => badge.category === category)
                 .sort((a, b) => a.sort - b.sort)
                 .map((badge) => (
                   <div
+                    key={badge.name}
                     className={
-                      'flex flex-col items-center justify-start gap-1 p-2 text-white' +
-                      (badges.filter((b) => b.badgeName === badge.name).length >
+                      `flex flex-col items-center justify-start gap-1 p-2 text-white${ 
+                      badges.filter((b) => b.badgeName === badge.name).length >
                       0
                         ? ' border-4 border-orange-500 bg-purple-700'
-                        : ' bg-gray-600')
+                        : ' bg-gray-600'}`
                     }
-                    key={badge.name}
                   >
-                    <p className={'text-center font-bold text-white'}>
+                    <p className="text-center font-bold text-white">
                       {badge.name}
                     </p>
                     <p className="text-center text-xs">{badge.description}</p>

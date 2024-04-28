@@ -1,8 +1,7 @@
-import Link from 'next/link'
 
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import Link from 'next/link'
 
 import Button from '~/app/components/_elements/button'
 import Container from '~/app/components/_elements/container'
@@ -11,6 +10,7 @@ import StyledLink from '~/app/components/_elements/styledLink'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import { TextWall } from '~/app/components/_layouts/textWall'
 import GetCuratedSet from '~/app/components/ecomm/GetCuratedSet'
+import { prisma } from '~/server/db'
 
 export const metadata = {
   title: 'Curated Chess Tactics Training Sets at ChessTraining.app',
@@ -40,14 +40,14 @@ export default async function CuratedSetsPage() {
   return (
     <>
       <PageHeader
+        subTitle="Designed to supercharge your Chess Tactics"
         title="Curated Chess Tactics Training Sets"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
         }}
-        subTitle="Designed to supercharge your Chess Tactics"
       />
-      <TextWall title="What are Curated Sets?" background="dark">
+      <TextWall background="dark" title="What are Curated Sets?">
         <p>
           Designed to be used with our{' '}
           <StyledLink href="/training/tactics">Tactics Trainer</StyledLink>, our
@@ -79,21 +79,21 @@ export default async function CuratedSetsPage() {
                   </p>
                 </div>
                 <div
-                  className="p-2"
                   dangerouslySetInnerHTML={{ __html: set.shortDesc ?? '' }}
+                  className="p-2"
                 />
                 <p className="w-full text-center bg-purple-300 py-1 font-bold">
                   {set.size} puzzles
                 </p>
                 <div className="flex flex-col md:flex-row gap-2 p-2 items-center justify-center">
                   <GetCuratedSet
-                    setId={set.id}
                     price={set.price}
+                    setId={set.id}
+                    showPrice={false}
                     slug={set.slug}
                     userSetId={
                       userCuratedSets.find((s) => s.curatedSetId === set.id)?.id
                     }
-                    showPrice={false}
                   />
                   <Link href={`/training/tactics/curated-sets/${set.slug}`}>
                     <Button variant="secondary">Read More</Button>

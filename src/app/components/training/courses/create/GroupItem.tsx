@@ -1,26 +1,27 @@
-import { useState } from 'react'
-
 import { useAutoAnimate } from '@formkit/auto-animate/react'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
+import { useState } from 'react'
 
+
+import type { Line } from './parse/ParsePGNtoLineData'
+
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
 
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-import type { Line } from './parse/ParsePGNtoLineData'
 
 // TODO: Add informational lines
 // TODO: Add priority lines
 
-export function GroupItem(props: {
+export const GroupItem = (props: {
   lines: Line[]
   selectedGroup: string
   groupKey: string
   count: number
   updateLines: (lines: Line[]) => void
-}) {
+}) => {
   const { lines, selectedGroup, groupKey, count } = props
   const [open, setOpen] = useState<boolean>(false)
   const [setAllOpen, setSetAllOpen] = useState<boolean>(false)
@@ -52,32 +53,31 @@ export function GroupItem(props: {
           onClick={() => setOpen(!open)}
         >
           <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="36"
             height="36"
             viewBox="0 0 12 12"
+            width="36"
+            xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              fill="currentColor"
               d="M6 8.825c-.2 0-.4-.1-.5-.2l-3.3-3.3c-.3-.3-.3-.8 0-1.1c.3-.3.8-.3 1.1 0l2.7 2.7l2.7-2.7c.3-.3.8-.3 1.1 0c.3.3.3.8 0 1.1l-3.2 3.2c-.2.2-.4.3-.6.3Z"
+              fill="currentColor"
             />
           </svg>
         </button>
         <div className="ml-auto min-w-fit">
-          <Button onClick={() => setSetAllOpen(true)} variant="secondary">
+          <Button variant="secondary" onClick={() => setSetAllOpen(true)}>
             Set all lines...
           </Button>
         </div>
       </div>
 
-      {setAllOpen && (
-        <div className="fixed inset-0 z-[99999] grid place-items-center bg-[rgba(0,0,0,0.3)]">
+      {setAllOpen ? <div className="fixed inset-0 z-[99999] grid place-items-center bg-[rgba(0,0,0,0.3)]">
           <div
             className="absolute inset-0"
             onClick={() => setSetAllOpen(false)}
           />
           <div className="flex fixed bg-white p-2 z-50 max-w-md flex-col gap-2 shadow-lg">
-            <Heading as={'h4'}>Set All Lines In Group: {groupKey}</Heading>
+            <Heading as="h4">Set All Lines In Group: {groupKey}</Heading>
             <p>This will set all lines in this group to the same colour.</p>
             <select
               className="border border-gray-300 p-2  dark:bg-gray-100"
@@ -108,18 +108,16 @@ export function GroupItem(props: {
               </Button>
             </div>
           </div>
-        </div>
-      )}
+        </div> : null}
 
-      {open && (
-        <div className="flex flex-col gap-2">
+      {open ? <div className="flex flex-col gap-2">
           {lines
             .filter((line) => line.tags[selectedGroup] === groupKey)
             .map((line) => {
               return (
                 <div
-                  className="flex flex-col justify-center gap-2 bg-gray-200 p-2"
                   key={line.moves.join('')}
+                  className="flex flex-col justify-center gap-2 bg-gray-200 p-2"
                 >
                   <div className="flex items-center gap-2 text-sm">
                     <PrettyPrintLine line={line} />
@@ -147,7 +145,7 @@ export function GroupItem(props: {
                           <div className="fixed inset-0 z-10 grid place-items-center bg-[rgba(0,0,0,0.5)]">
                             <div className="max-w-screen-sm bg-white p-4 md:p-6 lg:p-12">
                               <div className="mb-4 flex flex-col gap-4">
-                                <Heading as={'h3'}>
+                                <Heading as="h3">
                                   Are you sure you want to delete this line?
                                 </Heading>
                                 <p>
@@ -186,8 +184,7 @@ export function GroupItem(props: {
                 </div>
               )
             })}
-        </div>
-      )}
+        </div> : null}
     </div>
   )
 }

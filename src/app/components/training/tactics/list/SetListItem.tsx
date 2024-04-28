@@ -1,21 +1,21 @@
 'use client'
 
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import { useRouter } from 'next/navigation'
-
 import { useEffect, useState } from 'react'
 
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 
+import SetListEdit from './SetListEdit'
+import SetListStats from './SetListStats'
+
+import toHHMMSS from '~/app/_util/toHHMMSS'
+import trackEventOnClient from '~/app/_util/trackEventOnClient'
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 import TimeSince from '~/app/components/general/TimeSince'
 import type { PrismaTacticsSet } from '~/app/components/training/tactics/create/TacticsSetCreator'
 
-import toHHMMSS from '~/app/_util/toHHMMSS'
-import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
-import SetListEdit from './SetListEdit'
-import SetListStats from './SetListStats'
 
 export default function SetListItem(props: {
   set: PrismaTacticsSet
@@ -43,16 +43,16 @@ export default function SetListItem(props: {
 
   return (
     <div
-      className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300"
       key={set.id}
+      className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300"
     >
       <div className="px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
-        <p onClick={trainSet} className="cursor-pointer">
+        <p className="cursor-pointer" onClick={trainSet}>
           <span className="text-lg">{set.name}</span>
           <span className="px-2 text-xs italic text-gray-600 dark:text-gray-400">
             Last trained{' '}
             {set.lastTrained ? (
-              <TimeSince text="ago" date={new Date(set.lastTrained)} />
+              <TimeSince date={new Date(set.lastTrained)} text="ago" />
             ) : (
               'never'
             )}
@@ -99,22 +99,20 @@ export default function SetListItem(props: {
             </p>
             <p>{toHHMMSS(currentRound?.timeSpent ?? 0)}</p>
           </div>
-          {set.rating && (
-            <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
+          {set.rating ? <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
               <p className="font-bold py-1 px-2 border-b border-gray-300 dark:border-slate-600">
                 Rating
               </p>
               <p>{set.rating}</p>
-            </div>
-          )}
+            </div> : null}
         </div>
         <div className="flex flex-col gap-2 md:flex-row md:justify-center">
           <Button
+            variant="primary"
             disabled={
               (set.rounds?.length >= 8 && completedCount >= set.size) || opening
             }
             onClick={trainSet}
-            variant="primary"
           >
             {opening ? (
               <>
@@ -124,7 +122,7 @@ export default function SetListItem(props: {
               'Train'
             )}
           </Button>
-          <SetListEdit set={set} onFinished={props.updated} user={user} />
+          <SetListEdit set={set} user={user} onFinished={props.updated} />
           <SetListStats set={set} />
         </div>
       </div>

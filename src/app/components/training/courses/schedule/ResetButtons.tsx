@@ -1,15 +1,14 @@
 'use client'
 
+import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import { useState } from 'react'
 
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
-import { ResponseJson } from '~/app/api/responses'
-
+import { type ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import Spinner from '~/app/components/general/Spinner'
 
-type ResetButtonProps = {
+interface ResetButtonProps {
   groups: {
     id: string
     name: string
@@ -91,9 +90,9 @@ export default function ResetButtons({ groups, courseId }: ResetButtonProps) {
     <>
       <div className="flex flex-col lg:flex-row gap-2">
         <Button
+          disabled={allLoading}
           variant="primary"
           onClick={() => markAllForReview()}
-          disabled={allLoading}
         >
           {allLoading ? (
             <>
@@ -131,9 +130,9 @@ export default function ResetButtons({ groups, courseId }: ResetButtonProps) {
                 ))}
               </select>
               <Button
+                disabled={groupLoading}
                 variant="primary"
                 onClick={() => markGroupForReview()}
-                disabled={groupLoading}
               >
                 {groupLoading ? (
                   <>

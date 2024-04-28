@@ -47,31 +47,31 @@ export default function GroupListItem(props: {
   return (
     <div
       className={
-        'flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 ' +
-        (open
+        `flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 ${ 
+        open
           ? 'bg-orange-500 bg-opacity-10'
-          : 'bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]')
+          : 'bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]'}`
       }
     >
       <div className="flex items-center justify-between text-white gap-2 p-2 text-base">
         <div
           className={
-            'flex items-center gap-2 text-orange-500 transition-all duration-200' +
-            (!open ? ' hover:underline cursor-pointer' : '')
+            `flex items-center gap-2 text-orange-500 transition-all duration-200${ 
+            !open ? ' hover:underline cursor-pointer' : ''}`
           }
           onClick={() => (!open ? props.onClick() : null)}
         >
           <h2 className="font-bold">{name}</h2>
           <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="32"
+            className="-rotate-90"
             height="32"
             viewBox="0 0 32 32"
-            className="-rotate-90"
+            width="32"
+            xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              fill="currentColor"
               d="M16 22L6 12l1.4-1.4l8.6 8.6l8.6-8.6L26 12z"
+              fill="currentColor"
             />
           </svg>
         </div>
@@ -96,7 +96,7 @@ export default function GroupListItem(props: {
                 background: conicGradient,
               }}
             >
-              <div className="h-12 w-12 rounded-full bg-purple-700"></div>
+              <div className="h-12 w-12 rounded-full bg-purple-700" />
             </div>
           </Tippy>
         </div>

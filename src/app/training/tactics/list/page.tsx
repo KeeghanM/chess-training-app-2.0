@@ -1,9 +1,9 @@
 import { redirect } from 'next/navigation'
 
+import { getUserServer } from '~/app/_util/getUserServer'
 import PageHeader from '~/app/components/_layouts/pageHeader'
 import TacticsList from '~/app/components/training/tactics/list/TacticsList'
 
-import { getUserServer } from '~/app/_util/getUserServer'
 
 export default async function TacticsListPage() {
   const { user, isPremium } = await getUserServer()
@@ -12,8 +12,8 @@ export default async function TacticsListPage() {
   return (
     <>
       <PageHeader
-        title="Tactics Trainer"
         subTitle="Your puzzle sets"
+        title="Tactics Trainer"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',

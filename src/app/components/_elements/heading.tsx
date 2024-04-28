@@ -10,8 +10,8 @@ export default function Heading(props: {
       return (
         <h1
           className={
-            'mb-2 text-3xl font-bold md:text-4xl flex items-center gap-1 flex-wrap ' +
-            (props.color ?? 'text-purple-700')
+            `mb-2 text-3xl font-bold md:text-4xl flex items-center gap-1 flex-wrap ${ 
+            props.color ?? 'text-purple-700'}`
           }
         >
           {props.children}
@@ -21,9 +21,9 @@ export default function Heading(props: {
       return (
         <h2
           className={
-            'mb-2 mt-4 text-2xl md:text-3xl ' +
-            (props.color ?? 'text-gray-700') +
-            (bold ? ' font-bold' : '')
+            `mb-2 mt-4 text-2xl md:text-3xl ${ 
+            props.color ?? 'text-gray-700' 
+            }${bold ? ' font-bold' : ''}`
           }
         >
           {props.children}
@@ -33,8 +33,8 @@ export default function Heading(props: {
       return (
         <h3
           className={
-            'mb-2 mt-4 text-xl font-bold md:text-2xl ' +
-            (props.color ?? 'text-orange-500')
+            `mb-2 mt-4 text-xl font-bold md:text-2xl ${ 
+            props.color ?? 'text-orange-500'}`
           }
         >
           {props.children}
@@ -44,8 +44,8 @@ export default function Heading(props: {
       return (
         <h4
           className={
-            'mb-2 text-xl font-bold  md:text-lg ' +
-            (props.color ?? 'text-purple-700')
+            `mb-2 text-xl font-bold  md:text-lg ${ 
+            props.color ?? 'text-purple-700'}`
           }
         >
           {props.children}

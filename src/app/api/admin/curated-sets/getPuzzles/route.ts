@@ -1,12 +1,11 @@
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
-import { errorResponse, successResponse } from '~/app/api/responses'
-
-import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
 
 import getPuzzleById from '~/app/_util/GetPuzzleById'
+import { errorResponse, successResponse } from '~/app/api/responses'
+import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTrainer'
+import { prisma } from '~/server/db'
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request)
@@ -47,7 +46,7 @@ export async function POST(request: Request) {
 
     if (puzzles.length == 0) return errorResponse('Puzzles not found', 404)
 
-    return successResponse('Puzzles found', { puzzles: puzzles }, 200)
+    return successResponse('Puzzles found', { puzzles }, 200)
   } catch (e) {
     Sentry.captureException(e)
     return errorResponse('Internal Server Error', 500)

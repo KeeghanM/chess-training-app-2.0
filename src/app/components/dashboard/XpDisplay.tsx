@@ -1,8 +1,8 @@
 'use client'
 
+import Tippy from '@tippyjs/react'
 import Link from 'next/link'
 
-import Tippy from '@tippyjs/react'
 import 'tippy.js/dist/tippy.css'
 
 interface XpDisplayProps {
@@ -30,14 +30,12 @@ export default function XpDisplay(props: XpDisplayProps) {
     <div className="flex flex-col items-center gap-1">
       <div className="flex h-fit w-fit  flex-row items-center border-2 border-orange-500 bg-white">
         <Tippy
-          content={`Experience gained from training puzzles, and studying courses.`}
+          content="Experience gained from training puzzles, and studying courses."
         >
           <div className="px-2">
             <p className="px-4 text-sm">
               {currentXp.toLocaleString('en-GB')}
-              {nextRank && (
-                <span>/{nextRank.xp.toLocaleString('en-GB')}xp</span>
-              )}
+              {nextRank ? <span>/{nextRank.xp.toLocaleString('en-GB')}xp</span> : null}
             </p>
             <div className="h-3 w-full bg-purple-200">
               <div
@@ -45,7 +43,7 @@ export default function XpDisplay(props: XpDisplayProps) {
                 style={{
                   width: `${percentage}%`,
                 }}
-              ></div>
+               />
             </div>
           </div>
         </Tippy>
@@ -55,13 +53,12 @@ export default function XpDisplay(props: XpDisplayProps) {
           }`}
         >
           <p className="bg-orange-500 p-2 text-white">
-            <strong>{rank?.rank}:</strong> {rank?.name}
+            <strong>{rank.rank}:</strong> {rank.name}
           </p>
         </Tippy>
       </div>
 
-      {displayLink && (
-        <div className="flex justify-between gap-2">
+      {displayLink ? <div className="flex justify-between gap-2">
           <Link
             className="text-white underline text-sm hover:no-underline"
             href="/members"
@@ -69,13 +66,12 @@ export default function XpDisplay(props: XpDisplayProps) {
             View Leaderboard
           </Link>
           <Link
-            href="/about/ranks-and-badges"
             className="text-sm text-white underline hover:no-underline"
+            href="/about/ranks-and-badges"
           >
             View All Ranks
           </Link>
-        </div>
-      )}
+        </div> : null}
     </div>
   )
 }

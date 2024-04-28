@@ -14,27 +14,27 @@ export default async function Recall() {
     <>
       <Hero
         title="Recall Trainer - Learn Chess Online"
-        image={{
-          src: '/images/hero.avif',
-          alt: 'Chess pieces set up on a chessboard',
-        }}
         cta={{
           text: 'Start Recalling',
           link: '/training/recall/train',
         }}
+        image={{
+          src: '/images/hero.avif',
+          alt: 'Chess pieces set up on a chessboard',
+        }}
       >
-        <Heading color="text-orange-500" as="h2">
+        <Heading as="h2" color="text-orange-500">
           Enhance Your Chess Memory and Position Visualization
         </Heading>
       </Hero>
       <ImageRowFull
-        heading="Why Recall Training Matters"
         background="light"
+        heading="Why Recall Training Matters"
+        imageSide="left"
         image={{
           src: '/images/woman_kneeling_at_chess.png',
           alt: 'A woman studying chess positions',
         }}
-        imageSide="left"
       >
         <p>
           Chess is all about recognizing patterns and positions. The ability to
@@ -50,13 +50,13 @@ export default async function Recall() {
         </p>
       </ImageRowFull>
       <ImageRowFull
-        heading="How to Use the Recall Trainer"
         background="light"
+        heading="How to Use the Recall Trainer"
+        imageSide="right"
         image={{
           src: '/images/chunking.png',
           alt: 'A chessboard with pieces highlighted in the Carlsbad Structure.',
         }}
-        imageSide="right"
       >
         <p>
           Our Recall Trainer is the perfect tool to improve your memory and
@@ -79,12 +79,12 @@ export default async function Recall() {
       </ImageRowFull>
 
       <CtaRow
+        background="dark"
         title="Ready to Boost Your Chess Memory?"
         cta={{
           text: 'Start Recalling',
           link: '/training/recall/train',
         }}
-        background="dark"
       >
         <p>
           Improve your memory and visualization skills to enhance your chess

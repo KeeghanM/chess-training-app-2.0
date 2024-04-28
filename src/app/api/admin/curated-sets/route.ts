@@ -1,8 +1,9 @@
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
+
 import { errorResponse, successResponse } from '~/app/api/responses'
+import { prisma } from '~/server/db'
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request)
@@ -28,7 +29,7 @@ export async function POST(request: Request) {
   // Check if name is available
   const existingSet = await prisma.curatedSet.findFirst({
     where: {
-      slug: slug,
+      slug,
     },
   })
 
@@ -37,8 +38,8 @@ export async function POST(request: Request) {
   try {
     const set = await prisma.curatedSet.create({
       data: {
-        name: name,
-        slug: slug,
+        name,
+        slug,
         size: 0,
       },
     })
@@ -105,7 +106,7 @@ export async function PATCH(request: Request) {
   // Check if name is available
   const existingSet = await prisma.curatedSet.findFirst({
     where: {
-      slug: slug,
+      slug,
     },
   })
 
@@ -118,15 +119,15 @@ export async function PATCH(request: Request) {
         id,
       },
       data: {
-        name: name,
-        description: description,
+        name,
+        description,
         shortDesc,
         minRating,
         maxRating,
-        price: price,
-        published: published,
-        slug: slug,
-        size: size,
+        price,
+        published,
+        slug,
+        size,
       },
     })
 
@@ -158,7 +159,7 @@ export async function DELETE(request: Request) {
   try {
     await prisma.curatedSet.delete({
       where: {
-        id: id,
+        id,
       },
     })
 

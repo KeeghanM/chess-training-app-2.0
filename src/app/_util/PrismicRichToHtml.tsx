@@ -1,13 +1,13 @@
 import Heading from '../components/_elements/heading'
 
-type Span = {
+interface Span {
   start: number
   end: number
   type: string
   data?: Record<string, string>
 }
 
-export type RichTextContent = {
+export interface RichTextContent {
   spans: Span[]
   text: string
   type: string
@@ -15,7 +15,7 @@ export type RichTextContent = {
   alt?: string
 }
 
-export function PrismicRichToHtml(content: RichTextContent) {
+export const PrismicRichToHtml = (content: RichTextContent) => {
   const mergeOverlappingSpans = (spans: Span[]) => {
     const mergedSpans = []
 
@@ -86,7 +86,7 @@ export function PrismicRichToHtml(content: RichTextContent) {
 
   switch (content.type) {
     case 'paragraph':
-      return <p className="mb-4 md:mb-6" dangerouslySetInnerHTML={html} />
+      return <p dangerouslySetInnerHTML={html} className="mb-4 md:mb-6" />
     case 'heading1':
       return (
         <Heading as="h1">
@@ -119,15 +119,15 @@ export function PrismicRichToHtml(content: RichTextContent) {
       return (
         <div className="flex flex-col gap-2">
           <img
+            alt={content.alt}
             className="max-w-[600px] w-full mx-auto"
             src={content.url}
-            alt={content.alt}
           />
           <p>{content.alt}</p>
         </div>
       )
     default:
-      return <p className="mb-4 md:mb-6" dangerouslySetInnerHTML={html} />
+      return <p dangerouslySetInnerHTML={html} className="mb-4 md:mb-6" />
   }
 }
 

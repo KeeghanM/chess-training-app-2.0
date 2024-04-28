@@ -1,7 +1,4 @@
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
 
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import type {
@@ -12,11 +9,14 @@ import type {
   UserProfile,
 } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
 
 import Container from '~/app/components/_elements/container'
 import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
 import GetCourse from '~/app/components/ecomm/GetCourse'
+import { prisma } from '~/server/db'
 
 export default async function CoursePage({
   params,
@@ -129,25 +129,25 @@ export default async function CoursePage({
           <StyledLink href="/courses">
             <span className="flex items-center gap-1">
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
                 height="24"
                 viewBox="0 0 1024 1024"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  fill="currentColor"
                   d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64"
+                  fill="currentColor"
                 />
                 <path
-                  fill="currentColor"
                   d="m237.248 512l265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312z"
+                  fill="currentColor"
                 />
               </svg>
               <span>Back to Courses</span>
             </span>
           </StyledLink>
           <div className="p-4 bg-gray-100">
-            <Heading as={'h1'}>{course.courseName}</Heading>
+            <Heading as="h1">{course.courseName}</Heading>
             <p className="text-sm">
               Created By:{' '}
               {publicAuthor ? (
@@ -164,20 +164,18 @@ export default async function CoursePage({
             </p>
           </div>
           <GetCourse
+            showPrice
             courseId={course.id}
             price={course.price}
-            userCourseId={userCourse?.active ? userCourse?.id : undefined}
             slug={course.slug}
-            showPrice={true}
+            userCourseId={userCourse?.active ? userCourse.id : undefined}
           />
-          {course.courseDescription && (
-            <article
-              className="p-4 bg-gray-100"
+          {course.courseDescription ? <article
               dangerouslySetInnerHTML={{ __html: course.courseDescription }}
-            />
-          )}
+              className="p-4 bg-gray-100"
+            /> : null}
           <div className="p-4 bg-gray-100">
-            <Heading as={'h2'}>Course Contents</Heading>
+            <Heading as="h2">Course Contents</Heading>
             <ul>
               {groupLineCountsArray.map((group) => (
                 <li key={group.name}>

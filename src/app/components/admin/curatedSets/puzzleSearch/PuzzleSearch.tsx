@@ -2,13 +2,15 @@
 
 import { useEffect, useState } from 'react'
 
-import type { ResponseJson } from '~/app/api/responses'
 
-import Spinner from '~/app/components/general/Spinner'
 
 import type { CuratedSetPuzzle } from '../CuratedSetsBrowser'
+
 import CreateCustom from './CreateCustom'
 import LiChessSearch from './LiChessSearch'
+
+import type { ResponseJson } from '~/app/api/responses'
+import Spinner from '~/app/components/general/Spinner'
 
 export default function PuzzleSearch(props: {
   setPuzzle: (puzzle: CuratedSetPuzzle) => void
@@ -40,10 +42,10 @@ export default function PuzzleSearch(props: {
       <div className="flex items-center justify-around text-sm">
         <p
           className={
-            'font-bold text-white px-4 py-1 ' +
-            (mode === 'LiChess'
+            `font-bold text-white px-4 py-1 ${ 
+            mode === 'LiChess'
               ? 'bg-green-500'
-              : 'bg-gray-700 hover:bg-purple-600 cursor-pointer')
+              : 'bg-gray-700 hover:bg-purple-600 cursor-pointer'}`
           }
           onClick={() => setMode('LiChess')}
         >
@@ -51,10 +53,10 @@ export default function PuzzleSearch(props: {
         </p>
         <p
           className={
-            'font-bold text-white px-4 py-1 ' +
-            (mode === 'Custom'
+            `font-bold text-white px-4 py-1 ${ 
+            mode === 'Custom'
               ? 'bg-green-500'
-              : 'bg-gray-700 hover:bg-purple-600 cursor-pointer')
+              : 'bg-gray-700 hover:bg-purple-600 cursor-pointer'}`
           }
           onClick={() => setMode('Custom')}
         >
@@ -74,10 +76,10 @@ export default function PuzzleSearch(props: {
                 <li
                   key={puzzle.puzzleid}
                   className={
-                    'cursor-pointer bg-gray-50 border-b border-slate-500 hover:bg-orange-200 p-2 text-sm' +
-                    (selectedPuzzle?.puzzleid == puzzle.puzzleid
+                    `cursor-pointer bg-gray-50 border-b border-slate-500 hover:bg-orange-200 p-2 text-sm${ 
+                    selectedPuzzle?.puzzleid == puzzle.puzzleid
                       ? ' bg-purple-200'
-                      : '')
+                      : ''}`
                   }
                   onClick={() => {
                     setSelectedPuzzle(puzzle)

@@ -1,13 +1,15 @@
 'use client'
 
-import { useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import * as Sentry from '@sentry/react'
-import type { ResponseJson } from '~/app/api/responses'
+import { useState } from 'react'
+
 
 import Button from '../_elements/button'
 import Spinner from '../general/Spinner'
+
+import type { ResponseJson } from '~/app/api/responses'
 
 export default function GetPremiumButton(props: { returnUrl: string }) {
   const { user } = useKindeBrowserClient()
@@ -43,7 +45,7 @@ export default function GetPremiumButton(props: { returnUrl: string }) {
   return error ? (
     <p className="text-red-500">Oops, something went wrong!</p>
   ) : (
-    <Button onClick={getPremium} variant="primary" disabled={loading}>
+    <Button disabled={loading} variant="primary" onClick={getPremium}>
       {loading ? (
         <>
           Loading... <Spinner />

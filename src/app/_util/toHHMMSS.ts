@@ -5,5 +5,5 @@ export default function toHHMMSS(sec_num: number) {
   const minutes = Math.floor((sec_num % 3600) / 60)
   const seconds = sec_num % 60
 
-  return `${hours > 0 ? pad(hours) + ':' : ''}${pad(minutes)}:${pad(seconds)}` //462:02:17
+  return `${hours > 0 ? `${pad(hours)  }:` : ''}${pad(minutes)}:${pad(seconds)}` //462:02:17
 }

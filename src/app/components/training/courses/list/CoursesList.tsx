@@ -1,20 +1,21 @@
 'use client'
 
-import Link from 'next/link'
-
-import { useEffect, useState } from 'react'
-
 import type { Course, UserCourse, UserLine } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
-import type { ResponseJson } from '~/app/api/responses'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
 
+
+import PremiumSubscribe from '../../../ecomm/PremiumSubscribe'
+
+import CourseListItem from './CourseListItem'
+
+import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Heading from '~/app/components/_elements/heading'
 import StyledLink from '~/app/components/_elements/styledLink'
 import Spinner from '~/app/components/general/Spinner'
 
-import PremiumSubscribe from '../../../ecomm/PremiumSubscribe'
-import CourseListItem from './CourseListItem'
 
 export type PrismaUserCourse = UserCourse & {
   course: Course
@@ -55,20 +56,20 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
 
   return (
     <>
-      <div className={'flex flex-col md:flex-row items-center gap-2 mb-2'}>
+      <div className="flex flex-col md:flex-row items-center gap-2 mb-2">
         {courses.length < maxCourses || hasUnlimitedCourses ? (
           <Link href="/courses/create">
             <Button variant="primary">
               Create New Course
               <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
                 height="24"
                 viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  fill="currentColor"
                   d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
+                  fill="currentColor"
                 />
               </svg>
             </Button>
@@ -80,14 +81,14 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
               <Button variant="primary">
                 Create New Course
                 <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
                   height="24"
                   viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
                 >
                   <path
-                    fill="currentColor"
                     d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
+                    fill="currentColor"
                   />
                 </svg>
               </Button>
@@ -152,8 +153,8 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
                 key={index}
                 courseId={course.id}
                 courseName={course.course.courseName}
-                update={fetchCourses}
                 hasPremium={hasUnlimitedCourses}
+                update={fetchCourses}
               />
             ))
         ) : (

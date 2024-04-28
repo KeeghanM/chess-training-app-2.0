@@ -1,10 +1,9 @@
 'use client'
 
+import type { Group, Line, Move, UserLine } from '@prisma/client'
 import { useState } from 'react'
 
-import type { Group, Line, Move, UserLine } from '@prisma/client'
 import type { ResponseJson } from '~/app/api/responses'
-
 import Button from '~/app/components/_elements/button'
 import PrettyPrintLine from '~/app/components/general/PrettyPrintLine'
 import Spinner from '~/app/components/general/Spinner'
@@ -83,11 +82,11 @@ export default function LineRow({
   return (
     <div
       className={
-        'border-4 bg-purple-700 bg-opacity-20 text-black dark:text-white py-2 flex flex-col md:flex-row gap-2 justify-between ' +
-        (status === 'unseen' ? 'border-gray-300' : '') +
-        (status === 'learning' ? 'border-blue-600' : '') +
-        (status === 'learned' ? 'border-green-500' : '') +
-        (status === 'hard' ? 'border-red-500' : '')
+        `border-4 bg-purple-700 bg-opacity-20 text-black dark:text-white py-2 flex flex-col md:flex-row gap-2 justify-between ${ 
+        status === 'unseen' ? 'border-gray-300' : '' 
+        }${status === 'learning' ? 'border-blue-600' : '' 
+        }${status === 'learned' ? 'border-green-500' : '' 
+        }${status === 'hard' ? 'border-red-500' : ''}`
       }
     >
       <div className="px-2">
@@ -109,9 +108,9 @@ export default function LineRow({
           }) ?? 'Not yet seen'}
         </div>
         <Button
+          disabled={loading || error !== null}
           variant="primary"
           onClick={() => markForReview(line.id)}
-          disabled={loading === true || error !== null}
         >
           {loading ? (
             <>

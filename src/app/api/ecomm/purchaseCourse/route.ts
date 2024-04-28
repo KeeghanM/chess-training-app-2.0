@@ -1,4 +1,3 @@
-import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
@@ -9,6 +8,8 @@ import {
   CreateCheckoutSession,
   getProductDetails,
 } from '../functions/CreateCheckoutSession'
+
+import { prisma } from '~/server/db'
 
 export async function POST(request: Request) {
   try {
@@ -98,6 +99,6 @@ export async function POST(request: Request) {
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
-    else return errorResponse('Something went wrong', 500)
+    return errorResponse('Something went wrong', 500)
   }
 }

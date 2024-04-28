@@ -1,15 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
 
 import Tippy from '@tippyjs/react'
 import { Chess } from 'chess.js'
-import type { ResponseJson } from '~/app/api/responses'
+import { useEffect, useState } from 'react'
+
 
 import Button from '../../_elements/button'
 import Spinner from '../../general/Spinner'
 import ChessBoard from '../../training/ChessBoard'
+
 import type { CuratedSetPuzzle } from './CuratedSetsBrowser'
+
+import type { ResponseJson } from '~/app/api/responses'
 
 export default function PuzzleDisplay(props: {
   puzzle?: CuratedSetPuzzle
@@ -91,7 +94,7 @@ export default function PuzzleDisplay(props: {
     )
     return (
       <button
-        key={'btn' + moveNumber.toString() + move + moveColour}
+        key={`btn${  moveNumber.toString()  }${move  }${moveColour}`}
         className="h-max max-h-fit bg-none px-1 py-1 hover:bg-purple-800 hover:text-white"
         onClick={() => {
           const newGame = new Chess(props.puzzle!.fen)
@@ -111,9 +114,9 @@ export default function PuzzleDisplay(props: {
       ;(async () => {
         // Ensure we have the latest
         const json = await fetch(
-          '/api/puzzles/getPuzzleById/' + props.puzzle!.puzzleid,
+          `/api/puzzles/getPuzzleById/${  props.puzzle!.puzzleid}`,
         ).then((res) => res.json())
-        const puzzle = json.data.puzzle as CuratedSetPuzzle
+        const puzzle = json.data.puzzle
 
         game.load(puzzle.fen)
         const fenCol = puzzle.fen.split(' ')[1]
@@ -144,19 +147,18 @@ export default function PuzzleDisplay(props: {
   return (
     <div className="flex">
       <ChessBoard
-        game={game}
-        position={position}
-        orientation={orientation}
-        readyForInput={readyForInput}
-        soundEnabled={true}
-        additionalSquares={{}}
+        soundEnabled
         additionalArrows={[]}
+        additionalSquares={{}}
         enableArrows={false}
         enableHighlights={false}
+        game={game}
         moveMade={null}
+        orientation={orientation}
+        position={position}
+        readyForInput={readyForInput}
       />
-      {props.puzzle && (
-        <div className="flex flex-row">
+      {props.puzzle ? <div className="flex flex-row">
           {/* PGN Display */}
           <div className="flex flex-1 h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
             <button
@@ -172,8 +174,7 @@ export default function PuzzleDisplay(props: {
 
           {props.mode === 'list' && (
             <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
-              <>
-                {/* Puzzle Details Editor */}
+              {/* Puzzle Details Editor */}
                 <div>
                   <label htmlFor="rating">Puzzle Rating</label>
                   <input
@@ -189,16 +190,16 @@ export default function PuzzleDisplay(props: {
                   </Tippy>
                   <textarea
                     className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
-                    value={comment}
                     rows={5}
+                    value={comment}
                     onChange={(e) => setComment(e.target.value)}
                   />
                 </div>
                 <div className="flex justify-between gap-2">
                   <Button
+                    disabled={status === 'saving'}
                     variant="primary"
                     onClick={savePuzzle}
-                    disabled={status === 'saving'}
                   >
                     {status == 'saving' ? (
                       <>
@@ -209,9 +210,9 @@ export default function PuzzleDisplay(props: {
                     )}
                   </Button>
                   <Button
+                    disabled={status === 'deleting'}
                     variant="danger"
                     onClick={deletePuzzle}
-                    disabled={status === 'deleting'}
                   >
                     {status == 'deleting' ? (
                       <>
@@ -222,12 +223,10 @@ export default function PuzzleDisplay(props: {
                     )}
                   </Button>
                 </div>
-                {error && <p className="text-red-500">{error}</p>}
-              </>
+                {error ? <p className="text-red-500">{error}</p> : null}
             </div>
           )}
-        </div>
-      )}
+        </div> : null}
     </div>
   )
 }

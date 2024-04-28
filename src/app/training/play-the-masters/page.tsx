@@ -12,16 +12,16 @@ export default async function PlayMastersPage() {
   return (
     <>
       <PageHeader
-        title="Play the Masters"
         subTitle="Coming soon!"
+        title="Play the Masters"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
         }}
       />
       <CtaRow
-        title="Curious?"
         background="light"
+        title="Curious?"
         cta={{
           text: 'View our roadmap',
           link: '/product-roadmap',

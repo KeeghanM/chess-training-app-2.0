@@ -1,8 +1,8 @@
 'use client'
 
+import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components'
 import { useRouter } from 'next/navigation'
 
-import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs/components'
 
 import Button from '~/app/components/_elements/button'
 
@@ -11,7 +11,7 @@ export default function UserButtons() {
 
   return (
     <div className="flex flex-col gap-2 md:flex-row">
-      <Button onClick={() => router.push('/dashboard')} variant="accent">
+      <Button variant="accent" onClick={() => router.push('/dashboard')}>
         Dashboard
       </Button>
       <LogoutLink>

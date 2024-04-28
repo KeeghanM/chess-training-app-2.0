@@ -1,4 +1,4 @@
-type LineMove = {
+interface LineMove {
   notation: string
   number: number
   colour: boolean
@@ -7,7 +7,7 @@ type LineMove = {
   lineId: number
 }
 
-export type Move = {
+export interface Move {
   notation: string
   number: number
   colour: boolean
@@ -17,7 +17,7 @@ export type Move = {
   lineId: number
 }
 
-export type PGN = {
+export interface PGN {
   moves: Move[]
 }
 

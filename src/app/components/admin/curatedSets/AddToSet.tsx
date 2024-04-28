@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react'
 
-import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '../../_elements/button'
 import Spinner from '../../general/Spinner'
+
+import type { ResponseJson } from '~/app/api/responses'
 
 export default function AddToSet(props: { setId: string; puzzleId?: string }) {
   const { setId, puzzleId } = props
@@ -40,10 +41,10 @@ export default function AddToSet(props: { setId: string; puzzleId?: string }) {
   return (
     <>
       <Button
-        variant="accent"
         className="w-full mt-1"
-        onClick={addPuzzleToSet}
         disabled={loading}
+        variant="accent"
+        onClick={addPuzzleToSet}
       >
         {loading ? (
           <>
@@ -53,7 +54,7 @@ export default function AddToSet(props: { setId: string; puzzleId?: string }) {
           'Add to Set'
         )}
       </Button>
-      {error && <p className="text-red-500">{error}</p>}
+      {error ? <p className="text-red-500">{error}</p> : null}
     </>
   )
 }
