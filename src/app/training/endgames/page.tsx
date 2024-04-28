@@ -1,15 +1,15 @@
-import Heading from '@/app/components/_elements/heading'
-import StyledLink from '@/app/components/_elements/styledLink'
-import CtaRow from '@/app/components/_layouts/ctaRow'
-import Hero from '@/app/components/_layouts/hero'
-import ImageRowFull from '@/app/components/_layouts/imageRowFull'
+import Heading from '@/app/components/_elements/heading';
+import StyledLink from '@/app/components/_elements/styledLink';
+import CtaRow from '@/app/components/_layouts/ctaRow';
+import Hero from '@/app/components/_layouts/hero';
+import ImageRowFull from '@/app/components/_layouts/imageRowFull';
 
 export const metadata = {
   title:
     'Enhance Your Chess Endgame Skills with Endgame Trainer at ChessTraining.app',
   description:
     "Discover the key to mastering chess endgames with the Endgame Trainer feature on ChessTraining.app. Whether you're tackling queen, rook, knight, bishop, or pawn endgames, our tailored training tool guides you through each scenario with precision. Designed for chess enthusiasts of all levels, our Endgame Trainer sharpens your skills for those crucial final moments of the game. Dive into our comprehensive training and turn endgame challenges into your strategic advantage",
-}
+};
 
 export default async function Endgames() {
   return (
@@ -93,5 +93,5 @@ export default async function Endgames() {
         </p>
       </CtaRow>
     </>
-  )
+  );
 }

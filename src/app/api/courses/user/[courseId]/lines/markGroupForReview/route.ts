@@ -1,22 +1,22 @@
-import { errorResponse, successResponse } from '@/app/api/responses'
-import { prisma } from '@/server/db'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import * as Sentry from '@sentry/nextjs'
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import * as Sentry from '@sentry/nextjs';
 
 export async function POST(
   request: Request,
   { params }: { params: { courseId: string } },
 ) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
-  const user = await session.getUser()
-  if (!user) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request);
+  if (!session) return errorResponse('Unauthorized', 401);
+  const user = await session.getUser();
+  if (!user) return errorResponse('Unauthorized', 401);
 
-  const { courseId } = params
-  const { groupId } = (await request.json()) as { groupId: string }
+  const { courseId } = params;
+  const { groupId } = (await request.json()) as { groupId: string };
 
-  if (!courseId) return errorResponse('Missing courseId', 400)
-  if (!groupId) return errorResponse('Missing groupId', 400)
+  if (!courseId) return errorResponse('Missing courseId', 400);
+  if (!groupId) return errorResponse('Missing groupId', 400);
 
   try {
     const minDate = await prisma.userLine.findFirst({
@@ -30,12 +30,12 @@ export async function POST(
       select: {
         revisionDate: true,
       },
-    })
+    });
 
     // Subtract 1 second from the minDate to ensure that the line is marked for review
     const adjustedDate = minDate?.revisionDate
       ? new Date(minDate.revisionDate.getTime() - 1000)
-      : new Date()
+      : new Date();
 
     await prisma.userLine.updateMany({
       where: {
@@ -46,14 +46,14 @@ export async function POST(
       data: {
         revisionDate: adjustedDate,
       },
-    })
+    });
 
-    return successResponse('Lines updated', {}, 200)
+    return successResponse('Lines updated', {}, 200);
   } catch (e) {
-    Sentry.captureException(e)
-    if (e instanceof Error) return errorResponse(e.message, 500)
-    return errorResponse('Unknown error', 500)
+    Sentry.captureException(e);
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    return errorResponse('Unknown error', 500);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

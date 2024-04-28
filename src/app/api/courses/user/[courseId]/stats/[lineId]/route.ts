@@ -1,22 +1,22 @@
-import { errorResponse, successResponse } from '@/app/api/responses'
-import { prisma } from '@/server/db'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import * as Sentry from '@sentry/nextjs'
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import * as Sentry from '@sentry/nextjs';
 
 export async function POST(
   request: Request,
   { params }: { params: { courseId: string; lineId: number } },
 ) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
-  const user = await session.getUser()
-  if (!user) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request);
+  if (!session) return errorResponse('Unauthorized', 401);
+  const user = await session.getUser();
+  if (!user) return errorResponse('Unauthorized', 401);
 
-  const { courseId, lineId } = params
+  const { courseId, lineId } = params;
   const { lineCorrect, revisionDate } = (await request.json()) as {
-    lineCorrect: boolean
-    revisionDate: Date
-  }
+    lineCorrect: boolean;
+    revisionDate: Date;
+  };
 
   if (
     courseId === undefined ||
@@ -24,7 +24,7 @@ export async function POST(
     lineCorrect === undefined ||
     revisionDate === undefined
   )
-    return errorResponse('Missing fields', 400)
+    return errorResponse('Missing fields', 400);
 
   try {
     const line = await prisma.userLine.update({
@@ -54,14 +54,14 @@ export async function POST(
               currentStreak: 0,
             }),
       },
-    })
+    });
 
     const allLines = await prisma.userLine.findMany({
       where: {
         userCourseId: courseId,
         userId: user.id,
       },
-    })
+    });
 
     await prisma.userCourse.update({
       where: {
@@ -85,14 +85,14 @@ export async function POST(
         ).length,
         linesUnseen: allLines.filter((line) => line.timesTrained == 0).length,
       },
-    })
+    });
 
-    return successResponse('Stats updated', { line }, 200)
+    return successResponse('Stats updated', { line }, 200);
   } catch (e) {
-    Sentry.captureException(e)
-    if (e instanceof Error) return errorResponse(e.message, 500)
-    return errorResponse('Unknown error', 500)
+    Sentry.captureException(e);
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    return errorResponse('Unknown error', 500);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

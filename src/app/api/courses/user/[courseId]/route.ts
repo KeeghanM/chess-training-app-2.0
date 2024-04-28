@@ -1,20 +1,20 @@
-import { errorResponse, successResponse } from '@/app/api/responses'
-import { prisma } from '@/server/db'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import * as Sentry from '@sentry/nextjs'
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import * as Sentry from '@sentry/nextjs';
 
 export async function GET(
   request: Request,
   { params }: { params: { courseId: string } },
 ) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
-  const user = await session.getUser()
-  if (!user) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request);
+  if (!session) return errorResponse('Unauthorized', 401);
+  const user = await session.getUser();
+  if (!user) return errorResponse('Unauthorized', 401);
 
-  const { courseId } = params as { courseId: string }
+  const { courseId } = params as { courseId: string };
 
-  if (courseId === undefined) return errorResponse('Missing fields', 400)
+  if (courseId === undefined) return errorResponse('Missing fields', 400);
 
   try {
     const course = await prisma.userCourse.findUnique({
@@ -36,7 +36,7 @@ export async function GET(
           },
         },
       },
-    })
+    });
 
     const nextReview = await prisma.userLine.findFirst({
       where: {
@@ -49,20 +49,20 @@ export async function GET(
       orderBy: {
         revisionDate: 'asc',
       },
-    })
+    });
 
-    if (!course) return errorResponse('Course not found', 404)
+    if (!course) return errorResponse('Course not found', 404);
 
     return successResponse(
       'Course Fetched',
       { course, nextReview: nextReview?.revisionDate },
       200,
-    )
+    );
   } catch (e) {
-    Sentry.captureException(e)
-    return errorResponse('Internal Server Error', 500)
+    Sentry.captureException(e);
+    return errorResponse('Internal Server Error', 500);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }
 
@@ -70,14 +70,14 @@ export async function DELETE(
   request: Request,
   { params }: { params: { courseId: string } },
 ) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
-  const user = await session.getUser()
-  if (!user) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request);
+  if (!session) return errorResponse('Unauthorized', 401);
+  const user = await session.getUser();
+  if (!user) return errorResponse('Unauthorized', 401);
 
-  const { courseId } = params as { courseId: string }
+  const { courseId } = params as { courseId: string };
 
-  if (courseId === undefined) return errorResponse('Missing fields', 400)
+  if (courseId === undefined) return errorResponse('Missing fields', 400);
 
   try {
     // if user is creator and course is unpublished, delete everything
@@ -91,12 +91,12 @@ export async function DELETE(
       include: {
         course: true,
       },
-    })
+    });
 
-    if (!userCourse) return errorResponse('Course not found', 404)
+    if (!userCourse) return errorResponse('Course not found', 404);
 
-    const isCreator = userCourse.course.createdBy === user.id
-    const isPublished = userCourse.course.published
+    const isCreator = userCourse.course.createdBy === user.id;
+    const isPublished = userCourse.course.published;
 
     if (isCreator && !isPublished) {
       await prisma.course.delete({
@@ -105,7 +105,7 @@ export async function DELETE(
           createdBy: user.id,
           published: false,
         },
-      })
+      });
     } else {
       await prisma.userCourse.update({
         where: {
@@ -119,26 +119,26 @@ export async function DELETE(
           linesUnseen: 0,
           lastTrained: null,
         },
-      })
+      });
 
       await prisma.userLine.deleteMany({
         where: {
           userCourseId: courseId,
         },
-      })
+      });
 
       await prisma.userFen.deleteMany({
         where: {
           userCourseId: courseId,
         },
-      })
+      });
     }
 
-    return successResponse('Course archived', {}, 200)
+    return successResponse('Course archived', {}, 200);
   } catch (e) {
-    Sentry.captureException(e)
-    return errorResponse('Internal Server Error', 500)
+    Sentry.captureException(e);
+    return errorResponse('Internal Server Error', 500);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

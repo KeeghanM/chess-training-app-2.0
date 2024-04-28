@@ -1,14 +1,14 @@
-import { prisma } from '@/server/db'
-import * as Sentry from '@sentry/nextjs'
+import { prisma } from '@/server/db';
+import * as Sentry from '@sentry/nextjs';
 
 export async function AddBadgeToUser(userId: string, name: string) {
-  if (!name || !userId) return
+  if (!name || !userId) return;
 
   try {
     const profile = await prisma.userProfile.findUnique({
       where: { id: userId },
-    })
-    if (!profile) throw new Error('Profile not found')
+    });
+    if (!profile) throw new Error('Profile not found');
 
     // Check if the user already has the badge
     const existingBadge = await prisma.userBadge.findFirst({
@@ -16,8 +16,8 @@ export async function AddBadgeToUser(userId: string, name: string) {
         badgeName: name,
         userId,
       },
-    })
-    if (existingBadge) return
+    });
+    if (existingBadge) return;
 
     // Add the badge
     await prisma.userBadge.create({
@@ -25,22 +25,22 @@ export async function AddBadgeToUser(userId: string, name: string) {
         badgeName: name,
         userId,
       },
-    })
+    });
   } catch (e) {
-    Sentry.captureException(e)
+    Sentry.captureException(e);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }
 
 export async function RemoveBadgeFromUser(userId: string, name: string) {
-  if (!name || !userId) return
+  if (!name || !userId) return;
 
   try {
     const profile = await prisma.userProfile.findUnique({
       where: { id: userId },
-    })
-    if (!profile) throw new Error('Profile not found')
+    });
+    if (!profile) throw new Error('Profile not found');
 
     // Check if the user already has the badge
     const existingBadge = await prisma.userBadge.findFirst({
@@ -48,18 +48,18 @@ export async function RemoveBadgeFromUser(userId: string, name: string) {
         badgeName: name,
         userId,
       },
-    })
-    if (!existingBadge) return
+    });
+    if (!existingBadge) return;
 
     // Remove the badge
     await prisma.userBadge.delete({
       where: {
         id: existingBadge.id,
       },
-    })
+    });
   } catch (e) {
-    Sentry.captureException(e)
+    Sentry.captureException(e);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

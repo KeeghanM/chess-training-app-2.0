@@ -1,18 +1,18 @@
-import { errorResponse, successResponse } from '@/app/api/responses'
-import * as Sentry from '@sentry/nextjs'
-import nodemailer from 'nodemailer'
+import { errorResponse, successResponse } from '@/app/api/responses';
+import * as Sentry from '@sentry/nextjs';
+import nodemailer from 'nodemailer';
 
 export async function POST(request: Request) {
   try {
     const { name, email, issue, message } = (await request.json()) as {
-      name: string
-      email: string
-      issue: string
-      message: string
-    }
+      name: string;
+      email: string;
+      issue: string;
+      message: string;
+    };
 
     if (!name || !email || !issue || !message) {
-      return errorResponse('Missing required fields', 400)
+      return errorResponse('Missing required fields', 400);
     }
 
     const transporter = nodemailer.createTransport({
@@ -24,7 +24,7 @@ export async function POST(request: Request) {
         user: process.env.SMTP_USER!,
         pass: process.env.SMTP_PASS!,
       },
-    })
+    });
     await transporter.sendMail({
       from: `${name} <${email}>`,
       to: 'product@chesstraining.app',
@@ -33,12 +33,12 @@ export async function POST(request: Request) {
 Issue Type: ${issue}
 Message:
 ${message}`,
-    })
+    });
 
-    return successResponse('Message sent', {}, 200)
+    return successResponse('Message sent', {}, 200);
   } catch (e) {
-    Sentry.captureException(e)
-    if (e instanceof Error) return errorResponse(e.message, 500)
-    return errorResponse('Unknown error', 500)
+    Sentry.captureException(e);
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    return errorResponse('Unknown error', 500);
   }
 }

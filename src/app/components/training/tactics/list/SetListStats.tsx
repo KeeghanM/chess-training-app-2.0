@@ -1,21 +1,21 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
+import * as AlertDialog from '@radix-ui/react-alert-dialog';
 
-import Button from '@/app/components/_elements/button'
-import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator'
+import Button from '@/app/components/_elements/button';
+import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator';
 
-import toHHMMSS from '@/app/_util/toHHMMSS'
+import toHHMMSS from '@/app/_util/toHHMMSS';
 
 export default function SetListStats(props: { set: PrismaTacticsSet }) {
-  const { set } = props
-  const [open, setOpen] = useState(false)
+  const { set } = props;
+  const [open, setOpen] = useState(false);
 
   const close = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   return (
     <>
@@ -60,7 +60,7 @@ export default function SetListStats(props: { set: PrismaTacticsSet }) {
                       <p>Time Spent: {toHHMMSS(round.timeSpent)}</p>
                     </div>
                   </li>
-                )
+                );
               })}
             </ul>
             <Button variant="primary" onClick={close}>
@@ -70,5 +70,5 @@ export default function SetListStats(props: { set: PrismaTacticsSet }) {
         </AlertDialog.Portal>
       </AlertDialog.Root>
     </>
-  )
+  );
 }

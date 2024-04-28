@@ -1,20 +1,20 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
+import type { ResponseJson } from '@/app/api/responses';
 
-import Button from '../../_elements/button'
-import Spinner from '../../general/Spinner'
+import Button from '../../_elements/button';
+import Spinner from '../../general/Spinner';
 
 export default function AddToSet(props: { setId: string; puzzleId?: string }) {
-  const { setId, puzzleId } = props
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const { setId, puzzleId } = props;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const addPuzzleToSet = async () => {
-    setLoading(true)
-    setError('')
+    setLoading(true);
+    setError('');
     try {
       const resp = await fetch('/api/admin/curated-sets/curatedPuzzle', {
         method: 'POST',
@@ -22,25 +22,25 @@ export default function AddToSet(props: { setId: string; puzzleId?: string }) {
           setId,
           puzzleid: puzzleId,
         }),
-      })
-      const json = (await resp.json()) as ResponseJson
-      if (json.message !== 'Puzzle added to set') throw new Error(json.message)
+      });
+      const json = (await resp.json()) as ResponseJson;
+      if (json.message !== 'Puzzle added to set') throw new Error(json.message);
     } catch (e) {
-      if (e instanceof Error) setError(e.message)
-      else setError('Unknown error')
+      if (e instanceof Error) setError(e.message);
+      else setError('Unknown error');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
-    setError('')
-  }, [puzzleId, setId])
+    setError('');
+  }, [puzzleId, setId]);
 
   return (
     <>
       <Button
-        className="w-full mt-1"
+        className="mt-1 w-full"
         disabled={loading}
         variant="accent"
         onClick={addPuzzleToSet}
@@ -55,5 +55,5 @@ export default function AddToSet(props: { setId: string; puzzleId?: string }) {
       </Button>
       {error ? <p className="text-red-500">{error}</p> : null}
     </>
-  )
+  );
 }

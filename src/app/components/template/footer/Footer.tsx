@@ -1,15 +1,15 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-import Heading from '@/app/components/_elements/heading'
+import Heading from '@/app/components/_elements/heading';
 
 export default function Footer() {
   const sections: {
-    title: string
+    title: string;
     links: {
-      icon?: React.ReactNode
-      text: string
-      url: string
-    }[]
+      icon?: React.ReactNode;
+      text: string;
+      url: string;
+    }[];
   }[] = [
     {
       title: 'ChessTraining.app',
@@ -106,7 +106,7 @@ export default function Footer() {
         },
       ],
     },
-  ]
+  ];
 
   return (
     <footer className="flex flex-col gap-4 border-t border-slate-600 bg-slate-800 p-4 text-sm text-white md:px-12">
@@ -131,5 +131,5 @@ export default function Footer() {
         <p>&copy; 2020-2023 ChessTraining.app</p>
       </div>
     </footer>
-  )
+  );
 }

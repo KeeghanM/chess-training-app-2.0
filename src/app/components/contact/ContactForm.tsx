@@ -1,21 +1,21 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import * as Sentry from '@sentry/nextjs'
+import type { ResponseJson } from '@/app/api/responses';
+import * as Sentry from '@sentry/nextjs';
 
-import Button from '@/app/components/_elements/button'
-import Spinner from '@/app/components/general/Spinner'
+import Button from '@/app/components/_elements/button';
+import Spinner from '@/app/components/general/Spinner';
 
 export default function ContactForm() {
-  const [sendEmail, setSendEmail] = useState(false)
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [message, setMessage] = useState('')
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
+  const [sendEmail, setSendEmail] = useState(false);
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const players = [
     'Magnus Carlsen',
@@ -23,31 +23,33 @@ export default function ContactForm() {
     'Fabiano Caruana',
     'Ding Liren',
     'Ian Nepomniachtchi',
-  ]
+  ];
 
-  const [player] = useState(players[Math.floor(Math.random() * players.length)])
+  const [player] = useState(
+    players[Math.floor(Math.random() * players.length)],
+  );
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
     if (!name) {
-      setError('Name is required')
-      setLoading(false)
-      return
+      setError('Name is required');
+      setLoading(false);
+      return;
     }
 
     if (!email) {
-      setError('Email is required')
-      setLoading(false)
-      return
+      setError('Email is required');
+      setLoading(false);
+      return;
     }
 
     if (!message) {
-      setError('Message is required')
-      setLoading(false)
-      return
+      setError('Message is required');
+      setLoading(false);
+      return;
     }
 
     try {
@@ -60,30 +62,30 @@ export default function ContactForm() {
           message,
           subject: `Contact Form from: ${name}`,
         }),
-      })
-      const data = (await res.json()) as ResponseJson
+      });
+      const data = (await res.json()) as ResponseJson;
       if (data.message != 'Message sent') {
-        setError(data.message)
-        return
+        setError(data.message);
+        return;
       }
-      setName('')
-      setEmail('')
-      setMessage('')
-      setLoading(false)
-      setSuccess(true)
+      setName('');
+      setEmail('');
+      setMessage('');
+      setLoading(false);
+      setSuccess(true);
     } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('Something went wrong')
+      Sentry.captureException(e);
+      if (e instanceof Error) setError(e.message);
+      else setError('Something went wrong');
 
-      setLoading(false)
+      setLoading(false);
     }
   }
 
   const openChat = () => {
     // @ts-expect-error : BrevoConversations is defined in the head
-    BrevoConversations('openChat', true)
-  }
+    BrevoConversations('openChat', true);
+  };
 
   return (
     <>
@@ -132,7 +134,7 @@ export default function ContactForm() {
                 <div>
                   <label>Name</label>
                   <input
-                    className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                    className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
                     placeholder={player}
                     type="text"
                     value={name}
@@ -142,7 +144,7 @@ export default function ContactForm() {
                 <div>
                   <label>Email</label>
                   <input
-                    className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                    className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
                     placeholder={`${player?.split(' ')[0]}@chesstraining.app`}
                     type="email"
                     value={email}
@@ -178,5 +180,5 @@ export default function ContactForm() {
         </>
       )}
     </>
-  )
+  );
 }

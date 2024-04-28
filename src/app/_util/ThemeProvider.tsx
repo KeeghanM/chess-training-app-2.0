@@ -1,15 +1,15 @@
-'use client'
+'use client';
 
-import { ThemeProvider } from 'next-themes'
+import { ThemeProvider } from 'next-themes';
 
 export const ThemeSwitchProvider = ({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) => {
   return (
     <ThemeProvider enableSystem attribute="class" defaultTheme="system">
       {children}
     </ThemeProvider>
-  )
-}
+  );
+};

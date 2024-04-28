@@ -1,10 +1,10 @@
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
 
-import { getUserServer } from '@/app/_util/getUserServer'
+import { getUserServer } from '@/app/_util/getUserServer';
 
 export default async function SignIn() {
-  const { user } = await getUserServer()
+  const { user } = await getUserServer();
 
-  if (user) redirect('/dashboard')
-  else redirect(`/api/auth/login?post_login_redirect_url=/dashboard`)
+  if (user) redirect('/dashboard');
+  else redirect(`/api/auth/login?post_login_redirect_url=/dashboard`);
 }

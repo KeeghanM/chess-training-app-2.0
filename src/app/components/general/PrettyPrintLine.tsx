@@ -1,22 +1,22 @@
-import type { Line } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData'
+import type { Line } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData';
 
 export default function PrettyPrintLine(props: { line: Line | string }) {
   // Return the moves, with the move number bolded
   // and each move "set" (i.e one white one black) wrapped in a <p> tag
   // each move, and move number, needs separating by a space
 
-  const { line } = props
+  const { line } = props;
 
   if (typeof line === 'string') {
-    return <span>{line}</span>
+    return <span>{line}</span>;
   }
 
-  const movePairs: { whiteMove: string; blackMove: string }[] = []
+  const movePairs: { whiteMove: string; blackMove: string }[] = [];
   for (let i = 0; i < line.moves.length; i += 2) {
     movePairs.push({
       whiteMove: line.moves[i]?.notation ?? '',
       blackMove: line.moves[i + 1]?.notation ?? '',
-    })
+    });
   }
 
   return (
@@ -29,5 +29,5 @@ export default function PrettyPrintLine(props: { line: Line | string }) {
         </div>
       ))}
     </div>
-  )
+  );
 }

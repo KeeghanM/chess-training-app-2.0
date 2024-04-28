@@ -1,246 +1,246 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
+import Link from 'next/link';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import * as Sentry from '@sentry/nextjs'
-import Tippy from '@tippyjs/react'
-import { Chess } from 'chess.js'
-import type { Move } from 'chess.js'
-import Toggle from 'react-toggle'
-import 'react-toggle/style.css'
+import type { ResponseJson } from '@/app/api/responses';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import * as Sentry from '@sentry/nextjs';
+import Tippy from '@tippyjs/react';
+import { Chess } from 'chess.js';
+import type { Move } from 'chess.js';
+import Toggle from 'react-toggle';
+import 'react-toggle/style.css';
 // @ts-expect-error - No types available
-import useSound from 'use-sound'
+import useSound from 'use-sound';
 
-import Button from '@/app/components/_elements/button'
-import Spinner from '@/app/components/general/Spinner'
-import XpTracker from '@/app/components/general/XpTracker'
-import ThemeSwitch from '@/app/components/template/header/ThemeSwitch'
-import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer'
+import Button from '@/app/components/_elements/button';
+import Spinner from '@/app/components/general/Spinner';
+import XpTracker from '@/app/components/general/XpTracker';
+import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
+import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
-import ChessBoard from '../ChessBoard'
+import ChessBoard from '../ChessBoard';
 
 // TODO: "Show solution" button
 
 export default function EndgameTrainer() {
-  const { user } = useKindeBrowserClient()
+  const { user } = useKindeBrowserClient();
 
   // Setup main state for the game/puzzles
-  const [currentPuzzle, setCurrentPuzzle] = useState<TrainingPuzzle>()
-  const [game, setGame] = useState(new Chess())
-  const [gameReady, setGameReady] = useState(false)
-  const [orientation, setOrientation] = useState<'white' | 'black'>('white')
-  const [position, setPosition] = useState(game.fen())
-  const [soundEnabled, setSoundEnabled] = useState(true)
+  const [currentPuzzle, setCurrentPuzzle] = useState<TrainingPuzzle>();
+  const [game, setGame] = useState(new Chess());
+  const [gameReady, setGameReady] = useState(false);
+  const [orientation, setOrientation] = useState<'white' | 'black'>('white');
+  const [position, setPosition] = useState(game.fen());
+  const [soundEnabled, setSoundEnabled] = useState(true);
   const [type, setType] = useState<
     'Queen' | 'Rook' | 'Knight' | 'Bishop' | 'Pawn' | 'All'
-  >('All')
-  const [rating, setRating] = useState(1500)
-  const [difficulty, setDifficulty] = useState(1)
+  >('All');
+  const [rating, setRating] = useState(1500);
+  const [difficulty, setDifficulty] = useState(1);
 
   // SFX
-  const [correctSound] = useSound('/sfx/correct.mp3')
-  const [incorrectSound] = useSound('/sfx/incorrect.mp3')
+  const [correctSound] = useSound('/sfx/correct.mp3');
+  const [incorrectSound] = useSound('/sfx/incorrect.mp3');
 
   // Setup state for the settings/general
-  const [autoNext, setAutoNext] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [readyForInput, setReadyForInput] = useState(false)
-  const [puzzleFinished, setPuzzleFinished] = useState(false)
+  const [autoNext, setAutoNext] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [readyForInput, setReadyForInput] = useState(false);
+  const [puzzleFinished, setPuzzleFinished] = useState(false);
   const [puzzleStatus, setPuzzleStatus] = useState<
     'none' | 'correct' | 'incorrect'
-  >('none')
-  const [mode, setMode] = useState<'training' | 'settings'>('settings')
-  const [error, setError] = useState('')
+  >('none');
+  const [mode, setMode] = useState<'training' | 'settings'>('settings');
+  const [error, setError] = useState('');
 
-  const [xpCounter, setXpCounter] = useState(0)
-  const [currentStreak, setCurrentStreak] = useState(0)
+  const [xpCounter, setXpCounter] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
 
   const difficultyAdjuster = (d: number) => {
-    return d == 0 ? 0.9 : d == 1 ? 1 : 1.2
-  }
+    return d == 0 ? 0.9 : d == 1 ? 1 : 1.2;
+  };
 
   const getPuzzle = async () => {
-    const trueRating = Math.round(rating * difficultyAdjuster(difficulty))
+    const trueRating = Math.round(rating * difficultyAdjuster(difficulty));
     if (trueRating < 500 || trueRating > 3000) {
       setError(
         'Puzzle ratings must be between 500 & 3000, try adjusting the difficulty or the base rating',
-      )
-      return undefined
+      );
+      return undefined;
     }
 
     const getTheme = () => {
       switch (type) {
         case 'Queen':
-          return 'queenEndgame'
+          return 'queenEndgame';
         case 'Rook':
-          return 'rookEndgame'
+          return 'rookEndgame';
         case 'Bishop':
-          return 'bishopEndgame'
+          return 'bishopEndgame';
         case 'Knight':
-          return 'knightEndgame'
+          return 'knightEndgame';
         case 'Pawn':
-          return 'pawnEndgame'
+          return 'pawnEndgame';
         default:
-          return 'endgame'
+          return 'endgame';
       }
-    }
+    };
     try {
       const params = {
         rating: trueRating.toString(),
         themesType: 'ALL',
         themes: `["${getTheme()}"]`,
         count: '1',
-      }
+      };
       const resp = await fetch('/api/puzzles/getPuzzles', {
         method: 'POST',
         body: JSON.stringify(params),
-      })
-      const json = (await resp.json()) as ResponseJson
-      if (json?.message != 'Puzzles found') throw new Error('No puzzles found')
-      const puzzles = json.data!.puzzles as TrainingPuzzle[]
+      });
+      const json = (await resp.json()) as ResponseJson;
+      if (json?.message != 'Puzzles found') throw new Error('No puzzles found');
+      const puzzles = json.data!.puzzles as TrainingPuzzle[];
 
-      return puzzles[0]
+      return puzzles[0];
     } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('Oops! Something went wrong')
+      Sentry.captureException(e);
+      if (e instanceof Error) setError(e.message);
+      else setError('Oops! Something went wrong');
     }
-  }
+  };
 
   const makeMove = (move: string) => {
     try {
-      game.move(move)
-      setPosition(game.fen())
+      game.move(move);
+      setPosition(game.fen());
     } catch (e) {
       // honestly, do nothing
       // I dunno why this is firing, I replicated it once but it didn;t actually affect the usage
       // I think it's to do with premoving and the chess.js library, but nothing actually breaks
       // so this is just here to stop logging it in sentry as an "unhandled error"
     }
-  }
+  };
 
   // Makes a move for the "opponent"
   const makeBookMove = () => {
-    setReadyForInput(false)
-    const currentMove = currentPuzzle?.moves[game.history().length]
-    if (!currentMove) return
+    setReadyForInput(false);
+    const currentMove = currentPuzzle?.moves[game.history().length];
+    if (!currentMove) return;
 
     const timeoutId = setTimeout(() => {
-      makeMove(currentMove)
-      setReadyForInput(true)
-    }, 500)
-    return timeoutId
-  }
+      makeMove(currentMove);
+      setReadyForInput(true);
+    }, 500);
+    return timeoutId;
+  };
 
   const makeFirstMove = (move: string) => {
     const timeoutId = setTimeout(() => {
-      makeMove(move)
-      setReadyForInput(true)
-    }, 500)
-    return timeoutId
-  }
+      makeMove(move);
+      setReadyForInput(true);
+    }, 500);
+    return timeoutId;
+  };
 
   const goToNextPuzzle = async (status: string) => {
-    setLoading(true)
+    setLoading(true);
 
     // Increase the "Last Trained" on the profile
     fetch('/api/profile/streak', {
       method: 'POST',
-    }).catch((e) => Sentry.captureException(e))
+    }).catch((e) => Sentry.captureException(e));
 
     // Increase the streak if correct
     // and send it to the server incase a badge needs adding
     if (status == 'correct') {
-      trackEventOnClient('endgame_correct', {})
+      trackEventOnClient('endgame_correct', {});
       fetch('/api/endgames/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
-      }).catch((e) => Sentry.captureException(e))
-      setCurrentStreak(currentStreak + 1)
+      }).catch((e) => Sentry.captureException(e));
+      setCurrentStreak(currentStreak + 1);
     } else if (status == 'incorrect') {
-      trackEventOnClient('endgame_incorrect', {})
+      trackEventOnClient('endgame_incorrect', {});
     }
-    const newPuzzle = await getPuzzle()
+    const newPuzzle = await getPuzzle();
 
-    if (!newPuzzle) return
+    if (!newPuzzle) return;
 
-    setPuzzleStatus('none')
-    setLoading(false)
-    setCurrentPuzzle(newPuzzle)
-  }
+    setPuzzleStatus('none');
+    setLoading(false);
+    setCurrentPuzzle(newPuzzle);
+  };
 
   const checkEndOfLine = async () => {
     if (game.history().length >= currentPuzzle!.moves.length) {
       // We have reached the end of the line
-      if (soundEnabled) correctSound()
-      setPuzzleStatus('correct')
-      setPuzzleFinished(true)
-      setXpCounter(xpCounter + 1)
+      if (soundEnabled) correctSound();
+      setPuzzleStatus('correct');
+      setPuzzleFinished(true);
+      setXpCounter(xpCounter + 1);
 
       if (autoNext && puzzleStatus != 'incorrect') {
-        await goToNextPuzzle('correct')
+        await goToNextPuzzle('correct');
       }
-      return true
+      return true;
     }
-    return false
-  }
+    return false;
+  };
 
   const showIncorrectSequence = async () => {
-    let counter = 0
-    const timeouts = []
+    let counter = 0;
+    const timeouts = [];
     for (let i = game.history().length; i < currentPuzzle!.moves.length; i++) {
-      counter++
-      const move = currentPuzzle?.moves[i]
-      if (!move) return
+      counter++;
+      const move = currentPuzzle?.moves[i];
+      if (!move) return;
 
       const timeoutPromise = new Promise((resolve) => {
         const timeoutId = setTimeout(
           () => {
-            makeMove(move)
-            resolve(timeoutId)
+            makeMove(move);
+            resolve(timeoutId);
           },
           1000 * counter + 200,
-        )
-      })
+        );
+      });
 
-      timeouts.push(timeoutPromise)
+      timeouts.push(timeoutPromise);
     }
 
-    await Promise.all(timeouts)
-  }
+    await Promise.all(timeouts);
+  };
 
   const handleMove = async (playerMove: Move) => {
-    const correctMove = currentPuzzle!.moves[game.history().length - 1]
+    const correctMove = currentPuzzle!.moves[game.history().length - 1];
 
     if (correctMove !== playerMove.lan && !game.isCheckmate()) {
       // We played the wrong move
-      setPuzzleStatus('incorrect')
-      if (soundEnabled) incorrectSound()
-      game.undo()
-      setReadyForInput(false)
-      await showIncorrectSequence()
+      setPuzzleStatus('incorrect');
+      if (soundEnabled) incorrectSound();
+      game.undo();
+      setReadyForInput(false);
+      await showIncorrectSequence();
 
-      setReadyForInput(true)
-      setPuzzleFinished(true)
-      return false
+      setReadyForInput(true);
+      setPuzzleFinished(true);
+      return false;
     }
 
-    setPosition(game.fen())
-    makeBookMove()
-    await checkEndOfLine()
-    return true
-  }
+    setPosition(game.fen());
+    makeBookMove();
+    await checkEndOfLine();
+    return true;
+  };
 
   const PgnDisplay = game.history().map((move, index) => {
     const moveNumber =
-      Math.floor(index / 2) + 1 + (game.moveNumber() - game.history().length)
-    const moveColour = game.history({ verbose: true })[index]!.color
+      Math.floor(index / 2) + 1 + (game.moveNumber() - game.history().length);
+    const moveColour = game.history({ verbose: true })[index]!.color;
     const FlexText = () => (
       <p>
         {(moveColour == 'w' || (moveColour == 'b' && index == 0)) && (
@@ -252,7 +252,7 @@ export default function EndgameTrainer() {
         )}{' '}
         <span>{move}</span>
       </p>
-    )
+    );
 
     if (puzzleFinished) {
       return (
@@ -260,17 +260,17 @@ export default function EndgameTrainer() {
           key={`btn${moveNumber.toString()}${move}${moveColour}`}
           className="h-max max-h-fit bg-none p-1 hover:bg-purple-800"
           onClick={async () => {
-            const newGame = new Chess(currentPuzzle!.fen)
+            const newGame = new Chess(currentPuzzle!.fen);
             for (let i = 0; i <= index; i++) {
-              newGame.move(game.history()[i]!)
+              newGame.move(game.history()[i]!);
             }
-            setPosition(newGame.fen())
-            trackEventOnClient('endgame_set_jump_to_move', {})
+            setPosition(newGame.fen());
+            trackEventOnClient('endgame_set_jump_to_move', {});
           }}
         >
           <FlexText />
         </button>
-      )
+      );
     }
     return (
       <div
@@ -279,78 +279,78 @@ export default function EndgameTrainer() {
       >
         <FlexText />
       </div>
-    )
-  })
+    );
+  });
 
   const exit = async () => {
-    setMode('settings')
-  }
+    setMode('settings');
+  };
 
   const getDifficulty = () => {
     switch (difficulty) {
       case 0:
-        return 'Easy'
+        return 'Easy';
       case 1:
-        return 'Medium'
+        return 'Medium';
       case 2:
-        return 'Hard'
+        return 'Hard';
       default:
-        return 'Medium'
+        return 'Medium';
     }
-  }
+  };
 
   // Here are all our useEffect functions
   useEffect(() => {
-    if (mode == 'settings') return
-    ;(async () => {
-      const puzzle = await getPuzzle()
+    if (mode == 'settings') return;
+    (async () => {
+      const puzzle = await getPuzzle();
       if (!puzzle) {
-        setMode('settings')
-        return
+        setMode('settings');
+        return;
       }
-      setCurrentPuzzle(puzzle)
-      setLoading(false)
+      setCurrentPuzzle(puzzle);
+      setLoading(false);
     })().catch((e) => {
-      Sentry.captureException(e)
-      throw new Error('Unable to load puzzle')
-    })
-  }, [mode])
+      Sentry.captureException(e);
+      throw new Error('Unable to load puzzle');
+    });
+  }, [mode]);
 
   useEffect(() => {
     // Create a new game from the puzzle whenever it changes
-    if (!currentPuzzle) return
-    const newGame = new Chess(currentPuzzle.fen)
-    setGame(newGame)
-    setGameReady(false)
-  }, [currentPuzzle])
+    if (!currentPuzzle) return;
+    const newGame = new Chess(currentPuzzle.fen);
+    setGame(newGame);
+    setGameReady(false);
+  }, [currentPuzzle]);
 
   useEffect(() => {
     // We need to ensure the game is set before we can make a move
-    setGameReady(true)
-  }, [game])
+    setGameReady(true);
+  }, [game]);
 
   useEffect(() => {
     // Now, whenever any of the elements associated with the game/puzzle
     // change we can check if we need to make the first move
     if (gameReady && currentPuzzle) {
-      setPuzzleFinished(false)
-      setPosition(currentPuzzle.fen)
-      setOrientation(game.turn() == 'w' ? 'black' : 'white') // reversed because the first move is opponents
-      const firstMove = currentPuzzle?.moves[0]
-      const timeoutId = makeFirstMove(firstMove)
-      return () => clearTimeout(timeoutId)
+      setPuzzleFinished(false);
+      setPosition(currentPuzzle.fen);
+      setOrientation(game.turn() == 'w' ? 'black' : 'white'); // reversed because the first move is opponents
+      const firstMove = currentPuzzle?.moves[0];
+      const timeoutId = makeFirstMove(firstMove);
+      return () => clearTimeout(timeoutId);
     }
-  }, [gameReady, game, currentPuzzle])
+  }, [gameReady, game, currentPuzzle]);
 
-  if (!user) return null
+  if (!user) return null;
 
   return mode == 'settings' ? (
-    <div className="border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
-      <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
+    <div className="border border-gray-300 bg-[rgba(0,0,0,0.03)] text-black shadow-md dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
+      <div className="flex flex-wrap items-center justify-between border-b border-gray-300 px-2 py-1 font-bold text-orange-500 dark:border-slate-600">
         <p>Adjust your settings</p>
       </div>
-      <div className="flex flex-col p-2 gap-4">
-        <div className="flex flex-col md:flex-row gap-1 md:gap-2">
+      <div className="flex flex-col gap-4 p-2">
+        <div className="flex flex-col gap-1 md:flex-row md:gap-2">
           <div>
             <label className="font-bold">Your Rating</label>
             <input
@@ -361,7 +361,7 @@ export default function EndgameTrainer() {
               type="number"
               value={rating}
               onInput={(e) => {
-                setRating(parseInt(e.currentTarget.value))
+                setRating(parseInt(e.currentTarget.value));
               }}
             />
           </div>
@@ -433,47 +433,47 @@ export default function EndgameTrainer() {
         <Button
           variant="primary"
           onClick={async () => {
-            setMode('training')
-            trackEventOnClient('endgame_start', {})
+            setMode('training');
+            trackEventOnClient('endgame_start', {});
           }}
         >
           Start Training
         </Button>
         {error ? (
-          <p className="bg-red-500 italic text-sm p-2 text-white">{error}</p>
+          <p className="bg-red-500 p-2 text-sm italic text-white">{error}</p>
         ) : null}
       </div>
     </div>
   ) : (
-    <div className="relative border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
+    <div className="relative border border-gray-300 bg-[rgba(0,0,0,0.03)] text-black shadow-md dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
       {loading ? (
         <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
           <Spinner />
         </div>
       ) : null}
       <div className="flex flex-wrap items-center justify-between text-sm">
-        <div className="flex gap-1 p-2 pb-0 justify-center text-xs md:text-sm lg:text-base">
+        <div className="flex justify-center gap-1 p-2 pb-0 text-xs md:text-sm lg:text-base">
           <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-            <p className="w-full text-center font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+            <p className="w-full border-b border-gray-300 px-1 py-1 text-center font-bold dark:border-slate-600">
               Type:
             </p>
             <p className="px-1">{type} Endgames</p>
           </div>
           <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-            <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+            <p className="border-b border-gray-300 px-1 py-1 font-bold dark:border-slate-600">
               Rating:
             </p>
             <p>{rating}</p>
           </div>
           <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-            <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+            <p className="border-b border-gray-300 px-1 py-1 font-bold dark:border-slate-600">
               Difficulty:
             </p>
             <p>{getDifficulty()}</p>
           </div>
           <XpTracker counter={xpCounter} type="tactic" />
         </div>
-        <div className="flex items-center gap-2 w-fit mx-auto md:mx-0">
+        <div className="mx-auto flex w-fit items-center gap-2 md:mx-0">
           <ThemeSwitch />
           <div
             className="ml-auto flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
@@ -630,16 +630,16 @@ export default function EndgameTrainer() {
             )}
           </div>
           <div className="flex flex-1 flex-col-reverse gap-2 lg:flex-col">
-            <div className="flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
+            <div className="flex h-full flex-wrap content-start gap-1 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 text-black dark:text-white lg:border-4">
               {PgnDisplay.map((item) => item)}
             </div>
             <label className="ml-auto flex items-center gap-2 text-sm">
               <Toggle
                 defaultChecked={autoNext}
                 onChange={async () => {
-                  setAutoNext(!autoNext)
+                  setAutoNext(!autoNext);
                   if (puzzleFinished && puzzleStatus == 'correct')
-                    await goToNextPuzzle(puzzleStatus)
+                    await goToNextPuzzle(puzzleStatus);
                 }}
               />
               <span>Auto Next on correct</span>
@@ -658,11 +658,11 @@ export default function EndgameTrainer() {
                 <Button
                   variant="secondary"
                   onClick={async () => {
-                    setPuzzleStatus('incorrect')
-                    setReadyForInput(false)
-                    await showIncorrectSequence()
-                    setReadyForInput(true)
-                    setPuzzleFinished(true)
+                    setPuzzleStatus('incorrect');
+                    setReadyForInput(false);
+                    await showIncorrectSequence();
+                    setReadyForInput(true);
+                    setPuzzleFinished(true);
                   }}
                 >
                   Skip/Show Solution
@@ -677,5 +677,5 @@ export default function EndgameTrainer() {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,15 +1,15 @@
-import Container from '@/app/components/_elements/container'
-import Heading from '@/app/components/_elements/heading'
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
 
 interface ImageRowProps {
-  heading: string
-  imageSide: 'left' | 'right'
+  heading: string;
+  imageSide: 'left' | 'right';
   image: {
-    src: string
-    alt: string
-  }
-  background: 'light' | 'dark'
-  children: React.ReactNode
+    src: string;
+    alt: string;
+  };
+  background: 'light' | 'dark';
+  children: React.ReactNode;
 }
 
 export default function ImageRowFull(props: ImageRowProps) {
@@ -41,5 +41,5 @@ export default function ImageRowFull(props: ImageRowProps) {
         </Container>
       </div>
     </div>
-  )
+  );
 }

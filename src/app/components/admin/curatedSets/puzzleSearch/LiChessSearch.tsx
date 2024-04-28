@@ -1,53 +1,53 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import * as Sentry from '@sentry/react'
-import Tippy from '@tippyjs/react'
+import type { ResponseJson } from '@/app/api/responses';
+import * as Sentry from '@sentry/react';
+import Tippy from '@tippyjs/react';
 
-import Button from '@/app/components/_elements/button'
-import Spinner from '@/app/components/general/Spinner'
+import Button from '@/app/components/_elements/button';
+import Spinner from '@/app/components/general/Spinner';
 
-import type { CuratedSetPuzzle } from '../CuratedSetsBrowser'
-import themes from '../themes'
+import type { CuratedSetPuzzle } from '../CuratedSetsBrowser';
+import themes from '../themes';
 
 export default function LiChessSearch(props: {
-  setPuzzle: (puzzle: CuratedSetPuzzle) => void
+  setPuzzle: (puzzle: CuratedSetPuzzle) => void;
 }) {
   // Searching
-  const [selectedThemes, setSelectedThemes] = useState<string[]>([])
-  const [filter, setFilter] = useState('')
-  const [rating, setRating] = useState(1500)
-  const [themeTypeToggle, setThemeTypeToggle] = useState<'ALL' | 'ANY'>('ANY')
-  const [puzzleId, setPuzzleId] = useState('' as string)
+  const [selectedThemes, setSelectedThemes] = useState<string[]>([]);
+  const [filter, setFilter] = useState('');
+  const [rating, setRating] = useState(1500);
+  const [themeTypeToggle, setThemeTypeToggle] = useState<'ALL' | 'ANY'>('ANY');
+  const [puzzleId, setPuzzleId] = useState('' as string);
 
   // State
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const toggleTheme = (theme: string) => {
     if (selectedThemes.includes(theme)) {
-      setSelectedThemes(selectedThemes.filter((t) => t !== theme))
+      setSelectedThemes(selectedThemes.filter((t) => t !== theme));
     } else {
-      setSelectedThemes([...selectedThemes, theme])
+      setSelectedThemes([...selectedThemes, theme]);
     }
-  }
+  };
 
   const getPuzzle = async () => {
-    setError('')
-    setLoading(true)
+    setError('');
+    setLoading(true);
     try {
-      let puzzle: CuratedSetPuzzle | undefined
+      let puzzle: CuratedSetPuzzle | undefined;
       if (puzzleId) {
-        const resp = await fetch(`/api/puzzles/getPuzzleById/${puzzleId}`)
-        const json = (await resp.json()) as ResponseJson
-        if (json.message != 'Puzzle found') throw new Error(json.message)
+        const resp = await fetch(`/api/puzzles/getPuzzleById/${puzzleId}`);
+        const json = (await resp.json()) as ResponseJson;
+        if (json.message != 'Puzzle found') throw new Error(json.message);
 
-        puzzle = json.data!.puzzle
+        puzzle = json.data!.puzzle;
       } else {
         const themesString =
           selectedThemes.length > 0
             ? `[${selectedThemes.map((t) => `"${t}"`).join()}]`
-            : undefined
+            : undefined;
         const resp = await fetch('/api/puzzles/getPuzzles', {
           method: 'POST',
           body: JSON.stringify({
@@ -56,31 +56,31 @@ export default function LiChessSearch(props: {
             themesType: themeTypeToggle,
             count: 1,
           }),
-        })
+        });
 
-        const json = (await resp.json()) as ResponseJson
-        if (json.message != 'Puzzles found') throw new Error(json.message)
-        const puzzles = json.data!.puzzles as CuratedSetPuzzle[]
-        puzzle = puzzles[0]
+        const json = (await resp.json()) as ResponseJson;
+        if (json.message != 'Puzzles found') throw new Error(json.message);
+        const puzzles = json.data!.puzzles as CuratedSetPuzzle[];
+        puzzle = puzzles[0];
       }
 
-      if (!puzzle) throw new Error('No puzzle found')
+      if (!puzzle) throw new Error('No puzzle found');
 
-      props.setPuzzle(puzzle)
-      setPuzzleId('')
+      props.setPuzzle(puzzle);
+      setPuzzleId('');
     } catch (e) {
-      Sentry.captureException(e)
+      Sentry.captureException(e);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <>
       <div className="flex flex-row items-center gap-1 text-sm">
         <label htmlFor="rating">Rating</label>
         <input
-          className="w-full border border-gray-300 px-2 py-1 bg-gray-100 text-black"
+          className="w-full border border-gray-300 bg-gray-100 px-2 py-1 text-black"
           id="rating"
           name="rating"
           placeholder="Rating"
@@ -94,7 +94,7 @@ export default function LiChessSearch(props: {
           Theme Match
         </label>
         <select
-          className="w-full border border-gray-300 px-2 py-1 bg-gray-100 text-black"
+          className="w-full border border-gray-300 bg-gray-100 px-2 py-1 text-black"
           id="themeTypeToggle"
           name="themeTypeToggle"
           value={themeTypeToggle}
@@ -109,7 +109,7 @@ export default function LiChessSearch(props: {
           Themes Selected: {selectedThemes.length}
         </p>
         <input
-          className="w-full border border-gray-300 px-2 py-1 bg-gray-100 text-black"
+          className="w-full border border-gray-300 bg-gray-100 px-2 py-1 text-black"
           id="filter"
           name="filter"
           placeholder="Search themes"
@@ -127,7 +127,7 @@ export default function LiChessSearch(props: {
           .map((theme, index) => (
             <Tippy key={theme.id} content={theme.description}>
               <p
-                className={`cursor-pointer p-1 hover:font-bold text-black ${
+                className={`cursor-pointer p-1 text-black hover:font-bold ${
                   index % 2 == 0 ? ' bg-gray-200' : ' bg-gray-50'
                 }${selectedThemes.includes(theme.id) ? ' bg-green-200' : ''}`}
                 onClick={() => toggleTheme(theme.id)}
@@ -160,5 +160,5 @@ export default function LiChessSearch(props: {
       </Button>
       {error ? <p className="text-red-500">{error}</p> : null}
     </>
-  )
+  );
 }

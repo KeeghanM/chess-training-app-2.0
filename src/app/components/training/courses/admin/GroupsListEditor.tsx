@@ -1,43 +1,43 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import type { DragEndEvent } from '@dnd-kit/core'
+import type { DragEndEvent } from '@dnd-kit/core';
 import {
   DndContext,
   PointerSensor,
   closestCenter,
   useSensor,
   useSensors,
-} from '@dnd-kit/core'
+} from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
-import { useAutoAnimate } from '@formkit/auto-animate/react'
-import type { Group } from '@prisma/client'
+} from '@dnd-kit/sortable';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
+import type { Group } from '@prisma/client';
 
-import Heading from '@/app/components/_elements/heading'
+import Heading from '@/app/components/_elements/heading';
 
-import SortableItem from '@/app/_util/SortableItem'
+import SortableItem from '@/app/_util/SortableItem';
 
-import type { LineWithMoves } from './GroupEditor'
-import GroupEditor from './GroupEditor'
+import type { LineWithMoves } from './GroupEditor';
+import GroupEditor from './GroupEditor';
 
 export default function GroupsListEditor(props: {
-  groups: Group[]
-  setGroups: (groups: Group[]) => void
-  lines: LineWithMoves[]
-  setLines: (lines: LineWithMoves[]) => void
-  addIdToDelete: (id: number) => void
+  groups: Group[];
+  setGroups: (groups: Group[]) => void;
+  lines: LineWithMoves[];
+  setLines: (lines: LineWithMoves[]) => void;
+  addIdToDelete: (id: number) => void;
 }) {
-  const { groups, setGroups, lines, setLines, addIdToDelete } = props
-  const [parent] = useAutoAnimate()
+  const { groups, setGroups, lines, setLines, addIdToDelete } = props;
+  const [parent] = useAutoAnimate();
   const [groupListItems, setGroupListItems] = useState(
     groups.map((group) => group.id),
-  )
-  const [open, setOpen] = useState(false)
+  );
+  const [open, setOpen] = useState(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -45,29 +45,29 @@ export default function GroupsListEditor(props: {
         distance: 15,
       },
     }),
-  )
+  );
 
   const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event
+    const { active, over } = event;
     if (active && over && active.id !== over.id) {
-      const oldIndex = groupListItems.indexOf(active.id as string)
-      const newIndex = groupListItems.indexOf(over.id as string)
+      const oldIndex = groupListItems.indexOf(active.id as string);
+      const newIndex = groupListItems.indexOf(over.id as string);
       setGroupListItems((items) => {
-        return arrayMove(items, oldIndex, newIndex)
-      })
-      const newGroups = arrayMove(groups, oldIndex, newIndex)
+        return arrayMove(items, oldIndex, newIndex);
+      });
+      const newGroups = arrayMove(groups, oldIndex, newIndex);
       newGroups.forEach((group, i) => {
-        group.sortOrder = i
-      })
-      setGroups(newGroups)
+        group.sortOrder = i;
+      });
+      setGroups(newGroups);
     }
-  }
+  };
 
   return (
     <>
       <Heading as="h2" color="text-white">
         <span
-          className="flex items-center gap-2 cursor-pointer hover:text-orange-500"
+          className="flex cursor-pointer items-center gap-2 hover:text-orange-500"
           onClick={() => setOpen(!open)}
         >
           Groups{' '}
@@ -109,7 +109,7 @@ export default function GroupsListEditor(props: {
                         setGroup={(group) => {
                           setGroups(
                             groups.map((g) => (g.id === group.id ? group : g)),
-                          )
+                          );
                         }}
                         setLines={(newLines) => {
                           setLines(
@@ -117,7 +117,7 @@ export default function GroupsListEditor(props: {
                               (line) =>
                                 newLines.find((l) => l.id === line.id) ?? line,
                             ),
-                          )
+                          );
                         }}
                       />
                     </SortableItem>
@@ -127,5 +127,5 @@ export default function GroupsListEditor(props: {
         </SortableContext>
       </DndContext>
     </>
-  )
+  );
 }

@@ -1,41 +1,41 @@
-'use client'
+'use client';
 
-import Tippy from '@tippyjs/react'
-import Link from 'next/link'
+import Tippy from '@tippyjs/react';
+import Link from 'next/link';
 
-import 'tippy.js/dist/tippy.css'
+import 'tippy.js/dist/tippy.css';
 
 interface XpDisplayProps {
   data: {
-    currentXp: number
+    currentXp: number;
     rank: {
-      rank: string
-      name: string
-      xp: number
-    }
+      rank: string;
+      name: string;
+      xp: number;
+    };
     nextRank: {
-      rank: string
-      name: string
-      xp: number
-    }
-    percentage: number
-  }
-  displayLink?: boolean
+      rank: string;
+      name: string;
+      xp: number;
+    };
+    percentage: number;
+  };
+  displayLink?: boolean;
 }
 export default function XpDisplay(props: XpDisplayProps) {
-  const { currentXp, rank, nextRank, percentage } = props.data
-  const displayLink = props.displayLink ?? true
+  const { currentXp, rank, nextRank, percentage } = props.data;
+  const displayLink = props.displayLink ?? true;
 
   return (
     <div className="flex flex-col items-center gap-1">
       <div className="flex h-fit w-fit  flex-row items-center border-2 border-orange-500 bg-white">
-        <Tippy
-          content="Experience gained from training puzzles, and studying courses."
-        >
+        <Tippy content="Experience gained from training puzzles, and studying courses.">
           <div className="px-2">
             <p className="px-4 text-sm">
               {currentXp.toLocaleString('en-GB')}
-              {nextRank ? <span>/{nextRank.xp.toLocaleString('en-GB')}xp</span> : null}
+              {nextRank ? (
+                <span>/{nextRank.xp.toLocaleString('en-GB')}xp</span>
+              ) : null}
             </p>
             <div className="h-3 w-full bg-purple-200">
               <div
@@ -43,7 +43,7 @@ export default function XpDisplay(props: XpDisplayProps) {
                 style={{
                   width: `${percentage}%`,
                 }}
-               />
+              />
             </div>
           </div>
         </Tippy>
@@ -58,9 +58,10 @@ export default function XpDisplay(props: XpDisplayProps) {
         </Tippy>
       </div>
 
-      {displayLink ? <div className="flex justify-between gap-2">
+      {displayLink ? (
+        <div className="flex justify-between gap-2">
           <Link
-            className="text-white underline text-sm hover:no-underline"
+            className="text-sm text-white underline hover:no-underline"
             href="/members"
           >
             View Leaderboard
@@ -71,7 +72,8 @@ export default function XpDisplay(props: XpDisplayProps) {
           >
             View All Ranks
           </Link>
-        </div> : null}
+        </div>
+      ) : null}
     </div>
-  )
+  );
 }

@@ -1,44 +1,44 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import { useAutoAnimate } from '@formkit/auto-animate/react'
-import { usePostHog } from 'posthog-js/react'
+import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { usePostHog } from 'posthog-js/react';
 
-import Button from '@/app/components/_elements/button'
-import Heading from '@/app/components/_elements/heading'
+import Button from '@/app/components/_elements/button';
+import Heading from '@/app/components/_elements/heading';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
 export default function CookieBanner() {
-  const [showBanner, setShowBanner] = useState(false)
-  const [readMore, setReadMore] = useState(false)
-  const posthog = usePostHog()
-  const [parent] = useAutoAnimate()
+  const [showBanner, setShowBanner] = useState(false);
+  const [readMore, setReadMore] = useState(false);
+  const posthog = usePostHog();
+  const [parent] = useAutoAnimate();
 
   useEffect(() => {
     if (
       !(posthog.has_opted_in_capturing() || posthog.has_opted_out_capturing())
     ) {
-      setShowBanner(true)
+      setShowBanner(true);
     }
-  }, [])
+  }, []);
 
   if (!showBanner) {
-    return null
+    return null;
   }
 
   const acceptCookies = async () => {
-    setShowBanner(false)
-    trackEventOnClient('cookie_opt_in', {})
-    posthog.opt_in_capturing()
-  }
+    setShowBanner(false);
+    trackEventOnClient('cookie_opt_in', {});
+    posthog.opt_in_capturing();
+  };
 
   const declineCookies = async () => {
-    setShowBanner(false)
-    trackEventOnClient('cookie_opt_out', {})
-    posthog.opt_out_capturing()
-  }
+    setShowBanner(false);
+    trackEventOnClient('cookie_opt_out', {});
+    posthog.opt_out_capturing();
+  };
 
   return (
     <div className="fixed inset-0 z-[5000] grid place-items-center">
@@ -103,5 +103,5 @@ export default function CookieBanner() {
         </div>
       </div>
     </div>
-  )
+  );
 }

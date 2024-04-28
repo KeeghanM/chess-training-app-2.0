@@ -4,5 +4,5 @@ export default function GenerateSlug(name: string) {
     .trim()
     .replace(/[^\w\s-]/g, '')
     .replace(/[\s_-]+/g, '-')
-    .replace(/^-+|-+$/g, '')
+    .replace(/^-+|-+$/g, '');
 }

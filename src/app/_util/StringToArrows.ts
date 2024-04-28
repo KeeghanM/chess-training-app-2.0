@@ -1,29 +1,29 @@
-import type { Arrow } from 'react-chessboard/dist/chessboard/types'
+import type { Arrow } from 'react-chessboard/dist/chessboard/types';
 
 export default function getArrows(arrowString: string) {
-  const moveArrows = arrowString.split(',')
+  const moveArrows = arrowString.split(',');
   const getColour = (code: string) => {
     switch (code) {
       case 'G':
-        return 'green'
+        return 'green';
       case 'R':
-        return 'red'
+        return 'red';
       case 'Y':
-        return 'yellow'
+        return 'yellow';
       case 'B':
-        return 'blue'
+        return 'blue';
       case 'O':
-        return 'orange'
+        return 'orange';
       default:
-        return 'green'
+        return 'green';
     }
-  }
+  };
   const newArrows = moveArrows.map((arrow) => {
-    const colour = getColour(arrow.charAt(0))
-    const from = arrow.charAt(1) + arrow.charAt(2)
-    const to = arrow.charAt(3) + arrow.charAt(4)
-    return [from, to, colour] as Arrow
-  })
+    const colour = getColour(arrow.charAt(0));
+    const from = arrow.charAt(1) + arrow.charAt(2);
+    const to = arrow.charAt(3) + arrow.charAt(4);
+    return [from, to, colour] as Arrow;
+  });
 
-  return newArrows
+  return newArrows;
 }

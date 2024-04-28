@@ -1,35 +1,35 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import { type ResponseJson } from '@/app/api/responses'
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
+import { type ResponseJson } from '@/app/api/responses';
+import * as AlertDialog from '@radix-ui/react-alert-dialog';
 
-import Button from '@/app/components/_elements/button'
-import Heading from '@/app/components/_elements/heading'
-import Spinner from '@/app/components/general/Spinner'
+import Button from '@/app/components/_elements/button';
+import Heading from '@/app/components/_elements/heading';
+import Spinner from '@/app/components/general/Spinner';
 
 interface ResetButtonProps {
   groups: {
-    id: string
-    name: string
-  }[]
-  courseId: string
+    id: string;
+    name: string;
+  }[];
+  courseId: string;
 }
 
 export default function ResetButtons({ groups, courseId }: ResetButtonProps) {
-  const [groupLoading, setGroupLoading] = useState(false)
-  const [allLoading, setAllLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [selectedGroup, setSelectedGroup] = useState<string>('')
-  const [open, setOpen] = useState(false)
+  const [groupLoading, setGroupLoading] = useState(false);
+  const [allLoading, setAllLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<string>('');
+  const [open, setOpen] = useState(false);
 
   const markGroupForReview = async () => {
-    setGroupLoading(true)
-    setError(null)
+    setGroupLoading(true);
+    setError(null);
 
     try {
-      if (!selectedGroup) throw new Error('No group selected')
+      if (!selectedGroup) throw new Error('No group selected');
       const resp = await fetch(
         `/api/courses/user/${courseId}/lines/markGroupForReview`,
         {
@@ -39,27 +39,27 @@ export default function ResetButtons({ groups, courseId }: ResetButtonProps) {
           },
           body: JSON.stringify({ groupId: selectedGroup }),
         },
-      )
+      );
 
-      const data = (await resp.json()) as ResponseJson
+      const data = (await resp.json()) as ResponseJson;
       if (data.message !== 'Lines updated') {
-        throw new Error('Failed to mark group for review')
+        throw new Error('Failed to mark group for review');
       }
-      setOpen(false)
-      window.location.reload()
+      setOpen(false);
+      window.location.reload();
     } catch (e) {
-      if (e instanceof Error) setError(e.message)
-      else setError('An error occurred')
+      if (e instanceof Error) setError(e.message);
+      else setError('An error occurred');
     } finally {
-      setGroupLoading(false)
+      setGroupLoading(false);
     }
-  }
+  };
 
   const markAllForReview = async () => {
-    if (!confirm('Are you sure you want to mark all lines for review?')) return
+    if (!confirm('Are you sure you want to mark all lines for review?')) return;
 
-    setAllLoading(true)
-    setError(null)
+    setAllLoading(true);
+    setError(null);
 
     try {
       const resp = await fetch(
@@ -70,26 +70,26 @@ export default function ResetButtons({ groups, courseId }: ResetButtonProps) {
             'Content-Type': 'application/json',
           },
         },
-      )
+      );
 
-      const data = (await resp.json()) as ResponseJson
+      const data = (await resp.json()) as ResponseJson;
       if (data.message !== 'Lines updated') {
-        throw new Error('Failed to mark group for review')
+        throw new Error('Failed to mark group for review');
       }
-      window.location.reload()
+      window.location.reload();
     } catch (e) {
-      if (e instanceof Error) setError(e.message)
-      else setError('An error occurred')
+      if (e instanceof Error) setError(e.message);
+      else setError('An error occurred');
     } finally {
-      setAllLoading(false)
+      setAllLoading(false);
     }
-  }
+  };
 
   return error ? (
-    <p className="text-red-500 italic text-sm">{error}</p>
+    <p className="text-sm italic text-red-500">{error}</p>
   ) : (
     <>
-      <div className="flex flex-col lg:flex-row gap-2">
+      <div className="flex flex-col gap-2 lg:flex-row">
         <Button
           disabled={allLoading}
           variant="primary"
@@ -112,14 +112,14 @@ export default function ResetButtons({ groups, courseId }: ResetButtonProps) {
           <AlertDialog.Overlay
             className="fixed inset-0 z-50 bg-[rgba(0,0,0,0.5)]"
             onClick={() => {
-              if (groupLoading) return
-              setOpen(false)
+              if (groupLoading) return;
+              setOpen(false);
             }}
           />
-          <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 bg-white p-4 shadow-md md:p-6 flex flex-col gap-4">
-            <div className="flex gap-2 flex-col md:flex-row">
+          <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 flex w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 flex-col gap-4 bg-white p-4 shadow-md md:p-6">
+            <div className="flex flex-col gap-2 md:flex-row">
               <select
-                className="w-full md:w-fit border border-gray-300 px-4 py-1 bg-gray-100 text-black"
+                className="w-full border border-gray-300 bg-gray-100 px-4 py-1 text-black md:w-fit"
                 value={selectedGroup}
                 onChange={(e) => setSelectedGroup(e.target.value)}
               >
@@ -146,8 +146,8 @@ export default function ResetButtons({ groups, courseId }: ResetButtonProps) {
               <Button
                 variant="danger"
                 onClick={() => {
-                  if (groupLoading) return
-                  setOpen(false)
+                  if (groupLoading) return;
+                  setOpen(false);
                 }}
               >
                 Cancel
@@ -157,5 +157,5 @@ export default function ResetButtons({ groups, courseId }: ResetButtonProps) {
         </AlertDialog.Portal>
       </AlertDialog.Root>
     </>
-  )
+  );
 }

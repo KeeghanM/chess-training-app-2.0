@@ -1,24 +1,23 @@
-'use client'
+'use client';
 
-import { useTheme } from 'next-themes'
-import { useEffect, useState } from 'react'
-
+import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 
 export default function ThemeSwitch() {
-  const [mounted, setMounted] = useState(false)
-  const { setTheme, resolvedTheme } = useTheme()
+  const [mounted, setMounted] = useState(false);
+  const { setTheme, resolvedTheme } = useTheme();
 
-  useEffect(() => setMounted(true), [])
+  useEffect(() => setMounted(true), []);
   return (
     <div
       className="flex w-fit cursor-pointer flex-row items-center gap-2 p-2 dark:border-slate-600"
       onClick={() => {
-        if (!mounted) return
+        if (!mounted) return;
 
         if (resolvedTheme === 'dark') {
-          setTheme('light')
+          setTheme('light');
         } else {
-          setTheme('dark')
+          setTheme('dark');
         }
       }}
     >
@@ -52,5 +51,5 @@ export default function ThemeSwitch() {
         )}
       </span>
     </div>
-  )
+  );
 }

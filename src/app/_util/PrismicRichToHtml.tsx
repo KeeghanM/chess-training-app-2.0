@@ -1,135 +1,135 @@
-import Heading from '../components/_elements/heading'
+import Heading from '../components/_elements/heading';
 
 interface Span {
-  start: number
-  end: number
-  type: string
-  data?: Record<string, string>
+  start: number;
+  end: number;
+  type: string;
+  data?: Record<string, string>;
 }
 
 export interface RichTextContent {
-  spans: Span[]
-  text: string
-  type: string
-  url?: string
-  alt?: string
+  spans: Span[];
+  text: string;
+  type: string;
+  url?: string;
+  alt?: string;
 }
 
 export const PrismicRichToHtml = (content: RichTextContent) => {
   const mergeOverlappingSpans = (spans: Span[]) => {
-    const mergedSpans = []
+    const mergedSpans = [];
 
-    spans.sort((a, b) => a.start - b.start || a.end - b.end)
+    spans.sort((a, b) => a.start - b.start || a.end - b.end);
 
     for (const span of spans) {
-      const lastSpan = mergedSpans[mergedSpans.length - 1]
+      const lastSpan = mergedSpans[mergedSpans.length - 1];
 
       if (lastSpan && span.start <= lastSpan.end) {
-        lastSpan.end = Math.max(lastSpan.end, span.end)
-        lastSpan.types.push(span.type)
+        lastSpan.end = Math.max(lastSpan.end, span.end);
+        lastSpan.types.push(span.type);
         if (span.type === 'hyperlink') {
-          lastSpan.data = span.data
+          lastSpan.data = span.data;
         }
       } else {
         mergedSpans.push({
           ...span,
           types: [span.type],
-        })
+        });
       }
     }
 
-    return mergedSpans
-  }
+    return mergedSpans;
+  };
 
   const applySpans = (text: string, spans: Span[]) => {
-    const mergedSpans = mergeOverlappingSpans(spans)
-    let result = ''
-    let pointer = 0
+    const mergedSpans = mergeOverlappingSpans(spans);
+    let result = '';
+    let pointer = 0;
 
     for (const span of mergedSpans) {
-      result += text.slice(pointer, span.start)
+      result += text.slice(pointer, span.start);
 
-      let spanContent = text.slice(span.start, span.end)
+      let spanContent = text.slice(span.start, span.end);
       for (const type of span.types) {
         switch (type) {
           case 'em':
-            spanContent = `<em>${spanContent}</em>`
-            break
+            spanContent = `<em>${spanContent}</em>`;
+            break;
           case 'strong':
-            spanContent = `<strong>${spanContent}</strong>`
-            break
+            spanContent = `<strong>${spanContent}</strong>`;
+            break;
           case 'hyperlink':
             spanContent = `<a class="font-bold text-purple-700 underline hover:text-purple-600 hover:no-underline" href="${
               span.data!.url
-            }">${spanContent}</a>`
-            break
+            }">${spanContent}</a>`;
+            break;
         }
       }
 
-      result += spanContent
-      pointer = span.end
+      result += spanContent;
+      pointer = span.end;
     }
     // Append any remaining content after the last span
-    result += text.slice(pointer)
+    result += text.slice(pointer);
 
-    result = decodeUTF8(result)
+    result = decodeUTF8(result);
 
-    return result
-  }
+    return result;
+  };
 
   if (content.spans) {
-    const sortedSpans = [...content.spans].sort((a, b) => b.start - a.start)
-    content.text = applySpans(content.text, sortedSpans)
+    const sortedSpans = [...content.spans].sort((a, b) => b.start - a.start);
+    content.text = applySpans(content.text, sortedSpans);
   }
 
-  const html = { __html: content.text }
+  const html = { __html: content.text };
 
   switch (content.type) {
     case 'paragraph':
-      return <p dangerouslySetInnerHTML={html} className="mb-4 md:mb-6" />
+      return <p dangerouslySetInnerHTML={html} className="mb-4 md:mb-6" />;
     case 'heading1':
       return (
         <Heading as="h1">
           <span dangerouslySetInnerHTML={html} />
         </Heading>
-      )
+      );
     case 'heading2':
       return (
         <Heading as="h2">
           <span dangerouslySetInnerHTML={html} />
         </Heading>
-      )
+      );
     case 'heading3':
       return (
         <Heading as="h3">
           <span dangerouslySetInnerHTML={html} />
         </Heading>
-      )
+      );
     case 'heading4':
       return (
         <Heading as="h4">
           <span dangerouslySetInnerHTML={html} />
         </Heading>
-      )
+      );
     case 'list-item':
-      return <li dangerouslySetInnerHTML={html} />
+      return <li dangerouslySetInnerHTML={html} />;
     case 'o-list-item':
-      return <li dangerouslySetInnerHTML={html} />
+      return <li dangerouslySetInnerHTML={html} />;
     case 'image':
       return (
         <div className="flex flex-col gap-2">
           <img
             alt={content.alt}
-            className="max-w-[600px] w-full mx-auto"
+            className="mx-auto w-full max-w-[600px]"
             src={content.url}
           />
           <p>{content.alt}</p>
         </div>
-      )
+      );
     default:
-      return <p dangerouslySetInnerHTML={html} className="mb-4 md:mb-6" />
+      return <p dangerouslySetInnerHTML={html} className="mb-4 md:mb-6" />;
   }
-}
+};
 
 export function decodeUTF8(str: string) {
   return str
@@ -148,5 +148,5 @@ export function decodeUTF8(str: string) {
     .replace(/©/g, '(c)')
     .replace(/®/g, '(r)')
     .replace(/™/g, '(tm)')
-    .replace(/°/g, ' deg ')
+    .replace(/°/g, ' deg ');
 }

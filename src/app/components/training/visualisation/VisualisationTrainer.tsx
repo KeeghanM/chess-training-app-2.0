@@ -1,85 +1,85 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
+import Link from 'next/link';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import { Tour, useFlow } from '@frigade/react'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import * as Sentry from '@sentry/nextjs'
-import Tippy from '@tippyjs/react'
-import { useWindowSize } from '@uidotdev/usehooks'
-import { Chess } from 'chess.js'
-import type { Square } from 'chess.js'
-import { Chessboard } from 'react-chessboard'
-import Toggle from 'react-toggle'
-import 'react-toggle/style.css'
-import 'tippy.js/dist/tippy.css'
+import type { ResponseJson } from '@/app/api/responses';
+import { Tour, useFlow } from '@frigade/react';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import * as Sentry from '@sentry/nextjs';
+import Tippy from '@tippyjs/react';
+import { useWindowSize } from '@uidotdev/usehooks';
+import { Chess } from 'chess.js';
+import type { Square } from 'chess.js';
+import { Chessboard } from 'react-chessboard';
+import Toggle from 'react-toggle';
+import 'react-toggle/style.css';
+import 'tippy.js/dist/tippy.css';
 // @ts-expect-error - No types available
-import useSound from 'use-sound'
+import useSound from 'use-sound';
 
-import Button from '@/app/components/_elements/button'
-import Spinner from '@/app/components/general/Spinner'
-import XpTracker from '@/app/components/general/XpTracker'
-import ThemeSwitch from '@/app/components/template/header/ThemeSwitch'
-import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer'
+import Button from '@/app/components/_elements/button';
+import Spinner from '@/app/components/general/Spinner';
+import XpTracker from '@/app/components/general/XpTracker';
+import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
+import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
 export default function VisualisationTrainer() {
-  const { user } = useKindeBrowserClient()
+  const { user } = useKindeBrowserClient();
 
   // Setup main state for the game/puzzles
-  const [currentPuzzle, setCurrentPuzzle] = useState<TrainingPuzzle>()
-  const [game, setGame] = useState(new Chess())
-  const [orientation, setOrientation] = useState<'white' | 'black'>('white')
-  const [position, setPosition] = useState(game.fen())
-  const [displayGame, setDisplayGame] = useState(new Chess())
-  const [displayPosition, setDisplayPosition] = useState(displayGame.fen())
-  const [length, setLength] = useState(6)
-  const [rating, setRating] = useState(1500)
-  const [difficulty, setDifficulty] = useState(1)
-  const [startSquare, setStartSquare] = useState<Square>()
+  const [currentPuzzle, setCurrentPuzzle] = useState<TrainingPuzzle>();
+  const [game, setGame] = useState(new Chess());
+  const [orientation, setOrientation] = useState<'white' | 'black'>('white');
+  const [position, setPosition] = useState(game.fen());
+  const [displayGame, setDisplayGame] = useState(new Chess());
+  const [displayPosition, setDisplayPosition] = useState(displayGame.fen());
+  const [length, setLength] = useState(6);
+  const [rating, setRating] = useState(1500);
+  const [difficulty, setDifficulty] = useState(1);
+  const [startSquare, setStartSquare] = useState<Square>();
   const [selectedSquares, setSelectedSquares] = useState<
     Record<string, React.CSSProperties>
-  >({})
+  >({});
 
   // Setup SFX
-  const [soundEnabled, setSoundEnabled] = useState(true)
-  const [correctSound] = useSound('/sfx/correct.mp3')
-  const [incorrectSound] = useSound('/sfx/incorrect.mp3')
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [correctSound] = useSound('/sfx/correct.mp3');
+  const [incorrectSound] = useSound('/sfx/incorrect.mp3');
 
   // Setup state for the settings/general
-  const [autoNext, setAutoNext] = useState(false)
-  const [loading, setLoading] = useState(true)
-  const [readyForInput, setReadyForInput] = useState(false)
-  const [puzzleFinished, setPuzzleFinished] = useState(false)
+  const [autoNext, setAutoNext] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [readyForInput, setReadyForInput] = useState(false);
+  const [puzzleFinished, setPuzzleFinished] = useState(false);
   const [puzzleStatus, setPuzzleStatus] = useState<
     'none' | 'correct' | 'incorrect'
-  >('none')
-  const [mode, setMode] = useState<'training' | 'settings'>('settings')
-  const [error, setError] = useState('')
+  >('none');
+  const [mode, setMode] = useState<'training' | 'settings'>('settings');
+  const [error, setError] = useState('');
 
-  const [xpCounter, setXpCounter] = useState(0)
-  const [currentStreak, setCurrentStreak] = useState(0)
+  const [xpCounter, setXpCounter] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
 
-  const { flow } = useFlow('flow_FudOixipuMiWOaP7')
+  const { flow } = useFlow('flow_FudOixipuMiWOaP7');
 
   const difficultyAdjuster = (d: number) => {
-    return d == 0 ? 0.9 : d == 1 ? 1 : 1.2
-  }
+    return d == 0 ? 0.9 : d == 1 ? 1 : 1.2;
+  };
 
   const getPuzzle = async () => {
     const trueRating = Math.max(
       Math.round(rating * difficultyAdjuster(difficulty)),
       500,
-    )
+    );
     if (trueRating < 500 || trueRating > 3000) {
       setError(
         'Puzzle ratings must be between 500 & 3000, try adjusting the difficulty or the base rating',
-      )
-      return undefined
+      );
+      return undefined;
     }
 
     try {
@@ -87,73 +87,73 @@ export default function VisualisationTrainer() {
         rating: trueRating,
         count: '1',
         playerMoves: length / 2,
-      }
+      };
       const resp = await fetch('/api/puzzles/getPuzzles', {
         method: 'POST',
         body: JSON.stringify(params),
-      })
-      const json = (await resp.json()) as ResponseJson
-      if (json?.message != 'Puzzles found') throw new Error('No puzzles found')
-      const puzzles = json.data!.puzzles as TrainingPuzzle[]
+      });
+      const json = (await resp.json()) as ResponseJson;
+      if (json?.message != 'Puzzles found') throw new Error('No puzzles found');
+      const puzzles = json.data!.puzzles as TrainingPuzzle[];
 
-      return puzzles[0]
+      return puzzles[0];
     } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('Oops! Something went wrong')
+      Sentry.captureException(e);
+      if (e instanceof Error) setError(e.message);
+      else setError('Oops! Something went wrong');
     }
-  }
+  };
 
   const goToNextPuzzle = async (status: string) => {
-    setLoading(true)
+    setLoading(true);
 
     // Increase the "Last Trained" on the profile
     fetch('/api/profile/streak', {
       method: 'POST',
-    }).catch((e) => Sentry.captureException(e))
+    }).catch((e) => Sentry.captureException(e));
 
     // Increase the streak if correct
     // and send it to the server incase a badge needs adding
     if (status == 'correct') {
-      trackEventOnClient('Visualisation_correct', {})
+      trackEventOnClient('Visualisation_correct', {});
       fetch('/api/visualisation/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
-      }).catch((e) => Sentry.captureException(e))
-      setCurrentStreak(currentStreak + 1)
+      }).catch((e) => Sentry.captureException(e));
+      setCurrentStreak(currentStreak + 1);
     } else if (status == 'incorrect') {
-      trackEventOnClient('visualisation_incorrect', {})
+      trackEventOnClient('visualisation_incorrect', {});
     }
-    const newPuzzle = await getPuzzle()
+    const newPuzzle = await getPuzzle();
 
-    if (!newPuzzle) return
+    if (!newPuzzle) return;
 
-    setPuzzleStatus('none')
-    setSelectedSquares({})
-    setLoading(false)
-    setCurrentPuzzle(newPuzzle)
-  }
+    setPuzzleStatus('none');
+    setSelectedSquares({});
+    setLoading(false);
+    setCurrentPuzzle(newPuzzle);
+  };
 
   const markMoveAs = async (status: 'correct' | 'incorrect') => {
-    setPuzzleStatus(status)
-    setReadyForInput(false)
-    setPuzzleFinished(true)
+    setPuzzleStatus(status);
+    setReadyForInput(false);
+    setPuzzleFinished(true);
     if (status == 'correct') {
-      setXpCounter(xpCounter + 1)
-      if (soundEnabled) correctSound()
-    } else if (soundEnabled) incorrectSound()
+      setXpCounter(xpCounter + 1);
+      if (soundEnabled) correctSound();
+    } else if (soundEnabled) incorrectSound();
 
-    setStartSquare(undefined)
+    setStartSquare(undefined);
 
-    if (autoNext && status == 'correct') await goToNextPuzzle(status)
-  }
+    if (autoNext && status == 'correct') await goToNextPuzzle(status);
+  };
 
   const getCorrectMoves = () => {
-    if (!currentPuzzle?.moves) return {}
+    if (!currentPuzzle?.moves) return {};
 
-    const correctMove = currentPuzzle.moves[currentPuzzle.moves.length - 1]!
-    const correctStartSquare = correctMove.substring(0, 2)
-    const correctEndSquare = correctMove.substring(2, 4)
+    const correctMove = currentPuzzle.moves[currentPuzzle.moves.length - 1]!;
+    const correctStartSquare = correctMove.substring(0, 2);
+    const correctEndSquare = correctMove.substring(2, 4);
     return {
       [correctStartSquare]: {
         backgroundColor: 'rgba(25,255,0,0.4)',
@@ -161,37 +161,37 @@ export default function VisualisationTrainer() {
       [correctEndSquare]: {
         backgroundColor: 'rgba(0,255,0,0.8)',
       },
-    }
-  }
+    };
+  };
 
   const squareClicked = async (square: Square) => {
-    if (puzzleFinished) return
-    if (!readyForInput) return
+    if (puzzleFinished) return;
+    if (!readyForInput) return;
 
     // if we click the same square twice
     // then unselect the piece
     if (startSquare === square) {
-      setStartSquare(undefined)
-      setSelectedSquares({})
-      return
+      setStartSquare(undefined);
+      setSelectedSquares({});
+      return;
     }
     // If we click a square, and we don't already have a
     // square selected, then select the square
     if (!startSquare) {
-      setStartSquare(square)
+      setStartSquare(square);
       setSelectedSquares({
         [square]: {
           backgroundColor: 'rgba(25,255,0,0.4)',
         },
-      })
-      return
+      });
+      return;
     }
 
     // If we click a square, and we already have a square selected
     // then check if that move matches the puzzle's last move
     // if it does, then we have a correct move, otherwise it's incorrect
-    const moveString = `${startSquare}${square}`
-    const finalMove = currentPuzzle?.moves[currentPuzzle.moves.length - 1]
+    const moveString = `${startSquare}${square}`;
+    const finalMove = currentPuzzle?.moves[currentPuzzle.moves.length - 1];
 
     if (moveString == finalMove?.substring(0, 4)) {
       setSelectedSquares({
@@ -201,8 +201,8 @@ export default function VisualisationTrainer() {
         [startSquare]: {
           backgroundColor: 'rgba(25,255,0,0.4)',
         },
-      })
-      await markMoveAs('correct')
+      });
+      await markMoveAs('correct');
     } else {
       setSelectedSquares({
         [square]: {
@@ -212,16 +212,16 @@ export default function VisualisationTrainer() {
           backgroundColor: 'rgba(255,25,0,0.4)',
         },
         ...getCorrectMoves(),
-      })
-      await markMoveAs('incorrect')
+      });
+      await markMoveAs('incorrect');
     }
-  }
+  };
 
   const PgnDisplay = game.history().map((move, index) => {
-    if (index == game.history().length - 1 && !puzzleFinished) return null // Don't show the last move until the puzzle is finished
+    if (index == game.history().length - 1 && !puzzleFinished) return null; // Don't show the last move until the puzzle is finished
 
-    const moveNumber = Math.floor(index / 2) + 1 + displayGame.moveNumber()
-    const moveColour = game.history({ verbose: true })[index]!.color
+    const moveNumber = Math.floor(index / 2) + 1 + displayGame.moveNumber();
+    const moveColour = game.history({ verbose: true })[index]!.color;
     const FlexText = () => (
       <p>
         {(moveColour == 'w' || (moveColour == 'b' && index == 0)) && (
@@ -233,24 +233,24 @@ export default function VisualisationTrainer() {
         )}{' '}
         <span>{move}</span>
       </p>
-    )
+    );
     if (puzzleFinished) {
       return (
         <button
           key={`btn${moveNumber.toString()}${move}${moveColour}`}
           className="h-max max-h-fit bg-none p-1 hover:bg-purple-800"
           onClick={async () => {
-            const newGame = new Chess(currentPuzzle!.fen)
+            const newGame = new Chess(currentPuzzle!.fen);
             for (let i = 0; i <= index; i++) {
-              newGame.move(game.history()[i]!)
+              newGame.move(game.history()[i]!);
             }
-            setDisplayPosition(newGame.fen())
-            trackEventOnClient('calculation_set_jump_to_move', {})
+            setDisplayPosition(newGame.fen());
+            trackEventOnClient('calculation_set_jump_to_move', {});
           }}
         >
           <FlexText />
         </button>
-      )
+      );
     }
     return (
       <div
@@ -259,79 +259,79 @@ export default function VisualisationTrainer() {
       >
         <FlexText />
       </div>
-    )
-  })
+    );
+  });
 
   const exit = async () => {
-    setMode('settings')
-  }
+    setMode('settings');
+  };
 
-  const windowSize = useWindowSize() as { width: number; height: number }
+  const windowSize = useWindowSize() as { width: number; height: number };
 
   const getDifficulty = () => {
     switch (difficulty) {
       case 0:
-        return 'Easy'
+        return 'Easy';
       case 1:
-        return 'Medium'
+        return 'Medium';
       case 2:
-        return 'Hard'
+        return 'Hard';
       default:
-        return 'Medium'
+        return 'Medium';
     }
-  }
+  };
 
   // Here are all our useEffect functions
   useEffect(() => {
-    if (mode == 'settings') return
-    ;(async () => {
-      setLoading(true)
-      const puzzle = await getPuzzle()
+    if (mode == 'settings') return;
+    (async () => {
+      setLoading(true);
+      const puzzle = await getPuzzle();
       if (!puzzle) {
-        setMode('settings')
-        return
+        setMode('settings');
+        return;
       }
-      setCurrentPuzzle(puzzle)
-      setLoading(false)
+      setCurrentPuzzle(puzzle);
+      setLoading(false);
     })().catch((e) => {
-      Sentry.captureException(e)
-      throw new Error('Unable to load puzzle')
-    })
-  }, [mode])
+      Sentry.captureException(e);
+      throw new Error('Unable to load puzzle');
+    });
+  }, [mode]);
 
   useEffect(() => {
     // Create a new game from the puzzle whenever it changes
-    if (!currentPuzzle) return
-    setLoading(true)
-    const newGame = new Chess(currentPuzzle.fen)
-    const newDisplayGame = new Chess(currentPuzzle.fen)
-    setOrientation(newGame.turn() == 'w' ? 'black' : 'white') // reversed because the first move is opponents
+    if (!currentPuzzle) return;
+    setLoading(true);
+    const newGame = new Chess(currentPuzzle.fen);
+    const newDisplayGame = new Chess(currentPuzzle.fen);
+    setOrientation(newGame.turn() == 'w' ? 'black' : 'white'); // reversed because the first move is opponents
 
     for (const move of currentPuzzle.moves) {
-      newGame.move(move)
+      newGame.move(move);
     }
-    setPosition(newGame.fen())
-    setGame(newGame)
+    setPosition(newGame.fen());
+    setGame(newGame);
 
-    setDisplayPosition(newDisplayGame.fen())
-    setDisplayGame(newDisplayGame)
-    setReadyForInput(true)
-    setPuzzleFinished(false)
-    setLoading(false)
-  }, [currentPuzzle])
+    setDisplayPosition(newDisplayGame.fen());
+    setDisplayGame(newDisplayGame);
+    setReadyForInput(true);
+    setPuzzleFinished(false);
+    setLoading(false);
+  }, [currentPuzzle]);
 
-  if (!user) return null
+  if (!user) return null;
 
   return (
     <>
       <Tour flowId="flow_FudOixipuMiWOaP7" />
       {mode == 'settings' ? (
-        <div className="border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
-          <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
+        <div className="border border-gray-300 bg-[rgba(0,0,0,0.03)] text-black shadow-md dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
+          <div className="flex flex-wrap items-center justify-between border-b border-gray-300 px-2 py-1 font-bold text-orange-500 dark:border-slate-600">
             <p id="tooltip-0">Adjust your settings</p>
           </div>
-          <div className="flex flex-col p-2 gap-4">
-            <div className="flex gap-2 flex-col md:flex-row items-center">
+          <div className="flex flex-col gap-4 p-2">
+            <div className="flex flex-col items-center gap-2 md:flex-row">
               <div>
                 <label className="font-bold">Your Rating</label>
                 <input
@@ -342,7 +342,7 @@ export default function VisualisationTrainer() {
                   type="number"
                   value={rating}
                   onInput={(e) => {
-                    setRating(parseInt(e.currentTarget.value))
+                    setRating(parseInt(e.currentTarget.value));
                   }}
                 />
               </div>
@@ -375,7 +375,7 @@ export default function VisualisationTrainer() {
                 <label className="font-bold">Moves to visualise</label>
               </Tippy>
               <select
-                className="w-fit ml-2 border border-gray-300 px-4 py-1 bg-gray-100 text-black"
+                className="ml-2 w-fit border border-gray-300 bg-gray-100 px-4 py-1 text-black"
                 id="tooltip-1"
                 value={length}
                 onChange={(e) => setLength(parseInt(e.currentTarget.value))}
@@ -390,36 +390,36 @@ export default function VisualisationTrainer() {
             <Button
               variant="primary"
               onClick={async () => {
-                setMode('training')
-                trackEventOnClient('Visualisation_start', {})
+                setMode('training');
+                trackEventOnClient('Visualisation_start', {});
               }}
             >
               Start Training
             </Button>
             {error ? (
-              <p className="bg-red-500 italic text-sm p-2 text-white">
+              <p className="bg-red-500 p-2 text-sm italic text-white">
                 {error}
               </p>
             ) : null}
           </div>
         </div>
       ) : (
-        <div className="relative border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
+        <div className="relative border border-gray-300 bg-[rgba(0,0,0,0.03)] text-black shadow-md dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
           {loading ? (
             <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
               <Spinner />
             </div>
           ) : null}
           <div className="flex flex-wrap items-center justify-between text-sm">
-            <div className="flex gap-1 p-2 pb-0 justify-center text-xs md:text-sm lg:text-base">
+            <div className="flex justify-center gap-1 p-2 pb-0 text-xs md:text-sm lg:text-base">
               <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-                <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                <p className="border-b border-gray-300 px-1 py-1 font-bold dark:border-slate-600">
                   Rating:
                 </p>
                 <p>{rating}</p>
               </div>
               <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-                <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                <p className="border-b border-gray-300 px-1 py-1 font-bold dark:border-slate-600">
                   Difficulty:
                 </p>
                 <p>{getDifficulty()}</p>
@@ -427,15 +427,15 @@ export default function VisualisationTrainer() {
               <p
                 className="cursor-pointer underline hover:no-underline"
                 onClick={async () => {
-                  await flow.restart()
-                  setMode('settings')
+                  await flow.restart();
+                  setMode('settings');
                 }}
               >
                 How to use?
               </p>
               <XpTracker counter={xpCounter} type="tactic" />
             </div>
-            <div className="flex items-center gap-2 w-fit mx-auto md:mx-0">
+            <div className="mx-auto flex w-fit items-center gap-2 md:mx-0">
               <ThemeSwitch />
               <div
                 className="ml-auto flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
@@ -479,7 +479,7 @@ export default function VisualisationTrainer() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col gap-4 lg:flex-row p-2">
+          <div className="flex flex-col gap-4 p-2 lg:flex-row">
             <div className="relative cursor-pointer" id="tooltip-3">
               <Chessboard // This is the visible board, set at the start position
                 arePiecesDraggable={false}
@@ -508,8 +508,8 @@ export default function VisualisationTrainer() {
                   }}
                   onSquareClick={squareClicked}
                   onSquareRightClick={() => {
-                    setStartSquare(undefined)
-                    setSelectedSquares({})
+                    setStartSquare(undefined);
+                    setSelectedSquares({});
                   }}
                 />
               </div>
@@ -615,7 +615,7 @@ export default function VisualisationTrainer() {
               </div>
               <div className="flex flex-1 flex-col-reverse gap-2 lg:flex-col">
                 <div
-                  className="flex h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white"
+                  className="flex h-full flex-wrap content-start gap-1 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 text-black dark:text-white lg:border-4"
                   id="tooltip-2"
                 >
                   {PgnDisplay.map((item) => item)}
@@ -624,9 +624,9 @@ export default function VisualisationTrainer() {
                   <Toggle
                     defaultChecked={autoNext}
                     onChange={async () => {
-                      setAutoNext(!autoNext)
+                      setAutoNext(!autoNext);
                       if (puzzleFinished && puzzleStatus == 'correct')
-                        await goToNextPuzzle(puzzleStatus)
+                        await goToNextPuzzle(puzzleStatus);
                     }}
                   />
                   <span>Auto Next on correct</span>
@@ -645,12 +645,12 @@ export default function VisualisationTrainer() {
                     <Button
                       variant="secondary"
                       onClick={async () => {
-                        setPuzzleStatus('incorrect')
-                        setReadyForInput(false)
-                        setReadyForInput(true)
-                        setPuzzleFinished(true)
-                        if (soundEnabled) incorrectSound()
-                        setSelectedSquares(getCorrectMoves())
+                        setPuzzleStatus('incorrect');
+                        setReadyForInput(false);
+                        setReadyForInput(true);
+                        setPuzzleFinished(true);
+                        if (soundEnabled) incorrectSound();
+                        setSelectedSquares(getCorrectMoves());
                       }}
                     >
                       Skip/Show Solution
@@ -667,5 +667,5 @@ export default function VisualisationTrainer() {
         </div>
       )}
     </>
-  )
+  );
 }

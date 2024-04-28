@@ -1,78 +1,78 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import * as Sentry from '@sentry/nextjs'
+import type { ResponseJson } from '@/app/api/responses';
+import * as Sentry from '@sentry/nextjs';
 
-import Button from '@/app/components/_elements/button'
-import Heading from '@/app/components/_elements/heading'
-import Spinner from '@/app/components/general/Spinner'
-import TextEditor from '@/app/components/general/TextEditor'
+import Button from '@/app/components/_elements/button';
+import Heading from '@/app/components/_elements/heading';
+import Spinner from '@/app/components/general/Spinner';
+import TextEditor from '@/app/components/general/TextEditor';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
 export default function DetailsForm(props: {
-  finished: (name: string, description: string) => void
-  courseName: string | undefined
-  description: string | undefined
+  finished: (name: string, description: string) => void;
+  courseName: string | undefined;
+  description: string | undefined;
 }) {
-  const [name, setName] = useState<string>(props.courseName ?? '')
-  const [status, setStatus] = useState<'idle' | 'loading'>('idle')
+  const [name, setName] = useState<string>(props.courseName ?? '');
+  const [status, setStatus] = useState<'idle' | 'loading'>('idle');
   const [description, setDescription] = useState<string>(
     props.description ?? '',
-  )
-  const [error, setError] = useState<string | null>(null)
+  );
+  const [error, setError] = useState<string | null>(null);
 
   const create = async () => {
-    setStatus('loading')
-    setError(null)
+    setStatus('loading');
+    setError(null);
 
     if (name.length < 5) {
-      setError('Name must be at least 5 characters')
-      setStatus('idle')
-      return
+      setError('Name must be at least 5 characters');
+      setStatus('idle');
+      return;
     }
 
     try {
       const res = await fetch('/api/courses/create/checkName', {
         method: 'POST',
         body: JSON.stringify({ name }),
-      })
-      const json = (await res.json()) as ResponseJson
+      });
+      const json = (await res.json()) as ResponseJson;
       if (!json.data?.isAvailable) {
-        setError('Name is already taken')
-        setStatus('idle')
+        setError('Name is already taken');
+        setStatus('idle');
         trackEventOnClient('create_course_duplicate_name', {
           name,
-        })
-        return
+        });
+        return;
       }
 
-      const res2 = await fetch('/api/courses/user/canCreate')
-      const json2 = (await res2.json()) as ResponseJson
+      const res2 = await fetch('/api/courses/user/canCreate');
+      const json2 = (await res2.json()) as ResponseJson;
       if (!json2.data?.canCreate) {
-        setError('You have reached the maximum number of courses')
-        setStatus('idle')
-        trackEventOnClient('create_course_max_reached', {})
-        return
+        setError('You have reached the maximum number of courses');
+        setStatus('idle');
+        trackEventOnClient('create_course_max_reached', {});
+        return;
       }
 
       trackEventOnClient('create_course_details_submitted', {
         name,
-      })
-      props.finished(name, description)
+      });
+      props.finished(name, description);
     } catch (e) {
-      Sentry.captureException(e)
-      setError('Oops! Something went wrong. Please try again later.')
-      setStatus('idle')
+      Sentry.captureException(e);
+      setError('Oops! Something went wrong. Please try again later.');
+      setStatus('idle');
     }
-  }
+  };
 
   return (
     <div className="flex flex-col gap-6">
       <div>
         <Heading as="h3">Give your course a name</Heading>
         <input
-          className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+          className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
           placeholder="Ruy Lopez: For white"
           type="text"
           value={name}
@@ -98,5 +98,5 @@ export default function DetailsForm(props: {
         {error ? <p className="text-red-500">{error}</p> : null}
       </div>
     </div>
-  )
+  );
 }

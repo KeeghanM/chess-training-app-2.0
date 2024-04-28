@@ -1,8 +1,8 @@
-import { prisma } from '@/server/db'
-import * as Sentry from '@sentry/nextjs'
+import { prisma } from '@/server/db';
+import * as Sentry from '@sentry/nextjs';
 
 export async function AddCuratedSetToUser(setId: string, userId: string) {
-  if (!setId || !userId) return false
+  if (!setId || !userId) return false;
 
   try {
     await prisma.$transaction(async (prisma) => {
@@ -13,22 +13,22 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
         include: {
           puzzles: true,
         },
-      })
+      });
 
-      if (!curatedSet) throw new Error('Course not found')
+      if (!curatedSet) throw new Error('Course not found');
 
       let userTacticsSet = await prisma.tacticsSet.findFirst({
         where: {
           curatedSetId: setId,
           userId,
         },
-      })
+      });
 
       if (!userTacticsSet) {
         const puzzles = curatedSet.puzzles.map((puzzle) => ({
           puzzleid: puzzle.puzzleid,
           sortOrder: puzzle.sortOrder,
-        }))
+        }));
         userTacticsSet = await prisma.tacticsSet.create({
           data: {
             name: curatedSet.name,
@@ -49,7 +49,7 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
               },
             },
           },
-        })
+        });
       } else {
         await prisma.tacticsSet.update({
           where: {
@@ -58,7 +58,7 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
           data: {
             active: true,
           },
-        })
+        });
       }
 
       await prisma.tacticsSetRound.create({
@@ -69,14 +69,14 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
           correct: 0,
           incorrect: 0,
         },
-      })
+      });
 
-      if (!userTacticsSet) throw new Error('No userTacticsSet found')
-    })
+      if (!userTacticsSet) throw new Error('No userTacticsSet found');
+    });
 
-    return true
+    return true;
   } catch (e) {
-    Sentry.captureException(e)
-    return false
+    Sentry.captureException(e);
+    return false;
   }
 }

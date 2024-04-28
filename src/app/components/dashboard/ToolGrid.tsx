@@ -1,19 +1,19 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
+import Link from 'next/link';
 
-import type { Tool } from '@/app/dashboard/page'
+import type { Tool } from '@/app/dashboard/page';
 
-import Button from '@/app/components/_elements/button'
+import Button from '@/app/components/_elements/button';
 
 export default function ToolGrid(props: { tool: Tool }) {
-  const { tool } = props
+  const { tool } = props;
 
   return (
-    <div className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300">
+    <div className="flex flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
       <div
         id={tool.id}
-        className={`px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold${
+        className={`border-b border-gray-300 px-2 py-1 dark:border-slate-600 font-bold${
           tool.active ? ' text-orange-500' : ''
         }`}
       >
@@ -26,7 +26,7 @@ export default function ToolGrid(props: { tool: Tool }) {
       <div className="p-2 text-sm">
         <p>{tool.description[0]}</p>
       </div>
-      <div className="flex flex-col gap-2 p-2 mt-auto items-center">
+      <div className="mt-auto flex flex-col items-center gap-2 p-2">
         {tool.active ? (
           <Link href={tool.trainingLink}>
             <Button variant="primary">{tool.buttonText}</Button>
@@ -43,5 +43,5 @@ export default function ToolGrid(props: { tool: Tool }) {
         ) : null}
       </div>
     </div>
-  )
+  );
 }

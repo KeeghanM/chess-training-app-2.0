@@ -1,23 +1,23 @@
-'use client'
+'use client';
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react';
 
-import LineRow from './LineRow'
-import type { ScheduleLine } from './LineRow'
+import LineRow from './LineRow';
+import type { ScheduleLine } from './LineRow';
 
 interface LineListProps {
-  userLines: ScheduleLine[]
-  courseId: string
+  userLines: ScheduleLine[];
+  courseId: string;
 }
 export default function LineList({ userLines, courseId }: LineListProps) {
-  const [lines, setLines] = useState<ScheduleLine[]>(userLines)
+  const [lines, setLines] = useState<ScheduleLine[]>(userLines);
   const minDate = useMemo(() => {
     return new Date(
       Math.min(
         ...lines.map((line) => line.revisionDate?.getTime() ?? Infinity),
       ),
-    )
-  }, [lines])
+    );
+  }, [lines]);
 
   return (
     <div className="flex flex-col gap-2">
@@ -25,15 +25,15 @@ export default function LineList({ userLines, courseId }: LineListProps) {
         .sort((a, b) => {
           if (a.revisionDate ?? b.revisionDate) {
             if ((a.revisionDate ?? Infinity) < (b.revisionDate ?? Infinity))
-              return -1
+              return -1;
             if ((a.revisionDate ?? Infinity) > (b.revisionDate ?? Infinity))
-              return 1
+              return 1;
           }
-          if (a.line.group.sortOrder < b.line.group.sortOrder) return -1
-          if (a.line.group.sortOrder > b.line.group.sortOrder) return 1
-          if (a.line.sortOrder < b.line.sortOrder) return -1
-          if (a.line.sortOrder > b.line.sortOrder) return 1
-          return 0
+          if (a.line.group.sortOrder < b.line.group.sortOrder) return -1;
+          if (a.line.group.sortOrder > b.line.group.sortOrder) return 1;
+          if (a.line.sortOrder < b.line.sortOrder) return -1;
+          if (a.line.sortOrder > b.line.sortOrder) return 1;
+          return 0;
         })
         .map((line) => (
           <LineRow
@@ -47,14 +47,14 @@ export default function LineList({ userLines, courseId }: LineListProps) {
                   return {
                     ...l,
                     revisionDate: new Date(minDate.getTime() - 1000),
-                  }
+                  };
                 }
-                return l
-              })
-              setLines(newLines)
+                return l;
+              });
+              setLines(newLines);
             }}
           />
         ))}
     </div>
-  )
+  );
 }

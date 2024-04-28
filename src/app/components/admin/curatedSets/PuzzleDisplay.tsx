@@ -1,39 +1,39 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import Tippy from '@tippyjs/react'
-import { Chess } from 'chess.js'
+import type { ResponseJson } from '@/app/api/responses';
+import Tippy from '@tippyjs/react';
+import { Chess } from 'chess.js';
 
-import Button from '../../_elements/button'
-import Spinner from '../../general/Spinner'
-import ChessBoard from '../../training/ChessBoard'
-import type { CuratedSetPuzzle } from './CuratedSetsBrowser'
+import Button from '../../_elements/button';
+import Spinner from '../../general/Spinner';
+import ChessBoard from '../../training/ChessBoard';
+import type { CuratedSetPuzzle } from './CuratedSetsBrowser';
 
 export default function PuzzleDisplay(props: {
-  puzzle?: CuratedSetPuzzle
-  mode: 'list' | 'search'
+  puzzle?: CuratedSetPuzzle;
+  mode: 'list' | 'search';
 }) {
   // Status
-  const [status, setStatus] = useState<'saving' | 'deleting' | 'idle'>('idle')
-  const [error, setError] = useState('')
+  const [status, setStatus] = useState<'saving' | 'deleting' | 'idle'>('idle');
+  const [error, setError] = useState('');
 
   // Puzzle Display
-  const [position, setPosition] = useState('')
-  const [game] = useState(new Chess())
-  const [moves, setMoves] = useState<string[]>([])
-  const [orientation, setOrientation] = useState<'white' | 'black'>('white')
-  const [readyForInput] = useState(false)
+  const [position, setPosition] = useState('');
+  const [game] = useState(new Chess());
+  const [moves, setMoves] = useState<string[]>([]);
+  const [orientation, setOrientation] = useState<'white' | 'black'>('white');
+  const [readyForInput] = useState(false);
 
   // Puzzle Editing
-  const [rating, setRating] = useState(props.puzzle?.rating ?? 1500)
-  const [comment, setComment] = useState(props.puzzle?.comment ?? '')
+  const [rating, setRating] = useState(props.puzzle?.rating ?? 1500);
+  const [comment, setComment] = useState(props.puzzle?.comment ?? '');
 
   const savePuzzle = async () => {
-    setStatus('saving')
+    setStatus('saving');
     try {
-      if (!props.puzzle) return
+      if (!props.puzzle) return;
       const resp = await fetch('/api/admin/curated-sets/curatedPuzzle', {
         method: 'PATCH',
         body: JSON.stringify({
@@ -42,41 +42,41 @@ export default function PuzzleDisplay(props: {
           comment,
           moves,
         }),
-      })
-      const json = (await resp.json()) as ResponseJson
-      if (json.message != 'Puzzle updated') throw new Error(json.message)
+      });
+      const json = (await resp.json()) as ResponseJson;
+      if (json.message != 'Puzzle updated') throw new Error(json.message);
     } catch (e) {
-      if (e instanceof Error) setError(e.message)
-      else setError('Unknown error')
+      if (e instanceof Error) setError(e.message);
+      else setError('Unknown error');
     } finally {
-      setStatus('idle')
+      setStatus('idle');
     }
-  }
+  };
 
   const deletePuzzle = async () => {
-    setStatus('deleting')
+    setStatus('deleting');
     try {
-      if (!props.puzzle) return
-      if (!confirm('Are you sure you want to delete this puzzle?')) return
+      if (!props.puzzle) return;
+      if (!confirm('Are you sure you want to delete this puzzle?')) return;
       const resp = await fetch('/api/admin/curated-sets/curatedPuzzle', {
         method: 'DELETE',
         body: JSON.stringify({
           id: props.puzzle.curatedPuzzleId,
         }),
-      })
-      const json = (await resp.json()) as ResponseJson
-      if (json?.message != 'Puzzle deleted') throw new Error(json.message)
+      });
+      const json = (await resp.json()) as ResponseJson;
+      if (json?.message != 'Puzzle deleted') throw new Error(json.message);
     } catch (e) {
-      if (e instanceof Error) setError(e.message)
-      else setError('Unknown error')
+      if (e instanceof Error) setError(e.message);
+      else setError('Unknown error');
     } finally {
-      setStatus('idle')
+      setStatus('idle');
     }
-  }
+  };
 
   const PgnDisplay = game.history().map((move, index) => {
-    const moveNumber = Math.floor(index / 2) + 1 + game.moveNumber()
-    const moveColour = game.history({ verbose: true })[index]!.color
+    const moveNumber = Math.floor(index / 2) + 1 + game.moveNumber();
+    const moveColour = game.history({ verbose: true })[index]!.color;
     const FlexText = () => (
       <p>
         {(moveColour == 'w' || (moveColour == 'b' && index == 0)) && (
@@ -88,35 +88,35 @@ export default function PuzzleDisplay(props: {
         )}{' '}
         <span>{move}</span>
       </p>
-    )
+    );
     return (
       <button
         key={`btn${moveNumber.toString()}${move}${moveColour}`}
         className="h-max max-h-fit bg-none px-1 py-1 hover:bg-purple-800 hover:text-white"
         onClick={() => {
-          const newGame = new Chess(props.puzzle!.fen)
+          const newGame = new Chess(props.puzzle!.fen);
           for (let i = 0; i <= index; i++) {
-            newGame.move(game.history()[i]!)
+            newGame.move(game.history()[i]!);
           }
-          setPosition(newGame.fen())
+          setPosition(newGame.fen());
         }}
       >
         <FlexText />
       </button>
-    )
-  })
+    );
+  });
 
   useEffect(() => {
     if (props.puzzle) {
-      ;(async () => {
+      (async () => {
         // Ensure we have the latest
         const json = await fetch(
           `/api/puzzles/getPuzzleById/${props.puzzle!.puzzleid}`,
-        ).then((res) => res.json())
-        const puzzle = json.data.puzzle
+        ).then((res) => res.json());
+        const puzzle = json.data.puzzle;
 
-        game.load(puzzle.fen)
-        const fenCol = puzzle.fen.split(' ')[1]
+        game.load(puzzle.fen);
+        const fenCol = puzzle.fen.split(' ')[1];
         setOrientation(
           puzzle.directStart
             ? fenCol == 'w'
@@ -125,21 +125,21 @@ export default function PuzzleDisplay(props: {
             : fenCol == 'w'
               ? 'black'
               : 'white',
-        )
+        );
         for (const move of puzzle.moves) {
-          game.move(move)
+          game.move(move);
         }
 
-        setPosition(puzzle.fen)
-        setRating(puzzle.rating)
-        setComment(puzzle.comment ?? '')
-        setMoves(puzzle.moves)
-      })().catch(console.error)
+        setPosition(puzzle.fen);
+        setRating(puzzle.rating);
+        setComment(puzzle.comment ?? '');
+        setMoves(puzzle.moves);
+      })().catch(console.error);
     } else {
-      game.reset()
-      setPosition(game.fen())
+      game.reset();
+      setPosition(game.fen());
     }
-  }, [props.puzzle])
+  }, [props.puzzle]);
 
   return (
     <div className="flex">
@@ -158,11 +158,11 @@ export default function PuzzleDisplay(props: {
       {props.puzzle ? (
         <div className="flex flex-row">
           {/* PGN Display */}
-          <div className="flex flex-1 h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
+          <div className="flex h-full flex-1 flex-wrap content-start gap-1 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 text-black dark:text-white lg:border-4">
             <button
               className="h-max max-h-fit bg-none p-1 hover:bg-purple-800 hover:text-white"
               onClick={() => {
-                setPosition(props.puzzle!.fen)
+                setPosition(props.puzzle!.fen);
               }}
             >
               Start
@@ -171,12 +171,12 @@ export default function PuzzleDisplay(props: {
           </div>
 
           {props.mode === 'list' && (
-            <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
+            <div className="flex flex-1 flex-col gap-2 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 text-black dark:text-white lg:border-4">
               {/* Puzzle Details Editor */}
               <div>
                 <label htmlFor="rating">Puzzle Rating</label>
                 <input
-                  className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                  className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
                   type="number"
                   value={rating}
                   onChange={(e) => setRating(parseInt(e.target.value))}
@@ -187,7 +187,7 @@ export default function PuzzleDisplay(props: {
                   <label htmlFor="rating">Puzzle Comment</label>
                 </Tippy>
                 <textarea
-                  className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                  className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
                   rows={5}
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
@@ -227,5 +227,5 @@ export default function PuzzleDisplay(props: {
         </div>
       ) : null}
     </div>
-  )
+  );
 }

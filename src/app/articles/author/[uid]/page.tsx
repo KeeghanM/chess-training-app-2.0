@@ -1,23 +1,23 @@
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-import Prismic from '@/prismicio'
-import * as prismic from '@prismicio/client'
+import Prismic from '@/prismicio';
+import * as prismic from '@prismicio/client';
 
-import Container from '@/app/components/_elements/container'
-import Heading from '@/app/components/_elements/heading'
-import StyledLink from '@/app/components/_elements/styledLink'
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
+import StyledLink from '@/app/components/_elements/styledLink';
 
-import { PrismicRichToHtml } from '@/app/_util/PrismicRichToHtml'
-import type { RichTextContent } from '@/app/_util/PrismicRichToHtml'
+import { PrismicRichToHtml } from '@/app/_util/PrismicRichToHtml';
+import type { RichTextContent } from '@/app/_util/PrismicRichToHtml';
 
 interface Params {
-  uid: string
+  uid: string;
 }
 export default async function AuthorPage({ params }: { params: Params }) {
   const author = await Prismic.getByUID('author', params.uid).catch(() =>
     notFound(),
-  )
+  );
   const articles = await Prismic.getAllByType('article', {
     graphQuery: `{
         article {
@@ -26,17 +26,17 @@ export default async function AuthorPage({ params }: { params: Params }) {
     }`,
     filters: [prismic.filter.any('my.article.author', [author.id])],
     fetchLinks: ['author.name', 'author.uid'],
-  })
+  });
 
   return (
     <>
-      <div className="w-full flex items-center justify-center py-2 bg-gray-200">
+      <div className="flex w-full items-center justify-center bg-gray-200 py-2">
         <p className="text-xs text-gray-600">
           <Link className="text-purple-700 hover:underline" href="/">
             Home
           </Link>
           <Link
-            className="text-purple-700 hover:underline cursor-pointer"
+            className="cursor-pointer text-purple-700 hover:underline"
             href="/articles"
           >
             /Articles
@@ -47,7 +47,7 @@ export default async function AuthorPage({ params }: { params: Params }) {
       <Container>
         <Heading as="h1">{author.data.name}</Heading>
         <div className="flex flex-col gap-2">
-          <p className="text-gray-500 italic">{author.data.title}</p>
+          <p className="italic text-gray-500">{author.data.title}</p>
           {author.data.bio.map((c: RichTextContent) => PrismicRichToHtml(c))}
         </div>
         <Heading as="h2">Articles</Heading>
@@ -57,14 +57,14 @@ export default async function AuthorPage({ params }: { params: Params }) {
               return (
                 new Date(b.first_publication_date).getTime() -
                 new Date(a.first_publication_date).getTime()
-              )
+              );
             })
             .map((article) => (
               <li key={article.id} className="flex gap-2">
                 <StyledLink href={article.url!}>
                   {article.data.title}
                 </StyledLink>
-                <span className="text-gray-500 italic">
+                <span className="italic text-gray-500">
                   Published:{' '}
                   {new Date(article.first_publication_date).toLocaleDateString(
                     'en-GB',
@@ -80,5 +80,5 @@ export default async function AuthorPage({ params }: { params: Params }) {
         </ul>
       </Container>
     </>
-  )
+  );
 }

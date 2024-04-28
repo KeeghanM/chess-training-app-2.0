@@ -1,21 +1,21 @@
-import Link from 'next/link'
-import Script from 'next/script'
+import Link from 'next/link';
+import Script from 'next/script';
 
-import Button from './components/_elements/button'
-import Heading from './components/_elements/heading'
-import StyledLink from './components/_elements/styledLink'
-import BigText from './components/_layouts/bigText'
-import CtaRow from './components/_layouts/ctaRow'
-import Hero from './components/_layouts/hero'
-import ImageRowFull from './components/_layouts/imageRowFull'
-import { MultiCol, MultiColItem } from './components/_layouts/multiCol'
+import Button from './components/_elements/button';
+import Heading from './components/_elements/heading';
+import StyledLink from './components/_elements/styledLink';
+import BigText from './components/_layouts/bigText';
+import CtaRow from './components/_layouts/ctaRow';
+import Hero from './components/_layouts/hero';
+import ImageRowFull from './components/_layouts/imageRowFull';
+import { MultiCol, MultiColItem } from './components/_layouts/multiCol';
 
 export const metadata = {
   title:
     'ChessTraining.app: Revolutionize Your Chess Game with Innovative Learning Methods',
   description:
     'Improve your chess skills using the Woodpecker Method and our innovative Natural Play Learning. With a variety of training tools including tactics, courses, and endgames training. Learn chess in an intuitive, efficient, and enjoyable way, backed by a community of chess enthusiasts and professionals. Designed for those looking to elevate their chess game through science-backed, personalized training.',
-}
+};
 
 export default async function Home() {
   const reviews = [
@@ -39,7 +39,7 @@ export default async function Home() {
       date: '2022-02-16',
       text: 'Just tried a few tactics positions.. level is not too hard, but taxing enough to make you think',
     },
-  ]
+  ];
 
   return (
     <>
@@ -208,7 +208,7 @@ export default async function Home() {
         <MultiCol background="light" title="What Our Members Say">
           {reviews
             .sort((a, b) => {
-              return new Date(b.date).getTime() - new Date(a.date).getTime()
+              return new Date(b.date).getTime() - new Date(a.date).getTime();
             })
             .map((review) => (
               <MultiColItem key={review.name} title={review.name}>
@@ -238,5 +238,5 @@ export default async function Home() {
         </Link>
       </div>
     </>
-  )
+  );
 }

@@ -1,7 +1,7 @@
-import NumberIcon from '@/app/components/general/NumberIcon'
+import NumberIcon from '@/app/components/general/NumberIcon';
 
 export default function Steps(props: { currentStep: string }) {
-  const { currentStep } = props
+  const { currentStep } = props;
 
   return (
     <div className="mx-auto my-4 w-max dark:text-white">
@@ -20,5 +20,5 @@ export default function Steps(props: { currentStep: string }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

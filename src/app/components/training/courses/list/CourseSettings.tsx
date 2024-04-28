@@ -1,73 +1,73 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
+import Link from 'next/link';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
-import * as Sentry from '@sentry/nextjs'
-import Tippy from '@tippyjs/react'
+import type { ResponseJson } from '@/app/api/responses';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import * as AlertDialog from '@radix-ui/react-alert-dialog';
+import * as Sentry from '@sentry/nextjs';
+import Tippy from '@tippyjs/react';
 
-import Button from '@/app/components/_elements/button'
-import Heading from '@/app/components/_elements/heading'
-import StyledLink from '@/app/components/_elements/styledLink'
-import Spinner from '@/app/components/general/Spinner'
+import Button from '@/app/components/_elements/button';
+import Heading from '@/app/components/_elements/heading';
+import StyledLink from '@/app/components/_elements/styledLink';
+import Spinner from '@/app/components/general/Spinner';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
-import type { PrismaUserCourse } from './CoursesList'
+import type { PrismaUserCourse } from './CoursesList';
 
 interface CourseSettingsProps {
-  userCourse: PrismaUserCourse
-  update: () => void
+  userCourse: PrismaUserCourse;
+  update: () => void;
 }
 
 export default function CourseSettings(props: CourseSettingsProps) {
-  const { userCourse, update } = props
-  const { user } = useKindeBrowserClient()
+  const { userCourse, update } = props;
+  const { user } = useKindeBrowserClient();
 
-  const [deleting, setDeleting] = useState(false)
-  const [open, setOpen] = useState(false)
+  const [deleting, setDeleting] = useState(false);
+  const [open, setOpen] = useState(false);
 
   const close = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   const archiveCourse = async () => {
-    if (!userCourse) return
+    if (!userCourse) return;
 
     const confirmString =
       !userCourse.course.published && userCourse.course.createdBy == user?.id
         ? 'Are you sure you want to archive this course? This will DELETE the course ENTIRELY.'
-        : 'Are you sure you want to archive this course? This will remove your progress.'
-    if (!confirm(confirmString)) return
+        : 'Are you sure you want to archive this course? This will remove your progress.';
+    if (!confirm(confirmString)) return;
 
-    setDeleting(true)
+    setDeleting(true);
     trackEventOnClient('course_status_set', {
       active: 'archived',
-    })
+    });
     try {
       const resp = await fetch(`/api/courses/user/${userCourse.id}`, {
         method: 'DELETE',
-      })
-      const json = (await resp.json()) as ResponseJson
+      });
+      const json = (await resp.json()) as ResponseJson;
       if (json?.message != 'Course archived')
-        throw new Error(json?.message ?? 'Course not archived')
-      update()
+        throw new Error(json?.message ?? 'Course not archived');
+      update();
     } catch (e) {
-      Sentry.captureException(e)
+      Sentry.captureException(e);
     }
-    setDeleting(false)
-  }
+    setDeleting(false);
+  };
 
-  if (!userCourse) return null
+  if (!userCourse) return null;
 
   return (
     <AlertDialog.Root open={open} onOpenChange={setOpen}>
       <AlertDialog.Trigger>
-        <div className="text-black dark:text-white hover:text-orange-500 transition-colors duration-300 group">
+        <div className="group text-black transition-colors duration-300 hover:text-orange-500 dark:text-white">
           {/* Outline Cog */}
           <svg
             className="group-hover:hidden"
@@ -110,14 +110,14 @@ export default function CourseSettings(props: CourseSettingsProps) {
           className="fixed inset-0 z-20 bg-[rgba(0,0,0,0.5)]"
           onClick={close}
         />
-        <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[75vh] w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto bg-white p-4 shadow-md md:p-6 flex flex-col gap-2">
+        <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 flex max-h-[75vh] w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 flex-col gap-2 overflow-y-auto bg-white p-4 shadow-md md:p-6">
           <div className="flex flex-wrap items-center gap-2">
             <Heading as="h1">{userCourse.course.courseName}</Heading>
             <p className="text-sm italic">
               {userCourse.course.published ? '(Public)' : '(Private)'}
             </p>
           </div>
-          <div className="flex gap-4 md:justify-between flex-col md:flex-row">
+          <div className="flex flex-col gap-4 md:flex-row md:justify-between">
             <Button
               disabled={deleting}
               variant="danger"
@@ -132,7 +132,7 @@ export default function CourseSettings(props: CourseSettingsProps) {
               )}
             </Button>
             {userCourse.course.createdBy == user?.id && (
-              <div className="flex gap-1 items-center">
+              <div className="flex items-center gap-1">
                 <Link href={`/training/courses/admin/${userCourse.course.id}`}>
                   <Button variant="warning">
                     Admin Panel
@@ -154,7 +154,7 @@ export default function CourseSettings(props: CourseSettingsProps) {
               </div>
             )}
           </div>
-          <div className="flex flex-col gap-2 text-sm bg-red-100 py-2 px-4">
+          <div className="flex flex-col gap-2 bg-red-100 px-4 py-2 text-sm">
             <p>
               Archiving a course will remove all your progress, and remove the
               ability to train the course.
@@ -179,5 +179,5 @@ export default function CourseSettings(props: CourseSettingsProps) {
         </AlertDialog.Content>
       </AlertDialog.Portal>
     </AlertDialog.Root>
-  )
+  );
 }

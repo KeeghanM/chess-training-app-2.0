@@ -19,7 +19,7 @@ export const MiscBadges = [
     name: 'Well Known',
     description: 'Fill in your profile bio',
   },
-]
+];
 
 export const StreakBadges = [
   {
@@ -67,7 +67,7 @@ export const StreakBadges = [
     streak: 730,
     description: 'Train for 730 days in a row',
   },
-]
+];
 
 export const TacticStreakBadges = [
   {
@@ -128,7 +128,7 @@ export const TacticStreakBadges = [
     description:
       'Complete a full set of 8 rounds, with a puzzle rating of at least 2500',
   },
-]
+];
 
 export const XpRanks = [
   {
@@ -311,4 +311,4 @@ export const XpRanks = [
     name: 'Grandmaster',
     xp: 9000000,
   },
-]
+];

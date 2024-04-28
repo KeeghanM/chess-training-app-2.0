@@ -1,17 +1,17 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
+import * as AlertDialog from '@radix-ui/react-alert-dialog';
 
-import Button from '@/app/components/_elements/button'
-import GetPremiumButton from '@/app/components/ecomm/GetPremiumButton'
+import Button from '@/app/components/_elements/button';
+import GetPremiumButton from '@/app/components/ecomm/GetPremiumButton';
 
 export default function PremiumSubscribe(props: {
-  title: string
-  children: React.ReactNode | React.ReactNode[]
-  trigger: React.ReactNode
+  title: string;
+  children: React.ReactNode | React.ReactNode[];
+  trigger: React.ReactNode;
 }) {
-  const { title, children, trigger } = props
-  const [open, setOpen] = useState(false)
+  const { title, children, trigger } = props;
+  const [open, setOpen] = useState(false);
 
   return (
     <AlertDialog.Root open={open} onOpenChange={setOpen}>
@@ -35,5 +35,5 @@ export default function PremiumSubscribe(props: {
         </AlertDialog.Content>
       </AlertDialog.Portal>
     </AlertDialog.Root>
-  )
+  );
 }

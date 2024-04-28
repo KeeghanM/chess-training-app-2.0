@@ -1,48 +1,48 @@
-import { errorResponse, successResponse } from '@/app/api/responses'
-import { prisma } from '@/server/db'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import type { Course, Group as PrismaGroup } from '@prisma/client'
-import * as Sentry from '@sentry/nextjs'
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import type { Course, Group as PrismaGroup } from '@prisma/client';
+import * as Sentry from '@sentry/nextjs';
 
-import type { CleanMove } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData'
+import type { CleanMove } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData';
 
 export async function POST(request: Request) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request);
+  if (!session) return errorResponse('Unauthorized', 401);
 
-  const user = await session.getUser()
-  if (!user) return errorResponse('Unauthorized', 401)
+  const user = await session.getUser();
+  if (!user) return errorResponse('Unauthorized', 401);
 
   const { courseName, description, groupNames, lines, slug } =
     (await request.json()) as {
-      courseName: string
-      slug: string
-      description: string
+      courseName: string;
+      slug: string;
+      description: string;
       groupNames: {
-        groupName: string
-      }[]
+        groupName: string;
+      }[];
       lines: {
-        groupName: string
-        colour: string
-        moves: CleanMove[]
-      }[]
-    }
+        groupName: string;
+        colour: string;
+        moves: CleanMove[];
+      }[];
+    };
 
   if (!courseName || !groupNames || !lines || !slug)
-    return errorResponse('Missing required fields', 400)
+    return errorResponse('Missing required fields', 400);
 
   // Check slug is valid
-  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
-  if (!slugRegex.test(slug)) return errorResponse('Invalid slug', 400)
+  const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+  if (!slugRegex.test(slug)) return errorResponse('Invalid slug', 400);
 
   // Check if course name is available
   const existingCourse = await prisma.course.findFirst({
     where: {
       slug,
     },
-  })
+  });
 
-  if (existingCourse) return errorResponse('Course name is not available', 400)
+  if (existingCourse) return errorResponse('Course name is not available', 400);
 
   try {
     const { course, userCourse } = await prisma.$transaction(async (prisma) => {
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
             })),
           },
         },
-      })) as Course & { groups: PrismaGroup[] }
+      })) as Course & { groups: PrismaGroup[] };
 
       // Link the user to the course by creating their userCourse
       const userCourse = await prisma.userCourse.create({
@@ -76,13 +76,13 @@ export async function POST(request: Request) {
           linesUnseen: lines.length,
           userId: user.id,
         },
-      })
+      });
 
-      return { course, userCourse }
-    })
+      return { course, userCourse };
+    });
 
     if (!course || !userCourse)
-      throw new Error('Course or userCourse not found')
+      throw new Error('Course or userCourse not found');
 
     // TODO: Need to relook at a transaction here...
     // Create each new line and userLine
@@ -90,8 +90,8 @@ export async function POST(request: Request) {
       lines.map(async (line, index) => {
         const matchingGroup = course.groups.find(
           (group) => group.groupName === line.groupName,
-        )
-        if (!matchingGroup) throw new Error('Group not found')
+        );
+        if (!matchingGroup) throw new Error('Group not found');
 
         const transformedMoves = line.moves.map((move, index) => ({
           move: move.notation,
@@ -101,7 +101,7 @@ export async function POST(request: Request) {
           comment: move.comment
             ? { create: { comment: move.comment.trim() } } // Create a comment in the comment table if there is one
             : undefined,
-        }))
+        }));
 
         const dbLine = await prisma.line.create({
           data: {
@@ -113,7 +113,7 @@ export async function POST(request: Request) {
               create: transformedMoves,
             },
           },
-        })
+        });
 
         await prisma.userLine.create({
           data: {
@@ -121,16 +121,16 @@ export async function POST(request: Request) {
             userCourseId: userCourse.id,
             lineId: dbLine.id,
           },
-        })
+        });
       }),
-    )
+    );
 
-    return successResponse('Course created', { slug }, 200)
+    return successResponse('Course created', { slug }, 200);
   } catch (e) {
-    Sentry.captureException(e)
-    if (e instanceof Error) return errorResponse(e.message, 500)
-    return errorResponse('Unknown error', 500)
+    Sentry.captureException(e);
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    return errorResponse('Unknown error', 500);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

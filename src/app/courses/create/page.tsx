@@ -1,17 +1,17 @@
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
 
-import PageHeader from '@/app/components/_layouts/pageHeader'
-import CreateCourseForm from '@/app/components/training/courses/create/CreateCourse'
+import PageHeader from '@/app/components/_layouts/pageHeader';
+import CreateCourseForm from '@/app/components/training/courses/create/CreateCourse';
 
-import { getUserServer } from '@/app/_util/getUserServer'
+import { getUserServer } from '@/app/_util/getUserServer';
 
 export const metadata = {
   title: 'Create a new course - ChessTraining.app',
-}
+};
 
 export default async function CreateCourse() {
-  const { user } = await getUserServer()
-  if (!user) redirect('/auth/signin')
+  const { user } = await getUserServer();
+  if (!user) redirect('/auth/signin');
 
   return (
     <>
@@ -24,5 +24,5 @@ export default async function CreateCourse() {
       />
       <CreateCourseForm />
     </>
-  )
+  );
 }

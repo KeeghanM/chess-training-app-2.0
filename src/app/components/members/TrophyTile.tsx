@@ -1,17 +1,17 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-import CalculateXpRank from '@/app/_util/CalculateXpRank'
+import CalculateXpRank from '@/app/_util/CalculateXpRank';
 
-import Heading from '../_elements/heading'
-import XpDisplay from '../dashboard/XpDisplay'
+import Heading from '../_elements/heading';
+import XpDisplay from '../dashboard/XpDisplay';
 
 export default function TrophyTile(props: {
-  placement: number
-  username: string
-  xp: number
-  published: boolean
+  placement: number;
+  username: string;
+  xp: number;
+  published: boolean;
 }) {
-  const { placement, username, xp, published } = props
+  const { placement, username, xp, published } = props;
 
   const Trophy = (props: { placement: number }) => {
     switch (props.placement) {
@@ -60,7 +60,7 @@ export default function TrophyTile(props: {
               fill="#fcc219"
             />
           </svg>
-        )
+        );
       case 2:
         return (
           <svg
@@ -106,7 +106,7 @@ export default function TrophyTile(props: {
               fill="#e8f3f8"
             />
           </svg>
-        )
+        );
       case 3:
         return (
           <svg
@@ -152,15 +152,15 @@ export default function TrophyTile(props: {
               fill="#854700"
             />
           </svg>
-        )
+        );
       default:
-        return null
+        return null;
     }
-  }
+  };
 
   return (
     <div
-      className={`flex flex-col gap-2 mt-auto p-4 bg-slate-800 text-white font-bold items-center${
+      className={`mt-auto flex flex-col gap-2 bg-slate-800 p-4 font-bold text-white items-center${
         placement === 1
           ? ' md:order-2 '
           : placement === 2
@@ -184,5 +184,5 @@ export default function TrophyTile(props: {
         <XpDisplay data={CalculateXpRank(xp)} displayLink={false} />
       </div>
     </div>
-  )
+  );
 }

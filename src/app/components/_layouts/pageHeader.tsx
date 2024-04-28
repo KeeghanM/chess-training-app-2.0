@@ -1,14 +1,14 @@
-import Image from 'next/image'
+import Image from 'next/image';
 
-import Heading from '@/app/components/_elements/heading'
+import Heading from '@/app/components/_elements/heading';
 
 interface PageHeaderProps {
-  title: string
-  subTitle?: string
+  title: string;
+  subTitle?: string;
   image: {
-    src: string
-    alt: string
-  }
+    src: string;
+    alt: string;
+  };
 }
 
 export default function PageHeader(props: PageHeaderProps) {
@@ -18,7 +18,7 @@ export default function PageHeader(props: PageHeaderProps) {
         <Image
           fill
           alt={props.image.alt}
-          className="object-cover object-center w-full h-full filter grayscale brightness-[.3]"
+          className="h-full w-full object-cover object-center brightness-[.3] grayscale filter"
           src={props.image.src}
         />
       </div>
@@ -33,5 +33,5 @@ export default function PageHeader(props: PageHeaderProps) {
         ) : null}
       </div>
     </div>
-  )
+  );
 }

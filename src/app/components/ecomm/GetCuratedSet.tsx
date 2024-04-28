@@ -1,34 +1,34 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
+import Link from 'next/link';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import Tippy from '@tippyjs/react'
+import type { ResponseJson } from '@/app/api/responses';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import Tippy from '@tippyjs/react';
 
-import Button from '../_elements/button'
-import Spinner from '../general/Spinner'
+import Button from '../_elements/button';
+import Spinner from '../general/Spinner';
 
 export default function GetCuratedSet(props: {
-  setId: string
-  price: number
-  slug: string
-  userSetId?: string
-  showPrice: boolean
+  setId: string;
+  price: number;
+  slug: string;
+  userSetId?: string;
+  showPrice: boolean;
 }) {
-  const { setId, price, slug, userSetId, showPrice } = props
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const { user } = useKindeBrowserClient()
+  const { setId, price, slug, userSetId, showPrice } = props;
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const { user } = useKindeBrowserClient();
 
   const handleBuy = async () => {
     if (!user) {
-      window.location.href = `/api/auth/login?post_login_redirect_url=/training/tactics/curated-sets/${slug}`
-      return
+      window.location.href = `/api/auth/login?post_login_redirect_url=/training/tactics/curated-sets/${slug}`;
+      return;
     }
-    setLoading(true)
+    setLoading(true);
     try {
       const resp = await fetch('/api/ecomm/purchaseSet', {
         method: 'POST',
@@ -38,16 +38,16 @@ export default function GetCuratedSet(props: {
         body: JSON.stringify({
           productId: setId,
         }),
-      })
-      const json = (await resp.json()) as ResponseJson
-      if (json?.data?.url == undefined) throw new Error(json?.message)
+      });
+      const json = (await resp.json()) as ResponseJson;
+      if (json?.data?.url == undefined) throw new Error(json?.message);
 
-      window.location.href = json.data.url as string
+      window.location.href = json.data.url as string;
     } catch (e) {
-      setError('Something went wrong, please try again later')
-      setLoading(false)
+      setError('Something went wrong, please try again later');
+      setLoading(false);
     }
-  }
+  };
 
   return error ? (
     <p className="text-red-500">{error}</p>
@@ -77,5 +77,5 @@ export default function GetCuratedSet(props: {
         </Button>
       )}
     </div>
-  )
+  );
 }

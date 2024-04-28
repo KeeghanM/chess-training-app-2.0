@@ -1,10 +1,10 @@
-import Container from '@/app/components/_elements/container'
-import Heading from '@/app/components/_elements/heading'
-import ReportIssueForm from '@/app/components/contact/ReportIssue'
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
+import ReportIssueForm from '@/app/components/contact/ReportIssue';
 
 export const metadata = {
   title: 'Having a problem? Report an issue here.',
-}
+};
 
 export default function ReportIssuePage() {
   return (
@@ -16,5 +16,5 @@ export default function ReportIssuePage() {
       </p>
       <ReportIssueForm />
     </Container>
-  )
+  );
 }

@@ -1,13 +1,13 @@
-import Heading from '@/app/components/_elements/heading'
-import CtaRow from '@/app/components/_layouts/ctaRow'
-import Hero from '@/app/components/_layouts/hero'
-import ImageRowFull from '@/app/components/_layouts/imageRowFull'
+import Heading from '@/app/components/_elements/heading';
+import CtaRow from '@/app/components/_layouts/ctaRow';
+import Hero from '@/app/components/_layouts/hero';
+import ImageRowFull from '@/app/components/_layouts/imageRowFull';
 
 export const metadata = {
   title: 'Recall Trainer - Learn Chess Online with ChessTraining.app',
   description:
     "Improve your chess skills with ChessTraining.app's Recall Trainer. Designed for busy adults, our trainer helps you learn chess efficiently and effectively. Build your memory and visualize chess positions. Enhance your chess skill development with structured training routines. Start learning chess online today!",
-}
+};
 
 export default async function Recall() {
   return (
@@ -92,5 +92,5 @@ export default async function Recall() {
         </p>
       </CtaRow>
     </>
-  )
+  );
 }

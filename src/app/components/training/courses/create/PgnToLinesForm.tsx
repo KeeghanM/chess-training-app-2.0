@@ -1,75 +1,75 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import { parse as PGNParse } from '@mliebelt/pgn-parser'
-import * as Sentry from '@sentry/nextjs'
+import { parse as PGNParse } from '@mliebelt/pgn-parser';
+import * as Sentry from '@sentry/nextjs';
 
-import Button from '@/app/components/_elements/button'
+import Button from '@/app/components/_elements/button';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
-import { ParsePGNtoLineData } from './parse/ParsePGNtoLineData'
-import type { Line } from './parse/ParsePGNtoLineData'
+import { ParsePGNtoLineData } from './parse/ParsePGNtoLineData';
+import type { Line } from './parse/ParsePGNtoLineData';
 
 export default function PgnToLinesForm(props: {
-  finished: (lines: Line[]) => void
-  back: () => void
+  finished: (lines: Line[]) => void;
+  back: () => void;
 }) {
-  const [status, setStatus] = useState<'idle' | 'loading'>('idle')
-  const [error, setError] = useState<string | null>(null)
-  const [string, setString] = useState<string>('')
+  const [status, setStatus] = useState<'idle' | 'loading'>('idle');
+  const [error, setError] = useState<string | null>(null);
+  const [string, setString] = useState<string>('');
 
   const handleError = (msg: string) => {
-    setError(msg)
-    setStatus('idle')
-  }
+    setError(msg);
+    setStatus('idle');
+  };
 
   const validPGN = (string: string) => {
     try {
-      const parsed = PGNParse(string, { startRule: 'games' })
-      if (parsed) return true
+      const parsed = PGNParse(string, { startRule: 'games' });
+      if (parsed) return true;
 
-      return false
+      return false;
     } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('Unknown error')
+      Sentry.captureException(e);
+      if (e instanceof Error) setError(e.message);
+      else setError('Unknown error');
 
-      setStatus('idle')
-      return false
+      setStatus('idle');
+      return false;
     }
-  }
+  };
 
   const parse = async () => {
-    setError(null)
-    setStatus('loading')
+    setError(null);
+    setStatus('loading');
 
     try {
       if (string == '') {
-        handleError('PGN is empty')
-        return
+        handleError('PGN is empty');
+        return;
       }
       if (!validPGN(string)) {
-        handleError('Invalid PGN')
-        return
+        handleError('Invalid PGN');
+        return;
       }
 
-      const lines = ParsePGNtoLineData(string)
+      const lines = ParsePGNtoLineData(string);
       if (!lines) {
-        handleError('Something went wrong')
-        return
+        handleError('Something went wrong');
+        return;
       }
 
-      trackEventOnClient('create_course_pgn_imported', {})
-      props.finished(lines)
+      trackEventOnClient('create_course_pgn_imported', {});
+      props.finished(lines);
     } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('Unknown error')
-      setStatus('idle')
+      Sentry.captureException(e);
+      if (e instanceof Error) setError(e.message);
+      else setError('Unknown error');
+      setStatus('idle');
     }
-  }
+  };
 
   return (
     <div className="flex flex-col gap-2">
@@ -92,8 +92,8 @@ export default function PgnToLinesForm(props: {
 
 1. e4 e5 2. Nf3 Nc6 3. Bb5 {The start of the Ruy Lopez} a6 4. Ba4 Nf6 5. O-O b5 6. Bb3 Bc5 7. a4 Rb8 (7... Bb7 8. d3 O-O 9. Nc3) 8. c3 d6 9. d4`}
         onChange={(e) => {
-          setString(e.target.value)
-          setError(null)
+          setString(e.target.value);
+          setError(null);
         }}
       />
       <div className="flex flex-col gap-2 md:flex-row">
@@ -112,5 +112,5 @@ export default function PgnToLinesForm(props: {
         <p className="text-red-500">Something went wrong: {error}</p>
       ) : null}
     </div>
-  )
+  );
 }

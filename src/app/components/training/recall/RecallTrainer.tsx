@@ -1,83 +1,83 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import { Tour } from '@frigade/react'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import * as Sentry from '@sentry/nextjs'
-import Tippy from '@tippyjs/react'
-import { useWindowSize } from '@uidotdev/usehooks'
-import { Chess, SQUARES } from 'chess.js'
-import type { Color, PieceSymbol, Square } from 'chess.js'
-import { Chessboard } from 'react-chessboard'
-import 'react-toggle/style.css'
-import 'tippy.js/dist/tippy.css'
+import type { ResponseJson } from '@/app/api/responses';
+import { Tour } from '@frigade/react';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import * as Sentry from '@sentry/nextjs';
+import Tippy from '@tippyjs/react';
+import { useWindowSize } from '@uidotdev/usehooks';
+import { Chess, SQUARES } from 'chess.js';
+import type { Color, PieceSymbol, Square } from 'chess.js';
+import { Chessboard } from 'react-chessboard';
+import 'react-toggle/style.css';
+import 'tippy.js/dist/tippy.css';
 // @ts-expect-error - No types available
-import useSound from 'use-sound'
+import useSound from 'use-sound';
 
-import Button from '@/app/components/_elements/button'
-import Spinner from '@/app/components/general/Spinner'
-import XpTracker from '@/app/components/general/XpTracker'
-import ThemeSwitch from '@/app/components/template/header/ThemeSwitch'
-import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer'
+import Button from '@/app/components/_elements/button';
+import Spinner from '@/app/components/general/Spinner';
+import XpTracker from '@/app/components/general/XpTracker';
+import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
+import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
 // TODO: On multiple recalls, show a temporary green/red border on square clicked for feedback
 // TODO: On multiple recalls, have the piece to select flash on change to alert that it's changed
 // TODO: Increase XP for each correct recall in a row
 
 export default function RecallTrainer() {
-  const { user } = useKindeBrowserClient()
+  const { user } = useKindeBrowserClient();
 
   // Setup main state for the game/puzzles
-  const [currentPuzzle, setCurrentPuzzle] = useState<TrainingPuzzle>()
-  const [game, setGame] = useState(new Chess())
-  const [position, setPosition] = useState(game.fen())
-  const [difficulty, setDifficulty] = useState(1)
-  const [timed, setTimed] = useState(false)
-  const [timerLength, setTimerLength] = useState(10)
-  const [piecesToRecall, setPiecesToRecall] = useState(1)
-  const [counter, setCounter] = useState(0)
-  const [timer, setTimer] = useState(timerLength)
+  const [currentPuzzle, setCurrentPuzzle] = useState<TrainingPuzzle>();
+  const [game, setGame] = useState(new Chess());
+  const [position, setPosition] = useState(game.fen());
+  const [difficulty, setDifficulty] = useState(1);
+  const [timed, setTimed] = useState(false);
+  const [timerLength, setTimerLength] = useState(10);
+  const [piecesToRecall, setPiecesToRecall] = useState(1);
+  const [counter, setCounter] = useState(0);
+  const [timer, setTimer] = useState(timerLength);
   const [selectedSquares, setSelectedSquares] = useState<
     Record<string, React.CSSProperties>
-  >({})
+  >({});
   const [hiddenSquares, setHiddenSquares] = useState<
     Record<string, React.CSSProperties>
-  >({})
+  >({});
   const [availableSquares, setAvailableSquares] = useState<
     {
-      square: Square
-      type: PieceSymbol
-      color: Color
+      square: Square;
+      type: PieceSymbol;
+      color: Color;
     }[]
-  >([])
+  >([]);
   const [correctSquares, setCorrectSquares] = useState<
     {
-      square: Square
-      type: PieceSymbol
-      color: Color
+      square: Square;
+      type: PieceSymbol;
+      color: Color;
     }[]
-  >([])
+  >([]);
 
   // Setup SFX
-  const [soundEnabled, setSoundEnabled] = useState(true)
-  const [correctSound] = useSound('/sfx/correct.mp3')
-  const [incorrectSound] = useSound('/sfx/incorrect.mp3')
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [correctSound] = useSound('/sfx/correct.mp3');
+  const [incorrectSound] = useSound('/sfx/incorrect.mp3');
 
   // Setup state for the settings/general
-  const [loading, setLoading] = useState(true)
-  const [readyForInput, setReadyForInput] = useState(false)
-  const [puzzleFinished, setPuzzleFinished] = useState(false)
-  const [mode, setMode] = useState<'training' | 'settings'>('settings')
-  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true);
+  const [readyForInput, setReadyForInput] = useState(false);
+  const [puzzleFinished, setPuzzleFinished] = useState(false);
+  const [mode, setMode] = useState<'training' | 'settings'>('settings');
+  const [error, setError] = useState('');
   const [puzzleStatus, setPuzzleStatus] = useState<
     'none' | 'correct' | 'incorrect'
-  >('none')
-  const [xpCounter, setXpCounter] = useState(0)
-  const [currentStreak, setCurrentStreak] = useState(0)
+  >('none');
+  const [xpCounter, setXpCounter] = useState(0);
+  const [currentStreak, setCurrentStreak] = useState(0);
 
   const getPuzzle = async () => {
     try {
@@ -86,125 +86,127 @@ export default function RecallTrainer() {
         count: '1',
         themes: '["middlegame"]',
         themesType: 'ALL',
-      }
+      };
       const resp = await fetch('/api/puzzles/getPuzzles', {
         method: 'POST',
         body: JSON.stringify(params),
-      })
-      const json = (await resp.json()) as ResponseJson
-      if (json?.message != 'Puzzles found') throw new Error('No puzzles found')
-      const puzzles = json.data!.puzzles as TrainingPuzzle[]
+      });
+      const json = (await resp.json()) as ResponseJson;
+      if (json?.message != 'Puzzles found') throw new Error('No puzzles found');
+      const puzzles = json.data!.puzzles as TrainingPuzzle[];
 
-      return puzzles[0]
+      return puzzles[0];
     } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('Oops! Something went wrong')
+      Sentry.captureException(e);
+      if (e instanceof Error) setError(e.message);
+      else setError('Oops! Something went wrong');
     }
-  }
+  };
 
   const goToNextPuzzle = async (status: string) => {
-    setLoading(true)
-    setPuzzleStatus('none')
+    setLoading(true);
+    setPuzzleStatus('none');
 
     // Increase the "Last Trained" on the profile
     fetch('/api/profile/streak', {
       method: 'POST',
-    }).catch((e) => Sentry.captureException(e))
+    }).catch((e) => Sentry.captureException(e));
 
     // Increase the streak if correct
     // and send it to the server incase a badge needs adding
     if (status == 'correct') {
-      trackEventOnClient('recall_correct', {})
+      trackEventOnClient('recall_correct', {});
       fetch('/api/recall/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
-      }).catch((e) => Sentry.captureException(e))
-      setCurrentStreak(currentStreak + 1)
+      }).catch((e) => Sentry.captureException(e));
+      setCurrentStreak(currentStreak + 1);
     } else if (status == 'incorrect') {
-      trackEventOnClient('recall_incorrect', {})
+      trackEventOnClient('recall_incorrect', {});
     }
-    const newPuzzle = await getPuzzle()
+    const newPuzzle = await getPuzzle();
 
-    if (!newPuzzle) return
+    if (!newPuzzle) return;
 
-    setSelectedSquares({})
-    setLoading(false)
-    setCurrentPuzzle(newPuzzle)
-    setTimer(timerLength)
-  }
+    setSelectedSquares({});
+    setLoading(false);
+    setCurrentPuzzle(newPuzzle);
+    setTimer(timerLength);
+  };
 
   const markMoveAs = async (status: 'correct' | 'incorrect') => {
     if (status == 'correct') {
-      setXpCounter(xpCounter + 1)
-      if (soundEnabled) correctSound()
-    } else if (soundEnabled) incorrectSound()
+      setXpCounter(xpCounter + 1);
+      if (soundEnabled) correctSound();
+    } else if (soundEnabled) incorrectSound();
 
     if (
       counter == piecesToRecall - 1 ||
       counter == availableSquares.length - 1 // Some puzzles won't have enough pieces to recall, so we'll just end it early
     ) {
       // If we're on the last piece, mark the puzzle as finished
-      setPuzzleFinished(true)
-      setPuzzleStatus(status)
-      setCounter(0)
-      setHiddenSquares({})
-      setReadyForInput(false)
-      trackEventOnClient('recall_complete', {})
+      setPuzzleFinished(true);
+      setPuzzleStatus(status);
+      setCounter(0);
+      setHiddenSquares({});
+      setReadyForInput(false);
+      trackEventOnClient('recall_complete', {});
     } else {
       // Otherwise, increase the counter and move the piece
-      setCounter(counter + 1)
+      setCounter(counter + 1);
       let newPiece =
-        availableSquares[Math.floor(Math.random() * availableSquares.length)]!
-      const max = availableSquares.length
-      let breakpoint = 0
+        availableSquares[Math.floor(Math.random() * availableSquares.length)]!;
+      const max = availableSquares.length;
+      let breakpoint = 0;
 
       // We don't want to show the same piece twice
       // so we'll keep generating a new piece until we get one that isn't already in the correctSquares array
       while (correctSquares.includes(newPiece)) {
-        breakpoint++
+        breakpoint++;
         newPiece =
-          availableSquares[Math.floor(Math.random() * availableSquares.length)]!
+          availableSquares[
+            Math.floor(Math.random() * availableSquares.length)
+          ]!;
 
-        if (breakpoint > max) break // Prevent infinite loop, not that it should ever happen - but while's are scary
+        if (breakpoint > max) break; // Prevent infinite loop, not that it should ever happen - but while's are scary
       }
 
       // Add the new piece to the correctSquares array
-      setCorrectSquares([...correctSquares, newPiece])
+      setCorrectSquares([...correctSquares, newPiece]);
     }
-  }
+  };
 
   const markImReady = () => {
     setHiddenSquares({
       ...SQUARES.reduce<Record<string, React.CSSProperties>>((acc, square) => {
         acc[square] = {
           opacity: 0,
-        }
-        return acc
+        };
+        return acc;
       }, {}),
-    })
-    setReadyForInput(true)
-  }
+    });
+    setReadyForInput(true);
+  };
 
   const squareClicked = async (square: Square) => {
-    if (puzzleFinished) return
-    if (!readyForInput) return
+    if (puzzleFinished) return;
+    if (!readyForInput) return;
 
-    const correctSquare = correctSquares[counter]! // We know this will always be defined, as we only allow clicks when readyForInput is true
+    const correctSquare = correctSquares[counter]!; // We know this will always be defined, as we only allow clicks when readyForInput is true
 
-    const pieceClicked = game.get(square)
+    const pieceClicked = game.get(square);
     const pieceString = pieceClicked
       ? pieceClicked.color + pieceClicked.type
-      : ''
-    const correctString = correctSquare.color + correctSquare.type
+      : '';
+    const correctString = correctSquare.color + correctSquare.type;
 
     if (pieceString == correctString) {
       setSelectedSquares({
         [square]: {
           backgroundColor: 'rgba(25,255,0,0.8)',
         },
-      })
-      await markMoveAs('correct')
+      });
+      await markMoveAs('correct');
     } else {
       setSelectedSquares({
         [square]: {
@@ -213,58 +215,58 @@ export default function RecallTrainer() {
         [correctSquare.square]: {
           backgroundColor: 'rgba(25,255,0,0.8)',
         },
-      })
-      await markMoveAs('incorrect')
+      });
+      await markMoveAs('incorrect');
     }
-  }
+  };
 
   const exit = async () => {
-    setMode('settings')
-    setXpCounter(0)
-  }
+    setMode('settings');
+    setXpCounter(0);
+  };
 
-  const windowSize = useWindowSize() as { width: number; height: number }
+  const windowSize = useWindowSize() as { width: number; height: number };
 
   const getDifficulty = () => {
     switch (difficulty) {
       case 0:
-        return 'Easy'
+        return 'Easy';
       case 1:
-        return 'Medium'
+        return 'Medium';
       case 2:
-        return 'Hard'
+        return 'Hard';
       default:
-        return 'Medium'
+        return 'Medium';
     }
-  }
+  };
 
   // Here are all our useEffect functions
   useEffect(() => {
-    setSelectedSquares({})
-    if (mode == 'settings') return
-    ;(async () => {
-      setLoading(true)
-      const puzzle = await getPuzzle()
+    setSelectedSquares({});
+    if (mode == 'settings') return;
+    (async () => {
+      setLoading(true);
+      const puzzle = await getPuzzle();
       if (!puzzle) {
-        setMode('settings')
-        return
+        setMode('settings');
+        return;
       }
-      setCurrentPuzzle(puzzle)
-      setLoading(false)
+      setCurrentPuzzle(puzzle);
+      setLoading(false);
     })().catch((e) => {
-      Sentry.captureException(e)
-      throw new Error('Unable to load puzzle')
-    })
-  }, [mode])
+      Sentry.captureException(e);
+      throw new Error('Unable to load puzzle');
+    });
+  }, [mode]);
 
   useEffect(() => {
     // Create a new game from the puzzle whenever it changes
-    if (!currentPuzzle) return
+    if (!currentPuzzle) return;
 
-    setLoading(true)
-    setPosition(currentPuzzle.fen)
-    const newGame = new Chess(currentPuzzle.fen)
-    setGame(newGame)
+    setLoading(true);
+    setPosition(currentPuzzle.fen);
+    const newGame = new Chess(currentPuzzle.fen);
+    setGame(newGame);
 
     const squaresWithPieces = newGame
       .board()
@@ -272,12 +274,12 @@ export default function RecallTrainer() {
         row
           .filter((square) => square && square.type != 'p')
           .map((square) => square),
-      )
+      );
 
     const amountToShow = Math.min(
       difficulty === 2 ? 100 : difficulty === 1 ? 6 : 3, // all the pieces for hard, 6 for medium, 3 for easy
       squaresWithPieces.length, // but if there's less pieces than that, just show them all
-    )
+    );
     const squaresToHide = squaresWithPieces
       .sort(() => 0.5 - Math.random())
       .slice(0, squaresWithPieces.length - amountToShow)
@@ -286,46 +288,46 @@ export default function RecallTrainer() {
           acc[square.square] = {
             opacity: 0,
             backgroundColor: 'rgba(255,0,0,0.5)',
-          }
-        return acc
-      }, {})
+          };
+        return acc;
+      }, {});
 
     const visibleSquares = squaresWithPieces.filter(
       (
         square,
       ): square is { square: Square; type: PieceSymbol; color: Color } => {
-        return square !== null && !squaresToHide[square.square]
+        return square !== null && !squaresToHide[square.square];
       },
-    )
+    );
 
-    setHiddenSquares(squaresToHide)
-    setAvailableSquares(visibleSquares)
+    setHiddenSquares(squaresToHide);
+    setAvailableSquares(visibleSquares);
     setCorrectSquares([
       visibleSquares[Math.floor(Math.random() * visibleSquares.length)]!,
-    ])
+    ]);
 
-    setReadyForInput(false)
-    setPuzzleFinished(false)
-    setLoading(false)
-    if (timed) setTimer(timerLength)
-  }, [currentPuzzle])
+    setReadyForInput(false);
+    setPuzzleFinished(false);
+    setLoading(false);
+    if (timed) setTimer(timerLength);
+  }, [currentPuzzle]);
 
   useEffect(() => {
-    if (mode == 'settings' || !timed || !currentPuzzle) return
+    if (mode == 'settings' || !timed || !currentPuzzle) return;
     if (timer > 0) {
       const interval = setInterval(() => {
-        setTimer(timer - 1)
-      }, 1000)
-      return () => clearInterval(interval)
+        setTimer(timer - 1);
+      }, 1000);
+      return () => clearInterval(interval);
     }
-    markImReady()
-  }, [timer, currentPuzzle])
+    markImReady();
+  }, [timer, currentPuzzle]);
 
-  if (!user) return null
+  if (!user) return null;
 
   return error ? (
-    <div className="border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
-      <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-red-500">
+    <div className="border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
+      <div className="flex flex-wrap items-center justify-between border-b border-gray-300 px-2 py-1 font-bold text-red-500 dark:border-slate-600">
         <p>Oops, something went wrong</p>
       </div>
       <div className="p-2 text-white">{error}</div>
@@ -334,13 +336,13 @@ export default function RecallTrainer() {
     <>
       <Tour flowId="flow_g0ITjQQa" />
       {mode == 'settings' ? (
-        <div className="border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)]">
-          <div className="flex flex-wrap items-center justify-between px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
+        <div className="border border-gray-300 bg-[rgba(0,0,0,0.03)] text-black shadow-md dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
+          <div className="flex flex-wrap items-center justify-between border-b border-gray-300 px-2 py-1 font-bold text-orange-500 dark:border-slate-600">
             <p id="tooltip-0">Adjust your settings</p>
           </div>
-          <div className="flex flex-col gap-2 md:gap-4 p-2">
+          <div className="flex flex-col gap-2 p-2 md:gap-4">
             <div>
-              <label className="font-bold flex items-center gap-1 w-fit">
+              <label className="flex w-fit items-center gap-1 font-bold">
                 <span id="tooltip-1">Difficulty</span>
                 <Tippy content="Difficulty sets how many pieces are on the board">
                   <svg
@@ -378,7 +380,7 @@ export default function RecallTrainer() {
               </div>
             </div>
             <div>
-              <label className=" w-fit font-bold flex items-center h-fit gap-1">
+              <label className=" flex h-fit w-fit items-center gap-1 font-bold">
                 <span id="tooltip-2">Number to recall</span>
                 <Tippy content="The number of pieces in a row you'll have to recall from a single position">
                   <svg
@@ -411,7 +413,7 @@ export default function RecallTrainer() {
             <div>
               <div className="flex items-center gap-4">
                 <label
-                  className=" w-fit font-bold flex items-center h-fit gap-1"
+                  className=" flex h-fit w-fit items-center gap-1 font-bold"
                   htmlFor="timed"
                 >
                   <span>Timed Mode</span>
@@ -431,7 +433,7 @@ export default function RecallTrainer() {
                 </label>
                 <input
                   checked={timed}
-                  className="w-6 h-6 !bg-gray-100 text-black"
+                  className="h-6 w-6 !bg-gray-100 text-black"
                   id="timed"
                   type="checkbox"
                   onChange={() => setTimed(!timed)}
@@ -454,8 +456,8 @@ export default function RecallTrainer() {
             <Button
               variant="primary"
               onClick={async () => {
-                setMode('training')
-                trackEventOnClient('recall_start', {})
+                setMode('training');
+                trackEventOnClient('recall_start', {});
               }}
             >
               Start Training
@@ -463,35 +465,35 @@ export default function RecallTrainer() {
           </div>
         </div>
       ) : (
-        <div className="relative border border-gray-300 text-black dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] w-fit mx-auto">
+        <div className="relative mx-auto w-fit border border-gray-300 bg-[rgba(0,0,0,0.03)] text-black shadow-md dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
           {loading ? (
             <div className="absolute inset-0 z-50 grid place-items-center bg-[rgba(0,0,0,0.3)]">
               <Spinner />
             </div>
           ) : null}
           <div className="flex flex-wrap items-center justify-between text-sm">
-            <div className="flex gap-1 p-2 pb-0 justify-center text-xs md:text-sm lg:text-base">
+            <div className="flex justify-center gap-1 p-2 pb-0 text-xs md:text-sm lg:text-base">
               <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-                <p className="w-full text-center font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                <p className="w-full border-b border-gray-300 px-1 py-1 text-center font-bold dark:border-slate-600">
                   Difficulty:
                 </p>
                 <p>{getDifficulty()}</p>
               </div>
               <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-                <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                <p className="border-b border-gray-300 px-1 py-1 font-bold dark:border-slate-600">
                   Recall Count:
                 </p>
                 <p>{piecesToRecall}</p>
               </div>
               <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-                <p className="font-bold py-1 px-1 border-b border-gray-300 dark:border-slate-600">
+                <p className="border-b border-gray-300 px-1 py-1 font-bold dark:border-slate-600">
                   Timer:
                 </p>
                 <p>{timed ? <>{timerLength}s</> : 'none'}</p>
               </div>
               <XpTracker counter={xpCounter} type="tactic" />
             </div>
-            <div className="flex items-center gap-2 w-fit mx-auto md:mx-0">
+            <div className="mx-auto flex w-fit items-center gap-2 md:mx-0">
               <ThemeSwitch />
               <div
                 className="ml-auto flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
@@ -535,8 +537,8 @@ export default function RecallTrainer() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col-reverse lg:flex-row p-2 gap-2">
-            <div className="flex flex-col gap-2 w-fit mx-auto">
+          <div className="flex flex-col-reverse gap-2 p-2 lg:flex-row">
+            <div className="mx-auto flex w-fit flex-col gap-2">
               <Chessboard
                 arePiecesDraggable={false}
                 boardOrientation="white"
@@ -560,7 +562,7 @@ export default function RecallTrainer() {
             </div>
             <div className="flex w-full flex-col">
               {puzzleStatus === 'correct' && (
-                <div className="flex items-center gap-2  w-fit mx-auto">
+                <div className="mx-auto flex w-fit  items-center gap-2">
                   <svg
                     className="text-lime-500"
                     height="24"
@@ -577,7 +579,7 @@ export default function RecallTrainer() {
                 </div>
               )}
               {puzzleStatus === 'incorrect' && (
-                <div className="flex items-center gap-2 w-fit mx-auto">
+                <div className="mx-auto flex w-fit items-center gap-2">
                   <svg
                     className="text-red-500"
                     height="24"
@@ -595,10 +597,10 @@ export default function RecallTrainer() {
               )}
               <div className="flex flex-1 flex-col-reverse gap-2 lg:flex-col">
                 {!puzzleFinished && (
-                  <div className="h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white flex flex-col">
+                  <div className="flex h-full flex-col flex-wrap content-start gap-1 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 text-black dark:text-white lg:border-4">
                     {!readyForInput && (
                       <>
-                        <p className="text-sm italic text-center">
+                        <p className="text-center text-sm italic">
                           Memorise the position shown, you'll be asked to
                           remember & recall the pieces (not pawns)
                         </p>
@@ -607,7 +609,7 @@ export default function RecallTrainer() {
                             I'm Ready!
                           </Button>
                         ) : (
-                          <p className="text-xl font-bold text-center mt-4">
+                          <p className="mt-4 text-center text-xl font-bold">
                             {timer}s
                           </p>
                         )}
@@ -659,5 +661,5 @@ export default function RecallTrainer() {
         </div>
       )}
     </>
-  )
+  );
 }

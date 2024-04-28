@@ -1,4 +1,4 @@
-import * as prismic from '@prismicio/client'
+import * as prismic from '@prismicio/client';
 
 const Prismic = prismic.createClient('chess-training-app', {
   routes: [
@@ -15,6 +15,6 @@ const Prismic = prismic.createClient('chess-training-app', {
     process.env.NODE_ENV === 'production'
       ? { next: { tags: ['prismic'] }, cache: 'force-cache' }
       : { next: { revalidate: 5 } },
-})
+});
 
-export default Prismic
+export default Prismic;

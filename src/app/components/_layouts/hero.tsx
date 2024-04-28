@@ -1,24 +1,24 @@
-import Image from 'next/image'
-import Link from 'next/link'
+import Image from 'next/image';
+import Link from 'next/link';
 
-import Button from '@/app/components/_elements/button'
-import Heading from '@/app/components/_elements/heading'
+import Button from '@/app/components/_elements/button';
+import Heading from '@/app/components/_elements/heading';
 
 interface HeroProps {
-  title: string
+  title: string;
   cta?: {
-    text: string
-    link: string
-  }
+    text: string;
+    link: string;
+  };
   secondary?: {
-    text: string
-    link: string
-  }
+    text: string;
+    link: string;
+  };
   image: {
-    src: string
-    alt: string
-  }
-  children: React.ReactNode
+    src: string;
+    alt: string;
+  };
+  children: React.ReactNode;
 }
 
 export default function Hero(props: HeroProps) {
@@ -28,7 +28,7 @@ export default function Hero(props: HeroProps) {
         <Image
           fill
           alt={props.image.alt}
-          className="object-cover object-center w-full h-full filter grayscale brightness-[.3]"
+          className="h-full w-full object-cover object-center brightness-[.3] grayscale filter"
           src={props.image.src}
         />
       </div>
@@ -51,5 +51,5 @@ export default function Hero(props: HeroProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,27 +1,27 @@
-import { errorResponse, successResponse } from '@/app/api/responses'
-import { prisma } from '@/server/db'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import * as Sentry from '@sentry/nextjs'
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import * as Sentry from '@sentry/nextjs';
 
 export async function POST(request: Request) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request);
+  if (!session) return errorResponse('Unauthorized', 401);
 
-  const user = await session.getUser()
-  if (!user) return errorResponse('Unauthorized', 401)
+  const user = await session.getUser();
+  if (!user) return errorResponse('Unauthorized', 401);
 
   const { setId, name } = (await request.json()) as {
-    setId: string
-    name: string
-  }
+    setId: string;
+    name: string;
+  };
 
   if (!setId || !name) {
-    return errorResponse('Missing required fields', 400)
+    return errorResponse('Missing required fields', 400);
   }
 
-  const regex = /[@?#%^\*]/g
+  const regex = /[@?#%^\*]/g;
   if (name.length < 5 || name.length > 150 || regex.test(name)) {
-    return errorResponse('Invalid name', 400)
+    return errorResponse('Invalid name', 400);
   }
 
   try {
@@ -33,14 +33,14 @@ export async function POST(request: Request) {
       data: {
         name,
       },
-    })
+    });
 
-    return successResponse('Set Updated', { setId }, 200)
+    return successResponse('Set Updated', { setId }, 200);
   } catch (e) {
-    Sentry.captureException(e)
-    if (e instanceof Error) return errorResponse(e.message, 500)
-    return errorResponse('Unknown error', 500)
+    Sentry.captureException(e);
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    return errorResponse('Unknown error', 500);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

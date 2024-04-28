@@ -1,28 +1,28 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-import { prisma } from '@/server/db'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
+import { prisma } from '@/server/db';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
-import Button from '@/app/components/_elements/button'
-import Container from '@/app/components/_elements/container'
-import Heading from '@/app/components/_elements/heading'
-import StyledLink from '@/app/components/_elements/styledLink'
-import PageHeader from '@/app/components/_layouts/pageHeader'
-import { TextWall } from '@/app/components/_layouts/textWall'
-import GetCuratedSet from '@/app/components/ecomm/GetCuratedSet'
+import Button from '@/app/components/_elements/button';
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
+import StyledLink from '@/app/components/_elements/styledLink';
+import PageHeader from '@/app/components/_layouts/pageHeader';
+import { TextWall } from '@/app/components/_layouts/textWall';
+import GetCuratedSet from '@/app/components/ecomm/GetCuratedSet';
 
 export const metadata = {
   title: 'Curated Chess Tactics Training Sets at ChessTraining.app',
   description:
     'All hand picked by our team of chess experts, our curated chess tactics training sets are designed to help you improve your tactical play in chess. Each set is tailored to your chess rating, and based on the chess tactics and themes that you want to focus on. We will automatically track your time and accuracy across the chess puzzles. This means all the admin work required in the WoodPecker method is taken care of for you - you just focus on solving chess puzzles. Remember, these puzzles should be difficult for you to solve! For best results, break your practice into 30-60 minute sessions once a day. Your first time through a puzzle set should take 1-2 weeks.',
-}
+};
 
 export default async function CuratedSetsPage() {
-  const session = getKindeServerSession()
-  const user = await session.getUser()
+  const session = getKindeServerSession();
+  const user = await session.getUser();
   const sets = await prisma.curatedSet.findMany({
     where: { published: true },
-  })
+  });
 
   const userCuratedSets = user
     ? await prisma.tacticsSet.findMany({
@@ -34,7 +34,7 @@ export default async function CuratedSetsPage() {
           },
         },
       })
-    : []
+    : [];
 
   return (
     <>
@@ -67,9 +67,9 @@ export default async function CuratedSetsPage() {
             .map((set) => (
               <div
                 key={set.id}
-                className="flex flex-col gap-0 border border-gray-300 shadow-md bg-[rgba(0,0,0,0.03)]"
+                className="flex flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md"
               >
-                <div className="px-2 py-1 border-b border-gray-300 font-bold  text-orange-500 flex items-center flex-wrap justify-between">
+                <div className="flex flex-wrap items-center justify-between border-b  border-gray-300 px-2 py-1 font-bold text-orange-500">
                   <Link href={`/training/tactics/curated-sets/${set.slug}`}>
                     {set.name}
                   </Link>
@@ -81,10 +81,10 @@ export default async function CuratedSetsPage() {
                   dangerouslySetInnerHTML={{ __html: set.shortDesc ?? '' }}
                   className="p-2"
                 />
-                <p className="w-full text-center bg-purple-300 py-1 font-bold">
+                <p className="w-full bg-purple-300 py-1 text-center font-bold">
                   {set.size} puzzles
                 </p>
-                <div className="flex flex-col md:flex-row gap-2 p-2 items-center justify-center">
+                <div className="flex flex-col items-center justify-center gap-2 p-2 md:flex-row">
                   <GetCuratedSet
                     price={set.price}
                     setId={set.id}
@@ -103,5 +103,5 @@ export default async function CuratedSetsPage() {
         </div>
       </Container>
     </>
-  )
+  );
 }

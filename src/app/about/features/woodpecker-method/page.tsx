@@ -1,18 +1,18 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-import Heading from '@/app/components/_elements/heading'
-import BigText from '@/app/components/_layouts/bigText'
-import CtaRow from '@/app/components/_layouts/ctaRow'
-import Hero from '@/app/components/_layouts/hero'
-import ImageRowFull from '@/app/components/_layouts/imageRowFull'
-import { TextWall } from '@/app/components/_layouts/textWall'
+import Heading from '@/app/components/_elements/heading';
+import BigText from '@/app/components/_layouts/bigText';
+import CtaRow from '@/app/components/_layouts/ctaRow';
+import Hero from '@/app/components/_layouts/hero';
+import ImageRowFull from '@/app/components/_layouts/imageRowFull';
+import { TextWall } from '@/app/components/_layouts/textWall';
 
 export const metadata = {
   title:
     'Boost Your Chess Tactics with the Woodpecker Method - ChessTraining.app',
   description:
     'Master tactical chess play with the Woodpecker Method. Perfect for all skill levels, this method developed by GMs Axel Smith and Hans Tikkanen emphasizes solving and re-solving puzzles for speed and accuracy. Join ChessTraining.app to revolutionize your tactical skills.',
-}
+};
 
 export default async function WoodPeckerPage() {
   return (
@@ -124,5 +124,5 @@ export default async function WoodPeckerPage() {
         <p>Start now for free and take your tactical skills to new heights.</p>
       </CtaRow>
     </>
-  )
+  );
 }

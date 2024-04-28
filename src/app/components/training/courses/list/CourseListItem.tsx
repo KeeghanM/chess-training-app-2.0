@@ -1,85 +1,85 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import type { Course, UserCourse } from '@prisma/client'
-import * as Sentry from '@sentry/nextjs'
-import Tippy from '@tippyjs/react'
+import type { ResponseJson } from '@/app/api/responses';
+import type { Course, UserCourse } from '@prisma/client';
+import * as Sentry from '@sentry/nextjs';
+import Tippy from '@tippyjs/react';
 
-import Button from '@/app/components/_elements/button'
-import StyledLink from '@/app/components/_elements/styledLink'
-import PremiumSubscribe from '@/app/components/ecomm/PremiumSubscribe'
-import Spinner from '@/app/components/general/Spinner'
-import TimeSince from '@/app/components/general/TimeSince'
+import Button from '@/app/components/_elements/button';
+import StyledLink from '@/app/components/_elements/styledLink';
+import PremiumSubscribe from '@/app/components/ecomm/PremiumSubscribe';
+import Spinner from '@/app/components/general/Spinner';
+import TimeSince from '@/app/components/general/TimeSince';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
-import CourseSettings from './CourseSettings'
-import type { PrismaUserCourse } from './CoursesList'
+import CourseSettings from './CourseSettings';
+import type { PrismaUserCourse } from './CoursesList';
 
 // TODO: Add revision schedule viewer
 
 export default function CourseListItem(props: {
-  courseId: string
-  courseName: string
-  update: () => void
-  hasPremium: boolean
+  courseId: string;
+  courseName: string;
+  update: () => void;
+  hasPremium: boolean;
 }) {
-  const router = useRouter()
-  const [userCourse, setUserCourse] = useState<PrismaUserCourse | null>(null)
-  const [nextReview, setNextReview] = useState<Date | null>(null)
-  const [conicGradient, setConicGradient] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [opening, setOpening] = useState(false)
+  const router = useRouter();
+  const [userCourse, setUserCourse] = useState<PrismaUserCourse | null>(null);
+  const [nextReview, setNextReview] = useState<Date | null>(null);
+  const [conicGradient, setConicGradient] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [opening, setOpening] = useState(false);
 
   const openCourse = async (mode: 'learn' | 'revise') => {
-    if (!userCourse) return
+    if (!userCourse) return;
 
-    setOpening(true)
-    trackEventOnClient('course_opened', {})
+    setOpening(true);
+    trackEventOnClient('course_opened', {});
     router.push(
       `/training/courses/${
         userCourse.id
       }${mode == 'learn' ? '?mode=newOnly' : ''}`,
-    )
-  }
+    );
+  };
 
   useEffect(() => {
-    setOpening(false)
-    ;(async () => {
+    setOpening(false);
+    (async () => {
       try {
-        const resp = await fetch(`/api/courses/user/${props.courseId}`)
-        const json = (await resp.json()) as ResponseJson
+        const resp = await fetch(`/api/courses/user/${props.courseId}`);
+        const json = (await resp.json()) as ResponseJson;
         if (json?.message != 'Course Fetched')
-          throw new Error('Course not fetched')
+          throw new Error('Course not fetched');
 
-        const course = json.data!.course as PrismaUserCourse
+        const course = json.data!.course as PrismaUserCourse;
 
-        setUserCourse(course)
-        setConicGradient(GenerateConicGradient(course))
+        setUserCourse(course);
+        setConicGradient(GenerateConicGradient(course));
         if (json.data!.nextReview) {
-          setNextReview(new Date(json.data!.nextReview as string))
+          setNextReview(new Date(json.data!.nextReview as string));
         }
       } catch (e) {
-        Sentry.captureException(e)
+        Sentry.captureException(e);
       }
     })()
       .catch((e) => Sentry.captureException(e))
-      .finally(() => setLoading(false))
-  }, [])
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div
       key={props.courseId}
-      className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300"
+      className="flex flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900"
     >
       {loading ? (
         <div className="flex flex-col gap-2 p-2">
-          <div className="px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold flex flex-col md:flex-row gap-1 justify-between items-start">
+          <div className="flex flex-col items-start justify-between gap-1 border-b border-gray-300 px-2 py-1 font-bold dark:border-slate-600 md:flex-row">
             <p className="flex flex-col gap-1">
               <span className="text-lg text-orange-500">Loading...</span>
               <span className="text-xs italic text-gray-600 dark:text-gray-400">
@@ -87,11 +87,11 @@ export default function CourseListItem(props: {
               </span>
             </p>
           </div>
-          <div className="flex flex-col md:flex-row gap-2 items-center">
-            <div className="flex flex-col md:flex-row gap-2 items-center">
+          <div className="flex flex-col items-center gap-2 md:flex-row">
+            <div className="flex flex-col items-center gap-2 md:flex-row">
               <div className="grid h-16 w-16 place-items-center rounded-full bg-gray-300 dark:bg-slate-700" />
             </div>
-            <div className="flex flex-col md:flex-row gap-2 md:ml-auto">
+            <div className="flex flex-col gap-2 md:ml-auto md:flex-row">
               <Button disabled variant="primary">
                 <Spinner />
               </Button>
@@ -103,11 +103,11 @@ export default function CourseListItem(props: {
         </div>
       ) : (
         <>
-          <div className="px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold flex flex-col md:flex-row gap-1 justify-between items-start">
+          <div className="flex flex-col items-start justify-between gap-1 border-b border-gray-300 px-2 py-1 font-bold dark:border-slate-600 md:flex-row">
             <p className="flex flex-col gap-1">
               <Tippy content="View lines and other stats">
                 <Link
-                  className="text-lg cursor-pointer text-orange-500"
+                  className="cursor-pointer text-lg text-orange-500"
                   href={`/training/courses/${userCourse?.id}/lines`}
                 >
                   {props.courseName}
@@ -127,8 +127,8 @@ export default function CourseListItem(props: {
             </p>
             <CourseSettings update={props.update} userCourse={userCourse!} />
           </div>
-          <div className="flex flex-col md:flex-row p-2 items-center gap-2">
-            <div className="flex flex-col md:flex-row gap-2 items-center">
+          <div className="flex flex-col items-center gap-2 p-2 md:flex-row">
+            <div className="flex flex-col items-center gap-2 md:flex-row">
               <Tippy
                 className="text-base"
                 content={
@@ -190,7 +190,7 @@ export default function CourseListItem(props: {
                   </p>
                   {props.hasPremium ? (
                     <Link
-                      className="text-xs underline hover:no-underline text-purple-700 dark:text-purple-400"
+                      className="text-xs text-purple-700 underline hover:no-underline dark:text-purple-400"
                       href={`/training/courses/${userCourse?.id}/schedule`}
                     >
                       Edit revision schedule
@@ -199,7 +199,7 @@ export default function CourseListItem(props: {
                     <PremiumSubscribe
                       title="View Revision Schedule"
                       trigger={
-                        <p className="text-xs underline hover:no-underline text-purple-700 dark:text-purple-400">
+                        <p className="text-xs text-purple-700 underline hover:no-underline dark:text-purple-400">
                           Edit revision schedule
                         </p>
                       }
@@ -215,7 +215,7 @@ export default function CourseListItem(props: {
                         This is super useful if you're preparing for a
                         tournament or just want to revise everything.
                       </p>
-                      <p className="font-bold p-4 rounded bg-green-200">
+                      <p className="rounded bg-green-200 p-4 font-bold">
                         It's only £2.99/month to upgrade to premium!{' '}
                         <StyledLink href="/premium">Learn more.</StyledLink>
                       </p>
@@ -229,7 +229,7 @@ export default function CourseListItem(props: {
                 </div>
               </Tippy>
             </div>
-            <div className="flex flex-col md:flex-row gap-2 md:ml-auto">
+            <div className="flex flex-col gap-2 md:ml-auto md:flex-row">
               <Button
                 disabled={userCourse?.lines?.length == 0 || opening}
                 variant="primary"
@@ -251,7 +251,7 @@ export default function CourseListItem(props: {
         </>
       )}
     </div>
-  )
+  );
 }
 
 function GenerateConicGradient(course: UserCourse & { course: Course }) {
@@ -259,12 +259,12 @@ function GenerateConicGradient(course: UserCourse & { course: Course }) {
     course.linesLearned +
     course.linesLearning +
     course.linesHard +
-    course.linesUnseen
+    course.linesUnseen;
 
-  const learnedPercent = Math.round((course.linesLearned / totalLines) * 100)
-  const learningPercent = Math.round((course.linesLearning / totalLines) * 100)
-  const hardPercent = Math.round((course.linesHard / totalLines) * 100)
-  const unseenPercent = Math.round((course.linesUnseen / totalLines) * 100)
+  const learnedPercent = Math.round((course.linesLearned / totalLines) * 100);
+  const learningPercent = Math.round((course.linesLearning / totalLines) * 100);
+  const hardPercent = Math.round((course.linesHard / totalLines) * 100);
+  const unseenPercent = Math.round((course.linesUnseen / totalLines) * 100);
   const conicGradient = `conic-gradient(
             #4ade80 ${learnedPercent}%,
             #2563eb ${learnedPercent}% ${learnedPercent + learningPercent}%,
@@ -274,7 +274,7 @@ function GenerateConicGradient(course: UserCourse & { course: Course }) {
             #6b21a8 ${learnedPercent + learningPercent + hardPercent}% ${
               learnedPercent + learningPercent + hardPercent + unseenPercent
             }%
-          )`
+          )`;
 
-  return conicGradient
+  return conicGradient;
 }

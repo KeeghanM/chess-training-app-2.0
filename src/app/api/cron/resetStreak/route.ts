@@ -1,11 +1,11 @@
-import { prisma } from '@/server/db'
-import * as Sentry from '@sentry/nextjs'
+import { prisma } from '@/server/db';
+import * as Sentry from '@sentry/nextjs';
 
-import { errorResponse, successResponse } from '../../responses'
+import { errorResponse, successResponse } from '../../responses';
 
 export async function GET() {
-  const now = new Date()
-  const twentyFourHoursAgo = new Date(now.getTime() - 1000 * 60 * 60 * 24)
+  const now = new Date();
+  const twentyFourHoursAgo = new Date(now.getTime() - 1000 * 60 * 60 * 24);
 
   try {
     await prisma.userProfile.updateMany({
@@ -20,14 +20,14 @@ export async function GET() {
           gt: 0,
         },
       },
-    })
+    });
 
-    return successResponse('Reset streaks', {}, 200)
+    return successResponse('Reset streaks', {}, 200);
   } catch (e) {
-    Sentry.captureException(e)
-    if (e instanceof Error) return errorResponse(e.message, 500)
-    return errorResponse('Something went wrong', 500)
+    Sentry.captureException(e);
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    return errorResponse('Something went wrong', 500);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

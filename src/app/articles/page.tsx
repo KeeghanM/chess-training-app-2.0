@@ -1,27 +1,27 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-import Prismic from '@/prismicio'
-import { asHTML, asText } from '@prismicio/client'
-import type { ContentRelationshipField } from '@prismicio/client'
+import Prismic from '@/prismicio';
+import { asHTML, asText } from '@prismicio/client';
+import type { ContentRelationshipField } from '@prismicio/client';
 
-import Button from '../components/_elements/button'
-import Container from '../components/_elements/container'
-import Heading from '../components/_elements/heading'
+import Button from '../components/_elements/button';
+import Container from '../components/_elements/container';
+import Heading from '../components/_elements/heading';
 
 export const metadata = {
   title: 'Read the latest Articles on Chess Improvement',
   description:
     'Discover the latest articles on chess improvement and chess training. Learn how to improve your chess game and become a better chess player.',
-}
+};
 
 export default async function ArticlesPage() {
   const articles = await Prismic.getAllByType('article', {
     fetchLinks: ['author.name', 'author.uid'],
-  })
+  });
 
   return (
     <>
-      <div className="w-full flex items-center justify-center py-2 bg-gray-200">
+      <div className="flex w-full items-center justify-center bg-gray-200 py-2">
         <p className="text-xs text-gray-600">
           <Link className="text-purple-700 hover:underline" href="/">
             Home
@@ -40,16 +40,16 @@ export default async function ArticlesPage() {
             return (
               new Date(b.first_publication_date).getTime() -
               new Date(a.first_publication_date).getTime()
-            )
+            );
           })
           .map((article) => {
             const author = article.data.author as ContentRelationshipField & {
-              data: { name: string; uid: string }
-            }
+              data: { name: string; uid: string };
+            };
             return (
               <div
                 key={article.id}
-                className="flex flex-col gap-0 mb-4 border border-gray-300 shadow-md bg-[rgba(0,0,0,0.03)]  hover:shadow-lg transition-shadow duration-300"
+                className="mb-4 flex flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md  transition-shadow duration-300 hover:shadow-lg"
               >
                 <script
                   dangerouslySetInnerHTML={{
@@ -81,7 +81,7 @@ export default async function ArticlesPage() {
                   }}
                   type="application/ld+json"
                 />
-                <div className="px-2 py-1 border-b border-gray-300 font-bold text-orange-500">
+                <div className="border-b border-gray-300 px-2 py-1 font-bold text-orange-500">
                   <Link
                     className="hover:underline"
                     href={`/articles/${article.uid}`}
@@ -89,14 +89,14 @@ export default async function ArticlesPage() {
                     <h2>{article.data.title}</h2>
                   </Link>
                 </div>
-                <div className="flex flex-wrap gap-2 pt-2 justify-center text-xs">
+                <div className="flex flex-wrap justify-center gap-2 pt-2 text-xs">
                   <div className="flex flex-col items-center border border-gray-300">
-                    <p className="font-bold py-1 px-2 border-b border-gray-300 w-full text-center">
+                    <p className="w-full border-b border-gray-300 px-2 py-1 text-center font-bold">
                       Author
                     </p>
                     <p className="p-1">
                       <Link
-                        className="hover:no-underline text-purple-700 underline"
+                        className="text-purple-700 underline hover:no-underline"
                         href={`/articles/author/${author.data.uid}`}
                       >
                         {author.data.name}
@@ -104,7 +104,7 @@ export default async function ArticlesPage() {
                     </p>
                   </div>
                   <div className="flex flex-col items-center border border-gray-300">
-                    <p className="font-bold py-1 px-2 border-b border-gray-300 w-full text-center">
+                    <p className="w-full border-b border-gray-300 px-2 py-1 text-center font-bold">
                       Published
                     </p>
                     <p className="p-1">
@@ -124,13 +124,13 @@ export default async function ArticlesPage() {
                   }}
                   className="p-2"
                 />
-                <Link className="p-2 mx-auto" href={`/articles/${article.uid}`}>
+                <Link className="mx-auto p-2" href={`/articles/${article.uid}`}>
                   <Button variant="primary">Read More</Button>
                 </Link>
               </div>
-            )
+            );
           })}
       </Container>
     </>
-  )
+  );
 }

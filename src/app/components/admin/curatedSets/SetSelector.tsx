@@ -1,16 +1,16 @@
-'use client'
+'use client';
 
-import type { CuratedSet } from '@prisma/client'
+import type { CuratedSet } from '@prisma/client';
 
-import Button from '../../_elements/button'
-import Container from '../../_elements/container'
-import Heading from '../../_elements/heading'
+import Button from '../../_elements/button';
+import Container from '../../_elements/container';
+import Heading from '../../_elements/heading';
 
-import SetCreator from './SetCreator'
+import SetCreator from './SetCreator';
 
 export default function SetSelector(props: {
-  sets: CuratedSet[]
-  selectSet: (set: CuratedSet) => void
+  sets: CuratedSet[];
+  selectSet: (set: CuratedSet) => void;
 }) {
   return (
     <div>
@@ -24,10 +24,10 @@ export default function SetSelector(props: {
             {props.sets.map((set) => (
               <div
                 key={set.id}
-                className="flex flex-col gap-0 border border-gray-300 dark:text-white shadow-md bg-[rgba(0,0,0,0.03)] hover:shadow-lg cursor-pointer"
+                className="flex cursor-pointer flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md hover:shadow-lg dark:text-white"
                 onClick={() => props.selectSet(set)}
               >
-                <div className="px-2 py-1 border-b border-gray-300 font-bold  text-orange-500 flex items-center flex-wrap justify-between">
+                <div className="flex flex-wrap items-center justify-between border-b  border-gray-300 px-2 py-1 font-bold text-orange-500">
                   <p>{set.name}</p>
                 </div>
                 <div className="p-2">
@@ -40,5 +40,5 @@ export default function SetSelector(props: {
         </div>
       </Container>
     </div>
-  )
+  );
 }

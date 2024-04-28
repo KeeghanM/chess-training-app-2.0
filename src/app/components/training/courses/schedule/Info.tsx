@@ -1,11 +1,11 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
 export default function Info() {
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   return (
-    <div className="flex flex-col gap-1 dark:text-white mb-4">
+    <div className="mb-4 flex flex-col gap-1 dark:text-white">
       {open ? (
         <div className="flex flex-col gap-4">
           <p>
@@ -31,7 +31,7 @@ export default function Info() {
           </p>
           <div>
             <button
-              className="text-purple-700 dark:text-purple-300 underline hover:no-underline"
+              className="text-purple-700 underline hover:no-underline dark:text-purple-300"
               onClick={() => setOpen(false)}
             >
               Read Less
@@ -47,7 +47,7 @@ export default function Info() {
           </p>
           <div>
             <button
-              className="text-purple-700 dark:text-purple-300 underline hover:no-underline"
+              className="text-purple-700 underline hover:no-underline dark:text-purple-300"
               onClick={() => setOpen(true)}
             >
               Read More
@@ -56,5 +56,5 @@ export default function Info() {
         </>
       )}
     </div>
-  )
+  );
 }

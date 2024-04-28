@@ -5008,6 +5008,6 @@ const ECO: Record<string, string> = {
   nf3d6e4bg4: 'Zukertort Opening: Wade Defense',
   d4d6nf3bg4c4nd7qb3rb8: 'Zukertort Opening: Wade Defense, Chigorin Plan',
   nf3a5: 'Zukertort Opening: Ware Defense',
-}
+};
 
-export default ECO
+export default ECO;

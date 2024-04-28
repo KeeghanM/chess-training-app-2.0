@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react';
 
 import {
   DndContext,
@@ -9,36 +9,36 @@ import {
   closestCenter,
   useSensor,
   useSensors,
-} from '@dnd-kit/core'
+} from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
   verticalListSortingStrategy,
-} from '@dnd-kit/sortable'
-import { useAutoAnimate } from '@formkit/auto-animate/react'
-import type { Group, Line, Move } from '@prisma/client'
+} from '@dnd-kit/sortable';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
+import type { Group, Line, Move } from '@prisma/client';
 
-import SortableItem from '@/app/_util/SortableItem'
+import SortableItem from '@/app/_util/SortableItem';
 
-import LineDisplay from './LineDisplay'
+import LineDisplay from './LineDisplay';
 
-export type LineWithMoves = Line & { moves: Move[] }
+export type LineWithMoves = Line & { moves: Move[] };
 
 export default function GroupEditor(props: {
-  group: Group
-  lines: LineWithMoves[]
-  setGroup: (group: Group) => void
-  setLines: (lines: LineWithMoves[]) => void
-  addIdToDelete: (newIds: number) => void
+  group: Group;
+  lines: LineWithMoves[];
+  setGroup: (group: Group) => void;
+  setLines: (lines: LineWithMoves[]) => void;
+  addIdToDelete: (newIds: number) => void;
 }) {
-  const { group, lines, setGroup, setLines, addIdToDelete } = props
-  const [parent] = useAutoAnimate()
-  const [open, setOpen] = useState(false)
-  const [hiddenLineIds, setHiddenLineIds] = useState<number[]>([])
-  const [lineItems, setLineItems] = useState(lines.map((line) => line.id))
+  const { group, lines, setGroup, setLines, addIdToDelete } = props;
+  const [parent] = useAutoAnimate();
+  const [open, setOpen] = useState(false);
+  const [hiddenLineIds, setHiddenLineIds] = useState<number[]>([]);
+  const [lineItems, setLineItems] = useState(lines.map((line) => line.id));
   const linesToDisplay = useMemo(() => {
-    return lines.filter((line) => !hiddenLineIds.includes(line.id))
-  }, [lines, hiddenLineIds])
+    return lines.filter((line) => !hiddenLineIds.includes(line.id));
+  }, [lines, hiddenLineIds]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -46,31 +46,31 @@ export default function GroupEditor(props: {
         distance: 15,
       },
     }),
-  )
+  );
 
   const handleDragEnd = async (event: DragEndEvent) => {
-    const { active, over } = event
+    const { active, over } = event;
     if (active && over && active.id !== over.id) {
-      const oldIndex = lineItems.indexOf(active.id as number)
-      const newIndex = lineItems.indexOf(over.id as number)
+      const oldIndex = lineItems.indexOf(active.id as number);
+      const newIndex = lineItems.indexOf(over.id as number);
       setLineItems((items) => {
-        return arrayMove(items, oldIndex, newIndex)
-      })
+        return arrayMove(items, oldIndex, newIndex);
+      });
 
       // Update the sortOrder of the lines
-      const newLines = arrayMove(lines, oldIndex, newIndex)
+      const newLines = arrayMove(lines, oldIndex, newIndex);
       newLines.forEach((line, i) => {
-        line.sortOrder = i
-      })
-      setLines(newLines)
+        line.sortOrder = i;
+      });
+      setLines(newLines);
     }
-  }
+  };
 
   return (
     <div
       key={group.id}
       ref={parent}
-      className="flex flex-col gap-4 text-white p-2 bg-purple-600 "
+      className="flex flex-col gap-4 bg-purple-600 p-2 text-white "
     >
       <div className="flex items-center gap-1 p-1">
         <svg
@@ -85,9 +85,9 @@ export default function GroupEditor(props: {
             fill="currentColor"
           />
         </svg>
-        <p className="font-bold w-10">{lines.length}x</p>
+        <p className="w-10 font-bold">{lines.length}x</p>
         <input
-          className="w-full border-b border-gray-300 px-4 py-2 bg-[rgba(255,255,255,0.2)] text-white font-bold"
+          className="w-full border-b border-gray-300 bg-[rgba(255,255,255,0.2)] px-4 py-2 font-bold text-white"
           type="text"
           value={group.groupName}
           onChange={(e) => setGroup({ ...group, groupName: e.target.value })}
@@ -99,7 +99,7 @@ export default function GroupEditor(props: {
           xmlns="http://www.w3.org/2000/svg"
           className={`${
             open ? '-rotate-180' : '-rotate-90'
-          } transition-all duration-200 cursor-pointer hover:text-orange-500 z-10`}
+          } z-10 cursor-pointer transition-all duration-200 hover:text-orange-500`}
           onClick={() => setOpen(!open)}
         >
           <path
@@ -123,12 +123,12 @@ export default function GroupEditor(props: {
                 <LineDisplay
                   line={line}
                   onChange={(line) => {
-                    setLines(lines.map((l) => (l.id === line.id ? line : l)))
+                    setLines(lines.map((l) => (l.id === line.id ? line : l)));
                   }}
                   onDelete={() => {
-                    setLines(lines.filter((l) => l.id !== line.id))
-                    addIdToDelete(line.id)
-                    setHiddenLineIds([...hiddenLineIds, line.id])
+                    setLines(lines.filter((l) => l.id !== line.id));
+                    addIdToDelete(line.id);
+                    setHiddenLineIds([...hiddenLineIds, line.id]);
                   }}
                 />
               </SortableItem>
@@ -137,5 +137,5 @@ export default function GroupEditor(props: {
         </DndContext>
       ) : null}
     </div>
-  )
+  );
 }

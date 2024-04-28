@@ -1,24 +1,24 @@
-'use client'
+'use client';
 
-import dynamic from 'next/dynamic'
-import { useState } from 'react'
+import dynamic from 'next/dynamic';
+import { useState } from 'react';
 
-import 'react-quill/dist/quill.snow.css'
+import 'react-quill/dist/quill.snow.css';
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
 export default function TextEditor(props: {
-  value: string
-  onChange: (value: string) => void
+  value: string;
+  onChange: (value: string) => void;
 }) {
-  const [length, setLength] = useState(0)
-  const [value, setValue] = useState(props.value)
+  const [length, setLength] = useState(0);
+  const [value, setValue] = useState(props.value);
 
   const handleChange = (value: string) => {
-    setValue(value)
-    setLength(value.length)
-    props.onChange(value)
-  }
+    setValue(value);
+    setLength(value.length);
+    props.onChange(value);
+  };
 
   const formats = [
     // inline
@@ -38,7 +38,7 @@ export default function TextEditor(props: {
     'align',
     // embed
     // 'image', // TODO: add image upload
-  ]
+  ];
   const modules = {
     toolbar: [
       // inline
@@ -55,7 +55,7 @@ export default function TextEditor(props: {
       // embed
       //   ['image'],
     ],
-  }
+  };
 
   return (
     <div className="relative">
@@ -68,10 +68,10 @@ export default function TextEditor(props: {
         onChange={handleChange}
       />
       {length > 40000 && (
-        <p className="text-red-500 absolute bottom-0 right-0 p-2">
+        <p className="absolute bottom-0 right-0 p-2 text-red-500">
           Warning: This text is too long.
         </p>
       )}
     </div>
-  )
+  );
 }

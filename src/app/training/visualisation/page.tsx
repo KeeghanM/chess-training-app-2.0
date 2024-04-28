@@ -1,15 +1,15 @@
-import Heading from '@/app/components/_elements/heading'
-import StyledLink from '@/app/components/_elements/styledLink'
-import CtaRow from '@/app/components/_layouts/ctaRow'
-import Hero from '@/app/components/_layouts/hero'
-import ImageRowFull from '@/app/components/_layouts/imageRowFull'
+import Heading from '@/app/components/_elements/heading';
+import StyledLink from '@/app/components/_elements/styledLink';
+import CtaRow from '@/app/components/_layouts/ctaRow';
+import Hero from '@/app/components/_layouts/hero';
+import ImageRowFull from '@/app/components/_layouts/imageRowFull';
 
 export const metadata = {
   title:
     'Visualisation Training - Advance Your Chess Strategy at ChessTraining.app',
   description:
     "Refine your foresight with ChessTraining.app's Visualisation training. Tailored for players seeking to enhance their ability to foresee multiple moves ahead, this tool is crucial for long-term planning in chess. Challenge yourself with complex board scenarios and improve your decision-making skills. Perfect for those looking to deepen their tactical understanding and elevate their game to the next level.",
-}
+};
 export default async function VisualisationPage() {
   return (
     <>
@@ -94,5 +94,5 @@ export default async function VisualisationPage() {
         </p>
       </CtaRow>
     </>
-  )
+  );
 }

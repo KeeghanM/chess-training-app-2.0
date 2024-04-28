@@ -1,17 +1,17 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import { Chess } from 'chess.js'
-import type { Arrow } from 'react-chessboard/dist/chessboard/types'
+import { Chess } from 'chess.js';
+import type { Arrow } from 'react-chessboard/dist/chessboard/types';
 
-import type { Move } from '@/app/_util/BuildPgn'
-import BuildPGN from '@/app/_util/BuildPgn'
-import getArrows from '@/app/_util/StringToArrows'
+import type { Move } from '@/app/_util/BuildPgn';
+import BuildPGN from '@/app/_util/BuildPgn';
+import getArrows from '@/app/_util/StringToArrows';
 
-import ChessBoard from '../../ChessBoard'
-import type { UserLineWithData } from './CourseBrowser'
-import PgnBrowser from './PgnBrowser'
+import ChessBoard from '../../ChessBoard';
+import type { UserLineWithData } from './CourseBrowser';
+import PgnBrowser from './PgnBrowser';
 
 export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
   const pgn = BuildPGN(
@@ -24,70 +24,70 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
           comment: move.comment?.comment,
           arrows: move.arrows,
           lineId: line.id,
-        }
+        };
       }),
     ),
-  )
+  );
 
-  const [game, setGame] = useState(new Chess())
-  const [position, setPosition] = useState(game.fen())
-  const [orientation, setOrientation] = useState<'white' | 'black'>('white')
-  const [soundEnabled, setSoundEnabled] = useState(true)
-  const [currentMove, setCurrentMove] = useState<Move | undefined>()
-  const [arrows, setArrows] = useState<Arrow[]>([])
+  const [game, setGame] = useState(new Chess());
+  const [position, setPosition] = useState(game.fen());
+  const [orientation, setOrientation] = useState<'white' | 'black'>('white');
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [currentMove, setCurrentMove] = useState<Move | undefined>();
+  const [arrows, setArrows] = useState<Arrow[]>([]);
   const [highlightSquares, setHighlightSquares] = useState<
     Record<string, { backgroundColor: string }>
-  >({})
+  >({});
 
   useEffect(() => {
     if (!currentMove) {
-      setArrows([])
-      setHighlightSquares({})
-      return
+      setArrows([]);
+      setHighlightSquares({});
+      return;
     }
-    const newGame = new Chess()
-    const line = props.lines.find((line) => line.id === currentMove.lineId)!
+    const newGame = new Chess();
+    const line = props.lines.find((line) => line.id === currentMove.lineId)!;
     for (const move of line.line.moves) {
-      newGame.move(move.move)
+      newGame.move(move.move);
       if (
         move.move === currentMove.notation &&
         move.colour == currentMove.colour &&
         move.moveNumber === currentMove.number
       )
-        break
+        break;
     }
 
     const lastMove = newGame.history({ verbose: true })[
       newGame.history().length - 1
-    ]!
+    ]!;
 
     setHighlightSquares({
       [lastMove.to]: { backgroundColor: 'rgba(126,34,206, 0.3)' },
       [lastMove.from]: { backgroundColor: 'rgba(126,34,206, 0.3)' },
-    })
-    setPosition(newGame.fen())
-    setGame(newGame)
+    });
+    setPosition(newGame.fen());
+    setGame(newGame);
 
     if (currentMove.arrows) {
-      setArrows(getArrows(currentMove.arrows))
+      setArrows(getArrows(currentMove.arrows));
     } else {
-      setArrows([])
+      setArrows([]);
     }
-  }, [currentMove])
+  }, [currentMove]);
 
   useEffect(() => {
-    setCurrentMove(undefined)
-    setGame(new Chess())
-    setPosition(new Chess().fen())
+    setCurrentMove(undefined);
+    setGame(new Chess());
+    setPosition(new Chess().fen());
     if (props.lines[0]) {
       setOrientation(
         props.lines[0].line.colour.toLowerCase() as 'white' | 'black',
-      )
+      );
     }
-  }, [props.lines])
+  }, [props.lines]);
 
   return (
-    <div className="flex gap-2 flex-col lg:flex-row">
+    <div className="flex flex-col gap-2 lg:flex-row">
       <div>
         <ChessBoard
           enableArrows
@@ -102,7 +102,7 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
           soundEnabled={soundEnabled}
         />
       </div>
-      <div className="flex-1 max-w-[500px]">
+      <div className="max-w-[500px] flex-1">
         <PgnBrowser
           currentMove={currentMove}
           moveSelected={setCurrentMove}
@@ -110,5 +110,5 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
         />
       </div>
     </div>
-  )
+  );
 }

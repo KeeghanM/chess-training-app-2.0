@@ -1,8 +1,8 @@
-import Image from 'next/image'
-import Link from 'next/link'
+import Image from 'next/image';
+import Link from 'next/link';
 
-import Button from './components/_elements/button'
-import Heading from './components/_elements/heading'
+import Button from './components/_elements/button';
+import Heading from './components/_elements/heading';
 
 export default async function PageNotFound() {
   return (
@@ -21,5 +21,5 @@ export default async function PageNotFound() {
         />
       </div>
     </div>
-  )
+  );
 }

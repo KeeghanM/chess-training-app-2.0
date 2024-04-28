@@ -1,21 +1,21 @@
-import { errorResponse, successResponse } from '@/app/api/responses'
-import { prisma } from '@/server/db'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import * as Sentry from '@sentry/nextjs'
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import * as Sentry from '@sentry/nextjs';
 
 export async function POST(
   request: Request,
   { params }: { params: { courseId: string } },
 ) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request);
+  if (!session) return errorResponse('Unauthorized', 401);
 
-  const user = await session.getUser()
-  if (!user) return errorResponse('Unauthorized', 401)
+  const user = await session.getUser();
+  if (!user) return errorResponse('Unauthorized', 401);
 
-  const { courseId } = params as { courseId: string }
+  const { courseId } = params as { courseId: string };
 
-  if (!courseId) return errorResponse('Missing required fields', 400)
+  if (!courseId) return errorResponse('Missing required fields', 400);
 
   try {
     const result = await prisma.$transaction(async (prisma) => {
@@ -30,9 +30,9 @@ export async function POST(
             },
           },
         },
-      })
+      });
 
-      if (!userCourse) throw new Error('Course not found')
+      if (!userCourse) throw new Error('Course not found');
 
       // update userCourse with line count
       await prisma.userCourse.update({
@@ -43,7 +43,7 @@ export async function POST(
           active: true,
           linesUnseen: userCourse.course.lines.length,
         },
-      })
+      });
 
       // Create each new line and userLine
       await Promise.all(
@@ -54,18 +54,18 @@ export async function POST(
               userCourseId: userCourse.id,
               lineId: line.id,
             },
-          })
+          });
         }),
-      )
+      );
 
-      return { userCourseId: userCourse.id }
-    })
+      return { userCourseId: userCourse.id };
+    });
 
-    return successResponse('Course restored', result, 200)
+    return successResponse('Course restored', result, 200);
   } catch (e) {
-    Sentry.captureException(e)
-    return errorResponse('Internal server error', 500)
+    Sentry.captureException(e);
+    return errorResponse('Internal server error', 500);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

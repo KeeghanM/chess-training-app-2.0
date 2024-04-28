@@ -1,69 +1,69 @@
-import Image from 'next/image'
-import { redirect } from 'next/navigation'
+import Image from 'next/image';
+import { redirect } from 'next/navigation';
 
-import { prisma } from '@/server/db'
-import { Tour } from '@frigade/react'
+import { prisma } from '@/server/db';
+import { Tour } from '@frigade/react';
 
-import PremiumDisplay from '../components/dashboard/PremiumDisplay'
-import Container from '@/app/components/_elements/container'
-import Heading from '@/app/components/_elements/heading'
-import StreakDisplay from '@/app/components/dashboard/StreakDisplay'
-import ToolGrid from '@/app/components/dashboard/ToolGrid'
-import XpDisplay from '@/app/components/dashboard/XpDisplay'
-import ThemeSwitch from '@/app/components/template/header/ThemeSwitch'
+import PremiumDisplay from '../components/dashboard/PremiumDisplay';
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
+import StreakDisplay from '@/app/components/dashboard/StreakDisplay';
+import ToolGrid from '@/app/components/dashboard/ToolGrid';
+import XpDisplay from '@/app/components/dashboard/XpDisplay';
+import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
 
-import CalculateStreakBadge from '../_util/CalculateStreakBadge'
-import CalculateXpRank from '../_util/CalculateXpRank'
-import { getUserServer } from '../_util/getUserServer'
-import { PostHogClient } from '@/app/_util/trackEventOnServer'
+import CalculateStreakBadge from '../_util/CalculateStreakBadge';
+import CalculateXpRank from '../_util/CalculateXpRank';
+import { getUserServer } from '../_util/getUserServer';
+import { PostHogClient } from '@/app/_util/trackEventOnServer';
 
 export interface Tool {
-  name: string
-  description: string[]
-  trainingLink: string
-  learnMoreLink?: string
-  buttonText: string
-  active: boolean
-  id?: string
+  name: string;
+  description: string[];
+  trainingLink: string;
+  learnMoreLink?: string;
+  buttonText: string;
+  active: boolean;
+  id?: string;
 }
 
 export const metadata = {
   title: 'Dashboard - ChessTraining.app',
-}
+};
 
 export default async function Dashboard() {
-  const { user, isPremium, isStaff } = await getUserServer()
+  const { user, isPremium, isStaff } = await getUserServer();
 
   if (!user) {
-    redirect('/auth/signin')
-    return
+    redirect('/auth/signin');
+    return;
   }
 
   const profile = await prisma.userProfile.findFirst({
     where: {
       id: user.id,
     },
-  })
+  });
   const badges = await prisma.userBadge.findMany({
     where: {
       userId: user.id,
     },
-  })
-  await prisma.$disconnect()
+  });
+  await prisma.$disconnect();
 
-  const override = false ?? process.env.NODE_ENV === 'development'
+  const override = false ?? process.env.NODE_ENV === 'development';
 
   // Identify the user immediately upon signin
-  const posthog = PostHogClient()
+  const posthog = PostHogClient();
   posthog.identify({
     distinctId: user.id,
     properties: {
       email: user.email ?? 'unknown',
     },
-  })
+  });
 
   // This will force new users into the onboarding
-  if (!profile) redirect('/dashboard/new')
+  if (!profile) redirect('/dashboard/new');
 
   const tools: Tool[] = [
     {
@@ -152,7 +152,7 @@ export default async function Dashboard() {
       buttonText: 'Train',
       active: false || override,
     },
-  ]
+  ];
 
   const staffTools: Tool[] = [
     {
@@ -171,7 +171,7 @@ export default async function Dashboard() {
       buttonText: 'Open',
       active: true,
     },
-  ]
+  ];
 
   return (
     <>
@@ -181,7 +181,7 @@ export default async function Dashboard() {
           <Image
             fill
             alt="Chess board with pieces set up"
-            className="object-cover object-center w-full h-full filter grayscale brightness-[.3]"
+            className="h-full w-full object-cover object-center brightness-[.3] grayscale filter"
             src="/images/hero.avif"
           />
         </div>
@@ -206,7 +206,7 @@ export default async function Dashboard() {
         </Container>
       </div>
       <div className="p-4 dark:bg-slate-800 md:p-6">
-        <div className="mb-6 w-fit flex items-center gap-1 rounded-full border border-gray-300 px-2 text-black dark:border-slate-600 dark:text-white">
+        <div className="mb-6 flex w-fit items-center gap-1 rounded-full border border-gray-300 px-2 text-black dark:border-slate-600 dark:text-white">
           <p>Light</p>
           <ThemeSwitch />
           <p>Dark</p>
@@ -214,9 +214,9 @@ export default async function Dashboard() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {tools
             .sort((a, b) => {
-              if (a.active && !b.active) return -1
-              if (!a.active && b.active) return 1
-              return 0
+              if (a.active && !b.active) return -1;
+              if (!a.active && b.active) return 1;
+              return 0;
             })
             .map((tool) => (
               <ToolGrid key={tool.name} tool={tool} />
@@ -236,5 +236,5 @@ export default async function Dashboard() {
         ) : null}
       </div>
     </>
-  )
+  );
 }

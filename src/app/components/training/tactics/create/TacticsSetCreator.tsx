@@ -1,42 +1,42 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import type { TacticsSet, TacticsSetRound } from '@prisma/client'
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
-import * as Sentry from '@sentry/nextjs'
-import Select from 'react-select'
+import type { ResponseJson } from '@/app/api/responses';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import type { TacticsSet, TacticsSetRound } from '@prisma/client';
+import * as AlertDialog from '@radix-ui/react-alert-dialog';
+import * as Sentry from '@sentry/nextjs';
+import Select from 'react-select';
 
-import Button from '@/app/components/_elements/button'
-import StyledLink from '@/app/components/_elements/styledLink'
-import GetPremiumButton from '@/app/components/ecomm/GetPremiumButton'
-import Spinner from '@/app/components/general/Spinner'
-import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer'
+import Button from '@/app/components/_elements/button';
+import StyledLink from '@/app/components/_elements/styledLink';
+import GetPremiumButton from '@/app/components/ecomm/GetPremiumButton';
+import Spinner from '@/app/components/general/Spinner';
+import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
-export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] }
+export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] };
 interface TacticsSetCreatorProps {
-  setCount: number
-  maxSets: number
-  loading: boolean
-  setCreated: (set: PrismaTacticsSet) => void
-  hasUnlimitedSets: boolean
+  setCount: number;
+  maxSets: number;
+  loading: boolean;
+  setCreated: (set: PrismaTacticsSet) => void;
+  hasUnlimitedSets: boolean;
 }
 export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
-  const { user } = useKindeBrowserClient()
-  const { setCount, maxSets, setCreated, hasUnlimitedSets } = props
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
-  const [open, setOpen] = useState(false)
-  const [name, setName] = useState('')
-  const [size, setSize] = useState(300)
-  const [themesList, setThemesList] = useState<string[]>([])
-  const [difficulty, setDifficulty] = useState(1)
-  const [rating, setRating] = useState(1500)
+  const { user } = useKindeBrowserClient();
+  const { setCount, maxSets, setCreated, hasUnlimitedSets } = props;
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [open, setOpen] = useState(false);
+  const [name, setName] = useState('');
+  const [size, setSize] = useState(300);
+  const [themesList, setThemesList] = useState<string[]>([]);
+  const [difficulty, setDifficulty] = useState(1);
+  const [rating, setRating] = useState(1500);
   const options = [
     { value: 'pin', label: 'Pin' },
     { value: 'fork', label: 'Fork' },
@@ -58,28 +58,28 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
     { value: 'endgame', label: 'Endgame' },
     { value: 'mate', label: 'Checkmate' },
     { value: 'enPassant', label: 'En Passant' },
-  ]
+  ];
 
   const difficultyAdjuster = (d: number) => {
-    return d == 0 ? 0.9 : d == 1 ? 1 : 1.2
-  }
+    return d == 0 ? 0.9 : d == 1 ? 1 : 1.2;
+  };
   const GetPuzzlesForSet = async (
     rating: number,
     count: number,
     themes: string[],
   ) => {
     const params: {
-      rating: string
-      count: string
-      themesType: 'ONE' | 'ALL'
-      themes?: string
+      rating: string;
+      count: string;
+      themesType: 'ONE' | 'ALL';
+      themes?: string;
     } = {
       rating: Math.round(rating * difficultyAdjuster(difficulty)).toString(),
       count: count.toString(),
       themesType: 'ONE',
-    }
+    };
     if (themes.length > 0) {
-      params.themes = JSON.stringify(themes)
+      params.themes = JSON.stringify(themes);
     }
 
     try {
@@ -89,85 +89,85 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(params),
-      })
+      });
 
-      const json = (await resp.json()) as ResponseJson
-      if (json.message != 'Puzzles found') throw new Error(json.message)
+      const json = (await resp.json()) as ResponseJson;
+      if (json.message != 'Puzzles found') throw new Error(json.message);
 
-      const puzzles = json.data?.puzzles as TrainingPuzzle[]
-      if (!puzzles || puzzles.length == 0) throw new Error('No puzzles found')
+      const puzzles = json.data?.puzzles as TrainingPuzzle[];
+      if (!puzzles || puzzles.length == 0) throw new Error('No puzzles found');
 
       return puzzles as {
-        puzzleid: string
-        fen: string
-        moves: string[]
-        rating: number
-        themes: string[]
-      }[]
+        puzzleid: string;
+        fen: string;
+        moves: string[];
+        rating: number;
+        themes: string[];
+      }[];
     } catch (e) {
-      Sentry.captureException(e)
-      return []
+      Sentry.captureException(e);
+      return [];
     }
-  }
+  };
   const resetForm = () => {
-    setName('')
-    setSize(300)
-    setRating(1500)
-    setDifficulty(1)
-    setThemesList([])
-    setError('')
-    setMessage('')
-    setLoading(false)
-  }
+    setName('');
+    setSize(300);
+    setRating(1500);
+    setDifficulty(1);
+    setThemesList([]);
+    setError('');
+    setMessage('');
+    setLoading(false);
+  };
   const validForm = () => {
-    setError('')
-    setMessage('')
+    setError('');
+    setMessage('');
 
     if (name.length < 5) {
-      setMessage('Name must be at least 5 characters')
-      return false
+      setMessage('Name must be at least 5 characters');
+      return false;
     }
     if (name.length > 150) {
-      setMessage('Name must be below 150 characters')
-      return false
+      setMessage('Name must be below 150 characters');
+      return false;
     }
     // Regex to check for potentially risky special chars
-    const regex = /[@?#%^\*]/g
+    const regex = /[@?#%^\*]/g;
     if (regex.test(name)) {
-      setMessage('Name must not include special characters')
-      return false
+      setMessage('Name must not include special characters');
+      return false;
     }
     if (rating < 500 || rating > 3000) {
-      setMessage('Rating must be between 500 & 3000')
-      return false
+      setMessage('Rating must be between 500 & 3000');
+      return false;
     }
     if (size < 20 || size > 500) {
-      setMessage('Set must be between 20 & 500 Puzzles')
-      return false
+      setMessage('Set must be between 20 & 500 Puzzles');
+      return false;
     }
 
-    return true
-  }
+    return true;
+  };
   const createSet = async () => {
-    setLoading(true)
+    setLoading(true);
     if (!validForm()) {
-      setLoading(false)
-      return
+      setLoading(false);
+      return;
     }
 
-    const puzzles = await GetPuzzlesForSet(rating, size, themesList)
+    const puzzles = await GetPuzzlesForSet(rating, size, themesList);
     if (!puzzles || puzzles.length == 0) {
-      setError('No puzzles found')
-      setLoading(false)
-      return
+      setError('No puzzles found');
+      setLoading(false);
+      return;
     }
 
     const puzzleIds = puzzles.map((puzzle) => {
-      return { puzzleid: puzzle.puzzleid }
-    })
+      return { puzzleid: puzzle.puzzleid };
+    });
 
     try {
-      if (!user) throw new Error('Not logged in')
+      if (!user) throw new Error('Not logged in');
       const resp = await fetch('/api/tactics/create', {
         method: 'POST',
         headers: {
@@ -178,17 +178,17 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
           puzzleIds,
           rating,
         }),
-      })
-      const json = (await resp.json()) as ResponseJson
+      });
+      const json = (await resp.json()) as ResponseJson;
 
       if (json.message != 'Set Created') {
-        setError(`Oops! Something went wrong: ${json?.message}`)
-        return
+        setError(`Oops! Something went wrong: ${json?.message}`);
+        return;
       }
 
-      const set = json.data?.set as PrismaTacticsSet | undefined
+      const set = json.data?.set as PrismaTacticsSet | undefined;
       if (!set) {
-        throw new Error('Something went wrong')
+        throw new Error('Something went wrong');
       }
 
       trackEventOnClient('create_tactics_set_success', {
@@ -198,19 +198,19 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
         rating: rating.toString(),
         difficulty:
           difficulty == 0 ? 'Easy' : difficulty == 1 ? 'Medium' : 'Hard',
-      })
-      resetForm()
-      setCreated(set)
-      setOpen(false)
+      });
+      resetForm();
+      setCreated(set);
+      setOpen(false);
     } catch (e) {
-      Sentry.captureException(e)
+      Sentry.captureException(e);
     }
-  }
+  };
 
   const close = async () => {
-    resetForm()
-    setOpen(false)
-  }
+    resetForm();
+    setOpen(false);
+  };
 
   return (
     <div className="flex flex-col items-center gap-1 md:flex-row md:gap-4">
@@ -219,8 +219,8 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
           className="flex items-center gap-2 bg-purple-700 px-4 py-2 text-white hover:bg-purple-600"
           variant="primary"
           onClick={() => {
-            setOpen(true)
-            trackEventOnClient('create_tactics_set_opened', {})
+            setOpen(true);
+            trackEventOnClient('create_tactics_set_opened', {});
           }}
         >
           <p>Create New Set</p>
@@ -251,24 +251,24 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   <div className="">
                     <label>Set Name</label>
                     <input
-                      className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                      className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
                       type="text"
                       value={name}
                       onInput={(e) => {
-                        setName(e.currentTarget.value)
+                        setName(e.currentTarget.value);
                       }}
                     />
                   </div>
                   <div className="">
                     <label htmlFor="">Set Size</label>
                     <input
-                      className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                      className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
                       max="500"
                       min="20"
                       type="number"
                       value={size}
                       onChange={(e) => {
-                        setSize(parseInt(e.currentTarget.value))
+                        setSize(parseInt(e.currentTarget.value));
                       }}
                     />
                     <p className="text-sm italic">
@@ -279,14 +279,14 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   <div className="">
                     <label>Your Rating</label>
                     <input
-                      className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                      className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
                       max="3000"
                       min="500"
                       step="10"
                       type="number"
                       value={rating}
                       onInput={(e) => {
-                        setRating(parseInt(e.currentTarget.value))
+                        setRating(parseInt(e.currentTarget.value));
                       }}
                     />
                   </div>
@@ -323,8 +323,8 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                         const themes = e.map(
                           (theme: { label: string; value: string }) =>
                             theme.value,
-                        )
-                        setThemesList(themes)
+                        );
+                        setThemesList(themes);
                       }}
                       name={'themes'}
                       // @ts-expect-error - react-select types are wrong
@@ -368,7 +368,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                   Either delete some of your existing sets or upgrade to
                   premium.
                 </p>
-                <p className="font-bold p-4 rounded bg-green-200">
+                <p className="rounded bg-green-200 p-4 font-bold">
                   It's only £2.99/month to upgrade to premium!{' '}
                   <StyledLink href="/premium">Learn more.</StyledLink>
                 </p>
@@ -386,5 +386,5 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
         </AlertDialog.Portal>
       </AlertDialog.Root>
     </div>
-  )
+  );
 }

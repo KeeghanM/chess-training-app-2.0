@@ -1,16 +1,16 @@
-import Heading from '@/app/components/_elements/heading'
-import PageHeader from '@/app/components/_layouts/pageHeader'
-import { TextWall } from '@/app/components/_layouts/textWall'
+import Heading from '@/app/components/_elements/heading';
+import PageHeader from '@/app/components/_layouts/pageHeader';
+import { TextWall } from '@/app/components/_layouts/textWall';
 
 import {
   MiscBadges,
   StreakBadges,
   TacticStreakBadges,
   XpRanks,
-} from '@/app/_util/RanksAndBadges'
+} from '@/app/_util/RanksAndBadges';
 
 export default async function RankAndBadgesPage() {
-  const ranks = Array.from(new Set(XpRanks.map((rank) => rank.rank)))
+  const ranks = Array.from(new Set(XpRanks.map((rank) => rank.rank)));
 
   const BadgeElem = (name: string, description: string) => {
     return (
@@ -20,8 +20,8 @@ export default async function RankAndBadgesPage() {
         </p>
         <p className="border border-black p-2">{description}</p>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -80,5 +80,5 @@ export default async function RankAndBadgesPage() {
         </div>
       </TextWall>
     </>
-  )
+  );
 }

@@ -1,25 +1,25 @@
-'use client'
+'use client';
 
-import type { UserBadge } from '@prisma/client'
-import Tippy from '@tippyjs/react'
-import 'tippy.js/dist/tippy.css'
+import type { UserBadge } from '@prisma/client';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/dist/tippy.css';
 
 interface StreakDisplayProps {
   data: {
-    trainedToday: boolean
-    currentStreak: number
+    trainedToday: boolean;
+    currentStreak: number;
     streakBadge:
       | {
-          name: string
-          description: string
-          streak: number
+          name: string;
+          description: string;
+          streak: number;
         }
-      | undefined
-  }
-  badges: UserBadge[]
+      | undefined;
+  };
+  badges: UserBadge[];
 }
 export default function StreakDisplay(props: StreakDisplayProps) {
-  const { trainedToday, currentStreak, streakBadge } = props.data
+  const { trainedToday, currentStreak, streakBadge } = props.data;
 
   return (
     <div className="flex flex-col items-center gap-1">
@@ -61,5 +61,5 @@ export default function StreakDisplay(props: StreakDisplayProps) {
         Your Badges ({props.badges.length})
       </a>
     </div>
-  )
+  );
 }

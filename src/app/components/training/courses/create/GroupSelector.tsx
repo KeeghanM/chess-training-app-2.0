@@ -1,45 +1,45 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import { useAutoAnimate } from '@formkit/auto-animate/react'
-import * as Tabs from '@radix-ui/react-tabs'
+import { useAutoAnimate } from '@formkit/auto-animate/react';
+import * as Tabs from '@radix-ui/react-tabs';
 
-import Button from '@/app/components/_elements/button'
-import Container from '@/app/components/_elements/container'
-import Heading from '@/app/components/_elements/heading'
-import Spinner from '@/app/components/general/Spinner'
+import Button from '@/app/components/_elements/button';
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
+import Spinner from '@/app/components/general/Spinner';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
-import { GroupItem } from './GroupItem'
-import type { Line } from './parse/ParsePGNtoLineData'
+import { GroupItem } from './GroupItem';
+import type { Line } from './parse/ParsePGNtoLineData';
 
 export default function GroupSelector(props: {
-  lines: Line[]
-  back: () => void
-  finished: (group: string, lines: Line[]) => void
+  lines: Line[];
+  back: () => void;
+  finished: (group: string, lines: Line[]) => void;
 }) {
-  const [parent] = useAutoAnimate()
-  const [lines, setLines] = useState<Line[]>(props.lines)
-  const [groupOptions, setGroupOptions] = useState<string[]>([])
-  const [selectedGroup, setSelectedGroup] = useState<string>('')
+  const [parent] = useAutoAnimate();
+  const [lines, setLines] = useState<Line[]>(props.lines);
+  const [groupOptions, setGroupOptions] = useState<string[]>([]);
+  const [selectedGroup, setSelectedGroup] = useState<string>('');
   const [groupedLineCounts, setGroupedLineCounts] = useState<
     Record<string, number>
-  >({})
-  const [status, setStatus] = useState<'idle' | 'loading'>('idle')
-  const [needsPrompt, setNeedsPrompt] = useState(false)
-  const [hasPrompted, setHasPrompted] = useState(false)
+  >({});
+  const [status, setStatus] = useState<'idle' | 'loading'>('idle');
+  const [needsPrompt, setNeedsPrompt] = useState(false);
+  const [hasPrompted, setHasPrompted] = useState(false);
 
   const getGroupOptionsFromLines = (lines: Line[]): string[] => {
     // Get a list of tags which exist on all lines
     // ignore tags which are not on all lines
     // then set groupOptions to that list
-    const tags = lines.map((line) => line.tags)
-    const tagKeys = tags.map((tag) => Object.keys(tag))
+    const tags = lines.map((line) => line.tags);
+    const tagKeys = tags.map((tag) => Object.keys(tag));
     const commonTagKeys = tagKeys.reduce((prev, curr) => {
-      return prev.filter((tag) => curr.includes(tag))
-    })
+      return prev.filter((tag) => curr.includes(tag));
+    });
     const uselessTags = [
       'White',
       'Black',
@@ -49,47 +49,47 @@ export default function GroupSelector(props: {
       'Time',
       'UTCDate',
       'UTCTime',
-    ]
-    return commonTagKeys.filter((tag) => !uselessTags.includes(tag))
-  }
+    ];
+    return commonTagKeys.filter((tag) => !uselessTags.includes(tag));
+  };
 
   const countLines = (group: string, value: string) => {
     return lines.reduce(
       (prev, curr) => prev + (curr.tags[group] === value ? 1 : 0),
       0,
-    )
-  }
+    );
+  };
 
   useEffect(() => {
-    const groups = getGroupOptionsFromLines(lines)
-    setGroupOptions(groups)
-    if (selectedGroup || groups.length === 0) return
-    setSelectedGroup(groups[0]!)
+    const groups = getGroupOptionsFromLines(lines);
+    setGroupOptions(groups);
+    if (selectedGroup || groups.length === 0) return;
+    setSelectedGroup(groups[0]!);
 
-    if (hasPrompted) return
-    const whiteCount = countLines('Colour', 'White')
-    const blackCount = countLines('Colour', 'Black')
+    if (hasPrompted) return;
+    const whiteCount = countLines('Colour', 'White');
+    const blackCount = countLines('Colour', 'Black');
     if (whiteCount > 0 && blackCount > 0) {
-      setNeedsPrompt(true)
-      setSelectedGroup('Colour')
+      setNeedsPrompt(true);
+      setSelectedGroup('Colour');
     }
-  }, [lines])
+  }, [lines]);
 
   useEffect(() => {
-    if (!selectedGroup) return
+    if (!selectedGroup) return;
 
     setGroupedLineCounts(
       lines.reduce<Record<string, number>>((prev, curr) => {
-        const tag = curr.tags[selectedGroup]!
+        const tag = curr.tags[selectedGroup]!;
         if (prev[tag]) {
-          prev[tag]++
+          prev[tag]++;
         } else {
-          prev[tag] = 1
+          prev[tag] = 1;
         }
-        return prev
+        return prev;
       }, {}),
-    )
-  }, [selectedGroup, lines])
+    );
+  }, [selectedGroup, lines]);
 
   return (
     <Container>
@@ -99,7 +99,7 @@ export default function GroupSelector(props: {
             className="absolute inset-0"
             onClick={() => setHasPrompted(true)}
           />
-          <div className="flex fixed bg-white p-2 z-50 max-w-[95vw] md:max-w-md min-w-md flex-col gap-2 shadow-lg">
+          <div className="min-w-md fixed z-50 flex max-w-[95vw] flex-col gap-2 bg-white p-2 shadow-lg md:max-w-md">
             <Heading as="h4" color="text-red-500">
               Grouping by Colour
             </Heading>
@@ -160,14 +160,14 @@ export default function GroupSelector(props: {
           <Tabs.Root
             defaultValue={groupOptions[0]}
             onValueChange={async (x) => {
-              setSelectedGroup(x)
+              setSelectedGroup(x);
               trackEventOnClient('create_course_change_grouping', {
                 groupName: x,
-              })
+              });
             }}
           >
             <Heading as="h4">Grouping Options:</Heading>
-            <Tabs.List className="flex gap-2 flex-wrap">
+            <Tabs.List className="flex flex-wrap gap-2">
               {groupOptions.map((group) => (
                 <Tabs.Trigger
                   key={group}
@@ -200,8 +200,8 @@ export default function GroupSelector(props: {
               disabled={status === 'loading'}
               variant="primary"
               onClick={() => {
-                setStatus('loading')
-                props.finished(selectedGroup, lines)
+                setStatus('loading');
+                props.finished(selectedGroup, lines);
               }}
             >
               <div className="flex items-center gap-4">
@@ -219,5 +219,5 @@ export default function GroupSelector(props: {
         </div>
       </div>
     </Container>
-  )
+  );
 }

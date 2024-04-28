@@ -1,23 +1,23 @@
-'use client'
+'use client';
 
-import Button from '@/app/components/_elements/button'
-import PrettyPrintLine from '@/app/components/general/PrettyPrintLine'
-import type { Line } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData'
+import Button from '@/app/components/_elements/button';
+import PrettyPrintLine from '@/app/components/general/PrettyPrintLine';
+import type { Line } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData';
 
-import type { LineWithMoves } from './GroupEditor'
+import type { LineWithMoves } from './GroupEditor';
 
 export default function LineDisplay(props: {
-  line: LineWithMoves
-  onChange: (line: LineWithMoves) => void
-  onDelete: () => void
+  line: LineWithMoves;
+  onChange: (line: LineWithMoves) => void;
+  onDelete: () => void;
 }) {
-  const { line } = props
+  const { line } = props;
   const niceLine = {
     moves: line.moves.map((move) => ({
       notation: move.move,
       turn: '',
     })),
-  } as Line
+  } as Line;
 
   const handleDelete = () => {
     if (
@@ -25,12 +25,12 @@ export default function LineDisplay(props: {
         "Are you sure you want to delete this line? Remember, you'll need to save the course to make this change permanent.",
       )
     ) {
-      props.onDelete()
+      props.onDelete();
     }
-  }
+  };
 
   return (
-    <div className="p-2 bg-purple-900 grid grid-cols-[auto,1fr,auto] gap-1 cursor-pointer hover:bg-purple-800">
+    <div className="grid cursor-pointer grid-cols-[auto,1fr,auto] gap-1 bg-purple-900 p-2 hover:bg-purple-800">
       <div>
         <svg
           className="w-fit"
@@ -61,5 +61,5 @@ export default function LineDisplay(props: {
         </Button>
       </div>
     </div>
-  )
+  );
 }

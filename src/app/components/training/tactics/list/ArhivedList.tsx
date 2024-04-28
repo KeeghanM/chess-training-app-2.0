@@ -1,80 +1,81 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
+import Link from 'next/link';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import { env } from '@/env'
-import * as Sentry from '@sentry/nextjs'
-import 'tippy.js/dist/tippy.css'
+import type { ResponseJson } from '@/app/api/responses';
+import { env } from '@/env';
+import * as Sentry from '@sentry/nextjs';
+import 'tippy.js/dist/tippy.css';
 
-import Button from '@/app/components/_elements/button'
-import Spinner from '@/app/components/general/Spinner'
+import Button from '@/app/components/_elements/button';
+import Spinner from '@/app/components/general/Spinner';
 
-import type { PrismaTacticsSet } from '../create/TacticsSetCreator'
+import type { PrismaTacticsSet } from '../create/TacticsSetCreator';
 
 export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
-  const [sets, setSets] = useState<PrismaTacticsSet[]>([])
-  const [activeCount, setActiveCount] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [restoring, setRestoring] = useState(false)
-  const { hasUnlimitedSets } = props
-  const maxSets = env.NEXT_PUBLIC_MAX_SETS
+  const [sets, setSets] = useState<PrismaTacticsSet[]>([]);
+  const [activeCount, setActiveCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [restoring, setRestoring] = useState(false);
+  const { hasUnlimitedSets } = props;
+  const maxSets = env.NEXT_PUBLIC_MAX_SETS;
 
   const fetchSets = async () => {
-    setLoading(true)
-    setSets([])
+    setLoading(true);
+    setSets([]);
     try {
-      const resp = await fetch(`/api/tactics/user/archived`)
-      const json = (await resp.json()) as ResponseJson
-      if (json?.message != 'Sets found') throw new Error('Failed to fetch Sets')
+      const resp = await fetch(`/api/tactics/user/archived`);
+      const json = (await resp.json()) as ResponseJson;
+      if (json?.message != 'Sets found')
+        throw new Error('Failed to fetch Sets');
 
-      setSets(json.data!.sets as PrismaTacticsSet[])
-      setActiveCount(json.data!.activeCount as number)
+      setSets(json.data!.sets as PrismaTacticsSet[]);
+      setActiveCount(json.data!.activeCount as number);
     } catch (e) {
-      Sentry.captureException(e)
-      setSets([])
+      Sentry.captureException(e);
+      setSets([]);
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const restoreSet = async (setId: string) => {
-    setRestoring(true)
+    setRestoring(true);
     try {
       const resp = await fetch(`/api/tactics/user/${setId}/restore`, {
         method: 'POST',
-      })
-      const json = (await resp.json()) as ResponseJson
+      });
+      const json = (await resp.json()) as ResponseJson;
       if (json?.message != 'Set restored')
-        throw new Error('Failed to restore Set')
-      await fetchSets()
+        throw new Error('Failed to restore Set');
+      await fetchSets();
     } catch (e) {
-      Sentry.captureException(e)
+      Sentry.captureException(e);
     }
-    setRestoring(false)
-  }
+    setRestoring(false);
+  };
 
   useEffect(() => {
-    ;(async () => {
-      await fetchSets()
+    (async () => {
+      await fetchSets();
     })().catch((e) => {
-      Sentry.captureException(e)
-    })
-  }, [])
+      Sentry.captureException(e);
+    });
+  }, []);
 
   return (
     <>
       <div className="w-full">
         <Link
-          className="text-sm text-purple-700 hover:text-purple-600 underline md:ml-auto"
+          className="text-sm text-purple-700 underline hover:text-purple-600 md:ml-auto"
           href="/training/tactics/list"
         >
           View active Sets
         </Link>
       </div>
       {loading ? (
-        <div className="relative dark:text-white w-full h-16 flex items-center justify-center">
+        <div className="relative flex h-16 w-full items-center justify-center dark:text-white">
           <div className="absolute inset-0 bg-gray-500 opacity-30" />
           <p className="flex items-center gap-4">
             Loading... <Spinner />
@@ -90,7 +91,7 @@ export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
             sets.map((set, index) => (
               <div
                 key={index}
-                className="flex relative flex-col items-center gap-4 bg-gray-100 p-2 md:px-6  dark:bg-slate-900 dark:text-white md:flex-row md:justify-between"
+                className="relative flex flex-col items-center gap-4 bg-gray-100 p-2 dark:bg-slate-900  dark:text-white md:flex-row md:justify-between md:px-6"
               >
                 <p>{set.name}</p>
 
@@ -121,5 +122,5 @@ export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
         </div>
       )}
     </>
-  )
+  );
 }

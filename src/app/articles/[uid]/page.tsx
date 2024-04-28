@@ -1,39 +1,39 @@
-import type { Metadata } from 'next'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
 
-import Prismic from '@/prismicio'
-import { type ContentRelationshipField, asText } from '@prismicio/client'
+import Prismic from '@/prismicio';
+import { type ContentRelationshipField, asText } from '@prismicio/client';
 
-import Container from '@/app/components/_elements/container'
-import Heading from '@/app/components/_elements/heading'
-import CtaRow from '@/app/components/_layouts/ctaRow'
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
+import CtaRow from '@/app/components/_layouts/ctaRow';
 
-import { PrismicRichToHtml } from '@/app/_util/PrismicRichToHtml'
-import type { RichTextContent } from '@/app/_util/PrismicRichToHtml'
+import { PrismicRichToHtml } from '@/app/_util/PrismicRichToHtml';
+import type { RichTextContent } from '@/app/_util/PrismicRichToHtml';
 
 interface Params {
-  uid: string
+  uid: string;
 }
 
 export default async function Page({ params }: { params: Params }) {
   const page = await Prismic.getByUID('article', params.uid, {
     fetchLinks: ['author.name', 'author.uid'],
-  }).catch(() => notFound())
+  }).catch(() => notFound());
 
   const author = page.data.author as ContentRelationshipField & {
-    data: { name: string; uid: string }
-  }
+    data: { name: string; uid: string };
+  };
 
   return (
     <>
-      <div className="w-full flex items-center justify-center py-2 bg-gray-200">
+      <div className="flex w-full items-center justify-center bg-gray-200 py-2">
         <p className="text-xs text-gray-600">
           <Link className="text-purple-700 hover:underline" href="/">
             Home
           </Link>
           <Link
-            className="text-purple-700 hover:underline cursor-pointer"
+            className="cursor-pointer text-purple-700 hover:underline"
             href="/articles"
           >
             /Articles
@@ -43,14 +43,14 @@ export default async function Page({ params }: { params: Params }) {
       </div>
       <Container>
         <Heading as="h1">{page.data.title}</Heading>
-        <div className="flex flex-wrap gap-2 mb-4 justify-center text-xs">
+        <div className="mb-4 flex flex-wrap justify-center gap-2 text-xs">
           <div className="flex flex-col items-center border border-gray-300">
-            <p className="font-bold py-1 px-2 border-b border-gray-300 w-full text-center">
+            <p className="w-full border-b border-gray-300 px-2 py-1 text-center font-bold">
               Author
             </p>
             <p className="p-1">
               <Link
-                className="hover:no-underline text-purple-700 underline"
+                className="text-purple-700 underline hover:no-underline"
                 href={`/articles/author/${author.data.uid}`}
               >
                 {author.data.name}
@@ -58,7 +58,7 @@ export default async function Page({ params }: { params: Params }) {
             </p>
           </div>
           <div className="flex flex-col items-center border border-gray-300">
-            <p className="font-bold py-1 px-2 border-b border-gray-300 w-full text-center">
+            <p className="w-full border-b border-gray-300 px-2 py-1 text-center font-bold">
               Published
             </p>
             <p className="p-1">
@@ -127,28 +127,28 @@ export default async function Page({ params }: { params: Params }) {
         miss out on the opportunity to level up your game.
       </CtaRow>
     </>
-  )
+  );
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Params
+  params: Params;
 }): Promise<Metadata> {
   const page = await Prismic.getByUID('article', params.uid).catch(() =>
     notFound(),
-  )
+  );
 
   return {
     title: page.data.meta_title ?? page.data.title,
     description: page.data.meta_description ?? '',
-  }
+  };
 }
 
 export async function generateStaticParams() {
-  const pages = await Prismic.getAllByType('article')
+  const pages = await Prismic.getAllByType('article');
 
   return pages.map((page) => {
-    return { uid: page.uid }
-  })
+    return { uid: page.uid };
+  });
 }

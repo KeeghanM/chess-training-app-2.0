@@ -1,34 +1,34 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import type { CuratedSet } from '@prisma/client'
-import * as Sentry from '@sentry/react'
+import type { ResponseJson } from '@/app/api/responses';
+import type { CuratedSet } from '@prisma/client';
+import * as Sentry from '@sentry/react';
 
-import Button from '@/app/components/_elements/button'
-import Spinner from '@/app/components/general/Spinner'
-import TextEditor from '@/app/components/general/TextEditor'
+import Button from '@/app/components/_elements/button';
+import Spinner from '@/app/components/general/Spinner';
+import TextEditor from '@/app/components/general/TextEditor';
 
-import GenerateSlug from '@/app/_util/GenerateSlug'
+import GenerateSlug from '@/app/_util/GenerateSlug';
 
 export default function SetEditor(props: { set: CuratedSet }) {
-  const { set } = props
+  const { set } = props;
   // Form
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [shortDescription, setShortDescription] = useState('')
-  const [minRating, setMinRating] = useState(500)
-  const [maxRating, setMaxRating] = useState(2500)
-  const [price, setPrice] = useState(0)
-  const [published, setPublished] = useState(false)
+  const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
+  const [shortDescription, setShortDescription] = useState('');
+  const [minRating, setMinRating] = useState(500);
+  const [maxRating, setMaxRating] = useState(2500);
+  const [price, setPrice] = useState(0);
+  const [published, setPublished] = useState(false);
 
   // Status
-  const [error, setError] = useState('')
-  const [status, setStatus] = useState<'idle' | 'saving' | 'deleting'>('idle')
+  const [error, setError] = useState('');
+  const [status, setStatus] = useState<'idle' | 'saving' | 'deleting'>('idle');
 
   const updateSet = async () => {
-    setStatus('saving')
+    setStatus('saving');
     try {
       const resp = await fetch(`/api/admin/curated-sets`, {
         method: 'PATCH',
@@ -44,35 +44,35 @@ export default function SetEditor(props: { set: CuratedSet }) {
           price,
           published,
         }),
-      })
-      const json = (await resp.json()) as ResponseJson
-      if (json.message != 'Set updated') throw new Error(json.message)
+      });
+      const json = (await resp.json()) as ResponseJson;
+      if (json.message != 'Set updated') throw new Error(json.message);
     } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('Something went wrong')
+      Sentry.captureException(e);
+      if (e instanceof Error) setError(e.message);
+      else setError('Something went wrong');
     }
-    setStatus('idle')
-  }
+    setStatus('idle');
+  };
 
   useEffect(() => {
-    if (!set) return
-    setName(set.name)
-    setDescription(set.description ?? '')
-    setShortDescription(set.shortDesc ?? '')
-    setMinRating(set.minRating)
-    setMaxRating(set.maxRating)
-    setPrice(set.price)
-    setPublished(set.published)
-  }, [set])
+    if (!set) return;
+    setName(set.name);
+    setDescription(set.description ?? '');
+    setShortDescription(set.shortDesc ?? '');
+    setMinRating(set.minRating);
+    setMaxRating(set.maxRating);
+    setPrice(set.price);
+    setPublished(set.published);
+  }, [set]);
 
   return (
-    <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 max-h-[70vh] text-black dark:text-white">
+    <div className="flex max-h-[70vh] flex-1 flex-col gap-2 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 text-black dark:text-white lg:border-4">
       <div className="flex max-h-[60vh] flex-col gap-2 overflow-y-auto">
         <div className="">
           <label htmlFor="name">Name</label>
           <input
-            className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+            className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
             id="name"
             type="text"
             value={name}
@@ -82,7 +82,7 @@ export default function SetEditor(props: { set: CuratedSet }) {
         <div className="">
           <label htmlFor="shortDescription">Short Description</label>
           <input
-            className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+            className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
             id="shortDescription"
             type="text"
             value={shortDescription}
@@ -97,7 +97,7 @@ export default function SetEditor(props: { set: CuratedSet }) {
           <div className="">
             <label htmlFor="rating">Min Rating</label>
             <input
-              className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               id="minRating"
               type="number"
               value={minRating}
@@ -107,7 +107,7 @@ export default function SetEditor(props: { set: CuratedSet }) {
           <div className="">
             <label htmlFor="rating">Max Rating</label>
             <input
-              className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               id="minRating"
               type="number"
               value={maxRating}
@@ -117,7 +117,7 @@ export default function SetEditor(props: { set: CuratedSet }) {
           <div className="">
             <label htmlFor="price">Price (in pence)</label>
             <input
-              className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
               id="price"
               type="number"
               value={price}
@@ -129,7 +129,7 @@ export default function SetEditor(props: { set: CuratedSet }) {
           <label htmlFor="published">Published</label>
           <input
             checked={published}
-            className="border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+            className="border border-gray-300 bg-gray-100 px-4 py-2 text-black"
             id="published"
             type="checkbox"
             onChange={(e) => setPublished(e.target.checked)}
@@ -147,5 +147,5 @@ export default function SetEditor(props: { set: CuratedSet }) {
       </Button>
       {error ? <p className="text-red-500">{error}</p> : null}
     </div>
-  )
+  );
 }

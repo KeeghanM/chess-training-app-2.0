@@ -1,9 +1,9 @@
-import { prisma } from '@/server/db'
-import * as Sentry from '@sentry/nextjs'
-import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
-import Stripe from 'stripe'
+import { prisma } from '@/server/db';
+import * as Sentry from '@sentry/nextjs';
+import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types';
+import Stripe from 'stripe';
 
-type ProductType = 'curatedSet' | 'course' | 'subscription'
+type ProductType = 'curatedSet' | 'course' | 'subscription';
 
 export async function CreateCheckoutSession(
   products: { productType: ProductType; productId: string }[],
@@ -16,8 +16,8 @@ export async function CreateCheckoutSession(
         const { price, name } = await getProductDetails(
           product.productType,
           product.productId,
-        )
-        if (!price || !name) throw new Error('Product not found')
+        );
+        if (!price || !name) throw new Error('Product not found');
 
         const recurring = (
           product.productType === 'subscription'
@@ -26,7 +26,7 @@ export async function CreateCheckoutSession(
                 interval_count: 1,
               }
             : undefined
-        ) as { interval: 'month'; interval_count: number } | undefined
+        ) as { interval: 'month'; interval_count: number } | undefined;
 
         return {
           price_data: {
@@ -42,15 +42,15 @@ export async function CreateCheckoutSession(
             recurring,
           },
           quantity: 1,
-        }
+        };
       }),
-    )
+    );
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
     const hasSubscription = products.some(
       (product) => product.productType === 'subscription',
-    )
+    );
 
     const checkoutSession = await stripe.checkout.sessions.create({
       payment_method_types: ['card', 'link'],
@@ -60,9 +60,9 @@ export async function CreateCheckoutSession(
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/success`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/${returnUrl ?? '/'}`,
       automatic_tax: { enabled: true },
-    })
+    });
 
-    if (!checkoutSession.url) throw new Error('Session creation failed')
+    if (!checkoutSession.url) throw new Error('Session creation failed');
 
     // Now that we have the session, before redirecting to Stripe, we need to save the session ID with the user in the database
     await prisma.checkoutSession.create({
@@ -78,12 +78,12 @@ export async function CreateCheckoutSession(
           },
         },
       },
-    })
+    });
 
-    return checkoutSession.url
+    return checkoutSession.url;
   } catch (e) {
-    Sentry.captureException(e)
-    return undefined
+    Sentry.captureException(e);
+    return undefined;
   }
 }
 
@@ -97,22 +97,22 @@ export async function getProductDetails(
         where: {
           id: productId,
         },
-      })
-      if (!set) throw new Error('Set not found')
-      return { price: set.price, name: set.name }
+      });
+      if (!set) throw new Error('Set not found');
+      return { price: set.price, name: set.name };
     } else if (productType === 'course') {
       const course = await prisma.course.findFirst({
         where: {
           id: productId,
         },
-      })
-      if (!course) throw new Error('Course not found')
-      return { price: course.price, name: course.courseName }
+      });
+      if (!course) throw new Error('Course not found');
+      return { price: course.price, name: course.courseName };
     } else if (productType === 'subscription') {
-      return { price: 299, name: 'Premium Subscription' }
+      return { price: 299, name: 'Premium Subscription' };
     }
-    throw new Error('Invalid product type')
+    throw new Error('Invalid product type');
   } catch (e) {
-    return { price: undefined, name: undefined }
+    return { price: undefined, name: undefined };
   }
 }

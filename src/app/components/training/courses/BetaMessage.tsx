@@ -1,34 +1,34 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import Button from '../../_elements/button'
-import Heading from '../../_elements/heading'
-import StyledLink from '../../_elements/styledLink'
+import Button from '../../_elements/button';
+import Heading from '../../_elements/heading';
+import StyledLink from '../../_elements/styledLink';
 
 export default function BetaMessage() {
-  const [show, setShow] = useState(false)
+  const [show, setShow] = useState(false);
 
   const close = () => {
     // set a local storage item to prevent this from showing again
-    localStorage.setItem('beta-message', 'true')
-    setShow(false)
-  }
+    localStorage.setItem('beta-message', 'true');
+    setShow(false);
+  };
 
   useEffect(() => {
-    const betaMessage = localStorage.getItem('beta-message')
-    if (!betaMessage) setShow(true)
-  }, [])
+    const betaMessage = localStorage.getItem('beta-message');
+    if (!betaMessage) setShow(true);
+  }, []);
 
   return (
     show && (
       <>
         <div
-          className="fixed inset-0 bg-black opacity-30 z-[9999]"
+          className="fixed inset-0 z-[9999] bg-black opacity-30"
           onClick={close}
-         />
-        <div className="fixed inset-0 flex items-center justify-center z-[9999] px-2">
-          <div className="bg-white max-w-screen-sm max-h-[80vh] p-2 md:p-4 flex flex-col gap-2 overflow-y-auto">
+        />
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center px-2">
+          <div className="flex max-h-[80vh] max-w-screen-sm flex-col gap-2 overflow-y-auto bg-white p-2 md:p-4">
             <Heading as="h2">Welcome to the beta!</Heading>
             <p>
               This is a public beta, or trial, of the Course Trainer feature.
@@ -63,5 +63,5 @@ export default function BetaMessage() {
         </div>
       </>
     )
-  )
+  );
 }

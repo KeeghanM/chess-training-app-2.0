@@ -1,11 +1,11 @@
-import Container from '@/app/components/_elements/container'
-import Heading from '@/app/components/_elements/heading'
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
 
 interface TextWallProps {
-  title: string
-  titleType?: 'h1' | 'h2' | 'h3'
-  background: 'light' | 'dark'
-  children: React.ReactNode
+  title: string;
+  titleType?: 'h1' | 'h2' | 'h3';
+  background: 'light' | 'dark';
+  children: React.ReactNode;
 }
 
 export const TextWall = (props: TextWallProps) => {
@@ -22,5 +22,5 @@ export const TextWall = (props: TextWallProps) => {
         </div>
       </Container>
     </div>
-  )
-}
+  );
+};

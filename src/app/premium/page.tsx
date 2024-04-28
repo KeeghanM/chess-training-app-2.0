@@ -1,14 +1,14 @@
-import { MultiCol, MultiColItem } from '../components/_layouts/multiCol'
-import { TextWall } from '../components/_layouts/textWall'
-import GetPremiumButton from '../components/ecomm/GetPremiumButton'
-import Heading from '@/app/components/_elements/heading'
-import Hero from '@/app/components/_layouts/hero'
+import { MultiCol, MultiColItem } from '../components/_layouts/multiCol';
+import { TextWall } from '../components/_layouts/textWall';
+import GetPremiumButton from '../components/ecomm/GetPremiumButton';
+import Heading from '@/app/components/_elements/heading';
+import Hero from '@/app/components/_layouts/hero';
 
 export const metadata = {
   title: 'Go Premium and Unlock Unlimited Chess Training at ChessTraining.app',
   description:
     'Unlock unlimited chess training at ChessTraining.app with a premium account. Access all features, including unlimited chess puzzles, courses, and more. Start your premium account today!',
-}
+};
 
 export default async function PremiumPage() {
   return (
@@ -43,7 +43,7 @@ export default async function PremiumPage() {
             <li className="py-1">
               <strong>Max Two</strong> Active Openings Courses
             </li>
-            <li className="flex gap-1  items-center py-1">
+            <li className="flex items-center  gap-1 py-1">
               <span className="text-red-500">
                 <svg
                   height="1.5em"
@@ -59,7 +59,7 @@ export default async function PremiumPage() {
               </span>
               No discount on store items
             </li>
-            <li className="flex gap-1  items-center py-1">
+            <li className="flex items-center  gap-1 py-1">
               <span className="text-green-500">
                 <svg
                   height="1.5em"
@@ -81,7 +81,7 @@ export default async function PremiumPage() {
         </MultiColItem>
         <MultiColItem title="Premium">
           <ul className="divide-y divide-slate-300">
-            <li className="flex gap-1  items-center py-1">
+            <li className="flex items-center  gap-1 py-1">
               <span className="text-green-500">
                 <svg
                   height="1.5em"
@@ -99,7 +99,7 @@ export default async function PremiumPage() {
               </span>
               Unlimited Tactics Sets
             </li>
-            <li className="flex gap-1  items-center py-1">
+            <li className="flex items-center  gap-1 py-1">
               <span className="text-green-500">
                 <svg
                   height="1.5em"
@@ -117,7 +117,7 @@ export default async function PremiumPage() {
               </span>
               Unlimited Openings Courses
             </li>
-            <li className="flex gap-1  items-center py-1">
+            <li className="flex items-center  gap-1 py-1">
               <span className="text-green-500">
                 <svg
                   height="1.5em"
@@ -135,7 +135,7 @@ export default async function PremiumPage() {
               </span>
               5% Discount on all paid sets/course
             </li>
-            <li className="flex gap-1  items-center py-1">
+            <li className="flex items-center  gap-1 py-1">
               <span className="text-green-500">
                 <svg
                   height="1.5em"
@@ -169,5 +169,5 @@ export default async function PremiumPage() {
         </div>
       </TextWall>
     </>
-  )
+  );
 }

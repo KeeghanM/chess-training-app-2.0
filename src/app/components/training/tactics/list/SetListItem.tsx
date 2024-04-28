@@ -1,52 +1,52 @@
-'use client'
+'use client';
 
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 
-import Button from '@/app/components/_elements/button'
-import Spinner from '@/app/components/general/Spinner'
-import TimeSince from '@/app/components/general/TimeSince'
-import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator'
+import Button from '@/app/components/_elements/button';
+import Spinner from '@/app/components/general/Spinner';
+import TimeSince from '@/app/components/general/TimeSince';
+import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator';
 
-import toHHMMSS from '@/app/_util/toHHMMSS'
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import toHHMMSS from '@/app/_util/toHHMMSS';
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
-import SetListEdit from './SetListEdit'
-import SetListStats from './SetListStats'
+import SetListEdit from './SetListEdit';
+import SetListStats from './SetListStats';
 
 export default function SetListItem(props: {
-  set: PrismaTacticsSet
-  updated: () => void
+  set: PrismaTacticsSet;
+  updated: () => void;
 }) {
-  const { set } = props
-  const { user } = useKindeBrowserClient()
+  const { set } = props;
+  const { user } = useKindeBrowserClient();
   const currentRound = set.rounds
     ? set.rounds[set.rounds.length - 1]
-    : undefined
+    : undefined;
   const completedCount =
-    (currentRound?.correct ?? 0) + (currentRound?.incorrect ?? 0)
-  const router = useRouter()
-  const [opening, setOpening] = useState(false)
+    (currentRound?.correct ?? 0) + (currentRound?.incorrect ?? 0);
+  const router = useRouter();
+  const [opening, setOpening] = useState(false);
 
   const trainSet = async () => {
-    setOpening(true)
-    trackEventOnClient('tactics_set_opened', {})
-    router.push(`/training/tactics/${set.id}`)
-  }
+    setOpening(true);
+    trackEventOnClient('tactics_set_opened', {});
+    router.push(`/training/tactics/${set.id}`);
+  };
 
   useEffect(() => {
-    setOpening(false)
-  }, [])
+    setOpening(false);
+  }, []);
 
   return (
     <div
       key={set.id}
-      className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] hover:shadow-lg transition-shadow duration-300"
+      className="flex flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900"
     >
-      <div className="px-2 py-1 border-b border-gray-300 dark:border-slate-600 font-bold text-orange-500">
+      <div className="border-b border-gray-300 px-2 py-1 font-bold text-orange-500 dark:border-slate-600">
         <p className="cursor-pointer" onClick={trainSet}>
           <span className="text-lg">{set.name}</span>
           <span className="px-2 text-xs italic text-gray-600 dark:text-gray-400">
@@ -61,15 +61,15 @@ export default function SetListItem(props: {
       </div>
 
       <div className="flex w-full flex-col gap-2 p-2">
-        <div className="flex flex-wrap gap-2 justify-center">
+        <div className="flex flex-wrap justify-center gap-2">
           <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-            <p className="font-bold py-1 px-2 border-b border-gray-300 dark:border-slate-600">
+            <p className="border-b border-gray-300 px-2 py-1 font-bold dark:border-slate-600">
               Round
             </p>
             <p>{set.rounds ? set.rounds.length : 1}/8</p>
           </div>
           <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-            <p className="font-bold py-1 px-2 border-b border-gray-300 dark:border-slate-600">
+            <p className="border-b border-gray-300 px-2 py-1 font-bold dark:border-slate-600">
               Completed
             </p>
             <p>
@@ -77,7 +77,7 @@ export default function SetListItem(props: {
             </p>
           </div>
           <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-            <p className="font-bold py-1 px-2 border-b border-gray-300 dark:border-slate-600">
+            <p className="border-b border-gray-300 px-2 py-1 font-bold dark:border-slate-600">
               Accuracy
             </p>
             <p>
@@ -94,14 +94,14 @@ export default function SetListItem(props: {
             </p>
           </div>
           <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-            <p className="font-bold py-1 px-2 border-b border-gray-300 dark:border-slate-600">
+            <p className="border-b border-gray-300 px-2 py-1 font-bold dark:border-slate-600">
               Time Spent
             </p>
             <p>{toHHMMSS(currentRound?.timeSpent ?? 0)}</p>
           </div>
           {set.rating ? (
             <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
-              <p className="font-bold py-1 px-2 border-b border-gray-300 dark:border-slate-600">
+              <p className="border-b border-gray-300 px-2 py-1 font-bold dark:border-slate-600">
                 Rating
               </p>
               <p>{set.rating}</p>
@@ -129,5 +129,5 @@ export default function SetListItem(props: {
         </div>
       </div>
     </div>
-  )
+  );
 }

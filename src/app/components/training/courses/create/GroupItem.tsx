@@ -1,43 +1,43 @@
-import { useState } from 'react'
+import { useState } from 'react';
 
-import { useAutoAnimate } from '@formkit/auto-animate/react'
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
+import { useAutoAnimate } from '@formkit/auto-animate/react';
+import * as AlertDialog from '@radix-ui/react-alert-dialog';
 
-import Button from '@/app/components/_elements/button'
-import Heading from '@/app/components/_elements/heading'
-import PrettyPrintLine from '@/app/components/general/PrettyPrintLine'
+import Button from '@/app/components/_elements/button';
+import Heading from '@/app/components/_elements/heading';
+import PrettyPrintLine from '@/app/components/general/PrettyPrintLine';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
-import type { Line } from './parse/ParsePGNtoLineData'
+import type { Line } from './parse/ParsePGNtoLineData';
 
 // TODO: Add informational lines
 // TODO: Add priority lines
 
 export const GroupItem = (props: {
-  lines: Line[]
-  selectedGroup: string
-  groupKey: string
-  count: number
-  updateLines: (lines: Line[]) => void
+  lines: Line[];
+  selectedGroup: string;
+  groupKey: string;
+  count: number;
+  updateLines: (lines: Line[]) => void;
 }) => {
-  const { lines, selectedGroup, groupKey, count } = props
-  const [open, setOpen] = useState<boolean>(false)
-  const [setAllOpen, setSetAllOpen] = useState<boolean>(false)
-  const [selectedColor, setSelectedColor] = useState<string>('White')
-  const [parent] = useAutoAnimate()
+  const { lines, selectedGroup, groupKey, count } = props;
+  const [open, setOpen] = useState<boolean>(false);
+  const [setAllOpen, setSetAllOpen] = useState<boolean>(false);
+  const [selectedColor, setSelectedColor] = useState<string>('White');
+  const [parent] = useAutoAnimate();
 
   const handleColorChange = (line: Line, newColor: string) => {
     const updatedLines = props.lines.map((l) =>
       l === line ? { ...l, tags: { ...l.tags, Colour: newColor } } : l,
-    )
-    props.updateLines(updatedLines)
-  }
+    );
+    props.updateLines(updatedLines);
+  };
 
   const handleLineDeletion = (line: Line) => {
-    const updatedLines = props.lines.filter((l) => l !== line)
-    props.updateLines(updatedLines)
-  }
+    const updatedLines = props.lines.filter((l) => l !== line);
+    props.updateLines(updatedLines);
+  };
 
   return (
     <div
@@ -76,7 +76,7 @@ export const GroupItem = (props: {
             className="absolute inset-0"
             onClick={() => setSetAllOpen(false)}
           />
-          <div className="flex fixed bg-white p-2 z-50 max-w-md flex-col gap-2 shadow-lg">
+          <div className="fixed z-50 flex max-w-md flex-col gap-2 bg-white p-2 shadow-lg">
             <Heading as="h4">Set All Lines In Group: {groupKey}</Heading>
             <p>This will set all lines in this group to the same colour.</p>
             <select
@@ -95,10 +95,10 @@ export const GroupItem = (props: {
                     l.tags[selectedGroup] === groupKey
                       ? { ...l, tags: { ...l.tags, Colour: selectedColor } }
                       : l,
-                  )
-                  props.updateLines(updatedLines)
-                  setSetAllOpen(false)
-                  trackEventOnClient('create_course_set_all_lines_colour', {})
+                  );
+                  props.updateLines(updatedLines);
+                  setSetAllOpen(false);
+                  trackEventOnClient('create_course_set_all_lines_colour', {});
                 }}
               >
                 Set All To {selectedColor}
@@ -128,12 +128,12 @@ export const GroupItem = (props: {
                         className="border border-gray-300 p-2  dark:bg-gray-100"
                         defaultValue={line.tags.Colour}
                         onChange={async (e) => {
-                          const v = e.target.value
-                          handleColorChange(line, v)
+                          const v = e.target.value;
+                          handleColorChange(line, v);
                           trackEventOnClient(
                             'create_course_change_line_colour',
                             {},
-                          )
+                          );
                         }}
                       >
                         <option value="White">White</option>
@@ -161,11 +161,11 @@ export const GroupItem = (props: {
                                   <Button
                                     variant="danger"
                                     onClick={async () => {
-                                      handleLineDeletion(line)
+                                      handleLineDeletion(line);
                                       trackEventOnClient(
                                         'create_course_delete_line',
                                         {},
-                                      )
+                                      );
                                     }}
                                   >
                                     Delete
@@ -184,10 +184,10 @@ export const GroupItem = (props: {
                     </div>
                   </div>
                 </div>
-              )
+              );
             })}
         </div>
       ) : null}
     </div>
-  )
-}
+  );
+};

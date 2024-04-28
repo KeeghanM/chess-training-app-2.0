@@ -1,16 +1,16 @@
-import { prisma } from '@/server/db'
-import * as Sentry from '@sentry/nextjs'
+import { prisma } from '@/server/db';
+import * as Sentry from '@sentry/nextjs';
 
-import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer'
+import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 
 export default async function getPuzzleById(puzzleid: string) {
-  let puzzle: TrainingPuzzle | undefined
+  let puzzle: TrainingPuzzle | undefined;
 
   try {
     if (puzzleid.startsWith('cta_')) {
       const customPuzzle = await prisma.customPuzzle.findFirst({
         where: { id: puzzleid },
-      })
+      });
 
       if (customPuzzle) {
         puzzle = {
@@ -22,13 +22,13 @@ export default async function getPuzzleById(puzzleid: string) {
           themes: [],
           directStart: customPuzzle.directStart,
           comment: customPuzzle.comment ?? '',
-        }
+        };
       } else {
-        throw new Error('Puzzle not found')
+        throw new Error('Puzzle not found');
       }
     } else {
-      const params = { id: puzzleid }
-      const paramsString = new URLSearchParams(params).toString()
+      const params = { id: puzzleid };
+      const paramsString = new URLSearchParams(params).toString();
       const resp = await fetch(
         `https://chess-puzzles.p.rapidapi.com/?${paramsString}`,
         {
@@ -38,16 +38,16 @@ export default async function getPuzzleById(puzzleid: string) {
             'x-rapidapi-key': process.env.RAPIDAPI_KEY!,
           },
         },
-      )
-      const json = (await resp.json()) as { puzzles: TrainingPuzzle[] }
-      puzzle = json.puzzles[0]
+      );
+      const json = (await resp.json()) as { puzzles: TrainingPuzzle[] };
+      puzzle = json.puzzles[0];
     }
 
-    return puzzle
+    return puzzle;
   } catch (e) {
-    Sentry.captureException(e)
-    return undefined
+    Sentry.captureException(e);
+    return undefined;
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

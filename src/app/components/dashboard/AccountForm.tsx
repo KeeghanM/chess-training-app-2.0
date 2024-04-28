@@ -1,94 +1,94 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
+import Link from 'next/link';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
-import type { UserProfile } from '@prisma/client'
-import * as Sentry from '@sentry/nextjs'
-import Tippy from '@tippyjs/react'
+import type { ResponseJson } from '@/app/api/responses';
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import type { UserProfile } from '@prisma/client';
+import * as Sentry from '@sentry/nextjs';
+import Tippy from '@tippyjs/react';
 
-import Button from '@/app/components/_elements/button'
-import Heading from '@/app/components/_elements/heading'
-import Spinner from '@/app/components/general/Spinner'
+import Button from '@/app/components/_elements/button';
+import Heading from '@/app/components/_elements/heading';
+import Spinner from '@/app/components/general/Spinner';
 
 export default function AccountForm(props: { profile: UserProfile }) {
-  const { user } = useKindeBrowserClient()
+  const { user } = useKindeBrowserClient();
 
   const [username, setUsername] = useState(
     props.profile.username ?? user?.email ?? '',
-  )
-  const [fullname, setFullame] = useState(props.profile.fullName ?? '')
+  );
+  const [fullname, setFullame] = useState(props.profile.fullName ?? '');
   const [description, setDescription] = useState(
     props.profile.description ?? '',
-  )
+  );
   const [highestOnlineRating, setHighestOnlineRating] = useState(
     props.profile.highestOnlineRating ?? undefined,
-  )
+  );
   const [highestOTBRating, setHighestOTBRating] = useState(
     props.profile.highestOTBRating ?? undefined,
-  )
+  );
   const [puzzleRating, setPuzzleRating] = useState(
     props.profile.puzzleRating ?? 1500,
-  )
-  const [difficulty, setDifficulty] = useState(props.profile.difficulty ?? 1)
+  );
+  const [difficulty, setDifficulty] = useState(props.profile.difficulty ?? 1);
   const [publicProfile, setPublicProfile] = useState(
     props.profile.public ?? false,
-  )
-  const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState(false)
-  const [error, setError] = useState('')
+  );
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
-  if (!user) return null
+  if (!user) return null;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    if (!user) return Sentry.captureException(new Error('User not found'))
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-    setSuccess(false)
+    if (!user) return Sentry.captureException(new Error('User not found'));
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess(false);
 
     if (!username) {
-      setError('Username is required')
-      return
+      setError('Username is required');
+      return;
     }
     if (username.includes('@')) {
-      setError('Username cannot contain the "@" symbol')
-      return
+      setError('Username cannot contain the "@" symbol');
+      return;
     }
     if (fullname.length > 0 && fullname.length > 150) {
-      setError('Full name must be less than 150 characters')
-      return
+      setError('Full name must be less than 150 characters');
+      return;
     }
     if (description && description.length > 1000) {
-      setError('Bio must be less than 1000 characters')
-      return
+      setError('Bio must be less than 1000 characters');
+      return;
     }
     if (highestOnlineRating && highestOnlineRating < 100) {
-      setError('Highest online rating must be at least 100')
-      return
+      setError('Highest online rating must be at least 100');
+      return;
     }
     if (highestOnlineRating && highestOnlineRating > 3500) {
-      setError('Highest online rating must be at most 3500')
-      return
+      setError('Highest online rating must be at most 3500');
+      return;
     }
     if (highestOTBRating && highestOTBRating < 100) {
-      setError('Highest OTB rating must be at least 100')
-      return
+      setError('Highest OTB rating must be at least 100');
+      return;
     }
     if (highestOTBRating && highestOTBRating > 3500) {
-      setError('Highest OTB rating must be at most 3500')
-      return
+      setError('Highest OTB rating must be at most 3500');
+      return;
     }
     if (!puzzleRating || puzzleRating < 500) {
-      setError('Puzzle rating must be at least 500')
-      return
+      setError('Puzzle rating must be at least 500');
+      return;
     }
     if (puzzleRating > 3500) {
-      setError('Puzzle rating must be at most 3500')
-      return
+      setError('Puzzle rating must be at most 3500');
+      return;
     }
 
     try {
@@ -107,26 +107,26 @@ export default function AccountForm(props: { profile: UserProfile }) {
           difficulty,
           publicProfile,
         }),
-      })
-      const json = (await res.json()) as ResponseJson
+      });
+      const json = (await res.json()) as ResponseJson;
 
-      if (json.message != 'Profile Updated') throw new Error(json.message)
+      if (json.message != 'Profile Updated') throw new Error(json.message);
 
-      setLoading(false)
-      setSuccess(true)
-      const timeout = setTimeout(() => setSuccess(false), 3000)
-      return () => clearTimeout(timeout)
+      setLoading(false);
+      setSuccess(true);
+      const timeout = setTimeout(() => setSuccess(false), 3000);
+      return () => clearTimeout(timeout);
     } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('Something went wrong. Please try again later.')
-      setLoading(false)
+      Sentry.captureException(e);
+      if (e instanceof Error) setError(e.message);
+      else setError('Something went wrong. Please try again later.');
+      setLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="flex flex-col gap-0 border border-gray-300 dark:text-white dark:border-slate-600 shadow-md dark:shadow-slate-900 bg-[rgba(0,0,0,0.03)] dark:bg-[rgba(255,255,255,0.03)] ">
-      <div className="flex flex-col md:flex-row px-2 py-1 border-b border-gray-300 dark:border-slate-600 items-center justify-between">
+    <div className="flex flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900 ">
+      <div className="flex flex-col items-center justify-between border-b border-gray-300 px-2 py-1 dark:border-slate-600 md:flex-row">
         <Heading as="h2" color="text-orange-500 !m-0 !p-0">
           Account Settings
         </Heading>
@@ -136,7 +136,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
       </div>
 
       <form
-        className="flex flex-col gap-2 text-white p-2"
+        className="flex flex-col gap-2 p-2 text-white"
         onSubmit={handleSubmit}
       >
         <div className="flex flex-col gap-4 md:flex-row">
@@ -249,7 +249,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
         </div>
         <div className="flex flex-row items-center gap-2">
           <Tippy content="Public profiles will show your ratings, bio, and Username. Your email will always be kept private.">
-            <label className="flex gap-1 flex-row items-center">
+            <label className="flex flex-row items-center gap-1">
               <p>Public Profile</p>
               <svg
                 height="24"
@@ -266,7 +266,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
           </Tippy>
           <input
             checked={publicProfile}
-            className="w-4 h-4 bg-gray-100 text-black"
+            className="h-4 w-4 bg-gray-100 text-black"
             type="checkbox"
             onChange={() => setPublicProfile(!publicProfile)}
           />
@@ -290,5 +290,5 @@ export default function AccountForm(props: { profile: UserProfile }) {
         ) : null}
       </form>
     </div>
-  )
+  );
 }

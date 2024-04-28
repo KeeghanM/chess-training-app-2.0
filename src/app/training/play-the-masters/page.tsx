@@ -1,12 +1,12 @@
-import CtaRow from '@/app/components/_layouts/ctaRow'
-import PageHeader from '@/app/components/_layouts/pageHeader'
+import CtaRow from '@/app/components/_layouts/ctaRow';
+import PageHeader from '@/app/components/_layouts/pageHeader';
 
 export const metadata = {
   title:
     'Play the Masters - Improve your chess understanding at ChessTraining.app',
   description:
     'Play through the games of the masters, and try to guess their moves. A great way to improve your understanding of the game, and to learn new ideas. We have a large library of curated master games, all selected for their instructive value.',
-}
+};
 
 export default async function PlayMastersPage() {
   return (
@@ -39,5 +39,5 @@ export default async function PlayMastersPage() {
         </div>
       </CtaRow>
     </>
-  )
+  );
 }

@@ -1,21 +1,21 @@
-import Heading from '@/app/components/_elements/heading'
-import { MultiCol, MultiColItem } from '@/app/components/_layouts/multiCol'
-import PageHeader from '@/app/components/_layouts/pageHeader'
+import Heading from '@/app/components/_elements/heading';
+import { MultiCol, MultiColItem } from '@/app/components/_layouts/multiCol';
+import PageHeader from '@/app/components/_layouts/pageHeader';
 
 export const metadata = {
   title: 'Meet Our Team - The Minds Behind ChessTraining.app',
-}
+};
 
 export default function MeetTheTeam() {
   const teamMembers: {
-    name: string
-    title: string
-    image: string
-    bio: string
+    name: string;
+    title: string;
+    image: string;
+    bio: string;
     links: {
-      text: string
-      url: string
-    }[]
+      text: string;
+      url: string;
+    }[];
   }[] = [
     {
       name: 'Keeghan McGarry',
@@ -57,7 +57,7 @@ export default function MeetTheTeam() {
         },
       ],
     },
-  ]
+  ];
 
   return (
     <>
@@ -79,5 +79,5 @@ export default function MeetTheTeam() {
         ))}
       </MultiCol>
     </>
-  )
+  );
 }

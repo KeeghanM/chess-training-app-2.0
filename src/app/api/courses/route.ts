@@ -1,14 +1,14 @@
-import { errorResponse, successResponse } from '@/app/api/responses'
-import { prisma } from '@/server/db'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import * as Sentry from '@sentry/nextjs'
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import * as Sentry from '@sentry/nextjs';
 
 export async function PATCH(request: Request) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request);
+  if (!session) return errorResponse('Unauthorized', 401);
 
-  const user = await session.getUser()
-  if (!user) return errorResponse('Unauthorized', 401)
+  const user = await session.getUser();
+  if (!user) return errorResponse('Unauthorized', 401);
 
   const {
     courseId,
@@ -19,31 +19,31 @@ export async function PATCH(request: Request) {
     groups,
     linesToDelete,
   } = (await request.json()) as {
-    courseId: string
-    courseName: string
-    courseDescription: string
-    shortDescription: string
-    lines: { id: number; sortOrder: number; trainable: boolean }[]
-    linesToDelete: number[]
+    courseId: string;
+    courseName: string;
+    courseDescription: string;
+    shortDescription: string;
+    lines: { id: number; sortOrder: number; trainable: boolean }[];
+    linesToDelete: number[];
     groups: {
-      id: string
-      groupName: string
-      sortOrder: number
-    }[]
-  }
+      id: string;
+      groupName: string;
+      sortOrder: number;
+    }[];
+  };
 
   if (!courseName || !groups || !lines || !courseId)
-    return errorResponse('Missing required fields', 400)
+    return errorResponse('Missing required fields', 400);
 
   try {
     const course = await prisma.course.findFirst({
       where: {
         id: courseId,
       },
-    })
+    });
 
-    if (!course) return errorResponse('Course not found', 404)
-    if (course.createdBy !== user.id) return errorResponse('Unauthorized', 401)
+    if (!course) return errorResponse('Course not found', 404);
+    if (course.createdBy !== user.id) return errorResponse('Unauthorized', 401);
 
     await prisma.$transaction(async (prisma) => {
       await Promise.all(
@@ -56,9 +56,9 @@ export async function PATCH(request: Request) {
               groupName: group.groupName,
               sortOrder: group.sortOrder,
             },
-          })
+          });
         }),
-      )
+      );
 
       await Promise.all(
         lines.map(async (line) => {
@@ -70,9 +70,9 @@ export async function PATCH(request: Request) {
               sortOrder: line.sortOrder,
               trainable: line.trainable,
             },
-          })
+          });
         }),
-      )
+      );
 
       await prisma.line.deleteMany({
         where: {
@@ -80,7 +80,7 @@ export async function PATCH(request: Request) {
             in: linesToDelete,
           },
         },
-      })
+      });
 
       await prisma.course.update({
         where: {
@@ -91,14 +91,14 @@ export async function PATCH(request: Request) {
           courseDescription,
           shortDescription,
         },
-      })
-    })
+      });
+    });
 
-    return successResponse('Course updated', {}, 200)
+    return successResponse('Course updated', {}, 200);
   } catch (e) {
-    Sentry.captureException(e)
-    return errorResponse('Internal Server Error', 500)
+    Sentry.captureException(e);
+    return errorResponse('Internal Server Error', 500);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

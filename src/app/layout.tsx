@@ -1,20 +1,20 @@
-import Script from 'next/script'
+import Script from 'next/script';
 
-import { Suspense } from 'react'
-import type { ReactNode } from 'react'
+import { Suspense } from 'react';
+import type { ReactNode } from 'react';
 
-import { env } from '@/env'
-import * as Frigade from '@frigade/react'
+import { env } from '@/env';
+import * as Frigade from '@frigade/react';
 
-import CookieBanner from './components/template/CookieBanner'
-import Footer from './components/template/footer/Footer'
-import Header from './components/template/header/Header'
+import CookieBanner from './components/template/CookieBanner';
+import Footer from './components/template/footer/Footer';
+import Header from './components/template/header/Header';
 
-import { PostHogPageview, PosthogProvider } from './_util/PostHog'
-import { ThemeSwitchProvider } from './_util/ThemeProvider'
-import getDistinctId from './_util/getDistinctId'
+import { PostHogPageview, PosthogProvider } from './_util/PostHog';
+import { ThemeSwitchProvider } from './_util/ThemeProvider';
+import getDistinctId from './_util/getDistinctId';
 
-import './globals.css'
+import './globals.css';
 
 export const metadata = {
   title: 'ChessTraining.app - The best way to improve your chess',
@@ -45,14 +45,14 @@ export const metadata = {
     { name: 'msapplication-TileColor', content: '#9f00a7' },
     { name: 'theme-color', content: '#7e22ce' },
   ],
-}
+};
 
 export default async function RootLayout({
   children,
 }: {
-  children: ReactNode
+  children: ReactNode;
 }) {
-  const distinctId = await getDistinctId()
+  const distinctId = await getDistinctId();
   return (
     <>
       <Script id="brevo-conversations">
@@ -85,5 +85,5 @@ export default async function RootLayout({
         </PosthogProvider>
       </html>
     </>
-  )
+  );
 }

@@ -1,47 +1,47 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import * as Sentry from '@sentry/react'
+import type { ResponseJson } from '@/app/api/responses';
+import * as Sentry from '@sentry/react';
 
-import Spinner from '../../general/Spinner'
-import type { CuratedSetPuzzle } from './CuratedSetsBrowser'
+import Spinner from '../../general/Spinner';
+import type { CuratedSetPuzzle } from './CuratedSetsBrowser';
 
 export default function PuzzleList(props: {
-  setId: string
-  selectedId: string
-  selectPuzzle: (puzzle: CuratedSetPuzzle) => void
+  setId: string;
+  selectedId: string;
+  selectPuzzle: (puzzle: CuratedSetPuzzle) => void;
 }) {
-  const [puzzles, setPuzzles] = useState<CuratedSetPuzzle[]>([])
-  const [loading, setLoading] = useState(false)
+  const [puzzles, setPuzzles] = useState<CuratedSetPuzzle[]>([]);
+  const [loading, setLoading] = useState(false);
 
   const getPuzzles = async (setId: string) => {
-    setLoading(true)
+    setLoading(true);
     try {
       const resp = await fetch('/api/admin/curated-sets/getPuzzles', {
         method: 'POST',
         body: JSON.stringify({ setId }),
-      })
-      const json = (await resp.json()) as ResponseJson
-      if (json.message != 'Puzzles found') throw new Error(json.message)
+      });
+      const json = (await resp.json()) as ResponseJson;
+      if (json.message != 'Puzzles found') throw new Error(json.message);
 
-      const puzzles = json.data!.puzzles as CuratedSetPuzzle[]
-      setPuzzles(puzzles)
+      const puzzles = json.data!.puzzles as CuratedSetPuzzle[];
+      setPuzzles(puzzles);
     } catch (e) {
-      Sentry.captureException(e)
+      Sentry.captureException(e);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   useEffect(() => {
     if (props.setId)
-      (async () => getPuzzles(props.setId))().catch(console.error)
-  }, [props.setId])
+      (async () => getPuzzles(props.setId))().catch(console.error);
+  }, [props.setId]);
 
   return (
-    <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 max-h-[70vh]">
+    <div className="flex max-h-[70vh] flex-1 flex-col gap-2 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 lg:border-4">
       <ul className="h-full max-h-[50vh] overflow-y-auto text-black">
         {loading ? (
           <Spinner />
@@ -50,13 +50,13 @@ export default function PuzzleList(props: {
             .sort((a, b) => {
               // Sort order then puzzleId
               if (a.sortOrder != b.sortOrder)
-                return (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
-              return a.puzzleid.localeCompare(b.puzzleid)
+                return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+              return a.puzzleid.localeCompare(b.puzzleid);
             })
             .map((puzzle) => (
               <li
                 key={puzzle.puzzleid}
-                className={`cursor-pointer bg-gray-50 border-b border-slate-500 hover:bg-orange-200 p-2 text-sm${
+                className={`cursor-pointer border-b border-slate-500 bg-gray-50 p-2 hover:bg-orange-200 text-sm${
                   props.selectedId == puzzle.puzzleid ? ' bg-purple-200' : ''
                 }`}
                 onClick={() => props.selectPuzzle(puzzle)}
@@ -68,5 +68,5 @@ export default function PuzzleList(props: {
         )}
       </ul>
     </div>
-  )
+  );
 }

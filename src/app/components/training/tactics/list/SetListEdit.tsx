@@ -1,44 +1,44 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import * as AlertDialog from '@radix-ui/react-alert-dialog'
-import * as Sentry from '@sentry/nextjs'
-import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
+import type { ResponseJson } from '@/app/api/responses';
+import * as AlertDialog from '@radix-ui/react-alert-dialog';
+import * as Sentry from '@sentry/nextjs';
+import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types';
 
-import Button from '@/app/components/_elements/button'
-import Spinner from '@/app/components/general/Spinner'
-import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator'
+import Button from '@/app/components/_elements/button';
+import Spinner from '@/app/components/general/Spinner';
+import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
 export default function SetListEdit(props: {
-  set: PrismaTacticsSet
-  user: KindeUser | null
-  onFinished: () => void
+  set: PrismaTacticsSet;
+  user: KindeUser | null;
+  onFinished: () => void;
 }) {
-  const { set } = props
-  const user = props.user
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-  const [name, setName] = useState(set.name)
+  const { set } = props;
+  const user = props.user;
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [name, setName] = useState(set.name);
 
   useEffect(() => {
-    setName(set.name)
-    setLoading(false)
-    setError('')
-  }, [open])
+    setName(set.name);
+    setLoading(false);
+    setError('');
+  }, [open]);
 
   const close = () => {
-    setOpen(false)
-  }
+    setOpen(false);
+  };
 
   const deleteSet = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      if (!user) throw new Error('Not logged in')
+      if (!user) throw new Error('Not logged in');
       const resp = await fetch('/api/tactics/delete', {
         method: 'POST',
         headers: {
@@ -47,28 +47,28 @@ export default function SetListEdit(props: {
         body: JSON.stringify({
           setId: set.id,
         }),
-      })
+      });
 
-      const json = (await resp.json()) as ResponseJson
+      const json = (await resp.json()) as ResponseJson;
 
       if (json.message != 'Set Deleted')
-        throw new Error(json?.message ?? 'Unknown error')
+        throw new Error(json?.message ?? 'Unknown error');
 
-      trackEventOnClient('tactics_set_delete', {})
-      props.onFinished()
-      close()
+      trackEventOnClient('tactics_set_delete', {});
+      props.onFinished();
+      close();
     } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('Unknown error')
+      Sentry.captureException(e);
+      if (e instanceof Error) setError(e.message);
+      else setError('Unknown error');
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const updateSet = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      if (!user) throw new Error('Not logged in')
+      if (!user) throw new Error('Not logged in');
       const resp = await fetch('/api/tactics/update', {
         method: 'POST',
         headers: {
@@ -78,23 +78,23 @@ export default function SetListEdit(props: {
           setId: set.id,
           name,
         }),
-      })
+      });
 
-      const json = (await resp.json()) as ResponseJson
+      const json = (await resp.json()) as ResponseJson;
 
       if (json.message != 'Set Updated')
-        throw new Error(json?.message ?? 'Unknown error')
+        throw new Error(json?.message ?? 'Unknown error');
 
-      trackEventOnClient('tactics_set_updated', {})
-      props.onFinished()
-      close()
+      trackEventOnClient('tactics_set_updated', {});
+      props.onFinished();
+      close();
     } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('Unknown error')
+      Sentry.captureException(e);
+      if (e instanceof Error) setError(e.message);
+      else setError('Unknown error');
     }
-    setLoading(false)
-  }
+    setLoading(false);
+  };
 
   const DeleteButton = () => {
     return (
@@ -136,8 +136,8 @@ export default function SetListEdit(props: {
           </AlertDialog.Content>
         </AlertDialog.Portal>
       </AlertDialog.Root>
-    )
-  }
+    );
+  };
 
   const ArchiveButton = () => {
     return (
@@ -179,8 +179,8 @@ export default function SetListEdit(props: {
           </AlertDialog.Content>
         </AlertDialog.Portal>
       </AlertDialog.Root>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -197,21 +197,21 @@ export default function SetListEdit(props: {
             <AlertDialog.Title className="text-lg font-bold text-purple-700">
               {set.curatedSetId ? '' : 'Editing'} "{set.name}"
             </AlertDialog.Title>
-            <div className="flex flex-col gap-2 mt-4">
+            <div className="mt-4 flex flex-col gap-2">
               {!set.curatedSetId && (
                 <div className="">
                   <label>Set Name</label>
                   <input
-                    className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+                    className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
                     type="text"
                     value={name}
                     onInput={(e) => {
-                      setName(e.currentTarget.value)
+                      setName(e.currentTarget.value);
                     }}
                   />
                 </div>
               )}
-              <div className="flex flex-col md:flex-row gap-2">
+              <div className="flex flex-col gap-2 md:flex-row">
                 {!set.curatedSetId && (
                   <Button
                     disabled={loading}
@@ -238,5 +238,5 @@ export default function SetListEdit(props: {
         </AlertDialog.Portal>
       </AlertDialog.Root>
     </>
-  )
+  );
 }

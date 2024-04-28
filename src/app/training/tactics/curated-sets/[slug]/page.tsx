@@ -1,23 +1,23 @@
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-import { prisma } from '@/server/db'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import * as Sentry from '@sentry/nextjs'
+import { prisma } from '@/server/db';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import * as Sentry from '@sentry/nextjs';
 
-import Container from '@/app/components/_elements/container'
-import Heading from '@/app/components/_elements/heading'
-import StyledLink from '@/app/components/_elements/styledLink'
-import GetCuratedSet from '@/app/components/ecomm/GetCuratedSet'
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
+import StyledLink from '@/app/components/_elements/styledLink';
+import GetCuratedSet from '@/app/components/ecomm/GetCuratedSet';
 
 export default async function CuratedSetPage({
   params,
 }: {
-  params: { slug: string }
+  params: { slug: string };
 }) {
-  const { slug } = params
-  const session = getKindeServerSession()
-  const user = await session.getUser()
+  const { slug } = params;
+  const session = getKindeServerSession();
+  const user = await session.getUser();
 
   const { set, userSetId } = await (async () => {
     try {
@@ -26,9 +26,9 @@ export default async function CuratedSetPage({
           slug,
           published: true,
         },
-      })
+      });
 
-      if (!set) throw new Error('Set not found')
+      if (!set) throw new Error('Set not found');
 
       const userSet = await prisma.tacticsSet.findFirst({
         where: {
@@ -36,34 +36,34 @@ export default async function CuratedSetPage({
           userId: user?.id,
           active: true,
         },
-      })
+      });
 
-      return { set, userSetId: userSet?.id ?? undefined }
+      return { set, userSetId: userSet?.id ?? undefined };
     } catch (e) {
-      Sentry.captureException(e)
-      return { set: undefined, userSetId: undefined }
+      Sentry.captureException(e);
+      return { set: undefined, userSetId: undefined };
     }
-  })()
+  })();
 
   if (!set) {
-    redirect('/404')
+    redirect('/404');
   }
 
   return (
     <>
-      <div className="w-full flex items-center justify-center py-2 bg-gray-200">
+      <div className="flex w-full items-center justify-center bg-gray-200 py-2">
         <p className="text-xs text-gray-600">
           <Link className="text-purple-700 hover:underline" href="/">
             Home
           </Link>
           <Link
-            className="text-purple-700 hover:underline cursor-pointer"
+            className="cursor-pointer text-purple-700 hover:underline"
             href="/training/tactics"
           >
             /Tactics
           </Link>
           <Link
-            className="text-purple-700 hover:underline cursor-pointer"
+            className="cursor-pointer text-purple-700 hover:underline"
             href="/training/tactics/curated-sets"
           >
             /Curated Sets
@@ -73,7 +73,7 @@ export default async function CuratedSetPage({
       </div>
       <Container>
         <div className="flex flex-col gap-2">
-          <div className="p-4 bg-gray-100">
+          <div className="bg-gray-100 p-4">
             <Heading as="h1">{set.name}</Heading>
             <p className="text-sm">
               Chess puzzles designed to be used with our{' '}
@@ -99,11 +99,11 @@ export default async function CuratedSetPage({
           {set.description ? (
             <article
               dangerouslySetInnerHTML={{ __html: set.description }}
-              className="p-4 bg-gray-100"
+              className="bg-gray-100 p-4"
             />
           ) : null}
           {set.description ? (
-            <div className="p-4 bg-gray-100">
+            <div className="bg-gray-100 p-4">
               <Heading as="h2">Ready to go?</Heading>
               <p>Ready to take your game to the next level?</p>
               <GetCuratedSet
@@ -118,5 +118,5 @@ export default async function CuratedSetPage({
         </div>
       </Container>
     </>
-  )
+  );
 }

@@ -23,5 +23,5 @@ export default function Spinner() {
         </g>
       </g>
     </svg>
-  )
+  );
 }

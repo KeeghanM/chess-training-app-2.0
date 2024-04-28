@@ -1,32 +1,32 @@
-'use client'
+'use client';
 
-import Link from 'next/link'
+import Link from 'next/link';
 
-import { useState } from 'react'
+import { useState } from 'react';
 
-import type { ResponseJson } from '@/app/api/responses'
-import type { Course, Move } from '@prisma/client'
-import * as Sentry from '@sentry/nextjs'
+import type { ResponseJson } from '@/app/api/responses';
+import type { Course, Move } from '@prisma/client';
+import * as Sentry from '@sentry/nextjs';
 
-import Button from '@/app/components/_elements/button'
-import Heading from '@/app/components/_elements/heading'
-import StyledLink from '@/app/components/_elements/styledLink'
+import Button from '@/app/components/_elements/button';
+import Heading from '@/app/components/_elements/heading';
+import StyledLink from '@/app/components/_elements/styledLink';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient'
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
-import GroupSelector from '../create/GroupSelector'
-import PgnToLinesForm from '../create/PgnToLinesForm'
-import type { Line } from '../create/parse/ParsePGNtoLineData'
+import GroupSelector from '../create/GroupSelector';
+import PgnToLinesForm from '../create/PgnToLinesForm';
+import type { Line } from '../create/parse/ParsePGNtoLineData';
 
 type FullCourseData = Course & {
-  lines: (Line & { moves: Move[] })[]
-}
+  lines: (Line & { moves: Move[] })[];
+};
 
 export default function AddLines(props: { courseId: string }) {
   const [step, setStep] = useState<'pgn' | 'groups' | 'error' | 'success'>(
     'pgn',
-  )
-  const [lines, setLines] = useState<Line[]>([])
+  );
+  const [lines, setLines] = useState<Line[]>([]);
 
   const uploadLines = async (group: string, lines: Line[]) => {
     try {
@@ -34,8 +34,8 @@ export default function AddLines(props: { courseId: string }) {
         groupName: line.tags[group],
         colour: line.tags.Colour,
         moves: line.moves,
-      }))
-      const allGroups = [...new Set(cleanLines.map((line) => line.groupName))]
+      }));
+      const allGroups = [...new Set(cleanLines.map((line) => line.groupName))];
 
       const resp = await fetch('/api/courses/create/addLines', {
         method: 'POST',
@@ -47,20 +47,20 @@ export default function AddLines(props: { courseId: string }) {
           groupNames: allGroups,
           lines: cleanLines,
         }),
-      })
+      });
 
-      const json = (await resp.json()) as ResponseJson
+      const json = (await resp.json()) as ResponseJson;
 
       if (json?.message != 'Lines added')
-        throw new Error(json?.message ?? 'Unknown error')
+        throw new Error(json?.message ?? 'Unknown error');
 
-      trackEventOnClient('course_lines_added', {})
-      setStep('success')
+      trackEventOnClient('course_lines_added', {});
+      setStep('success');
     } catch (e) {
-      Sentry.captureException(e)
-      setStep('error')
+      Sentry.captureException(e);
+      setStep('error');
     }
-  }
+  };
 
   const processLines = async (lines: Line[]) => {
     // Download existing data
@@ -70,13 +70,13 @@ export default function AddLines(props: { courseId: string }) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ courseId: props.courseId }),
-    })
-    const lineJson = (await lineResp.json()) as ResponseJson
+    });
+    const lineJson = (await lineResp.json()) as ResponseJson;
 
     if (lineJson?.message != 'Success')
-      throw new Error(lineJson?.message ?? 'Unknown error')
+      throw new Error(lineJson?.message ?? 'Unknown error');
 
-    const existingCourseData = lineJson.data!.course as FullCourseData
+    const existingCourseData = lineJson.data!.course as FullCourseData;
 
     // Now filter out any lines that already exist
     setLines(
@@ -89,12 +89,12 @@ export default function AddLines(props: { courseId: string }) {
               line.moves.map((move) => move.notation).join(''),
           ),
       ),
-    )
-    setStep('groups')
-  }
+    );
+    setStep('groups');
+  };
 
   return (
-    <div className="p-4 bg-slate-900">
+    <div className="bg-slate-900 p-4">
       {step === 'error' && (
         <>
           <Heading as="h2" color="text-red-500">
@@ -112,10 +112,10 @@ export default function AddLines(props: { courseId: string }) {
       {step === 'pgn' && (
         <PgnToLinesForm
           back={() => {
-            history.back()
+            history.back();
           }}
           finished={async (lines) => {
-            await processLines(lines)
+            await processLines(lines);
           }}
         />
       )}
@@ -145,5 +145,5 @@ export default function AddLines(props: { courseId: string }) {
         </div>
       )}
     </div>
-  )
+  );
 }

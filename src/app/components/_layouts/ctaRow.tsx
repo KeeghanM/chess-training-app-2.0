@@ -1,21 +1,21 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-import Button from '@/app/components/_elements/button'
-import Container from '@/app/components/_elements/container'
-import Heading from '@/app/components/_elements/heading'
+import Button from '@/app/components/_elements/button';
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
 
 interface CtaRowProps {
-  title: string
+  title: string;
   cta: {
-    text: string
-    link: string
-  }
+    text: string;
+    link: string;
+  };
   secondary?: {
-    text: string
-    link: string
-  }
-  background: 'light' | 'dark'
-  children: React.ReactNode
+    text: string;
+    link: string;
+  };
+  background: 'light' | 'dark';
+  children: React.ReactNode;
 }
 
 export default function CtaRow(props: CtaRowProps) {
@@ -40,5 +40,5 @@ export default function CtaRow(props: CtaRowProps) {
         </div>
       </Container>
     </div>
-  )
+  );
 }

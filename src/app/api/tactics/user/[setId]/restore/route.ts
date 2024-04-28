@@ -1,21 +1,21 @@
-import { errorResponse, successResponse } from '@/app/api/responses'
-import { prisma } from '@/server/db'
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import * as Sentry from '@sentry/nextjs'
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import * as Sentry from '@sentry/nextjs';
 
 export async function POST(
   request: Request,
   { params }: { params: { setId: string } },
 ) {
-  const session = getKindeServerSession(request)
-  if (!session) return errorResponse('Unauthorized', 401)
+  const session = getKindeServerSession(request);
+  if (!session) return errorResponse('Unauthorized', 401);
 
-  const user = await session.getUser()
-  if (!user) return errorResponse('Unauthorized', 401)
+  const user = await session.getUser();
+  if (!user) return errorResponse('Unauthorized', 401);
 
-  const { setId } = params as { setId: string }
+  const { setId } = params as { setId: string };
 
-  if (!setId) return errorResponse('Missing required fields', 400)
+  if (!setId) return errorResponse('Missing required fields', 400);
 
   try {
     const result = await prisma.$transaction(async (prisma) => {
@@ -23,9 +23,9 @@ export async function POST(
         where: {
           id: setId,
         },
-      })
+      });
 
-      if (!tacticsSet) throw new Error('Set not found')
+      if (!tacticsSet) throw new Error('Set not found');
 
       // Restore the set
       await prisma.tacticsSet.update({
@@ -40,16 +40,16 @@ export async function POST(
             },
           },
         },
-      })
+      });
 
-      return { tacticsSetId: tacticsSet.id }
-    })
+      return { tacticsSetId: tacticsSet.id };
+    });
 
-    return successResponse('Set restored', result, 200)
+    return successResponse('Set restored', result, 200);
   } catch (e) {
-    Sentry.captureException(e)
-    return errorResponse('Internal server error', 500)
+    Sentry.captureException(e);
+    return errorResponse('Internal server error', 500);
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

@@ -1,33 +1,33 @@
-import { prisma } from '@/server/db'
+import { prisma } from '@/server/db';
 
-import Container from '@/app/components/_elements/container'
-import Heading from '@/app/components/_elements/heading'
-import PageHeader from '@/app/components/_layouts/pageHeader'
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
+import PageHeader from '@/app/components/_layouts/pageHeader';
 
-import { getUserServer } from '@/app/_util/getUserServer'
+import { getUserServer } from '@/app/_util/getUserServer';
 
 export default async function BadgesPage() {
-  const { badges } = await getUserServer()
-  const allBadges = await prisma.badge.findMany()
-  await prisma.$disconnect()
+  const { badges } = await getUserServer();
+  const allBadges = await prisma.badge.findMany();
+  await prisma.$disconnect();
 
   allBadges.sort((a) => {
-    if (badges.find((badge) => badge.badgeName === a.name)) return -1
-    return 1
-  })
+    if (badges.find((badge) => badge.badgeName === a.name)) return -1;
+    return 1;
+  });
 
   const categories = Array.from(
     new Set(allBadges.map((badge) => badge.category)),
   ) // sort by category: daily, tactics, misc, then the rest
     .sort((a, b) => {
-      if (a === 'Daily Streaks') return -1
-      if (b === 'Daily Streaks') return 1
-      if (a === 'Tactics Streaks') return -1
-      if (b === 'Tactics Streaks') return 1
-      if (a === 'Miscellaneous') return -1
-      if (b === 'Miscellaneous') return 1
-      return 0
-    })
+      if (a === 'Daily Streaks') return -1;
+      if (b === 'Daily Streaks') return 1;
+      if (a === 'Tactics Streaks') return -1;
+      if (b === 'Tactics Streaks') return 1;
+      if (a === 'Miscellaneous') return -1;
+      if (b === 'Miscellaneous') return 1;
+      return 0;
+    });
 
   return (
     <>
@@ -73,5 +73,5 @@ export default async function BadgesPage() {
         ))}
       </Container>
     </>
-  )
+  );
 }

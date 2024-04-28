@@ -1,13 +1,13 @@
-import StyledLink from '@/app/components/_elements/styledLink'
-import Hero from '@/app/components/_layouts/hero'
-import { MultiCol, MultiColItem } from '@/app/components/_layouts/multiCol'
-import { TextWall } from '@/app/components/_layouts/textWall'
+import StyledLink from '@/app/components/_elements/styledLink';
+import Hero from '@/app/components/_layouts/hero';
+import { MultiCol, MultiColItem } from '@/app/components/_layouts/multiCol';
+import { TextWall } from '@/app/components/_layouts/textWall';
 
 export const metadata = {
   title: 'About ChessTraining.app: Our Mission, Vision, and Story',
   description:
     'Discover the story behind ChessTraining.app - a passion project turned leading chess training platform by Keeghan. Learn about our mission to provide accessible, high-quality chess training for all, driven by innovation and community support. Explore our values, culture, and vision for a world where top-tier chess training is available to everyone. Join our journey of continuous learning and chess mastery, supported by chess enthusiasts worldwide.',
-}
+};
 
 export default function AboutUsPage() {
   return (
@@ -19,7 +19,7 @@ export default function AboutUsPage() {
           alt: 'Wooden chess pieces on a chess board',
         }}
       >
-        <p className="p-2 bg-[rgba(0,0,0,0.3)] text-orange-500">
+        <p className="bg-[rgba(0,0,0,0.3)] p-2 text-orange-500">
           ChessTraining.app is more than just a chess training platform; it's a
           testament to the passion for chess and the power of technology.
           Founded in 2020 by Keeghan, a chess enthusiast and software developer,
@@ -96,5 +96,5 @@ export default function AboutUsPage() {
         </p>
       </TextWall>
     </>
-  )
+  );
 }

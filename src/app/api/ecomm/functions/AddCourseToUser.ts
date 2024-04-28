@@ -1,10 +1,10 @@
-import { prisma } from '@/server/db'
-import * as Sentry from '@sentry/nextjs'
+import { prisma } from '@/server/db';
+import * as Sentry from '@sentry/nextjs';
 
 export async function AddCourseToUser(courseId: string, userId: string) {
-  if (!userId) return false
+  if (!userId) return false;
 
-  if (!courseId) return false
+  if (!courseId) return false;
 
   try {
     await prisma.$transaction(async (prisma) => {
@@ -15,16 +15,16 @@ export async function AddCourseToUser(courseId: string, userId: string) {
         include: {
           lines: true,
         },
-      })
+      });
 
-      if (!course) throw new Error('Course not found')
+      if (!course) throw new Error('Course not found');
 
       let userCourse = await prisma.userCourse.findFirst({
         where: {
           userId,
           courseId: course.id,
         },
-      })
+      });
 
       // Create a new userCourse if it doesn't exist (ie. user hasn't bought the course yet)
       // Otherwise, update the existing userCourse (ie. user has bought the course before, but it's archived)
@@ -35,7 +35,7 @@ export async function AddCourseToUser(courseId: string, userId: string) {
             courseId: course.id,
             linesUnseen: course.lines.length,
           },
-        })
+        });
       } else {
         await prisma.userCourse.update({
           where: {
@@ -45,10 +45,10 @@ export async function AddCourseToUser(courseId: string, userId: string) {
             linesUnseen: course.lines.length,
             active: true,
           },
-        })
+        });
       }
 
-      if (!userCourse) throw new Error('User course not found')
+      if (!userCourse) throw new Error('User course not found');
 
       // Create each new line and userLine
       await Promise.all(
@@ -59,16 +59,16 @@ export async function AddCourseToUser(courseId: string, userId: string) {
               userCourseId: userCourse.id,
               lineId: line.id,
             },
-          })
+          });
         }),
-      )
-    })
+      );
+    });
 
-    return true
+    return true;
   } catch (e) {
-    Sentry.captureException(e)
-    return false
+    Sentry.captureException(e);
+    return false;
   } finally {
-    await prisma.$disconnect()
+    await prisma.$disconnect();
   }
 }

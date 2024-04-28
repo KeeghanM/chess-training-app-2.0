@@ -1,13 +1,13 @@
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
 
-import PageHeader from '@/app/components/_layouts/pageHeader'
-import TacticsList from '@/app/components/training/tactics/list/TacticsList'
+import PageHeader from '@/app/components/_layouts/pageHeader';
+import TacticsList from '@/app/components/training/tactics/list/TacticsList';
 
-import { getUserServer } from '@/app/_util/getUserServer'
+import { getUserServer } from '@/app/_util/getUserServer';
 
 export default async function TacticsListPage() {
-  const { user, isPremium } = await getUserServer()
-  if (!user) redirect('/auth/signin')
+  const { user, isPremium } = await getUserServer();
+  if (!user) redirect('/auth/signin');
 
   return (
     <>
@@ -23,5 +23,5 @@ export default async function TacticsListPage() {
         <TacticsList hasUnlimitedSets={isPremium} />
       </div>
     </>
-  )
+  );
 }
