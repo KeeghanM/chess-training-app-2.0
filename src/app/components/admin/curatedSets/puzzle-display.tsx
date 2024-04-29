@@ -1,17 +1,21 @@
 'use client';
 
+import Tippy from '@tippyjs/react';
+import { Chess } from 'chess.js';
 import { useEffect, useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-import Tippy from '@tippyjs/react';
-import { Chess } from 'chess.js';
 
-import Button from '../../_elements/button';
-import Spinner from '../../general/Spinner';
-import ChessBoard from '../../training/ChessBoard';
-import type { CuratedSetPuzzle } from './CuratedSetsBrowser';
+import { Button } from '../../_elements/button';
+import { Spinner } from '../../general/Spinner';
+import { ChessBoard } from '../../training/ChessBoard';
 
-export default function PuzzleDisplay(props: {
+import type { CuratedSetPuzzle } from './curated-sets-browser';
+
+export function PuzzleDisplay({
+  puzzle,
+  mode,
+}: {
   puzzle?: CuratedSetPuzzle;
   mode: 'list' | 'search';
 }) {
@@ -27,24 +31,24 @@ export default function PuzzleDisplay(props: {
   const [readyForInput] = useState(false);
 
   // Puzzle Editing
-  const [rating, setRating] = useState(props.puzzle?.rating ?? 1500);
-  const [comment, setComment] = useState(props.puzzle?.comment ?? '');
+  const [rating, setRating] = useState(puzzle?.rating ?? 1500);
+  const [comment, setComment] = useState(puzzle?.comment ?? '');
 
   const savePuzzle = async () => {
     setStatus('saving');
     try {
-      if (!props.puzzle) return;
+      if (!puzzle) return;
       const resp = await fetch('/api/admin/curated-sets/curatedPuzzle', {
         method: 'PATCH',
         body: JSON.stringify({
-          id: props.puzzle.curatedPuzzleId,
+          id: puzzle.curatedPuzzleId,
           rating,
           comment,
           moves,
         }),
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json.message != 'Puzzle updated') throw new Error(json.message);
+      if (json.message !== 'Puzzle updated') throw new Error(json.message);
     } catch (e) {
       if (e instanceof Error) setError(e.message);
       else setError('Unknown error');
@@ -56,16 +60,16 @@ export default function PuzzleDisplay(props: {
   const deletePuzzle = async () => {
     setStatus('deleting');
     try {
-      if (!props.puzzle) return;
+      if (!puzzle) return;
       if (!confirm('Are you sure you want to delete this puzzle?')) return;
       const resp = await fetch('/api/admin/curated-sets/curatedPuzzle', {
         method: 'DELETE',
         body: JSON.stringify({
-          id: props.puzzle.curatedPuzzleId,
+          id: puzzle.curatedPuzzleId,
         }),
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json?.message != 'Puzzle deleted') throw new Error(json.message);
+      if (json.message !== 'Puzzle deleted') throw new Error(json.message);
     } catch (e) {
       if (e instanceof Error) setError(e.message);
       else setError('Unknown error');
@@ -79,11 +83,11 @@ export default function PuzzleDisplay(props: {
     const moveColour = game.history({ verbose: true })[index]!.color;
     const FlexText = () => (
       <p>
-        {(moveColour == 'w' || (moveColour == 'b' && index == 0)) && (
+        {(moveColour === 'w' || (moveColour === 'b' && index === 0)) && (
           <span className="font-bold">
             {/* This weird calc is to fix the first black number being too high */}
-            {moveNumber - (moveColour == 'b' && index == 0 ? 1 : 0)}.
-            {moveColour == 'b' && index == 0 && '..'}
+            {moveNumber - (moveColour === 'b' && index === 0 ? 1 : 0)}.
+            {moveColour === 'b' && index === 0 && '..'}
           </span>
         )}{' '}
         <span>{move}</span>
@@ -94,7 +98,7 @@ export default function PuzzleDisplay(props: {
         key={`btn${moveNumber.toString()}${move}${moveColour}`}
         className="h-max max-h-fit bg-none px-1 py-1 hover:bg-purple-800 hover:text-white"
         onClick={() => {
-          const newGame = new Chess(props.puzzle!.fen);
+          const newGame = new Chess(puzzle!.fen);
           for (let i = 0; i <= index; i++) {
             newGame.move(game.history()[i]!);
           }
@@ -107,11 +111,11 @@ export default function PuzzleDisplay(props: {
   });
 
   useEffect(() => {
-    if (props.puzzle) {
+    if (puzzle) {
       (async () => {
         // Ensure we have the latest
         const json = await fetch(
-          `/api/puzzles/getPuzzleById/${props.puzzle!.puzzleid}`,
+          `/api/puzzles/getPuzzleById/${puzzle!.puzzleid}`,
         ).then((res) => res.json());
         const puzzle = json.data.puzzle;
 
@@ -119,10 +123,10 @@ export default function PuzzleDisplay(props: {
         const fenCol = puzzle.fen.split(' ')[1];
         setOrientation(
           puzzle.directStart
-            ? fenCol == 'w'
+            ? fenCol === 'w'
               ? 'white'
               : 'black'
-            : fenCol == 'w'
+            : fenCol === 'w'
               ? 'black'
               : 'white',
         );
@@ -139,7 +143,7 @@ export default function PuzzleDisplay(props: {
       game.reset();
       setPosition(game.fen());
     }
-  }, [props.puzzle]);
+  }, [puzzle]);
 
   return (
     <div className="flex">
@@ -155,14 +159,14 @@ export default function PuzzleDisplay(props: {
         position={position}
         readyForInput={readyForInput}
       />
-      {props.puzzle ? (
+      {puzzle ? (
         <div className="flex flex-row">
           {/* PGN Display */}
           <div className="flex h-full flex-1 flex-wrap content-start gap-1 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 text-black dark:text-white lg:border-4">
             <button
               className="h-max max-h-fit bg-none p-1 hover:bg-purple-800 hover:text-white"
               onClick={() => {
-                setPosition(props.puzzle!.fen);
+                setPosition(puzzle!.fen);
               }}
             >
               Start
@@ -170,7 +174,7 @@ export default function PuzzleDisplay(props: {
             {PgnDisplay.map((item) => item)}
           </div>
 
-          {props.mode === 'list' && (
+          {mode === 'list' && (
             <div className="flex flex-1 flex-col gap-2 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 text-black dark:text-white lg:border-4">
               {/* Puzzle Details Editor */}
               <div>
@@ -199,7 +203,7 @@ export default function PuzzleDisplay(props: {
                   variant="primary"
                   onClick={savePuzzle}
                 >
-                  {status == 'saving' ? (
+                  {status === 'saving' ? (
                     <>
                       Saving... <Spinner />
                     </>
@@ -212,7 +216,7 @@ export default function PuzzleDisplay(props: {
                   variant="danger"
                   onClick={deletePuzzle}
                 >
-                  {status == 'deleting' ? (
+                  {status === 'deleting' ? (
                     <>
                       Deleting... <Spinner />
                     </>

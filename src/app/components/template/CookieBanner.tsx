@@ -1,16 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { usePostHog } from 'posthog-js/react';
+import { useEffect, useState } from 'react';
 
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 import Button from '@/app/components/_elements/button';
 import Heading from '@/app/components/_elements/heading';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
-
-export default function CookieBanner() {
+export function CookieBanner() {
   const [showBanner, setShowBanner] = useState(false);
   const [readMore, setReadMore] = useState(false);
   const posthog = usePostHog();

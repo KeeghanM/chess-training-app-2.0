@@ -1,29 +1,26 @@
 'use client';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-
-import { useEffect, useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import type { Course, UserCourse } from '@prisma/client';
 import * as Sentry from '@sentry/nextjs';
 import Tippy from '@tippyjs/react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import type { ResponseJson } from '@/app/api/responses';
 import Button from '@/app/components/_elements/button';
-import StyledLink from '@/app/components/_elements/styledLink';
+import StyledLink from '@/app/components/_elements/styled-link';
 import PremiumSubscribe from '@/app/components/ecomm/PremiumSubscribe';
 import Spinner from '@/app/components/general/Spinner';
 import TimeSince from '@/app/components/general/TimeSince';
-
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
 import CourseSettings from './CourseSettings';
 import type { PrismaUserCourse } from './CoursesList';
 
 // TODO: Add revision schedule viewer
 
-export default function CourseListItem(props: {
+export function CourseListItem(props: {
   courseId: string;
   courseName: string;
   update: () => void;
@@ -44,7 +41,7 @@ export default function CourseListItem(props: {
     router.push(
       `/training/courses/${
         userCourse.id
-      }${mode == 'learn' ? '?mode=newOnly' : ''}`,
+      }${mode === 'learn' ? '?mode=newOnly' : ''}`,
     );
   };
 
@@ -52,9 +49,9 @@ export default function CourseListItem(props: {
     setOpening(false);
     (async () => {
       try {
-        const resp = await fetch(`/api/courses/user/${props.courseId}`);
+        const resp = await fetch(`/api/courses/user/${courseId}`);
         const json = (await resp.json()) as ResponseJson;
-        if (json?.message != 'Course Fetched')
+        if (json.message !== 'Course Fetched')
           throw new Error('Course not fetched');
 
         const course = json.data!.course as PrismaUserCourse;
@@ -74,7 +71,7 @@ export default function CourseListItem(props: {
 
   return (
     <div
-      key={props.courseId}
+      key={courseId}
       className="flex flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900"
     >
       {loading ? (
@@ -110,7 +107,7 @@ export default function CourseListItem(props: {
                   className="cursor-pointer text-lg text-orange-500"
                   href={`/training/courses/${userCourse?.id}/lines`}
                 >
-                  {props.courseName}
+                  {courseName}
                 </Link>
               </Tippy>
               <span className="text-xs italic text-gray-600 dark:text-gray-400">
@@ -125,7 +122,7 @@ export default function CourseListItem(props: {
                 )}
               </span>
             </p>
-            <CourseSettings update={props.update} userCourse={userCourse!} />
+            <CourseSettings update={update} userCourse={userCourse!} />
           </div>
           <div className="flex flex-col items-center gap-2 p-2 md:flex-row">
             <div className="flex flex-col items-center gap-2 md:flex-row">
@@ -171,10 +168,10 @@ export default function CourseListItem(props: {
                   <p className="text-sm italic">
                     {
                       userCourse?.lines?.filter(
-                        (line) => line.revisionDate != null,
+                        (line) => line.revisionDate !== null,
                       ).length
                     }{' '}
-                    {userCourse?.lines?.length == 1
+                    {userCourse?.lines?.length === 1
                       ? 'line to review.'
                       : 'lines to review.'}
                   </p>
@@ -184,11 +181,11 @@ export default function CourseListItem(props: {
                         (line) => line.revisionDate === null,
                       ).length
                     }{' '}
-                    {userCourse?.lines?.length == 1
+                    {userCourse?.lines?.length === 1
                       ? 'line to learn.'
                       : 'lines to learn.'}
                   </p>
-                  {props.hasPremium ? (
+                  {hasPremium ? (
                     <Link
                       className="text-xs text-purple-700 underline hover:no-underline dark:text-purple-400"
                       href={`/training/courses/${userCourse?.id}/schedule`}
@@ -231,7 +228,7 @@ export default function CourseListItem(props: {
             </div>
             <div className="flex flex-col gap-2 md:ml-auto md:flex-row">
               <Button
-                disabled={userCourse?.lines?.length == 0 || opening}
+                disabled={userCourse?.lines?.length === 0 || opening}
                 variant="primary"
                 onClick={() => openCourse('revise')}
               >

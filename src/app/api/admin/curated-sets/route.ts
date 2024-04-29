@@ -1,7 +1,8 @@
-import { errorResponse, successResponse } from '@/app/api/responses';
-import { prisma } from '@/server/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
+
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request);
@@ -91,9 +92,9 @@ export async function PATCH(request: Request) {
     !slug ||
     !minRating ||
     !maxRating ||
-    price == undefined ||
-    published == undefined ||
-    size == undefined
+    price === undefined ||
+    published === undefined ||
+    size === undefined
   )
     return errorResponse('Missing required fields', 400);
 
@@ -108,7 +109,7 @@ export async function PATCH(request: Request) {
     },
   });
 
-  if (existingSet && existingSet.id != id)
+  if (existingSet && existingSet.id !== id)
     return errorResponse('Set name is not available', 400);
 
   try {

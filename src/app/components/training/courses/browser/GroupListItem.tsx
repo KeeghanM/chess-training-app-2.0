@@ -6,7 +6,7 @@ import type { UserLineWithData } from './CourseBrowser';
 
 // TODO: Add a "Train by group" button
 
-export default function GroupListItem(props: {
+export function GroupListItem(props: {
   name: string;
   lines: UserLineWithData[];
   onClick: () => void;
@@ -16,7 +16,7 @@ export default function GroupListItem(props: {
 
   const { linesLearned, linesLearning, linesHard, linesUnseen } = lines.reduce(
     (acc, line) => {
-      if (line.timesTrained == 0) acc.linesUnseen++;
+      if (line.timesTrained === 0) acc.linesUnseen++;
       else if (line.currentStreak > 4 && line.timesCorrect >= line.timesWrong)
         acc.linesLearned++;
       else if (
@@ -57,7 +57,7 @@ export default function GroupListItem(props: {
           className={`flex items-center gap-2 text-orange-500 transition-all duration-200${
             !open ? ' cursor-pointer hover:underline' : ''
           }`}
-          onClick={() => (!open ? props.onClick() : null)}
+          onClick={() => (!open ? onClick() : null)}
         >
           <h2 className="font-bold">{name}</h2>
           <svg

@@ -16,7 +16,14 @@ interface ButtonProps {
   id?: string;
   className?: string;
 }
-export default function Button(props: ButtonProps) {
+export function Button({
+  onClick,
+  variant,
+  disabled,
+  children,
+  id,
+  className,
+}: ButtonProps) {
   const styles = {
     primary:
       'bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-6 shadow',
@@ -36,16 +43,16 @@ export default function Button(props: ButtonProps) {
 
   return (
     <button
-      disabled={props.disabled}
-      id={props.id}
+      disabled={disabled}
+      id={id}
       className={`flex min-w-[145px] items-center justify-center gap-2 text-sm ${
-        styles[props.variant]
+        styles[variant]
       }${
-        props.disabled ? ' cursor-not-allowed opacity-50' : ''
-      }${props.className ? ` ${props.className}` : ''}`}
-      onClick={props.onClick ? props.onClick : undefined}
+        disabled ? ' cursor-not-allowed opacity-50' : ''
+      }${className ? ` ${className}` : ''}`}
+      onClick={onClick ? onClick : undefined}
     >
-      {props.children}
+      {children}
     </button>
   );
 }

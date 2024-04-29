@@ -6,7 +6,7 @@ import type { Line } from '@/app/components/training/courses/create/parse/ParseP
 
 import type { LineWithMoves } from './GroupEditor';
 
-export default function LineDisplay(props: {
+export function LineDisplay(props: {
   line: LineWithMoves;
   onChange: (line: LineWithMoves) => void;
   onDelete: () => void;
@@ -25,7 +25,7 @@ export default function LineDisplay(props: {
         "Are you sure you want to delete this line? Remember, you'll need to save the course to make this change permanent.",
       )
     ) {
-      props.onDelete();
+      onDelete();
     }
   };
 
@@ -50,7 +50,7 @@ export default function LineDisplay(props: {
         <select
           value={line.trainable ? 1 : 0}
           onChange={(e) =>
-            props.onChange({ ...line, trainable: e.target.value === '1' })
+            onChange({ ...line, trainable: e.target.value === '1' })
           }
         >
           <option value={1}>Trainable</option>

@@ -1,26 +1,23 @@
+import * as Sentry from '@sentry/nextjs';
 import { redirect } from 'next/navigation';
 
-import { prisma } from '@/server/db';
-import * as Sentry from '@sentry/nextjs';
-
+import { getUserServer } from '@/app/_util/getUserServer';
 import Container from '@/app/components/_elements/container';
 import TacticsTrainer from '@/app/components/training/tactics/TacticsTrainer';
 import type { PrismaTacticsSetWithPuzzles } from '@/app/components/training/tactics/TacticsTrainer';
+import { prisma } from '@/server/db';
 
-import { getUserServer } from '@/app/_util/getUserServer';
-
-export default async function TacticsTrainPage({
+export async function TacticsTrainPage({
   params,
 }: {
   params: { setId: string };
 }) {
-  const { user, profile } = await getUserServer();
+  const { user } = await getUserServer();
   if (!user) redirect('/auth/signin');
   let set: PrismaTacticsSetWithPuzzles | null = null;
 
   try {
-    const userId = user.id ?? profile?.id ?? '';
-    if (!userId) return redirect('/auth/signin');
+    const userId = user.id;
 
     set = (await prisma.tacticsSet.findUnique({
       where: { id: params.setId, userId },

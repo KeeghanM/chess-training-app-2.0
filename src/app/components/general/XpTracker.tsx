@@ -1,15 +1,12 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import { useEffect, useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-import * as Sentry from '@sentry/nextjs';
 
 export type availableTypes = 'line' | 'tactic';
-export default function XpTracker(props: {
-  counter: number;
-  type: availableTypes;
-}) {
+export function XpTracker(props: { counter: number; type: availableTypes }) {
   const [show, setShow] = useState(false);
   const [xpToAdd, setXpToAdd] = useState(0);
 
@@ -25,9 +22,9 @@ export default function XpTracker(props: {
   };
 
   useEffect(() => {
-    if (props.counter === 0) return;
+    if (counter === 0) return;
     // Calculate the XP to add
-    const xpToAdd = calculateXp(props.type);
+    const xpToAdd = calculateXp(type);
     setXpToAdd(xpToAdd);
     // We hide and show it, just in case the user gets multiple XP
     // in a short period of time
@@ -44,14 +41,14 @@ export default function XpTracker(props: {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ xp: xpToAdd, type: props.type }),
+        body: JSON.stringify({ xp: xpToAdd, type: type }),
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json.message != 'XP added') throw new Error(json.message);
+      if (json.message !== 'XP added') throw new Error(json.message);
     })().catch((e) => {
       Sentry.captureException(e);
     });
-  }, [props.counter]);
+  }, [counter]);
 
   return show ? (
     <div className="pointer-events-none absolute inset-0 grid place-items-center">

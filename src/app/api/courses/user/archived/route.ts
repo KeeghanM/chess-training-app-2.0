@@ -1,7 +1,8 @@
-import { errorResponse, successResponse } from '@/app/api/responses';
-import { prisma } from '@/server/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
+
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
 
 export async function GET(request: Request) {
   const session = getKindeServerSession(request);
@@ -22,7 +23,7 @@ export async function GET(request: Request) {
     return successResponse(
       'Courses found',
       {
-        courses: courses.filter((course) => course.active == false),
+        courses: courses.filter((course) => !course.active),
         activeCount: courses.reduce(
           (acc, course) => (course.active ? acc + 1 : acc),
           0,

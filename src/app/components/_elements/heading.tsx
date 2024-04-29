@@ -1,49 +1,53 @@
-export default function Heading(props: {
+export function Heading({
+  children,
+  as,
+  color,
+  bold = true,
+}: {
   children: React.ReactNode;
-  as: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
+  as: 'h1' | 'h2' | 'h3' | 'h4';
   color?: string;
   bold?: boolean;
 }) {
-  const bold = props.bold ?? true;
-  switch (props.as) {
+  switch (as) {
     case 'h1':
       return (
         <h1
           className={`mb-2 flex flex-wrap items-center gap-1 text-3xl font-bold md:text-4xl ${
-            props.color ?? 'text-purple-700'
+            color ?? 'text-purple-700'
           }`}
         >
-          {props.children}
+          {children}
         </h1>
       );
     case 'h2':
       return (
         <h2
           className={`mb-2 mt-4 text-2xl md:text-3xl ${
-            props.color ?? 'text-gray-700'
+            color ?? 'text-gray-700'
           }${bold ? ' font-bold' : ''}`}
         >
-          {props.children}
+          {children}
         </h2>
       );
     case 'h3':
       return (
         <h3
           className={`mb-2 mt-4 text-xl font-bold md:text-2xl ${
-            props.color ?? 'text-orange-500'
+            color ?? 'text-orange-500'
           }`}
         >
-          {props.children}
+          {children}
         </h3>
       );
     case 'h4':
       return (
         <h4
           className={`mb-2 text-xl font-bold  md:text-lg ${
-            props.color ?? 'text-purple-700'
+            color ?? 'text-purple-700'
           }`}
         >
-          {props.children}
+          {children}
         </h4>
       );
   }

@@ -18,22 +18,28 @@ interface CtaRowProps {
   children: React.ReactNode;
 }
 
-export default function CtaRow(props: CtaRowProps) {
+export function CtaRow({
+  title,
+  cta,
+  secondary,
+  background,
+  children,
+}: CtaRowProps) {
   return (
-    <div className={props.background == 'light' ? 'bg-white' : 'bg-purple-100'}>
+    <div className={background === 'light' ? 'bg-white' : 'bg-purple-100'}>
       <Container>
         <div className="flex flex-col gap-4">
-          <Heading as="h2">{props.title}</Heading>
+          <Heading as="h2">{title}</Heading>
           <div className="flex flex-col gap-4 md:flex-row md:gap-6">
-            {props.children}
+            {children}
           </div>
           <div className="flex gap-4">
-            <Link href={props.cta.link}>
-              <Button variant="primary">{props.cta.text}</Button>
+            <Link href={cta.link}>
+              <Button variant="primary">{cta.text}</Button>
             </Link>
-            {props.secondary ? (
-              <Link href={props.secondary.link}>
-                <Button variant="secondary">{props.secondary.text}</Button>
+            {secondary ? (
+              <Link href={secondary.link}>
+                <Button variant="secondary">{secondary.text}</Button>
               </Link>
             ) : null}
           </div>

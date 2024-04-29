@@ -11,24 +11,24 @@ interface PageHeaderProps {
   };
 }
 
-export default function PageHeader(props: PageHeaderProps) {
+export function PageHeader({ title, subTitle, image }: PageHeaderProps) {
   return (
     <div className="relative">
       <div className="absolute inset-0">
         <Image
           fill
-          alt={props.image.alt}
+          alt={image.alt}
           className="h-full w-full object-cover object-center brightness-[.3] grayscale filter"
-          src={props.image.src}
+          src={image.src}
         />
       </div>
       <div className="relative px-4 py-2 md:px-12 md:py-4 lg:px-24 lg:py-6">
         <Heading as="h1" color="text-white">
-          {props.title}
+          {title}
         </Heading>
-        {props.subTitle ? (
+        {subTitle ? (
           <Heading as="h2" bold={false} color="text-orange-500">
-            {props.subTitle}
+            {subTitle}
           </Heading>
         ) : null}
       </div>

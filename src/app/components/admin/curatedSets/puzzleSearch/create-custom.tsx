@@ -1,16 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import { parse } from '@mliebelt/pgn-parser';
 import type { ParseTree } from '@mliebelt/pgn-parser';
+import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import Button from '@/app/components/_elements/button';
+import type { ResponseJson } from '@/app/api/responses';
+import { Button } from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 
-export default function CreateCustom(props: { onLoad: () => void }) {
+export function CreateCustom({ onLoad }: { onLoad: () => void }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -43,7 +42,7 @@ export default function CreateCustom(props: { onLoad: () => void }) {
       parsed.map((game) =>
         puzzles.push({
           id: `cta_${uuidv4().split('-')[4]}`,
-          fen: game.tags!.FEN,
+          fen: game.tags?.FEN as string,
           moves: game.moves.map((m) => m.notation.notation).join(','),
           rating: 1500,
           comment: game.gameComment?.comment ?? '',
@@ -60,10 +59,10 @@ export default function CreateCustom(props: { onLoad: () => void }) {
         body: JSON.stringify({ puzzles }),
       });
       const json = (await response.json()) as ResponseJson;
-      if (json?.message != 'Puzzles created')
-        throw new Error(json?.message ?? 'Error importing puzzles');
+      if (json.message !== 'Puzzles created')
+        throw new Error(json.message ?? 'Error importing puzzles');
 
-      props.onLoad();
+      onLoad();
     } catch (e) {
       if (e instanceof Error) setError(e.message);
       else setError('Error importing puzzles');

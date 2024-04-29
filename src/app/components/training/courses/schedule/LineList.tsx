@@ -9,7 +9,7 @@ interface LineListProps {
   userLines: ScheduleLine[];
   courseId: string;
 }
-export default function LineList({ userLines, courseId }: LineListProps) {
+export function LineList({ userLines, courseId }: LineListProps) {
   const [lines, setLines] = useState<ScheduleLine[]>(userLines);
   const minDate = useMemo(() => {
     return new Date(

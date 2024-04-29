@@ -1,24 +1,28 @@
 'use client';
 
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import Tippy from '@tippyjs/react';
 import Link from 'next/link';
-
 import { useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
-import Tippy from '@tippyjs/react';
 
 import Button from '../_elements/button';
 import Spinner from '../general/Spinner';
 
-export default function GetCourse(props: {
+export function GetCourse({
+  courseId,
+  price,
+  userCourseId,
+  slug,
+  showPrice,
+}: {
   courseId: string;
   price: number;
   slug: string;
   userCourseId?: string;
   showPrice: boolean;
 }) {
-  const { courseId, price, userCourseId, slug, showPrice } = props;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { user } = useKindeBrowserClient();
@@ -40,7 +44,7 @@ export default function GetCourse(props: {
         }),
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json?.data?.url == undefined) throw new Error(json?.message);
+      if (json.data?.url === undefined) throw new Error(json.message);
 
       window.location.href = json.data.url as string;
     } catch (e) {

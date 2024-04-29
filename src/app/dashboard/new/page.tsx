@@ -2,15 +2,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import Button from '@/app/components/_elements/button';
-import Container from '@/app/components/_elements/container';
-import StyledLink from '@/app/components/_elements/styledLink';
-import PageHeader from '@/app/components/_layouts/pageHeader';
-
 import { createUserProfile, getUserServer } from '@/app/_util/getUserServer';
 import { trackEventOnServer } from '@/app/_util/trackEventOnServer';
+import Button from '@/app/components/_elements/button';
+import Container from '@/app/components/_elements/container';
+import StyledLink from '@/app/components/_elements/styled-link';
+import { PageHeader } from '@/app/components/_layouts/page-header';
 
-export default async function NewUserWelcome() {
+export async function NewUserWelcome() {
   const { user, profile } = await getUserServer();
   if (!user) redirect('/auth/signin');
   if (!profile) {
@@ -34,18 +33,18 @@ export default async function NewUserWelcome() {
             <Button variant="primary">Just take me to my dashboard</Button>
           </Link>
           <p>
-            Hi! I'm Keeghan McGarry, the founder of{' '}
-            <strong>ChessTraining.app</strong>. I'm a chess enthusiast and
+            Hi! I&amp;m Keeghan McGarry, the founder of{' '}
+            <strong>ChessTraining.app</strong>. I&amp;m a chess enthusiast and
             software engineer. I built this site to help people who, like me,
             want to improve their chess skills but have found other sites a
             little lacking.
           </p>
           <p>
             I aim for <strong>ChessTraining.app</strong> to be the single best
-            place to train all elements of your chess. In theory, you'll be able
-            to do everything except actually play chess (maybe one day?). I'm
-            constantly working to improve the site and add new features. If you
-            have any feedback, please don't hesitate to{' '}
+            place to train all elements of your chess. In theory, you&amp;ll be
+            able to do everything except actually play chess (maybe one day?).
+            I&amp;m constantly working to improve the site and add new features.
+            If you have any feedback, please don&amp;t hesitate to{' '}
             <StyledLink href="/contact">contact me</StyledLink>.
           </p>
           <Image

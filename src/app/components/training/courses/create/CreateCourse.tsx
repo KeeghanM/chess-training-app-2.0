@@ -1,19 +1,16 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-
-import { useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import * as Sentry from '@sentry/nextjs';
-
-import Button from '@/app/components/_elements/button';
-import Container from '@/app/components/_elements/container';
-import Heading from '@/app/components/_elements/heading';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 import GenerateSlug from '@/app/_util/GenerateSlug';
 import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import type { ResponseJson } from '@/app/api/responses';
+import Button from '@/app/components/_elements/button';
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
 
 import DetailsForm from './DetailsForm';
 import GroupSelector from './GroupSelector';
@@ -21,7 +18,7 @@ import PgnToLinesForm from './PgnToLinesForm';
 import Steps from './Steps';
 import type { Line } from './parse/ParsePGNtoLineData';
 
-export default function CreateCourseForm() {
+export function CreateCourseForm() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState<
     'import' | 'group' | 'name' | 'error'
@@ -50,13 +47,13 @@ export default function CreateCourseForm() {
       });
       const json = (await response.json()) as ResponseJson;
 
-      if (json?.message == 'Course name is not available') {
+      if (json.message === 'Course name is not available') {
         // TODO: Show name field with error
         return;
       }
 
-      if (json?.message != 'Course created')
-        throw new Error(json?.message ?? 'Unknown error');
+      if (json.message !== 'Course created')
+        throw new Error(json.message ?? 'Unknown error');
 
       trackEventOnClient('create_course_success', {});
       router.push('/training/courses/');
@@ -76,7 +73,7 @@ export default function CreateCourseForm() {
             </Heading>
           ) : null}
           <Steps currentStep={currentStep} />
-          {currentStep == 'name' && (
+          {currentStep === 'name' && (
             <DetailsForm
               courseName={courseName}
               description={description}
@@ -87,7 +84,7 @@ export default function CreateCourseForm() {
               }}
             />
           )}
-          {currentStep == 'import' && (
+          {currentStep === 'import' && (
             <PgnToLinesForm
               back={() => {
                 setCurrentStep('name');
@@ -98,7 +95,7 @@ export default function CreateCourseForm() {
               }}
             />
           )}
-          {currentStep == 'group' && (
+          {currentStep === 'group' && (
             <GroupSelector
               lines={lines}
               back={() => {
@@ -109,7 +106,7 @@ export default function CreateCourseForm() {
               }}
             />
           )}
-          {currentStep == 'error' && (
+          {currentStep === 'error' && (
             <>
               <Heading as="h2" color="text-red-500">
                 Error: Something went wrong

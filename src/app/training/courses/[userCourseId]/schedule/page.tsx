@@ -1,19 +1,17 @@
+import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { prisma } from '@/server/db';
-import * as Sentry from '@sentry/nextjs';
-
+import { getUserServer } from '@/app/_util/getUserServer';
 import Button from '@/app/components/_elements/button';
 import Container from '@/app/components/_elements/container';
-import PageHeader from '@/app/components/_layouts/pageHeader';
+import { PageHeader } from '@/app/components/_layouts/page-header';
 import Info from '@/app/components/training/courses/schedule/Info';
 import LineList from '@/app/components/training/courses/schedule/LineList';
 import ResetButtons from '@/app/components/training/courses/schedule/ResetButtons';
+import { prisma } from '@/server/db';
 
-import { getUserServer } from '@/app/_util/getUserServer';
-
-export default async function CourseSchedulePage({
+export async function CourseSchedulePage({
   params,
 }: {
   params: { userCourseId: string };
@@ -40,7 +38,7 @@ export default async function CourseSchedulePage({
         },
       });
 
-      if (!userCourse) throw new Error('Course not found');
+      if (userCourse === null) throw new Error('Course not found');
 
       const userLines = await prisma.userLine.findMany({
         where: {
@@ -57,7 +55,7 @@ export default async function CourseSchedulePage({
         },
       });
 
-      if (!userLines) throw new Error('Lines not found');
+      if (userLines.length === 0) throw new Error('Lines not found');
 
       // Sort lines by their groups sortOrder and then by their own sortOrder
       userLines.sort((a, b) => {
@@ -78,7 +76,7 @@ export default async function CourseSchedulePage({
     }
   })();
 
-  if (!userCourse || !userLines) {
+  if (userCourse === undefined || userLines.length === 0) {
     redirect('/404');
   }
 
@@ -93,7 +91,7 @@ export default async function CourseSchedulePage({
     <>
       <PageHeader
         subTitle="Revision Schedule"
-        title={`${userCourse.course.courseName}`}
+        title={userCourse.course.courseName}
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden Chess pieces on a chess board',

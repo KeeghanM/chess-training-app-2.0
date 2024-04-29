@@ -1,18 +1,18 @@
 'use client';
 
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-
-import { useEffect, useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import type { Puzzle } from '@prisma/client';
 import * as Sentry from '@sentry/nextjs';
 import Tippy from '@tippyjs/react';
 import type { Move } from 'chess.js';
 import { Chess } from 'chess.js';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import Toggle from 'react-toggle';
+
+import type { ResponseJson } from '@/app/api/responses';
+
 import 'react-toggle/style.css';
 // @ts-expect-error - No types available
 import useSound from 'use-sound';
@@ -22,10 +22,10 @@ import Spinner from '@/app/components/general/Spinner';
 import TimeSince from '@/app/components/general/TimeSince';
 import XpTracker from '@/app/components/general/XpTracker';
 import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
-
 import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
 import ChessBoard from '../ChessBoard';
+
 import type { PrismaTacticsSet } from './create/TacticsSetCreator';
 
 export type PrismaTacticsSetWithPuzzles = PrismaTacticsSet & {
@@ -46,15 +46,13 @@ export interface TrainingPuzzle {
 
 // TODO: "Show solution" button
 
-export default function TacticsTrainer(props: {
-  set: PrismaTacticsSetWithPuzzles;
-}) {
+export function TacticsTrainer(props: { set: PrismaTacticsSetWithPuzzles }) {
   const { user } = useKindeBrowserClient();
   const router = useRouter();
 
   // Setup main state for the game/puzzles
   const [currentRound, setCurrentRound] = useState(
-    props.set.rounds[props.set.rounds.length - 1]!,
+    set.rounds[set.rounds.length - 1]!,
   );
   const [currentPuzzle, setCurrentPuzzle] = useState<TrainingPuzzle>();
   const [CompletedPuzzles, setCompletedPuzzles] = useState(
@@ -92,7 +90,7 @@ export default function TacticsTrainer(props: {
         },
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json.message != 'Puzzle found') throw new Error(json.message);
+      if (json.message !== 'Puzzle found') throw new Error(json.message);
 
       return json.data!.puzzle as TrainingPuzzle;
     } catch (e) {
@@ -148,7 +146,7 @@ export default function TacticsTrainer(props: {
         body: JSON.stringify({
           roundId: currentRound.id,
           timeTaken,
-          setId: props.set.id,
+          setId: set.id,
         }),
       }).catch((e) => Sentry.captureException(e));
     } catch (e) {
@@ -218,14 +216,11 @@ export default function TacticsTrainer(props: {
     // If we haven't then load the next puzzle
     setLoading(true);
 
-    const currentPuzzleIndex = props.set.puzzles.findIndex(
-      (item) => item.puzzleid == currentPuzzle!.puzzleid,
+    const currentPuzzleIndex = set.puzzles.findIndex(
+      (item) => item.puzzleid === currentPuzzle!.puzzleid,
     );
 
-    if (
-      currentPuzzleIndex + 1 >= props.set.size ||
-      CompletedPuzzles >= props.set.size
-    ) {
+    if (currentPuzzleIndex + 1 >= set.size || CompletedPuzzles >= set.size) {
       // We have completed the set
 
       if (user) {
@@ -241,9 +236,9 @@ export default function TacticsTrainer(props: {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              setId: props.set.id,
+              setId: set.id,
               roundNumber: currentRound.roundNumber + 1,
-              puzzleRating: props.set.rating,
+              puzzleRating: set.rating,
             }),
           });
         } catch (e) {
@@ -259,7 +254,7 @@ export default function TacticsTrainer(props: {
     // We haven't completed the set so we need to change the puzzle
 
     const newPuzzle = await getPuzzle(
-      props.set.puzzles[currentPuzzleIndex + 1]!.puzzleid,
+      set.puzzles[currentPuzzleIndex + 1]!.puzzleid,
     );
     setPuzzleStatus('none');
     setLoading(false);
@@ -278,7 +273,7 @@ export default function TacticsTrainer(props: {
       increaseTimeTaken();
       increaseCorrect();
 
-      if (autoNext && puzzleStatus != 'incorrect') {
+      if (autoNext && puzzleStatus !== 'incorrect') {
         await goToNextPuzzle();
       }
       return true;
@@ -341,11 +336,11 @@ export default function TacticsTrainer(props: {
     const moveColour = game.history({ verbose: true })[index]!.color;
     const FlexText = () => (
       <p>
-        {(moveColour == 'w' || (moveColour == 'b' && index == 0)) && (
+        {(moveColour === 'w' || (moveColour === 'b' && index === 0)) && (
           <span className="font-bold">
             {/* This weird calc is to fix the first black number being too high */}
-            {moveNumber - (moveColour == 'b' && index == 0 ? 1 : 0)}.
-            {moveColour == 'b' && index == 0 && '..'}
+            {moveNumber - (moveColour === 'b' && index === 0 ? 1 : 0)}.
+            {moveColour === 'b' && index === 0 && '..'}
           </span>
         )}{' '}
         <span>{move}</span>
@@ -391,10 +386,9 @@ export default function TacticsTrainer(props: {
   useEffect(() => {
     // On mount, load the first puzzle
     (async () => {
-      const startingRound = props.set.rounds[props.set.rounds.length - 1]!;
+      const startingRound = set.rounds[set.rounds.length - 1]!;
       const puzzleId =
-        props.set.puzzles[startingRound.correct + startingRound.incorrect]!
-          .puzzleid;
+        set.puzzles[startingRound.correct + startingRound.incorrect]!.puzzleid;
       const puzzle = await getPuzzle(puzzleId);
       if (!puzzle) return;
       setCurrentPuzzle(puzzle);
@@ -436,11 +430,11 @@ export default function TacticsTrainer(props: {
       setPosition(currentPuzzle.fen);
       if (currentPuzzle.directStart) {
         // The first move is the players
-        setOrientation(game.turn() == 'w' ? 'white' : 'black');
+        setOrientation(game.turn() === 'w' ? 'white' : 'black');
         setReadyForInput(true);
       } else {
         // The first move is the opponents
-        setOrientation(game.turn() == 'w' ? 'black' : 'white'); // reversed because the first move is opponents
+        setOrientation(game.turn() === 'w' ? 'black' : 'white'); // reversed because the first move is opponents
         const firstMove = currentPuzzle.moves[0];
         const timeoutId = makeFirstMove(firstMove!);
         return () => clearTimeout(timeoutId);
@@ -453,7 +447,7 @@ export default function TacticsTrainer(props: {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === ' ') {
         e.preventDefault();
-        if (puzzleFinished && puzzleStatus == 'correct') goToNextPuzzle();
+        if (puzzleFinished && puzzleStatus === 'correct') goToNextPuzzle();
       }
     };
     window.addEventListener('keydown', handleKeyPress);
@@ -473,7 +467,7 @@ export default function TacticsTrainer(props: {
         </div>
       ) : null}
       <div className="flex flex-wrap items-center justify-between border-b border-gray-300 px-2 py-1 font-bold text-orange-500 dark:border-slate-600">
-        <p className="text-lg font-bold">{props.set.name}</p>
+        <p className="text-lg font-bold">{set.name}</p>
         <div className="flex items-center gap-2 text-black dark:text-white">
           <ThemeSwitch />
           <div
@@ -525,14 +519,14 @@ export default function TacticsTrainer(props: {
               <p className="border-b border-gray-300 px-1 py-1 font-bold dark:border-slate-600">
                 Round:
               </p>
-              <p>{props.set.rounds.length}/8</p>
+              <p>{set.rounds.length}/8</p>
             </div>
             <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
               <p className="border-b border-gray-300 px-1 py-1 font-bold dark:border-slate-600">
                 Completed:
               </p>
               <p>
-                {CompletedPuzzles}/{props.set.size}
+                {CompletedPuzzles}/{set.size}
               </p>
             </div>
             <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
@@ -540,7 +534,7 @@ export default function TacticsTrainer(props: {
                 Accuracy:
               </p>
               <p>
-                {currentRound.correct == 0 && currentRound.incorrect == 0
+                {currentRound.correct === 0 && currentRound.incorrect === 0
                   ? '0'
                   : Math.round(
                       (currentRound.correct /
@@ -690,7 +684,7 @@ export default function TacticsTrainer(props: {
                 defaultChecked={autoNext}
                 onChange={async () => {
                   setAutoNext(!autoNext);
-                  if (puzzleFinished && puzzleStatus == 'correct')
+                  if (puzzleFinished && puzzleStatus === 'correct')
                     await goToNextPuzzle();
                 }}
               />
@@ -698,7 +692,7 @@ export default function TacticsTrainer(props: {
             </label>
             <div className="flex flex-col gap-2">
               {puzzleFinished ? (
-                (!autoNext || puzzleStatus == 'incorrect') && (
+                (!autoNext || puzzleStatus === 'incorrect') && (
                   <Button variant="primary" onClick={() => goToNextPuzzle()}>
                     Next
                   </Button>

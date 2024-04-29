@@ -1,13 +1,11 @@
-import { useState } from 'react';
-
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
+import { useState } from 'react';
 
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 import Button from '@/app/components/_elements/button';
 import Heading from '@/app/components/_elements/heading';
 import PrettyPrintLine from '@/app/components/general/PrettyPrintLine';
-
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
 import type { Line } from './parse/ParsePGNtoLineData';
 
@@ -28,15 +26,15 @@ export const GroupItem = (props: {
   const [parent] = useAutoAnimate();
 
   const handleColorChange = (line: Line, newColor: string) => {
-    const updatedLines = props.lines.map((l) =>
+    const updatedLines = lines.map((l) =>
       l === line ? { ...l, tags: { ...l.tags, Colour: newColor } } : l,
     );
-    props.updateLines(updatedLines);
+    updateLines(updatedLines);
   };
 
   const handleLineDeletion = (line: Line) => {
-    const updatedLines = props.lines.filter((l) => l !== line);
-    props.updateLines(updatedLines);
+    const updatedLines = lines.filter((l) => l !== line);
+    updateLines(updatedLines);
   };
 
   return (
@@ -91,12 +89,12 @@ export const GroupItem = (props: {
               <Button
                 variant="primary"
                 onClick={async () => {
-                  const updatedLines = props.lines.map((l) =>
+                  const updatedLines = lines.map((l) =>
                     l.tags[selectedGroup] === groupKey
                       ? { ...l, tags: { ...l.tags, Colour: selectedColor } }
                       : l,
                   );
-                  props.updateLines(updatedLines);
+                  updateLines(updatedLines);
                   setSetAllOpen(false);
                   trackEventOnClient('create_course_set_all_lines_colour', {});
                 }}

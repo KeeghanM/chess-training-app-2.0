@@ -1,11 +1,11 @@
 import Link from 'next/link';
 
 import Heading from '@/app/components/_elements/heading';
-import BigText from '@/app/components/_layouts/bigText';
-import CtaRow from '@/app/components/_layouts/ctaRow';
+import BigText from '@/app/components/_layouts/big-text';
+import CtaRow from '@/app/components/_layouts/cta-row';
 import Hero from '@/app/components/_layouts/hero';
-import ImageRowFull from '@/app/components/_layouts/imageRowFull';
-import { TextWall } from '@/app/components/_layouts/textWall';
+import ImageRowFull from '@/app/components/_layouts/image-row-full';
+import { TextWall } from '@/app/components/_layouts/text-wall';
 
 export const metadata = {
   title:
@@ -14,7 +14,7 @@ export const metadata = {
     'Master tactical chess play with the Woodpecker Method. Perfect for all skill levels, this method developed by GMs Axel Smith and Hans Tikkanen emphasizes solving and re-solving puzzles for speed and accuracy. Join ChessTraining.app to revolutionize your tactical skills.',
 };
 
-export default async function WoodPeckerPage() {
+export async function WoodPeckerPage() {
   return (
     <>
       <Hero

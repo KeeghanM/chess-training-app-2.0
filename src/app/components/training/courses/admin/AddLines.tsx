@@ -1,18 +1,15 @@
 'use client';
 
-import Link from 'next/link';
-
-import { useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import type { Course, Move } from '@prisma/client';
 import * as Sentry from '@sentry/nextjs';
-
-import Button from '@/app/components/_elements/button';
-import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styledLink';
+import Link from 'next/link';
+import { useState } from 'react';
 
 import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import type { ResponseJson } from '@/app/api/responses';
+import Button from '@/app/components/_elements/button';
+import Heading from '@/app/components/_elements/heading';
+import StyledLink from '@/app/components/_elements/styled-link';
 
 import GroupSelector from '../create/GroupSelector';
 import PgnToLinesForm from '../create/PgnToLinesForm';
@@ -22,7 +19,7 @@ type FullCourseData = Course & {
   lines: (Line & { moves: Move[] })[];
 };
 
-export default function AddLines(props: { courseId: string }) {
+export function AddLines(props: { courseId: string }) {
   const [step, setStep] = useState<'pgn' | 'groups' | 'error' | 'success'>(
     'pgn',
   );
@@ -43,7 +40,7 @@ export default function AddLines(props: { courseId: string }) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          courseId: props.courseId,
+          courseId: courseId,
           groupNames: allGroups,
           lines: cleanLines,
         }),
@@ -51,8 +48,8 @@ export default function AddLines(props: { courseId: string }) {
 
       const json = (await resp.json()) as ResponseJson;
 
-      if (json?.message != 'Lines added')
-        throw new Error(json?.message ?? 'Unknown error');
+      if (json.message !== 'Lines added')
+        throw new Error(json.message ?? 'Unknown error');
 
       trackEventOnClient('course_lines_added', {});
       setStep('success');
@@ -69,12 +66,12 @@ export default function AddLines(props: { courseId: string }) {
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ courseId: props.courseId }),
+      body: JSON.stringify({ courseId: courseId }),
     });
     const lineJson = (await lineResp.json()) as ResponseJson;
 
-    if (lineJson?.message != 'Success')
-      throw new Error(lineJson?.message ?? 'Unknown error');
+    if (lineJson.message !== 'Success')
+      throw new Error(lineJson.message ?? 'Unknown error');
 
     const existingCourseData = lineJson.data!.course as FullCourseData;
 
@@ -138,7 +135,7 @@ export default function AddLines(props: { courseId: string }) {
             <Link href="/training/courses/">
               <Button variant="primary">Back to course list</Button>
             </Link>
-            <Link href={`/training/courses/admin/${props.courseId}`}>
+            <Link href={`/training/courses/admin/${courseId}`}>
               <Button variant="warning">Back to admin page</Button>
             </Link>
           </div>

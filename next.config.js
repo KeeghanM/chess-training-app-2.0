@@ -50,6 +50,6 @@ const sentryWebpackPluginOptions = {
 
 // Wrap your config with Sentry's configuration
 const config = withSentryConfig(nextConfig, sentryWebpackPluginOptions);
-export default MillionLint.next({
+module.exports = MillionLint.next({
   rsc: true,
 })(config);

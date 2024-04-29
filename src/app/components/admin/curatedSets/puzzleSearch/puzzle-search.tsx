@@ -3,20 +3,23 @@
 import { useEffect, useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-
 import Spinner from '@/app/components/general/Spinner';
 
-import type { CuratedSetPuzzle } from '../CuratedSetsBrowser';
-import CreateCustom from './CreateCustom';
-import LiChessSearch from './LiChessSearch';
+import type { CuratedSetPuzzle } from '../curated-sets-browser';
 
-export default function PuzzleSearch(props: {
+import { CreateCustom } from './create-custom';
+import { LiChessSearch } from './lichess-search';
+
+export function PuzzleSearch({
+  setPuzzle,
+}: {
   setPuzzle: (puzzle: CuratedSetPuzzle) => void;
 }) {
   const [mode, setMode] = useState<'LiChess' | 'Custom'>('LiChess');
   const [puzzles, setPuzzles] = useState<CuratedSetPuzzle[]>([]);
   const [selectedPuzzle, setSelectedPuzzle] = useState<CuratedSetPuzzle>();
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const loadPuzzles = async () => {
     setLoading(true);
@@ -32,13 +35,16 @@ export default function PuzzleSearch(props: {
       setPuzzles([]);
       return;
     }
-    (async () => await loadPuzzles())().catch(console.error);
+    (async () => await loadPuzzles())().catch((e: unknown) => {
+      if (e instanceof Error) setError(e.message);
+      else setError('Error loading puzzles');
+    });
   }, [mode]);
 
   return (
     <div className="flex max-h-[70vh] flex-1 flex-col gap-2 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 text-black dark:text-white lg:border-4">
       <div className="flex items-center justify-around text-sm">
-        <p
+        <button
           className={`px-4 py-1 font-bold text-white ${
             mode === 'LiChess'
               ? 'bg-green-500'
@@ -47,8 +53,8 @@ export default function PuzzleSearch(props: {
           onClick={() => setMode('LiChess')}
         >
           LiChess
-        </p>
-        <p
+        </button>
+        <button
           className={`px-4 py-1 font-bold text-white ${
             mode === 'Custom'
               ? 'bg-green-500'
@@ -57,10 +63,10 @@ export default function PuzzleSearch(props: {
           onClick={() => setMode('Custom')}
         >
           Custom
-        </p>
+        </button>
       </div>
       {mode === 'LiChess' ? (
-        <LiChessSearch setPuzzle={props.setPuzzle} />
+        <LiChessSearch setPuzzle={setPuzzle} />
       ) : (
         <>
           <CreateCustom onLoad={loadPuzzles} />
@@ -72,22 +78,26 @@ export default function PuzzleSearch(props: {
                 <li
                   key={puzzle.puzzleid}
                   className={`cursor-pointer border-b border-slate-500 bg-gray-50 p-2 hover:bg-orange-200 text-sm${
-                    selectedPuzzle?.puzzleid == puzzle.puzzleid
+                    selectedPuzzle?.puzzleid === puzzle.puzzleid
                       ? ' bg-purple-200'
                       : ''
                   }`}
-                  onClick={() => {
-                    setSelectedPuzzle(puzzle);
-                    props.setPuzzle(puzzle);
-                  }}
                 >
-                  {puzzle.puzzleid} ({puzzle.rating} - {puzzle.moves.length} )
+                  <button
+                    onClick={() => {
+                      setSelectedPuzzle(puzzle);
+                      setPuzzle(puzzle);
+                    }}
+                  >
+                    {puzzle.puzzleid} ({puzzle.rating} - {puzzle.moves.length} )
+                  </button>
                 </li>
               ))}
             </ul>
           )}
         </>
       )}
+      {error && <p>{error}</p>}
     </div>
   );
 }

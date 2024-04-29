@@ -1,21 +1,20 @@
+import { Tour } from '@frigade/react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 
-import { prisma } from '@/server/db';
-import { Tour } from '@frigade/react';
-
-import PremiumDisplay from '../components/dashboard/PremiumDisplay';
+import { PostHogClient } from '@/app/_util/trackEventOnServer';
 import Container from '@/app/components/_elements/container';
 import Heading from '@/app/components/_elements/heading';
 import StreakDisplay from '@/app/components/dashboard/StreakDisplay';
 import ToolGrid from '@/app/components/dashboard/ToolGrid';
 import XpDisplay from '@/app/components/dashboard/XpDisplay';
 import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
+import { prisma } from '@/server/db';
 
 import CalculateStreakBadge from '../_util/CalculateStreakBadge';
 import CalculateXpRank from '../_util/CalculateXpRank';
 import { getUserServer } from '../_util/getUserServer';
-import { PostHogClient } from '@/app/_util/trackEventOnServer';
+import PremiumDisplay from '../components/dashboard/PremiumDisplay';
 
 export interface Tool {
   name: string;
@@ -31,7 +30,7 @@ export const metadata = {
   title: 'Dashboard - ChessTraining.app',
 };
 
-export default async function Dashboard() {
+export async function Dashboard() {
   const { user, isPremium, isStaff } = await getUserServer();
 
   if (!user) {
@@ -51,7 +50,7 @@ export default async function Dashboard() {
   });
   await prisma.$disconnect();
 
-  const override = false ?? process.env.NODE_ENV === 'development';
+  const override = process.env.NODE_ENV === 'development';
 
   // Identify the user immediately upon signin
   const posthog = PostHogClient();
@@ -76,7 +75,7 @@ export default async function Dashboard() {
       trainingLink: '/training/tactics/list',
       learnMoreLink: '/training/tactics',
       buttonText: 'Train',
-      active: true || override,
+      active: override || true,
       id: 'tooltip-1',
     },
     {
@@ -88,7 +87,7 @@ export default async function Dashboard() {
       trainingLink: '/training/courses',
       learnMoreLink: '/about/features/natural-play-learning',
       buttonText: 'Train',
-      active: true || override,
+      active: override || true,
       id: 'tooltip-2',
     },
     {
@@ -101,7 +100,7 @@ export default async function Dashboard() {
       trainingLink: '/training/visualisation/train',
       learnMoreLink: '/training/visualisation',
       buttonText: 'Train',
-      active: true || override,
+      active: override || true,
       id: 'tooltip-3',
     },
     {
@@ -114,7 +113,7 @@ export default async function Dashboard() {
       trainingLink: '/training/recall/train',
       learnMoreLink: '/training/recall',
       buttonText: 'Train',
-      active: true || override,
+      active: override || true,
       id: 'tooltip-4',
     },
     {
@@ -127,7 +126,7 @@ export default async function Dashboard() {
       trainingLink: '/training/endgames/train',
       learnMoreLink: '/training/endgames',
       buttonText: 'Train',
-      active: true || override,
+      active: override || true,
       id: 'tooltip-5',
     },
     {
@@ -139,7 +138,7 @@ export default async function Dashboard() {
       ],
       trainingLink: '/training/play-the-masters',
       buttonText: 'Train',
-      active: false || override,
+      active: override || false,
     },
     {
       name: 'Knight Vision',
@@ -150,7 +149,7 @@ export default async function Dashboard() {
       ],
       trainingLink: '/training/knight-vision/train',
       buttonText: 'Train',
-      active: false || override,
+      active: override || false,
     },
   ];
 
@@ -188,9 +187,7 @@ export default async function Dashboard() {
         <Container size="wide">
           <Heading as="h1" color="text-white">
             Welcome back,{' '}
-            <span id="tooltip-6">
-              {user.given_name ?? profile.username ?? user.email}
-            </span>
+            <span id="tooltip-6">{user.given_name ?? profile.username}</span>
             <PremiumDisplay isPremium={isPremium} />
           </Heading>
           <div

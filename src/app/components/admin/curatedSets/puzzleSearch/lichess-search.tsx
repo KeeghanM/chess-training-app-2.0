@@ -1,16 +1,17 @@
+import * as Sentry from '@sentry/react';
+import Tippy from '@tippyjs/react';
 import { useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-import * as Sentry from '@sentry/react';
-import Tippy from '@tippyjs/react';
-
-import Button from '@/app/components/_elements/button';
+import { Button } from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 
-import type { CuratedSetPuzzle } from '../CuratedSetsBrowser';
+import type { CuratedSetPuzzle } from '../curated-sets-browser';
 import themes from '../themes';
 
-export default function LiChessSearch(props: {
+export function LiChessSearch({
+  setPuzzle,
+}: {
   setPuzzle: (puzzle: CuratedSetPuzzle) => void;
 }) {
   // Searching
@@ -40,9 +41,9 @@ export default function LiChessSearch(props: {
       if (puzzleId) {
         const resp = await fetch(`/api/puzzles/getPuzzleById/${puzzleId}`);
         const json = (await resp.json()) as ResponseJson;
-        if (json.message != 'Puzzle found') throw new Error(json.message);
+        if (json.message !== 'Puzzle found') throw new Error(json.message);
 
-        puzzle = json.data!.puzzle;
+        puzzle = json.data?.puzzle as CuratedSetPuzzle;
       } else {
         const themesString =
           selectedThemes.length > 0
@@ -59,14 +60,14 @@ export default function LiChessSearch(props: {
         });
 
         const json = (await resp.json()) as ResponseJson;
-        if (json.message != 'Puzzles found') throw new Error(json.message);
-        const puzzles = json.data!.puzzles as CuratedSetPuzzle[];
+        if (json.message !== 'Puzzles found') throw new Error(json.message);
+        const puzzles = json.data?.puzzles as CuratedSetPuzzle[];
         puzzle = puzzles[0];
       }
 
       if (!puzzle) throw new Error('No puzzle found');
 
-      props.setPuzzle(puzzle);
+      setPuzzle(puzzle);
       setPuzzleId('');
     } catch (e) {
       Sentry.captureException(e);
@@ -126,14 +127,14 @@ export default function LiChessSearch(props: {
           )
           .map((theme, index) => (
             <Tippy key={theme.id} content={theme.description}>
-              <p
+              <button
                 className={`cursor-pointer p-1 text-black hover:font-bold ${
-                  index % 2 == 0 ? ' bg-gray-200' : ' bg-gray-50'
+                  index % 2 === 0 ? ' bg-gray-200' : ' bg-gray-50'
                 }${selectedThemes.includes(theme.id) ? ' bg-green-200' : ''}`}
                 onClick={() => toggleTheme(theme.id)}
               >
                 {theme.name}
-              </p>
+              </button>
             </Tippy>
           ))}
       </div>

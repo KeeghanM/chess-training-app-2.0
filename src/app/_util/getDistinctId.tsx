@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import { getUserServer } from './getUserServer';
 
-export default async function getDistinctId() {
+export async function getDistinctId() {
   // First, try to just return the userId
   const { user } = await getUserServer();
   if (user) return user.id;

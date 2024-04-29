@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-export default function Info() {
+export function Info() {
   const [open, setOpen] = useState(false);
   return (
     <div className="mb-4 flex flex-col gap-1 dark:text-white">

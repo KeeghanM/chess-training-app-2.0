@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import type { ResponseJson } from '@/app/api/responses';
+
 import { Tour } from '@frigade/react';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import * as Sentry from '@sentry/nextjs';
@@ -10,25 +9,25 @@ import Tippy from '@tippyjs/react';
 import { useWindowSize } from '@uidotdev/usehooks';
 import { Chess, SQUARES } from 'chess.js';
 import type { Color, PieceSymbol, Square } from 'chess.js';
+import { useEffect, useState } from 'react';
 import { Chessboard } from 'react-chessboard';
 import 'react-toggle/style.css';
 import 'tippy.js/dist/tippy.css';
 // @ts-expect-error - No types available
 import useSound from 'use-sound';
 
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 import Button from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 import XpTracker from '@/app/components/general/XpTracker';
 import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
-
 // TODO: On multiple recalls, show a temporary green/red border on square clicked for feedback
 // TODO: On multiple recalls, have the piece to select flash on change to alert that it's changed
 // TODO: Increase XP for each correct recall in a row
 
-export default function RecallTrainer() {
+export function RecallTrainer() {
   const { user } = useKindeBrowserClient();
 
   // Setup main state for the game/puzzles
@@ -92,7 +91,7 @@ export default function RecallTrainer() {
         body: JSON.stringify(params),
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json?.message != 'Puzzles found') throw new Error('No puzzles found');
+      if (json.message !== 'Puzzles found') throw new Error('No puzzles found');
       const puzzles = json.data!.puzzles as TrainingPuzzle[];
 
       return puzzles[0];
@@ -114,14 +113,14 @@ export default function RecallTrainer() {
 
     // Increase the streak if correct
     // and send it to the server incase a badge needs adding
-    if (status == 'correct') {
+    if (status === 'correct') {
       trackEventOnClient('recall_correct', {});
       fetch('/api/recall/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
       }).catch((e) => Sentry.captureException(e));
       setCurrentStreak(currentStreak + 1);
-    } else if (status == 'incorrect') {
+    } else if (status === 'incorrect') {
       trackEventOnClient('recall_incorrect', {});
     }
     const newPuzzle = await getPuzzle();
@@ -135,14 +134,14 @@ export default function RecallTrainer() {
   };
 
   const markMoveAs = async (status: 'correct' | 'incorrect') => {
-    if (status == 'correct') {
+    if (status === 'correct') {
       setXpCounter(xpCounter + 1);
       if (soundEnabled) correctSound();
     } else if (soundEnabled) incorrectSound();
 
     if (
-      counter == piecesToRecall - 1 ||
-      counter == availableSquares.length - 1 // Some puzzles won't have enough pieces to recall, so we'll just end it early
+      counter === piecesToRecall - 1 ||
+      counter === availableSquares.length - 1 // Some puzzles won't have enough pieces to recall, so we'll just end it early
     ) {
       // If we're on the last piece, mark the puzzle as finished
       setPuzzleFinished(true);
@@ -200,7 +199,7 @@ export default function RecallTrainer() {
       : '';
     const correctString = correctSquare.color + correctSquare.type;
 
-    if (pieceString == correctString) {
+    if (pieceString === correctString) {
       setSelectedSquares({
         [square]: {
           backgroundColor: 'rgba(25,255,0,0.8)',
@@ -243,7 +242,7 @@ export default function RecallTrainer() {
   // Here are all our useEffect functions
   useEffect(() => {
     setSelectedSquares({});
-    if (mode == 'settings') return;
+    if (mode === 'settings') return;
     (async () => {
       setLoading(true);
       const puzzle = await getPuzzle();
@@ -272,7 +271,7 @@ export default function RecallTrainer() {
       .board()
       .flatMap((row) =>
         row
-          .filter((square) => square && square.type != 'p')
+          .filter((square) => square && square.type !== 'p')
           .map((square) => square),
       );
 
@@ -313,7 +312,7 @@ export default function RecallTrainer() {
   }, [currentPuzzle]);
 
   useEffect(() => {
-    if (mode == 'settings' || !timed || !currentPuzzle) return;
+    if (mode === 'settings' || !timed || !currentPuzzle) return;
     if (timer > 0) {
       const interval = setInterval(() => {
         setTimer(timer - 1);
@@ -335,7 +334,7 @@ export default function RecallTrainer() {
   ) : (
     <>
       <Tour flowId="flow_g0ITjQQa" />
-      {mode == 'settings' ? (
+      {mode === 'settings' ? (
         <div className="border border-gray-300 bg-[rgba(0,0,0,0.03)] text-black shadow-md dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
           <div className="flex flex-wrap items-center justify-between border-b border-gray-300 px-2 py-1 font-bold text-orange-500 dark:border-slate-600">
             <p id="tooltip-0">Adjust your settings</p>
@@ -360,19 +359,19 @@ export default function RecallTrainer() {
               </label>
               <div className="flex flex-col gap-2 lg:flex-row lg:gap-4">
                 <Button
-                  variant={difficulty == 0 ? 'accent' : 'secondary'}
+                  variant={difficulty === 0 ? 'accent' : 'secondary'}
                   onClick={() => setDifficulty(0)}
                 >
                   Easy
                 </Button>
                 <Button
-                  variant={difficulty == 1 ? 'accent' : 'secondary'}
+                  variant={difficulty === 1 ? 'accent' : 'secondary'}
                   onClick={() => setDifficulty(1)}
                 >
                   Medium
                 </Button>
                 <Button
-                  variant={difficulty == 2 ? 'accent' : 'secondary'}
+                  variant={difficulty === 2 ? 'accent' : 'secondary'}
                   onClick={() => setDifficulty(2)}
                 >
                   Hard
@@ -619,16 +618,16 @@ export default function RecallTrainer() {
                       <p id="tooltip-3">
                         Where is a{' '}
                         <span className="font-bold underline">
-                          {correctSquares[counter]!.color == 'w'
+                          {correctSquares[counter]!.color === 'w'
                             ? 'White'
                             : 'Black'}{' '}
-                          {correctSquares[counter]!.type == 'b'
+                          {correctSquares[counter]!.type === 'b'
                             ? 'Bishop'
-                            : correctSquares[counter]!.type == 'k'
+                            : correctSquares[counter]!.type === 'k'
                               ? 'King'
-                              : correctSquares[counter]!.type == 'n'
+                              : correctSquares[counter]!.type === 'n'
                                 ? 'Knight'
-                                : correctSquares[counter]!.type == 'q'
+                                : correctSquares[counter]!.type === 'q'
                                   ? 'Queen'
                                   : 'Rook'}
                         </span>

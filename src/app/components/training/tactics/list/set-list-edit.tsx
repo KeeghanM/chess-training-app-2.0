@@ -1,25 +1,23 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import * as Sentry from '@sentry/nextjs';
 import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types';
+import { useEffect, useState } from 'react';
 
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import type { ResponseJson } from '@/app/api/responses';
 import Button from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
-
-export default function SetListEdit(props: {
+export function SetListEdit(props: {
   set: PrismaTacticsSet;
   user: KindeUser | null;
   onFinished: () => void;
 }) {
   const { set } = props;
-  const user = props.user;
+  const user = user;
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -51,11 +49,11 @@ export default function SetListEdit(props: {
 
       const json = (await resp.json()) as ResponseJson;
 
-      if (json.message != 'Set Deleted')
-        throw new Error(json?.message ?? 'Unknown error');
+      if (json.message !== 'Set Deleted')
+        throw new Error(json.message ?? 'Unknown error');
 
       trackEventOnClient('tactics_set_delete', {});
-      props.onFinished();
+      onFinished();
       close();
     } catch (e) {
       Sentry.captureException(e);
@@ -82,11 +80,11 @@ export default function SetListEdit(props: {
 
       const json = (await resp.json()) as ResponseJson;
 
-      if (json.message != 'Set Updated')
-        throw new Error(json?.message ?? 'Unknown error');
+      if (json.message !== 'Set Updated')
+        throw new Error(json.message ?? 'Unknown error');
 
       trackEventOnClient('tactics_set_updated', {});
-      props.onFinished();
+      onFinished();
       close();
     } catch (e) {
       Sentry.captureException(e);

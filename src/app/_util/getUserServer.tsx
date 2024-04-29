@@ -1,9 +1,10 @@
-import { prisma } from '@/server/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
 import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types';
 import Stripe from 'stripe';
 import { v4 as uuidv4 } from 'uuid';
+
+import { prisma } from '@/server/db';
 
 export async function getUserServer() {
   const { getUser, isAuthenticated, getPermissions } = getKindeServerSession();

@@ -1,7 +1,8 @@
-import { errorResponse, successResponse } from '@/app/api/responses';
-import { prisma } from '@/server/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
+
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
 
 export async function GET(request: Request) {
   const session = getKindeServerSession(request);
@@ -19,7 +20,7 @@ export async function GET(request: Request) {
     return successResponse(
       'Sets found',
       {
-        sets: sets.filter((set) => set.active == false),
+        sets: sets.filter((set) => !set.active),
         activeCount: sets.reduce((acc, set) => (set.active ? acc + 1 : acc), 0),
       },
       200,

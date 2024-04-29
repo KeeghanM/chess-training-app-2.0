@@ -1,14 +1,19 @@
 'use client';
 
+import * as Sentry from '@sentry/react';
 import { useEffect, useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-import * as Sentry from '@sentry/react';
 
-import Spinner from '../../general/Spinner';
-import type { CuratedSetPuzzle } from './CuratedSetsBrowser';
+import { Spinner } from '../../general/Spinner';
 
-export default function PuzzleList(props: {
+import type { CuratedSetPuzzle } from './curated-sets-browser';
+
+export function PuzzleList({
+  setId,
+  selectedId,
+  selectPuzzle,
+}: {
   setId: string;
   selectedId: string;
   selectPuzzle: (puzzle: CuratedSetPuzzle) => void;
@@ -24,11 +29,11 @@ export default function PuzzleList(props: {
         body: JSON.stringify({ setId }),
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json.message != 'Puzzles found') throw new Error(json.message);
+      if (json.message !== 'Puzzles found') throw new Error(json.message);
 
-      const puzzles = json.data!.puzzles as CuratedSetPuzzle[];
+      const puzzles = json.data?.puzzles as CuratedSetPuzzle[];
       setPuzzles(puzzles);
-    } catch (e) {
+    } catch (e: unknown) {
       Sentry.captureException(e);
     } finally {
       setLoading(false);
@@ -36,9 +41,11 @@ export default function PuzzleList(props: {
   };
 
   useEffect(() => {
-    if (props.setId)
-      (async () => getPuzzles(props.setId))().catch(console.error);
-  }, [props.setId]);
+    if (setId)
+      (async () => getPuzzles(setId))().catch((e: unknown) =>
+        Sentry.captureException(e),
+      );
+  }, [setId]);
 
   return (
     <div className="flex max-h-[70vh] flex-1 flex-col gap-2 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 lg:border-4">
@@ -49,7 +56,7 @@ export default function PuzzleList(props: {
           puzzles
             .sort((a, b) => {
               // Sort order then puzzleId
-              if (a.sortOrder != b.sortOrder)
+              if (a.sortOrder !== b.sortOrder)
                 return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
               return a.puzzleid.localeCompare(b.puzzleid);
             })
@@ -57,12 +64,13 @@ export default function PuzzleList(props: {
               <li
                 key={puzzle.puzzleid}
                 className={`cursor-pointer border-b border-slate-500 bg-gray-50 p-2 hover:bg-orange-200 text-sm${
-                  props.selectedId == puzzle.puzzleid ? ' bg-purple-200' : ''
+                  selectedId === puzzle.puzzleid ? ' bg-purple-200' : ''
                 }`}
-                onClick={() => props.selectPuzzle(puzzle)}
               >
-                {puzzle.puzzleid} ({puzzle.rating} - {puzzle.moves.length}{' '}
-                moves)
+                <button onClick={() => selectPuzzle(puzzle)}>
+                  {puzzle.puzzleid} ({puzzle.rating} - {puzzle.moves.length}{' '}
+                  moves)
+                </button>
               </li>
             ))
         )}

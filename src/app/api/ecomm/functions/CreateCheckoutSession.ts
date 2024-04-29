@@ -1,7 +1,8 @@
-import { prisma } from '@/server/db';
 import * as Sentry from '@sentry/nextjs';
 import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types';
 import Stripe from 'stripe';
+
+import { prisma } from '@/server/db';
 
 type ProductType = 'curatedSet' | 'course' | 'subscription';
 

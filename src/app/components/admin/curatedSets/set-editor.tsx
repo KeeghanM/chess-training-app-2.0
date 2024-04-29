@@ -1,27 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import type { CuratedSet } from '@prisma/client';
 import * as Sentry from '@sentry/react';
+import { useState } from 'react';
 
-import Button from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/Spinner';
-import TextEditor from '@/app/components/general/TextEditor';
+import { GenerateSlug } from '@/app/_util/GenerateSlug';
+import type { ResponseJson } from '@/app/api/responses';
+import { Button } from '@/app/components/_elements/button';
+import { Spinner } from '@/app/components/general/Spinner';
+import { TextEditor } from '@/app/components/general/TextEditor';
 
-import GenerateSlug from '@/app/_util/GenerateSlug';
-
-export default function SetEditor(props: { set: CuratedSet }) {
-  const { set } = props;
+export function SetEditor({ set }: { set: CuratedSet }) {
   // Form
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [shortDescription, setShortDescription] = useState('');
-  const [minRating, setMinRating] = useState(500);
-  const [maxRating, setMaxRating] = useState(2500);
-  const [price, setPrice] = useState(0);
-  const [published, setPublished] = useState(false);
+  const [name, setName] = useState(set.name);
+  const [description, setDescription] = useState(set.description ?? '');
+  const [shortDescription, setShortDescription] = useState(set.shortDesc ?? '');
+  const [minRating, setMinRating] = useState(set.minRating);
+  const [maxRating, setMaxRating] = useState(set.maxRating);
+  const [price, setPrice] = useState(set.price);
+  const [published, setPublished] = useState(set.published);
 
   // Status
   const [error, setError] = useState('');
@@ -46,7 +43,7 @@ export default function SetEditor(props: { set: CuratedSet }) {
         }),
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json.message != 'Set updated') throw new Error(json.message);
+      if (json.message !== 'Set updated') throw new Error(json.message);
     } catch (e) {
       Sentry.captureException(e);
       if (e instanceof Error) setError(e.message);
@@ -54,17 +51,6 @@ export default function SetEditor(props: { set: CuratedSet }) {
     }
     setStatus('idle');
   };
-
-  useEffect(() => {
-    if (!set) return;
-    setName(set.name);
-    setDescription(set.description ?? '');
-    setShortDescription(set.shortDesc ?? '');
-    setMinRating(set.minRating);
-    setMaxRating(set.maxRating);
-    setPrice(set.price);
-    setPublished(set.published);
-  }, [set]);
 
   return (
     <div className="flex max-h-[70vh] flex-1 flex-col gap-2 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 text-black dark:text-white lg:border-4">
@@ -136,8 +122,12 @@ export default function SetEditor(props: { set: CuratedSet }) {
           />
         </div>
       </div>
-      <Button disabled={status != 'idle'} variant="primary" onClick={updateSet}>
-        {status == 'saving' ? (
+      <Button
+        disabled={status !== 'idle'}
+        variant="primary"
+        onClick={updateSet}
+      >
+        {status === 'saving' ? (
           <>
             Saving <Spinner />
           </>

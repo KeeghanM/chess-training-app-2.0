@@ -1,11 +1,10 @@
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import { redirect } from 'next/navigation';
 
+import CuratedSetsBrowser from '@/app/components/admin/curatedSets/curated-sets-browser';
 import { prisma } from '@/server/db';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 
-import CuratedSetsBrowser from '@/app/components/admin/curatedSets/CuratedSetsBrowser';
-
-export default async function CuratedSetsPage() {
+export async function CuratedSetsPage() {
   const { getUser, getPermissions } = getKindeServerSession();
   const user = await getUser();
   if (!user) redirect('/auth/signin');

@@ -1,33 +1,31 @@
 'use client';
 
-import Link from 'next/link';
-
-import { useEffect, useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import * as Sentry from '@sentry/nextjs';
 import Tippy from '@tippyjs/react';
 import { Chess } from 'chess.js';
 import type { Move } from 'chess.js';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import Toggle from 'react-toggle';
+import useSound from 'use-sound';
+
+import type { ResponseJson } from '@/app/api/responses';
 import 'react-toggle/style.css';
 // @ts-expect-error - No types available
-import useSound from 'use-sound';
 
 import Button from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 import XpTracker from '@/app/components/general/XpTracker';
 import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
-
 import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
 import ChessBoard from '../ChessBoard';
 
 // TODO: "Show solution" button
 
-export default function EndgameTrainer() {
+export function EndgameTrainer() {
   const { user } = useKindeBrowserClient();
 
   // Setup main state for the game/puzzles
@@ -62,7 +60,7 @@ export default function EndgameTrainer() {
   const [currentStreak, setCurrentStreak] = useState(0);
 
   const difficultyAdjuster = (d: number) => {
-    return d == 0 ? 0.9 : d == 1 ? 1 : 1.2;
+    return d === 0 ? 0.9 : d === 1 ? 1 : 1.2;
   };
 
   const getPuzzle = async () => {
@@ -102,7 +100,7 @@ export default function EndgameTrainer() {
         body: JSON.stringify(params),
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json?.message != 'Puzzles found') throw new Error('No puzzles found');
+      if (json.message !== 'Puzzles found') throw new Error('No puzzles found');
       const puzzles = json.data!.puzzles as TrainingPuzzle[];
 
       return puzzles[0];
@@ -156,14 +154,14 @@ export default function EndgameTrainer() {
 
     // Increase the streak if correct
     // and send it to the server incase a badge needs adding
-    if (status == 'correct') {
+    if (status === 'correct') {
       trackEventOnClient('endgame_correct', {});
       fetch('/api/endgames/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
       }).catch((e) => Sentry.captureException(e));
       setCurrentStreak(currentStreak + 1);
-    } else if (status == 'incorrect') {
+    } else if (status === 'incorrect') {
       trackEventOnClient('endgame_incorrect', {});
     }
     const newPuzzle = await getPuzzle();
@@ -183,7 +181,7 @@ export default function EndgameTrainer() {
       setPuzzleFinished(true);
       setXpCounter(xpCounter + 1);
 
-      if (autoNext && puzzleStatus != 'incorrect') {
+      if (autoNext && puzzleStatus !== 'incorrect') {
         await goToNextPuzzle('correct');
       }
       return true;
@@ -243,11 +241,11 @@ export default function EndgameTrainer() {
     const moveColour = game.history({ verbose: true })[index]!.color;
     const FlexText = () => (
       <p>
-        {(moveColour == 'w' || (moveColour == 'b' && index == 0)) && (
+        {(moveColour === 'w' || (moveColour === 'b' && index === 0)) && (
           <span className="font-bold">
             {/* This weird calc is to fix the first black number being too high */}
-            {moveNumber - (moveColour == 'b' && index == 0 ? 1 : 0)}.
-            {moveColour == 'b' && index == 0 && '..'}
+            {moveNumber - (moveColour === 'b' && index === 0 ? 1 : 0)}.
+            {moveColour === 'b' && index === 0 && '..'}
           </span>
         )}{' '}
         <span>{move}</span>
@@ -301,7 +299,7 @@ export default function EndgameTrainer() {
 
   // Here are all our useEffect functions
   useEffect(() => {
-    if (mode == 'settings') return;
+    if (mode === 'settings') return;
     (async () => {
       const puzzle = await getPuzzle();
       if (!puzzle) {
@@ -335,8 +333,8 @@ export default function EndgameTrainer() {
     if (gameReady && currentPuzzle) {
       setPuzzleFinished(false);
       setPosition(currentPuzzle.fen);
-      setOrientation(game.turn() == 'w' ? 'black' : 'white'); // reversed because the first move is opponents
-      const firstMove = currentPuzzle?.moves[0];
+      setOrientation(game.turn() === 'w' ? 'black' : 'white'); // reversed because the first move is opponents
+      const firstMove = currentPuzzle.moves[0];
       const timeoutId = makeFirstMove(firstMove);
       return () => clearTimeout(timeoutId);
     }
@@ -344,7 +342,7 @@ export default function EndgameTrainer() {
 
   if (!user) return null;
 
-  return mode == 'settings' ? (
+  return mode === 'settings' ? (
     <div className="border border-gray-300 bg-[rgba(0,0,0,0.03)] text-black shadow-md dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
       <div className="flex flex-wrap items-center justify-between border-b border-gray-300 px-2 py-1 font-bold text-orange-500 dark:border-slate-600">
         <p>Adjust your settings</p>
@@ -369,19 +367,19 @@ export default function EndgameTrainer() {
             <label className="font-bold">Difficulty</label>
             <div className="flex flex-col gap-1 md:flex-row">
               <Button
-                variant={difficulty == 0 ? 'accent' : 'secondary'}
+                variant={difficulty === 0 ? 'accent' : 'secondary'}
                 onClick={() => setDifficulty(0)}
               >
                 Easy
               </Button>
               <Button
-                variant={difficulty == 1 ? 'accent' : 'secondary'}
+                variant={difficulty === 1 ? 'accent' : 'secondary'}
                 onClick={() => setDifficulty(1)}
               >
                 Medium
               </Button>
               <Button
-                variant={difficulty == 2 ? 'accent' : 'secondary'}
+                variant={difficulty === 2 ? 'accent' : 'secondary'}
                 onClick={() => setDifficulty(2)}
               >
                 Hard
@@ -393,37 +391,37 @@ export default function EndgameTrainer() {
           <label className="font-bold">Endgame Type</label>
           <div className="grid grid-cols-2 gap-1 lg:grid-cols-3">
             <Button
-              variant={type == 'All' ? 'accent' : 'secondary'}
+              variant={type === 'All' ? 'accent' : 'secondary'}
               onClick={() => setType('All')}
             >
               All
             </Button>
             <Button
-              variant={type == 'Queen' ? 'accent' : 'secondary'}
+              variant={type === 'Queen' ? 'accent' : 'secondary'}
               onClick={() => setType('Queen')}
             >
               Queen
             </Button>
             <Button
-              variant={type == 'Rook' ? 'accent' : 'secondary'}
+              variant={type === 'Rook' ? 'accent' : 'secondary'}
               onClick={() => setType('Rook')}
             >
               Rook
             </Button>
             <Button
-              variant={type == 'Bishop' ? 'accent' : 'secondary'}
+              variant={type === 'Bishop' ? 'accent' : 'secondary'}
               onClick={() => setType('Bishop')}
             >
               Bishop
             </Button>
             <Button
-              variant={type == 'Knight' ? 'accent' : 'secondary'}
+              variant={type === 'Knight' ? 'accent' : 'secondary'}
               onClick={() => setType('Knight')}
             >
               Knight
             </Button>
             <Button
-              variant={type == 'Pawn' ? 'accent' : 'secondary'}
+              variant={type === 'Pawn' ? 'accent' : 'secondary'}
               onClick={() => setType('Pawn')}
             >
               Pawn
@@ -638,7 +636,7 @@ export default function EndgameTrainer() {
                 defaultChecked={autoNext}
                 onChange={async () => {
                   setAutoNext(!autoNext);
-                  if (puzzleFinished && puzzleStatus == 'correct')
+                  if (puzzleFinished && puzzleStatus === 'correct')
                     await goToNextPuzzle(puzzleStatus);
                 }}
               />
@@ -646,7 +644,7 @@ export default function EndgameTrainer() {
             </label>
             <div className="flex flex-col gap-2">
               {puzzleFinished ? (
-                (!autoNext || puzzleStatus == 'incorrect') && (
+                (!autoNext || puzzleStatus === 'incorrect') && (
                   <Button
                     variant="primary"
                     onClick={() => goToNextPuzzle(puzzleStatus)}

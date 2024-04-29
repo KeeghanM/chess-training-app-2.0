@@ -1,8 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import { Chess } from 'chess.js';
+import { useEffect, useState } from 'react';
 import type { Arrow } from 'react-chessboard/dist/chessboard/types';
 
 import type { Move } from '@/app/_util/BuildPgn';
@@ -10,12 +9,13 @@ import BuildPGN from '@/app/_util/BuildPgn';
 import getArrows from '@/app/_util/StringToArrows';
 
 import ChessBoard from '../../ChessBoard';
+
 import type { UserLineWithData } from './CourseBrowser';
 import PgnBrowser from './PgnBrowser';
 
-export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
+export function GroupBrowser(props: { lines: UserLineWithData[] }) {
   const pgn = BuildPGN(
-    props.lines.map((line) =>
+    lines.map((line) =>
       line.line.moves.map((move) => {
         return {
           notation: move.move,
@@ -46,12 +46,12 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
       return;
     }
     const newGame = new Chess();
-    const line = props.lines.find((line) => line.id === currentMove.lineId)!;
+    const line = lines.find((line) => line.id === currentMove.lineId)!;
     for (const move of line.line.moves) {
       newGame.move(move.move);
       if (
         move.move === currentMove.notation &&
-        move.colour == currentMove.colour &&
+        move.colour === currentMove.colour &&
         move.moveNumber === currentMove.number
       )
         break;
@@ -79,12 +79,10 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
     setCurrentMove(undefined);
     setGame(new Chess());
     setPosition(new Chess().fen());
-    if (props.lines[0]) {
-      setOrientation(
-        props.lines[0].line.colour.toLowerCase() as 'white' | 'black',
-      );
+    if (lines[0]) {
+      setOrientation(lines[0].line.colour.toLowerCase() as 'white' | 'black');
     }
-  }, [props.lines]);
+  }, [lines]);
 
   return (
     <div className="flex flex-col gap-2 lg:flex-row">

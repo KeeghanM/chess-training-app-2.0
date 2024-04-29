@@ -7,17 +7,17 @@ import 'react-quill/dist/quill.snow.css';
 
 const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
 
-export default function TextEditor(props: {
+export function TextEditor(props: {
   value: string;
   onChange: (value: string) => void;
 }) {
   const [length, setLength] = useState(0);
-  const [value, setValue] = useState(props.value);
+  const [value, setValue] = useState(value);
 
   const handleChange = (value: string) => {
     setValue(value);
     setLength(value.length);
-    props.onChange(value);
+    onChange(value);
   };
 
   const formats = [

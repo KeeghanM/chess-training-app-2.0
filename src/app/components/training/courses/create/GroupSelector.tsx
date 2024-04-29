@@ -1,27 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import * as Tabs from '@radix-ui/react-tabs';
+import { useEffect, useState } from 'react';
 
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 import Button from '@/app/components/_elements/button';
 import Container from '@/app/components/_elements/container';
 import Heading from '@/app/components/_elements/heading';
 import Spinner from '@/app/components/general/Spinner';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
-
 import { GroupItem } from './GroupItem';
 import type { Line } from './parse/ParsePGNtoLineData';
 
-export default function GroupSelector(props: {
+export function GroupSelector(props: {
   lines: Line[];
   back: () => void;
   finished: (group: string, lines: Line[]) => void;
 }) {
   const [parent] = useAutoAnimate();
-  const [lines, setLines] = useState<Line[]>(props.lines);
+  const [lines, setLines] = useState<Line[]>(lines);
   const [groupOptions, setGroupOptions] = useState<string[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('');
   const [groupedLineCounts, setGroupedLineCounts] = useState<
@@ -201,7 +199,7 @@ export default function GroupSelector(props: {
               variant="primary"
               onClick={() => {
                 setStatus('loading');
-                props.finished(selectedGroup, lines);
+                finished(selectedGroup, lines);
               }}
             >
               <div className="flex items-center gap-4">
@@ -212,7 +210,7 @@ export default function GroupSelector(props: {
               </div>
             </Button>
 
-            <Button variant="secondary" onClick={props.back}>
+            <Button variant="secondary" onClick={back}>
               Go Back
             </Button>
           </div>

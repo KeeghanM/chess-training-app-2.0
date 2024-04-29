@@ -22,9 +22,9 @@ interface XpDisplayProps {
   };
   displayLink?: boolean;
 }
-export default function XpDisplay(props: XpDisplayProps) {
-  const { currentXp, rank, nextRank, percentage } = props.data;
-  const displayLink = props.displayLink ?? true;
+export function XpDisplay(props: XpDisplayProps) {
+  const { currentXp, rank, nextRank, percentage } = data;
+  const displayLink = displayLink ?? true;
 
   return (
     <div className="flex flex-col items-center gap-1">

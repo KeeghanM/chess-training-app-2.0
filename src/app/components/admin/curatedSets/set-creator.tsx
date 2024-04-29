@@ -1,19 +1,19 @@
 'use client';
 
-import { useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import type { CuratedSet } from '@prisma/client';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import * as Sentry from '@sentry/react';
+import { useState } from 'react';
 
-import Button from '@/app/components/_elements/button';
-import Heading from '@/app/components/_elements/heading';
-import Spinner from '@/app/components/general/Spinner';
+import { GenerateSlug } from '@/app/_util/GenerateSlug';
+import type { ResponseJson } from '@/app/api/responses';
+import { Button } from '@/app/components/_elements/button';
+import { Heading } from '@/app/components/_elements/heading';
+import { Spinner } from '@/app/components/general/Spinner';
 
-import GenerateSlug from '@/app/_util/GenerateSlug';
-
-export default function SetCreator(props: {
+export function SetCreator({
+  onCreate,
+}: {
   onCreate: (set: CuratedSet) => void;
 }) {
   // Form
@@ -35,12 +35,12 @@ export default function SetCreator(props: {
         }),
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json.message != 'Set created') throw new Error(json.message);
+      if (json.message !== 'Set created') throw new Error(json.message);
 
-      const newSet = json.data!.set as CuratedSet;
-      props.onCreate(newSet);
+      const newSet = json.data?.set as CuratedSet;
+      onCreate(newSet);
       close();
-    } catch (e) {
+    } catch (e: unknown) {
       Sentry.captureException(e);
       if (e instanceof Error) setError(e.message);
       else setError('Something went wrong');
@@ -81,11 +81,11 @@ export default function SetCreator(props: {
               Cancel
             </Button>
             <Button
-              disabled={status != 'idle'}
+              disabled={status !== 'idle'}
               variant="primary"
               onClick={createSet}
             >
-              {status == 'saving' ? (
+              {status === 'saving' ? (
                 <>
                   Saving <Spinner />
                 </>

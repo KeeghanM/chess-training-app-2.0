@@ -5,16 +5,19 @@ import CalculateXpRank from '@/app/_util/CalculateXpRank';
 import Heading from '../_elements/heading';
 import XpDisplay from '../dashboard/XpDisplay';
 
-export default function TrophyTile(props: {
+export function TrophyTile({
+  placement,
+  username,
+  xp,
+  published,
+}: {
   placement: number;
   username: string;
   xp: number;
   published: boolean;
 }) {
-  const { placement, username, xp, published } = props;
-
   const Trophy = (props: { placement: number }) => {
-    switch (props.placement) {
+    switch (placement) {
       case 1:
         return (
           <svg

@@ -4,13 +4,13 @@ interface LinkProps {
   href: string;
   children: React.ReactNode;
 }
-export default function StyledLink(props: LinkProps) {
+export function StyledLink({ href, children }: LinkProps) {
   return (
     <Link
       className="font-bold text-purple-700 underline hover:text-purple-600 hover:no-underline dark:text-purple-400"
-      href={props.href}
+      href={href}
     >
-      {props.children}
+      {children}
     </Link>
   );
 }

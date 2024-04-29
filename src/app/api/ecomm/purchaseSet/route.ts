@@ -1,6 +1,7 @@
-import { prisma } from '@/server/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
+
+import { prisma } from '@/server/db';
 
 import { errorResponse, successResponse } from '../../responses';
 import { AddCuratedSetToUser } from '../functions/AddCuratedSetToUser';

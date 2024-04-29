@@ -21,7 +21,7 @@ export interface PGN {
   moves: Move[];
 }
 
-export default function BuildPGN(lines: LineMove[][]): PGN {
+export function BuildPGN(lines: LineMove[][]): PGN {
   const pgn: PGN = { moves: [] };
   let lineToAddTo: Move[] = [];
 
@@ -56,8 +56,8 @@ export default function BuildPGN(lines: LineMove[][]): PGN {
       let found = false;
       for (const existingMove of lineToAddTo) {
         if (
-          existingMove.number != move.number ||
-          existingMove.colour != move.colour
+          existingMove.number !== move.number ||
+          existingMove.colour !== move.colour
         )
           continue;
 

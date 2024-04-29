@@ -1,7 +1,7 @@
 import Link from 'next/link';
 
-import BigText from '@/app/components/_layouts/bigText';
-import CtaRow from '@/app/components/_layouts/ctaRow';
+import BigText from '@/app/components/_layouts/big-text';
+import CtaRow from '@/app/components/_layouts/cta-row';
 import Hero from '@/app/components/_layouts/hero';
 
 export const metadata = {
@@ -10,7 +10,7 @@ export const metadata = {
     "Dive into the world of chess training with ChessTraining.app's range of unique tools. From our pioneering Natural Play Learning to the engaging Tactics Trainer, and our comprehensive Course Trainer, we offer tailored solutions to enhance your chess skills. Whether you're a beginner or a seasoned player, our features like Knight Vision and Endgame Trainer are designed to elevate your game. Start your journey towards chess mastery today with ChessTraining.app!",
 };
 
-export default async function FeaturesPage() {
+export async function FeaturesPage() {
   const features = [
     {
       name: 'Natural Play Learning',
@@ -117,7 +117,7 @@ export default async function FeaturesPage() {
           <a className="anchor" id={feature.anchor} />
           <CtaRow
             key={`feature-${index.toString()}`}
-            background={index % 2 == 0 ? 'dark' : 'light'}
+            background={index % 2 === 0 ? 'dark' : 'light'}
             title={feature.name}
             cta={{
               text: 'Learn More',

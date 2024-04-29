@@ -1,13 +1,12 @@
 import { prisma } from '@/server/db';
 
+import CalculateXpRank from '../_util/CalculateXpRank';
 import Container from '../components/_elements/container';
-import StyledLink from '../components/_elements/styledLink';
-import PageHeader from '../components/_layouts/pageHeader';
+import StyledLink from '../components/_elements/styled-link';
+import { PageHeader } from '../components/_layouts/page-header';
 import TrophyTile from '../components/members/TrophyTile';
 
-import CalculateXpRank from '../_util/CalculateXpRank';
-
-export default async function MembersPage({
+export async function MembersPage({
   searchParams,
 }: {
   searchParams?: Record<string, string | string[]>;

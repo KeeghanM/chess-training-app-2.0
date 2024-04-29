@@ -1,10 +1,7 @@
 'use client';
 
-import Link from 'next/link';
-
-import { useEffect, useState } from 'react';
-
 import type { ResponseJson } from '@/app/api/responses';
+
 import { Tour, useFlow } from '@frigade/react';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import * as Sentry from '@sentry/nextjs';
@@ -12,6 +9,8 @@ import Tippy from '@tippyjs/react';
 import { useWindowSize } from '@uidotdev/usehooks';
 import { Chess } from 'chess.js';
 import type { Square } from 'chess.js';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { Chessboard } from 'react-chessboard';
 import Toggle from 'react-toggle';
 import 'react-toggle/style.css';
@@ -19,15 +18,14 @@ import 'tippy.js/dist/tippy.css';
 // @ts-expect-error - No types available
 import useSound from 'use-sound';
 
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 import Button from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 import XpTracker from '@/app/components/general/XpTracker';
 import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
-
-export default function VisualisationTrainer() {
+export function VisualisationTrainer() {
   const { user } = useKindeBrowserClient();
 
   // Setup main state for the game/puzzles
@@ -67,7 +65,7 @@ export default function VisualisationTrainer() {
   const { flow } = useFlow('flow_FudOixipuMiWOaP7');
 
   const difficultyAdjuster = (d: number) => {
-    return d == 0 ? 0.9 : d == 1 ? 1 : 1.2;
+    return d === 0 ? 0.9 : d === 1 ? 1 : 1.2;
   };
 
   const getPuzzle = async () => {
@@ -93,7 +91,7 @@ export default function VisualisationTrainer() {
         body: JSON.stringify(params),
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json?.message != 'Puzzles found') throw new Error('No puzzles found');
+      if (json.message !== 'Puzzles found') throw new Error('No puzzles found');
       const puzzles = json.data!.puzzles as TrainingPuzzle[];
 
       return puzzles[0];
@@ -114,14 +112,14 @@ export default function VisualisationTrainer() {
 
     // Increase the streak if correct
     // and send it to the server incase a badge needs adding
-    if (status == 'correct') {
+    if (status === 'correct') {
       trackEventOnClient('Visualisation_correct', {});
       fetch('/api/visualisation/streak', {
         method: 'POST',
         body: JSON.stringify({ currentStreak: currentStreak + 1 }),
       }).catch((e) => Sentry.captureException(e));
       setCurrentStreak(currentStreak + 1);
-    } else if (status == 'incorrect') {
+    } else if (status === 'incorrect') {
       trackEventOnClient('visualisation_incorrect', {});
     }
     const newPuzzle = await getPuzzle();
@@ -138,14 +136,14 @@ export default function VisualisationTrainer() {
     setPuzzleStatus(status);
     setReadyForInput(false);
     setPuzzleFinished(true);
-    if (status == 'correct') {
+    if (status === 'correct') {
       setXpCounter(xpCounter + 1);
       if (soundEnabled) correctSound();
     } else if (soundEnabled) incorrectSound();
 
     setStartSquare(undefined);
 
-    if (autoNext && status == 'correct') await goToNextPuzzle(status);
+    if (autoNext && status === 'correct') await goToNextPuzzle(status);
   };
 
   const getCorrectMoves = () => {
@@ -193,7 +191,7 @@ export default function VisualisationTrainer() {
     const moveString = `${startSquare}${square}`;
     const finalMove = currentPuzzle?.moves[currentPuzzle.moves.length - 1];
 
-    if (moveString == finalMove?.substring(0, 4)) {
+    if (moveString === finalMove?.substring(0, 4)) {
       setSelectedSquares({
         [square]: {
           backgroundColor: 'rgba(25,255,0,0.8)',
@@ -218,17 +216,17 @@ export default function VisualisationTrainer() {
   };
 
   const PgnDisplay = game.history().map((move, index) => {
-    if (index == game.history().length - 1 && !puzzleFinished) return null; // Don't show the last move until the puzzle is finished
+    if (index === game.history().length - 1 && !puzzleFinished) return null; // Don't show the last move until the puzzle is finished
 
     const moveNumber = Math.floor(index / 2) + 1 + displayGame.moveNumber();
     const moveColour = game.history({ verbose: true })[index]!.color;
     const FlexText = () => (
       <p>
-        {(moveColour == 'w' || (moveColour == 'b' && index == 0)) && (
+        {(moveColour === 'w' || (moveColour === 'b' && index === 0)) && (
           <span className="font-bold">
             {/* This weird calc is to fix the first black number being too high */}
-            {moveNumber - (moveColour == 'b' && index == 0 ? 1 : 0)}.
-            {moveColour == 'b' && index == 0 && '..'}
+            {moveNumber - (moveColour === 'b' && index === 0 ? 1 : 0)}.
+            {moveColour === 'b' && index === 0 && '..'}
           </span>
         )}{' '}
         <span>{move}</span>
@@ -283,7 +281,7 @@ export default function VisualisationTrainer() {
 
   // Here are all our useEffect functions
   useEffect(() => {
-    if (mode == 'settings') return;
+    if (mode === 'settings') return;
     (async () => {
       setLoading(true);
       const puzzle = await getPuzzle();
@@ -305,7 +303,7 @@ export default function VisualisationTrainer() {
     setLoading(true);
     const newGame = new Chess(currentPuzzle.fen);
     const newDisplayGame = new Chess(currentPuzzle.fen);
-    setOrientation(newGame.turn() == 'w' ? 'black' : 'white'); // reversed because the first move is opponents
+    setOrientation(newGame.turn() === 'w' ? 'black' : 'white'); // reversed because the first move is opponents
 
     for (const move of currentPuzzle.moves) {
       newGame.move(move);
@@ -325,7 +323,7 @@ export default function VisualisationTrainer() {
   return (
     <>
       <Tour flowId="flow_FudOixipuMiWOaP7" />
-      {mode == 'settings' ? (
+      {mode === 'settings' ? (
         <div className="border border-gray-300 bg-[rgba(0,0,0,0.03)] text-black shadow-md dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
           <div className="flex flex-wrap items-center justify-between border-b border-gray-300 px-2 py-1 font-bold text-orange-500 dark:border-slate-600">
             <p id="tooltip-0">Adjust your settings</p>
@@ -350,19 +348,19 @@ export default function VisualisationTrainer() {
                 <label className="font-bold">Difficulty</label>
                 <div className="flex flex-col gap-1 md:flex-row ">
                   <Button
-                    variant={difficulty == 0 ? 'accent' : 'secondary'}
+                    variant={difficulty === 0 ? 'accent' : 'secondary'}
                     onClick={() => setDifficulty(0)}
                   >
                     Easy
                   </Button>
                   <Button
-                    variant={difficulty == 1 ? 'accent' : 'secondary'}
+                    variant={difficulty === 1 ? 'accent' : 'secondary'}
                     onClick={() => setDifficulty(1)}
                   >
                     Medium
                   </Button>
                   <Button
-                    variant={difficulty == 2 ? 'accent' : 'secondary'}
+                    variant={difficulty === 2 ? 'accent' : 'secondary'}
                     onClick={() => setDifficulty(2)}
                   >
                     Hard
@@ -625,7 +623,7 @@ export default function VisualisationTrainer() {
                     defaultChecked={autoNext}
                     onChange={async () => {
                       setAutoNext(!autoNext);
-                      if (puzzleFinished && puzzleStatus == 'correct')
+                      if (puzzleFinished && puzzleStatus === 'correct')
                         await goToNextPuzzle(puzzleStatus);
                     }}
                   />
@@ -633,7 +631,7 @@ export default function VisualisationTrainer() {
                 </label>
                 <div className="flex flex-col gap-2">
                   {puzzleFinished ? (
-                    (!autoNext || puzzleStatus == 'incorrect') && (
+                    (!autoNext || puzzleStatus === 'incorrect') && (
                       <Button
                         variant="primary"
                         onClick={() => goToNextPuzzle(puzzleStatus)}

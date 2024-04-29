@@ -1,20 +1,18 @@
+import * as prismic from '@prismicio/client';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import Prismic from '@/prismicio';
-import * as prismic from '@prismicio/client';
-
-import Container from '@/app/components/_elements/container';
-import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styledLink';
-
 import { PrismicRichToHtml } from '@/app/_util/PrismicRichToHtml';
 import type { RichTextContent } from '@/app/_util/PrismicRichToHtml';
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
+import StyledLink from '@/app/components/_elements/styled-link';
+import { Prismic } from '@/prismicio';
 
 interface Params {
   uid: string;
 }
-export default async function AuthorPage({ params }: { params: Params }) {
+export async function AuthorPage({ params }: { params: Params }) {
   const author = await Prismic.getByUID('author', params.uid).catch(() =>
     notFound(),
   );

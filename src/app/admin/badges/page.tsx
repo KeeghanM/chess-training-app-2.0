@@ -1,13 +1,11 @@
 import { redirect } from 'next/navigation';
 
-import { prisma } from '@/server/db';
-
-import Container from '@/app/components/_elements/container';
-import PageHeader from '@/app/components/_layouts/pageHeader';
-import BadgeCreator from '@/app/components/admin/BadgeCreator';
-import ExistingBadges from '@/app/components/admin/ExistingBadges';
-
 import { getUserServer } from '@/app/_util/getUserServer';
+import { Container } from '@/app/components/_elements/container';
+import { PageHeader } from '@/app/components/_layouts/page-header';
+import { BadgeCreator } from '@/app/components/admin/badge-creator';
+import { ExistingBadges } from '@/app/components/admin/existing-badges';
+import { prisma } from '@/server/db';
 
 export default async function AdminBadgePage() {
   const { user, isStaff } = await getUserServer();
@@ -29,7 +27,7 @@ export default async function AdminBadgePage() {
       />
       <Container>
         <BadgeCreator />
-        <ExistingBadges existingBadges={existingBadges} />
+        <ExistingBadges badges={existingBadges} />
       </Container>
     </>
   );

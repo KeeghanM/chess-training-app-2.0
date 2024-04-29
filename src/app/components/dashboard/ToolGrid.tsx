@@ -2,13 +2,10 @@
 
 import Link from 'next/link';
 
+import Button from '@/app/components/_elements/button';
 import type { Tool } from '@/app/dashboard/page';
 
-import Button from '@/app/components/_elements/button';
-
-export default function ToolGrid(props: { tool: Tool }) {
-  const { tool } = props;
-
+export function ToolGrid({ tool }: { tool: Tool }) {
   return (
     <div className="flex flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
       <div

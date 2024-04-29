@@ -1,24 +1,24 @@
 'use client';
 
+import type { CuratedSet } from '@prisma/client';
 import { useEffect, useState } from 'react';
 
-import type { CuratedSet } from '@prisma/client';
 import 'react-toggle/style.css';
 import 'tippy.js/dist/tippy.css';
 
-import Button from '@/app/components/_elements/button';
-import Heading from '@/app/components/_elements/heading';
+import { Button } from '@/app/components/_elements/button';
+import { Heading } from '@/app/components/_elements/heading';
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 
-import AddToSet from './AddToSet';
-import PuzzleDisplay from './PuzzleDisplay';
-import PuzzleList from './PuzzleList';
-import SetEditor from './SetEditor';
-import SetSelector from './SetSelector';
-import PuzzleSearch from './puzzleSearch/PuzzleSearch';
+import { AddToSet } from './add-to-set';
+import { PuzzleDisplay } from './puzzle-display';
+import { PuzzleList } from './puzzle-list';
+import { SetEditor } from './set-editor';
+import { SetSelector } from './set-selector';
+import { PuzzleSearch } from './puzzleSearch/puzzle-search';
 
 export type CuratedSetPuzzle = TrainingPuzzle & { curatedPuzzleId: number };
-export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
+export function CuratedSetsBrowser({ sets }: { sets: CuratedSet[] }) {
   const [puzzle, setPuzzle] = useState<CuratedSetPuzzle>();
   const [selectedSet, setSelectedSet] = useState<CuratedSet>();
   const [mode, setMode] = useState<'list' | 'search' | 'edit'>('edit');
@@ -29,18 +29,12 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
 
   return (
     <>
-      {/* <div className="p-2">
-        <Heading as="h1">Curated Sets Editor & Browser</Heading>
-      </div> */}
       {!selectedSet ? (
-        <SetSelector
-          selectSet={(set) => setSelectedSet(set)}
-          sets={props.sets}
-        />
+        <SetSelector selectSet={(set) => setSelectedSet(set)} sets={sets} />
       ) : (
         <>
           <div className="flex items-center justify-center gap-4">
-            <Heading as="h1">"{selectedSet.name}"</Heading>
+            <Heading as="h1">&quot;{selectedSet.name}&quot;</Heading>
             <Button variant="danger" onClick={() => setSelectedSet(undefined)}>
               Close
             </Button>
@@ -49,7 +43,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
             {/* FIRST COLUMN */}
             <div className="">
               <div className="flex items-center justify-around text-sm">
-                <p
+                <button
                   className={`px-4 py-1 font-bold text-white ${
                     mode === 'search'
                       ? 'bg-green-500'
@@ -58,8 +52,8 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
                   onClick={() => setMode('search')}
                 >
                   Add New
-                </p>
-                <p
+                </button>
+                <button
                   className={`px-4 py-1 font-bold text-white ${
                     mode === 'list'
                       ? 'bg-green-500'
@@ -68,8 +62,8 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
                   onClick={() => setMode('list')}
                 >
                   List Puzzles
-                </p>
-                <p
+                </button>
+                <button
                   className={`px-4 py-1 font-bold text-white ${
                     mode === 'edit'
                       ? 'bg-green-500'
@@ -78,7 +72,7 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
                   onClick={() => setMode('edit')}
                 >
                   Edit Set
-                </p>
+                </button>
               </div>
               {mode === 'list' && (
                 <PuzzleList

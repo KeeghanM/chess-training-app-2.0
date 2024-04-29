@@ -5010,4 +5010,4 @@ const ECO: Record<string, string> = {
   nf3a5: 'Zukertort Opening: Ware Defense',
 };
 
-export default ECO;
+export ECO;

@@ -17,7 +17,7 @@ export interface CourseBrowserProps {
   lines: UserLineWithData[];
 }
 
-export default function CourseBrowser(props: CourseBrowserProps) {
+export function CourseBrowser(props: CourseBrowserProps) {
   const { lines } = props;
   const [groupIds] = useState<string[]>(
     Array.from(new Set(lines.map((line) => line.line.groupId))),
@@ -37,7 +37,7 @@ export default function CourseBrowser(props: CourseBrowserProps) {
   );
   const [search, setSearch] = useState('');
   const [openGroupId, setOpenGroupId] = useState<string | undefined>(
-    props.lines[0]?.line.groupId,
+    lines[0]?.line.groupId,
   );
 
   return (
@@ -49,7 +49,7 @@ export default function CourseBrowser(props: CourseBrowserProps) {
               group.name.toLowerCase().includes(search.toLowerCase()),
             )
             .map((group) => {
-              const lines = props.lines.filter(
+              const lines = lines.filter(
                 (line) => line.line.groupId === group.id,
               );
               return (

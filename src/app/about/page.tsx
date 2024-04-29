@@ -1,7 +1,7 @@
-import StyledLink from '@/app/components/_elements/styledLink';
+import StyledLink from '@/app/components/_elements/styled-link';
 import Hero from '@/app/components/_layouts/hero';
-import { MultiCol, MultiColItem } from '@/app/components/_layouts/multiCol';
-import { TextWall } from '@/app/components/_layouts/textWall';
+import { MultiCol, MultiColItem } from '@/app/components/_layouts/multi-col';
+import { TextWall } from '@/app/components/_layouts/text-wall';
 
 export const metadata = {
   title: 'About ChessTraining.app: Our Mission, Vision, and Story',
@@ -9,7 +9,7 @@ export const metadata = {
     'Discover the story behind ChessTraining.app - a passion project turned leading chess training platform by Keeghan. Learn about our mission to provide accessible, high-quality chess training for all, driven by innovation and community support. Explore our values, culture, and vision for a world where top-tier chess training is available to everyone. Join our journey of continuous learning and chess mastery, supported by chess enthusiasts worldwide.',
 };
 
-export default function AboutUsPage() {
+export function AboutUsPage() {
   return (
     <>
       <Hero

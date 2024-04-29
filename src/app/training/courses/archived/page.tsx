@@ -1,16 +1,15 @@
 import { redirect } from 'next/navigation';
 
-import Container from '@/app/components/_elements/container';
-import PageHeader from '@/app/components/_layouts/pageHeader';
-import ArchivedList from '@/app/components/training/courses/list/ArhivedList';
-
 import { getUserServer } from '@/app/_util/getUserServer';
+import Container from '@/app/components/_elements/container';
+import { PageHeader } from '@/app/components/_layouts/page-header';
+import ArchivedList from '@/app/components/training/courses/list/ArhivedList';
 
 export const metadata = {
   title: 'Your Archived Courses - ChessTraining.app',
 };
 
-export default async function ArchivedCoursesPage() {
+export async function ArchivedCoursesPage() {
   const { user, isPremium } = await getUserServer();
 
   if (!user) redirect('/auth/signin');

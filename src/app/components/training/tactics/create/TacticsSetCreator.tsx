@@ -1,21 +1,19 @@
 'use client';
 
-import { useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import type { TacticsSet, TacticsSetRound } from '@prisma/client';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import * as Sentry from '@sentry/nextjs';
+import { useState } from 'react';
 import Select from 'react-select';
 
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import type { ResponseJson } from '@/app/api/responses';
 import Button from '@/app/components/_elements/button';
-import StyledLink from '@/app/components/_elements/styledLink';
+import StyledLink from '@/app/components/_elements/styled-link';
 import GetPremiumButton from '@/app/components/ecomm/GetPremiumButton';
 import Spinner from '@/app/components/general/Spinner';
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
-
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
 
 export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] };
 interface TacticsSetCreatorProps {
@@ -25,9 +23,14 @@ interface TacticsSetCreatorProps {
   setCreated: (set: PrismaTacticsSet) => void;
   hasUnlimitedSets: boolean;
 }
-export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
+export function TacticsSetCreator({
+  setCount,
+  maxSets,
+  setCreated,
+  hasUnlimitedSets,
+}: TacticsSetCreatorProps) {
   const { user } = useKindeBrowserClient();
-  const { setCount, maxSets, setCreated, hasUnlimitedSets } = props;
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -61,7 +64,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
   ];
 
   const difficultyAdjuster = (d: number) => {
-    return d == 0 ? 0.9 : d == 1 ? 1 : 1.2;
+    return d === 0 ? 0.9 : d === 1 ? 1 : 1.2;
   };
   const GetPuzzlesForSet = async (
     rating: number,
@@ -92,10 +95,10 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       });
 
       const json = (await resp.json()) as ResponseJson;
-      if (json.message != 'Puzzles found') throw new Error(json.message);
+      if (json.message !== 'Puzzles found') throw new Error(json.message);
 
       const puzzles = json.data?.puzzles as TrainingPuzzle[];
-      if (!puzzles || puzzles.length == 0) throw new Error('No puzzles found');
+      if (!puzzles || puzzles.length === 0) throw new Error('No puzzles found');
 
       return puzzles as {
         puzzleid: string;
@@ -156,7 +159,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
     }
 
     const puzzles = await GetPuzzlesForSet(rating, size, themesList);
-    if (!puzzles || puzzles.length == 0) {
+    if (!puzzles || puzzles.length === 0) {
       setError('No puzzles found');
       setLoading(false);
       return;
@@ -181,8 +184,8 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
       });
       const json = (await resp.json()) as ResponseJson;
 
-      if (json.message != 'Set Created') {
-        setError(`Oops! Something went wrong: ${json?.message}`);
+      if (json.message !== 'Set Created') {
+        setError(`Oops! Something went wrong: ${json.message}`);
         return;
       }
 
@@ -197,7 +200,7 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
         themesList: themesList.join(','),
         rating: rating.toString(),
         difficulty:
-          difficulty == 0 ? 'Easy' : difficulty == 1 ? 'Medium' : 'Hard',
+          difficulty === 0 ? 'Easy' : difficulty === 1 ? 'Medium' : 'Hard',
       });
       resetForm();
       setCreated(set);
@@ -294,19 +297,19 @@ export default function TacticsSetCreator(props: TacticsSetCreatorProps) {
                     <label>Difficulty</label>
                     <div className="flex flex-col gap-2 md:flex-row md:gap-4">
                       <Button
-                        variant={difficulty == 0 ? 'success' : 'accent'}
+                        variant={difficulty === 0 ? 'success' : 'accent'}
                         onClick={() => setDifficulty(0)}
                       >
                         Easy
                       </Button>
                       <Button
-                        variant={difficulty == 1 ? 'success' : 'accent'}
+                        variant={difficulty === 1 ? 'success' : 'accent'}
                         onClick={() => setDifficulty(1)}
                       >
                         Medium
                       </Button>
                       <Button
-                        variant={difficulty == 2 ? 'success' : 'accent'}
+                        variant={difficulty === 2 ? 'success' : 'accent'}
                         onClick={() => setDifficulty(2)}
                       >
                         Hard

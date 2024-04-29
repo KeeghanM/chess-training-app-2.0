@@ -1,10 +1,8 @@
-import { prisma } from '@/server/db';
 import * as Sentry from '@sentry/nextjs';
 
-export default async function SubscribeUser(
-  stripeCustomerId: string,
-  userId: string,
-) {
+import { prisma } from '@/server/db';
+
+export async function SubscribeUser(stripeCustomerId: string, userId: string) {
   if (!stripeCustomerId) return false;
   if (!userId) return false;
 

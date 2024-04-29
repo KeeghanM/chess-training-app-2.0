@@ -1,12 +1,11 @@
 import { redirect } from 'next/navigation';
 
+import { getUserServer } from '@/app/_util/getUserServer';
 import Container from '@/app/components/_elements/container';
-import PageHeader from '@/app/components/_layouts/pageHeader';
+import { PageHeader } from '@/app/components/_layouts/page-header';
 import EndgameTrainer from '@/app/components/training/endgames/EndgameTrainer';
 
-import { getUserServer } from '@/app/_util/getUserServer';
-
-export default async function EndgameTrainPage() {
+export async function EndgameTrainPage() {
   const { user } = await getUserServer();
   if (!user) redirect('/auth/signin');
 

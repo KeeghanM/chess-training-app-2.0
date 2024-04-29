@@ -1,37 +1,32 @@
 'use client';
 
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import { useRouter } from 'next/navigation';
-
 import { useEffect, useState } from 'react';
 
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
-
+import toHHMMSS from '@/app/_util/toHHMMSS';
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 import Button from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 import TimeSince from '@/app/components/general/TimeSince';
 import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator';
 
-import toHHMMSS from '@/app/_util/toHHMMSS';
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import SetListEdit from './set-list-edit';
+import { SetListStats } from './set-list-stats';
 
-import SetListEdit from './SetListEdit';
-import SetListStats from './SetListStats';
-
-export default function SetListItem(props: {
+export function SetListItem(props: {
   set: PrismaTacticsSet;
   updated: () => void;
 }) {
   const { set } = props;
   const { user } = useKindeBrowserClient();
-  const currentRound = set.rounds
-    ? set.rounds[set.rounds.length - 1]
-    : undefined;
+  const currentRound = set.rounds[set.rounds.length - 1];
   const completedCount =
     (currentRound?.correct ?? 0) + (currentRound?.incorrect ?? 0);
   const router = useRouter();
   const [opening, setOpening] = useState(false);
 
-  const trainSet = async () => {
+  const trainSet = () => {
     setOpening(true);
     trackEventOnClient('tactics_set_opened', {});
     router.push(`/training/tactics/${set.id}`);
@@ -47,7 +42,7 @@ export default function SetListItem(props: {
       className="flex flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900"
     >
       <div className="border-b border-gray-300 px-2 py-1 font-bold text-orange-500 dark:border-slate-600">
-        <p className="cursor-pointer" onClick={trainSet}>
+        <button className="cursor-pointer" onClick={trainSet}>
           <span className="text-lg">{set.name}</span>
           <span className="px-2 text-xs italic text-gray-600 dark:text-gray-400">
             Last trained{' '}
@@ -57,7 +52,7 @@ export default function SetListItem(props: {
               'never'
             )}
           </span>
-        </p>
+        </button>
       </div>
 
       <div className="flex w-full flex-col gap-2 p-2">
@@ -66,7 +61,7 @@ export default function SetListItem(props: {
             <p className="border-b border-gray-300 px-2 py-1 font-bold dark:border-slate-600">
               Round
             </p>
-            <p>{set.rounds ? set.rounds.length : 1}/8</p>
+            <p>{set.rounds.length}/8</p>
           </div>
           <div className="flex flex-col items-center border border-gray-300 dark:border-slate-600">
             <p className="border-b border-gray-300 px-2 py-1 font-bold dark:border-slate-600">
@@ -81,14 +76,12 @@ export default function SetListItem(props: {
               Accuracy
             </p>
             <p>
-              {currentRound
-                ? currentRound.correct + currentRound.incorrect > 0
-                  ? Math.round(
-                      (currentRound.correct /
-                        (currentRound.correct + currentRound.incorrect)) *
-                        100,
-                    )
-                  : 0
+              {currentRound && currentRound.correct + currentRound.incorrect > 0
+                ? Math.round(
+                    (currentRound.correct /
+                      (currentRound.correct + currentRound.incorrect)) *
+                      100,
+                  )
                 : 0}
               %
             </p>
@@ -112,7 +105,7 @@ export default function SetListItem(props: {
           <Button
             variant="primary"
             disabled={
-              (set.rounds?.length >= 8 && completedCount >= set.size) || opening
+              (set.rounds.length >= 8 && completedCount >= set.size) || opening
             }
             onClick={trainSet}
           >
@@ -124,7 +117,7 @@ export default function SetListItem(props: {
               'Train'
             )}
           </Button>
-          <SetListEdit set={set} user={user} onFinished={props.updated} />
+          <SetListEdit set={set} user={user} onFinished={updated} />
           <SetListStats set={set} />
         </div>
       </div>

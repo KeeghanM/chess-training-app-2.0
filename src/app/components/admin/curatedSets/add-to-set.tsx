@@ -4,11 +4,16 @@ import { useEffect, useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
 
-import Button from '../../_elements/button';
-import Spinner from '../../general/Spinner';
+import { Button } from '../../_elements/button';
+import { Spinner } from '../../general/Spinner';
 
-export default function AddToSet(props: { setId: string; puzzleId?: string }) {
-  const { setId, puzzleId } = props;
+export function AddToSet({
+  setId,
+  puzzleId,
+}: {
+  setId: string;
+  puzzleId?: string;
+}) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 

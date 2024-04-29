@@ -1,10 +1,9 @@
 'use client';
 
+import type { Group, Line, Move, UserLine } from '@prisma/client';
 import { useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-import type { Group, Line, Move, UserLine } from '@prisma/client';
-
 import Button from '@/app/components/_elements/button';
 import PrettyPrintLine from '@/app/components/general/PrettyPrintLine';
 import Spinner from '@/app/components/general/Spinner';
@@ -17,7 +16,7 @@ export type ScheduleLine = UserLine & {
   };
 };
 
-export default function LineRow({
+export function LineRow({
   line,
   courseId,
   minDate,

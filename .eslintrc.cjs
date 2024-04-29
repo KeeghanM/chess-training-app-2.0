@@ -95,6 +95,12 @@ module.exports = {
     ],
     // sort named imports within an import statement
     'sort-imports': ['warn', { ignoreDeclarationSort: true }],
+    'react/destructuring-assignment': [
+      'error',
+      'always',
+      { destructureInSignature: 'always' },
+    ],
+    'no-alert': 'off',
   },
   overrides: [
     /**

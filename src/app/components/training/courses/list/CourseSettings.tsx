@@ -1,21 +1,18 @@
 'use client';
 
-import Link from 'next/link';
-
-import { useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import * as Sentry from '@sentry/nextjs';
 import Tippy from '@tippyjs/react';
-
-import Button from '@/app/components/_elements/button';
-import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styledLink';
-import Spinner from '@/app/components/general/Spinner';
+import Link from 'next/link';
+import { useState } from 'react';
 
 import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import type { ResponseJson } from '@/app/api/responses';
+import Button from '@/app/components/_elements/button';
+import Heading from '@/app/components/_elements/heading';
+import StyledLink from '@/app/components/_elements/styled-link';
+import Spinner from '@/app/components/general/Spinner';
 
 import type { PrismaUserCourse } from './CoursesList';
 
@@ -24,8 +21,7 @@ interface CourseSettingsProps {
   update: () => void;
 }
 
-export default function CourseSettings(props: CourseSettingsProps) {
-  const { userCourse, update } = props;
+export function CourseSettings({ userCourse, update }: CourseSettingsProps) {
   const { user } = useKindeBrowserClient();
 
   const [deleting, setDeleting] = useState(false);
@@ -39,7 +35,7 @@ export default function CourseSettings(props: CourseSettingsProps) {
     if (!userCourse) return;
 
     const confirmString =
-      !userCourse.course.published && userCourse.course.createdBy == user?.id
+      !userCourse.course.published && userCourse.course.createdBy === user?.id
         ? 'Are you sure you want to archive this course? This will DELETE the course ENTIRELY.'
         : 'Are you sure you want to archive this course? This will remove your progress.';
     if (!confirm(confirmString)) return;
@@ -53,8 +49,8 @@ export default function CourseSettings(props: CourseSettingsProps) {
         method: 'DELETE',
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json?.message != 'Course archived')
-        throw new Error(json?.message ?? 'Course not archived');
+      if (json.message !== 'Course archived')
+        throw new Error(json.message ?? 'Course not archived');
       update();
     } catch (e) {
       Sentry.captureException(e);
@@ -131,7 +127,7 @@ export default function CourseSettings(props: CourseSettingsProps) {
                 'Archive'
               )}
             </Button>
-            {userCourse.course.createdBy == user?.id && (
+            {userCourse.course.createdBy === user?.id && (
               <div className="flex items-center gap-1">
                 <Link href={`/training/courses/admin/${userCourse.course.id}`}>
                   <Button variant="warning">

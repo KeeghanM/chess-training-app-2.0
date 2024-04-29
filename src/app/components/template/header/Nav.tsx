@@ -1,18 +1,19 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
-
-import { useState } from 'react';
-
 import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs';
 import Tippy from '@tippyjs/react';
+import Image from 'next/image';
+import Link from 'next/link';
 import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types';
+import { useState } from 'react';
 import 'tippy.js/dist/tippy.css';
 
 import CalculateXpRank from '@/app/_util/CalculateXpRank';
 
-export default function Nav(props: {
+export function Nav({
+  user,
+  experience,
+}: {
   user: KindeUser | null;
   experience: number;
 }) {
@@ -20,7 +21,6 @@ export default function Nav(props: {
   const [menuOpen, setMenuOpen] = useState(false);
   const [openSub, setOpenSub] = useState('');
 
-  const { user, experience } = props;
   const rank = CalculateXpRank(experience);
 
   const links = [
@@ -136,8 +136,8 @@ export default function Nav(props: {
                         {user.email}
                       </span>
                       <span className="block truncate text-xs text-orange-500">
-                        {experience.toLocaleString()} XP ({rank?.rank.rank}:{' '}
-                        {rank?.rank.name})
+                        {experience.toLocaleString()} XP ({rank.rank.rank}:{' '}
+                        {rank.rank.name})
                       </span>
                     </div>
                     <ul aria-labelledby="user-menu-button" className="py-2">
@@ -210,7 +210,7 @@ export default function Nav(props: {
               : 'hidden'
           } items-center justify-between lg:order-1 lg:ml-auto lg:flex lg:w-auto `}
         >
-          {openSub != '' && (
+          {openSub !== '' && (
             <div
               className="fixed inset-0 z-10 hidden lg:block"
               onClick={() => setOpenSub('')}

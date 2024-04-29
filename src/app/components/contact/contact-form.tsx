@@ -1,14 +1,13 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import { useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-import * as Sentry from '@sentry/nextjs';
+import { Button } from '@/app/components/_elements/button';
+import { Spinner } from '@/app/components/general/Spinner';
 
-import Button from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/Spinner';
-
-export default function ReportIssueForm() {
+export function ContactForm() {
   const [sendEmail, setSendEmail] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -26,18 +25,8 @@ export default function ReportIssueForm() {
   ];
 
   const [player] = useState(
-    players[Math.floor(Math.random() * players.length)],
+    players[Math.floor(Math.random() * players.length)] ?? 'Magnus Carlsen',
   );
-
-  const issueList = [
-    'My Account',
-    'Billing',
-    'Tactics Trainer',
-    'Course Trainer',
-    'Other',
-  ];
-
-  const [issue, setIssue] = useState('');
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -62,27 +51,20 @@ export default function ReportIssueForm() {
       return;
     }
 
-    if (!issue) {
-      setError('Issue type is required');
-      setLoading(false);
-      return;
-    }
-
     try {
-      const res = await fetch('/api/mail/reportIssue', {
+      const res = await fetch('/api/mail/contactForm', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           name,
           email,
           message,
-          issue,
+          subject: `Contact Form from: ${name}`,
         }),
       });
       const data = (await res.json()) as ResponseJson;
-      if (data.message != 'Message sent') {
+      if (data.message !== 'Message sent') {
         setError(data.message);
-        setLoading(false);
         return;
       }
       setName('');
@@ -110,29 +92,29 @@ export default function ReportIssueForm() {
         <div className="flex flex-col justify-center gap-4">
           <p>
             The fastest way to reach us is via our{' '}
-            <span
+            <button
               className="cursor-pointer font-bold text-purple-700 underline hover:no-underline"
               onClick={openChat}
             >
               Live Chat
-            </span>{' '}
-            feature. And don't worry - you'll always talk to a real person
-            (usually Keeghan, the Founder) never a bot.
+            </button>{' '}
+            feature. And don&apos;t worry - you&apos;ll always talk to a real
+            person (usually Keeghan, the Founder) never a bot.
           </p>
           <p>
-            <span
+            <button
               className="cursor-pointer font-bold text-purple-700 underline hover:no-underline"
               onClick={openChat}
             >
               Chat with us now
-            </span>{' '}
+            </button>{' '}
             or would you rather{' '}
-            <span
+            <button
               className="cursor-pointer font-bold text-purple-700 underline hover:no-underline"
               onClick={() => setSendEmail(true)}
             >
-              submit an issue using the form
-            </span>
+              use our contact form
+            </button>
             .
           </p>
         </div>
@@ -140,16 +122,19 @@ export default function ReportIssueForm() {
         <>
           {success ? (
             <div className="bg-lime-100 p-4 text-center md:p-6 lg:p-12">
-              <p>
-                Thanks for reaching out, we'll be in touch as soon as possible!
-              </p>
+              <p>Thank you for contacting us!</p>
+              <Button variant="primary" onClick={() => setSuccess(false)}>
+                Send another message
+              </Button>
             </div>
           ) : (
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
               <div className="flex flex-col gap-4 md:flex-row">
                 <div>
-                  <label>Name</label>
+                  <label htmlFor="name">Name</label>
                   <input
+                    id="name"
+                    name="name"
                     className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
                     placeholder={player}
                     type="text"
@@ -158,10 +143,12 @@ export default function ReportIssueForm() {
                   />
                 </div>
                 <div>
-                  <label>Email</label>
+                  <label htmlFor="email">Email</label>
                   <input
+                    id="email"
+                    name="email"
                     className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
-                    placeholder={`${player?.split(' ')[0]}@chesstraining.app`}
+                    placeholder={`${player.split(' ')[0] ?? 'Magnus'}@chesstraining.app`}
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -169,25 +156,10 @@ export default function ReportIssueForm() {
                 </div>
               </div>
               <div>
-                <label>Issue Type</label>
-                <select
-                  className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
-                  value={issue}
-                  onChange={(e) => setIssue(e.target.value)}
-                >
-                  <option disabled hidden value="">
-                    I have an issue with...
-                  </option>
-                  {issueList.map((issue, i) => (
-                    <option key={i} value={issue}>
-                      {issue}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label>Message</label>
+                <label htmlFor="message">Message</label>
                 <textarea
+                  id="message"
+                  name="message"
                   className="w-full border border-gray-300 px-4 py-2 dark:bg-gray-100"
                   rows={6}
                   value={message}

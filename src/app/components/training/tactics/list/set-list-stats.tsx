@@ -1,16 +1,14 @@
 'use client';
 
+import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import { useState } from 'react';
 
-import * as AlertDialog from '@radix-ui/react-alert-dialog';
-
+import toHHMMSS from '@/app/_util/toHHMMSS';
 import Button from '@/app/components/_elements/button';
 import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator';
 
-import toHHMMSS from '@/app/_util/toHHMMSS';
-
-export default function SetListStats(props: { set: PrismaTacticsSet }) {
-  const { set } = props;
+export function SetListStats({ set }: { set: PrismaTacticsSet }) {
+  
   const [open, setOpen] = useState(false);
 
   const close = () => {
@@ -30,15 +28,15 @@ export default function SetListStats(props: { set: PrismaTacticsSet }) {
           />
           <AlertDialog.Content className="fixed left-1/2 top-1/2 z-50 max-h-[75vh] w-[90vw] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto bg-white p-4 shadow-md md:p-6">
             <AlertDialog.Title className="text-lg font-bold text-purple-700">
-              "{set.name}" Statistics
+              &quot;{set.name}&quot; Statistics
             </AlertDialog.Title>
             <ul>
-              {set.rounds?.map((round, index) => {
+              {set.rounds.map((round, index) => {
                 return (
                   <li
                     key={index}
                     className={`flex flex-col gap-2 p-2 ${
-                      index % 2 == 0 ? 'bg-gray-100' : ''
+                      index % 2 === 0 ? 'bg-gray-100' : ''
                     }`}
                   >
                     <p className="font-bold">Round #{round.roundNumber}</p>

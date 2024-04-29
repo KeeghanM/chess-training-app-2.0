@@ -1,9 +1,9 @@
-import { prisma } from '@/server/db';
 import * as Sentry from '@sentry/nextjs';
 
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
+import { prisma } from '@/server/db';
 
-export default async function getPuzzleById(puzzleid: string) {
+export async function getPuzzleById(puzzleid: string) {
   let puzzle: TrainingPuzzle | undefined;
 
   try {

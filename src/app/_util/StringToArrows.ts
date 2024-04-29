@@ -1,6 +1,6 @@
 import type { Arrow } from 'react-chessboard/dist/chessboard/types';
 
-export default function getArrows(arrowString: string) {
+export function getArrows(arrowString: string) {
   const moveArrows = arrowString.split(',');
   const getColour = (code: string) => {
     switch (code) {

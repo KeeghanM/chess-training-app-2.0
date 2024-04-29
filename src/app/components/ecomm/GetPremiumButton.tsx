@@ -1,17 +1,17 @@
 'use client';
 
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import * as Sentry from '@sentry/react';
 import { useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
-import * as Sentry from '@sentry/react';
 
 import Button from '../_elements/button';
 import Spinner from '../general/Spinner';
 
-export default function GetPremiumButton(props: { returnUrl: string }) {
+export function GetPremiumButton({ returnUrl }: { returnUrl: string }) {
   const { user } = useKindeBrowserClient();
-  const { returnUrl } = props;
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const getPremium = async () => {
@@ -30,7 +30,7 @@ export default function GetPremiumButton(props: { returnUrl: string }) {
         }),
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json?.data?.url == undefined) throw new Error(json?.message);
+      if (json.data?.url === undefined) throw new Error(json.message);
 
       window.location.href = json.data.url as string;
     } catch (e) {

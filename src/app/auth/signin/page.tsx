@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { getUserServer } from '@/app/_util/getUserServer';
 
-export default async function SignIn() {
+export async function SignIn() {
   const { user } = await getUserServer();
 
   if (user) redirect('/dashboard');

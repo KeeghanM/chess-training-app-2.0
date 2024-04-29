@@ -22,9 +22,9 @@ interface ChessBoardProps {
   enableHighlights: boolean;
   moveMade: null | ((move: Move) => void);
 }
-export default function ChessBoard(props: ChessBoardProps) {
+export function ChessBoard(props: ChessBoardProps) {
   // Chess Game
-  const game = props.game;
+  const game = game;
 
   // Board State
   const [showPromotionDialog, setShowPromotionDialog] = useState(false);
@@ -44,7 +44,7 @@ export default function ChessBoard(props: ChessBoardProps) {
   const [moveSound] = useSound('/sfx/move.mp3');
 
   const playMoveSound = (move: string) => {
-    if (!props.soundEnabled) return;
+    if (!soundEnabled) return;
 
     if (move.includes('+')) {
       checkSound();
@@ -76,8 +76,8 @@ export default function ChessBoard(props: ChessBoardProps) {
 
     if (
       lastMovePiece.type === 'p' &&
-      ((pieceColor == 'w' && targetRank === '8' && sourceCol == targetCol) ||
-        (pieceColor == 'b' && targetRank === '1' && sourceCol == targetCol))
+      ((pieceColor === 'w' && targetRank === '8' && sourceCol === targetCol) ||
+        (pieceColor === 'b' && targetRank === '1' && sourceCol === targetCol))
     ) {
       return pieceType?.toLowerCase();
     }
@@ -117,12 +117,12 @@ export default function ChessBoard(props: ChessBoardProps) {
     setMoveTo(undefined);
     setShowPromotionDialog(false);
     setOptionSquares({});
-    if (props.moveMade) props.moveMade(playerMove);
+    if (moveMade) moveMade(playerMove);
     return true;
   };
 
   const handleSquareClick = (clickedSquare: Square) => {
-    if (!props.readyForInput) return;
+    if (!readyForInput) return;
 
     const piece = game.get(clickedSquare);
     // if we click the same square twice
@@ -215,36 +215,32 @@ export default function ChessBoard(props: ChessBoardProps) {
   }, [startSquare, clickedPiece]);
 
   useEffect(() => {
-    if (!props.soundEnabled) return;
+    if (!soundEnabled) return;
     const lastMove = game.history({ verbose: true }).slice(-1)[0];
     if (!lastMove) return;
     playMoveSound(lastMove.san);
-  }, [props.position]);
+  }, [position]);
 
   const windowSize = useWindowSize();
 
   return (
     <div className="m-2">
       <Chessboard
-        arePiecesDraggable={props.readyForInput}
-        boardOrientation={props.orientation}
-        position={props.position}
+        arePiecesDraggable={readyForInput}
+        boardOrientation={orientation}
+        position={position}
         promotionToSquare={moveTo}
         showPromotionDialog={showPromotionDialog}
         boardWidth={Math.min(
           (windowSize.height ?? 800) * 0.7,
           (windowSize.width ?? 300) * 0.9,
         )}
-        customArrows={
-          props.enableArrows ? [...props.additionalArrows, ...arrows] : []
-        }
+        customArrows={enableArrows ? [...additionalArrows, ...arrows] : []}
         customBoardStyle={{
           marginInline: 'auto',
         }}
         customSquareStyles={
-          props.enableHighlights
-            ? { ...optionSquares, ...props.additionalSquares }
-            : {}
+          enableHighlights ? { ...optionSquares, ...additionalSquares } : {}
         }
         onPieceDrop={handlePieceDrop}
         onPromotionPieceSelect={handlePromotionSelection}

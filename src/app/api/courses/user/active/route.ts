@@ -1,7 +1,8 @@
-import { errorResponse, successResponse } from '@/app/api/responses';
-import { prisma } from '@/server/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
+
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
 
 export async function GET(request: Request) {
   const session = getKindeServerSession(request);

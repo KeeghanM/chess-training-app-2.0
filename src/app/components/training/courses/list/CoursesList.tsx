@@ -1,19 +1,18 @@
 'use client';
 
+import type { Course, UserCourse, UserLine } from '@prisma/client';
+import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
-
 import { useEffect, useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-import type { Course, UserCourse, UserLine } from '@prisma/client';
-import * as Sentry from '@sentry/nextjs';
-
 import Button from '@/app/components/_elements/button';
 import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styledLink';
+import StyledLink from '@/app/components/_elements/styled-link';
 import Spinner from '@/app/components/general/Spinner';
 
 import PremiumSubscribe from '../../../ecomm/PremiumSubscribe';
+
 import CourseListItem from './CourseListItem';
 
 export type PrismaUserCourse = UserCourse & {
@@ -22,10 +21,14 @@ export type PrismaUserCourse = UserCourse & {
   lines?: UserLine[];
 };
 
-export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
+export function CourseList({
+  hasUnlimitedCourses,
+}: {
+  hasUnlimitedCourses: boolean;
+}) {
   const [courses, setCourses] = useState<PrismaUserCourse[]>([]);
   const [loading, setLoading] = useState(true);
-  const { hasUnlimitedCourses } = props;
+
   const maxCourses = 2;
 
   const fetchCourses = async () => {
@@ -33,7 +36,7 @@ export default function CourseList(props: { hasUnlimitedCourses: boolean }) {
     try {
       const resp = await fetch(`/api/courses/user/active`);
       const data = (await resp.json()) as ResponseJson;
-      if (data?.message != 'Courses found')
+      if (data.message !== 'Courses found')
         throw new Error('Failed to fetch courses');
 
       setCourses(data.data!.courses as PrismaUserCourse[]);

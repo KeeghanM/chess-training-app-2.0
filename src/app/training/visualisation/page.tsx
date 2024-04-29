@@ -1,8 +1,8 @@
 import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styledLink';
-import CtaRow from '@/app/components/_layouts/ctaRow';
+import StyledLink from '@/app/components/_elements/styled-link';
+import CtaRow from '@/app/components/_layouts/cta-row';
 import Hero from '@/app/components/_layouts/hero';
-import ImageRowFull from '@/app/components/_layouts/imageRowFull';
+import ImageRowFull from '@/app/components/_layouts/image-row-full';
 
 export const metadata = {
   title:
@@ -10,7 +10,7 @@ export const metadata = {
   description:
     "Refine your foresight with ChessTraining.app's Visualisation training. Tailored for players seeking to enhance their ability to foresee multiple moves ahead, this tool is crucial for long-term planning in chess. Challenge yourself with complex board scenarios and improve your decision-making skills. Perfect for those looking to deepen their tactical understanding and elevate their game to the next level.",
 };
-export default async function VisualisationPage() {
+const VisualisationPage = () => {
   return (
     <>
       <Hero
@@ -25,8 +25,8 @@ export default async function VisualisationPage() {
         }}
       >
         <Heading as="h2" color="text-orange-500">
-          Enhance your chess foresight with ChessTraining.app's Visualisation
-          Trainer.
+          Enhance your chess foresight with ChessTraining.app&apos;s
+          Visualisation Trainer.
         </Heading>
       </Hero>
       <ImageRowFull
@@ -43,7 +43,7 @@ export default async function VisualisationPage() {
           difficult? Our Visualisation Trainer is designed for you.
         </p>
         <p>
-          With our trainer, you're presented with a board position and a
+          With our trainer, you&apos;re presented with a board position and a
           sequence of moves. Your task is to visualize these moves in your mind,
           and find the correct final move.
         </p>
@@ -64,15 +64,15 @@ export default async function VisualisationPage() {
         }}
       >
         <p>
-          You'll be presented with a position and a list of moves. Visualize the
-          given moves in your head, and try to find the correct move in that
-          position.
+          You&apos;ll be presented with a position and a list of moves.
+          Visualize the given moves in your head, and try to find the correct
+          move in that position.
         </p>
         <p>
-          When you think you've found the correct move, enter it on the board.
-          If you're correct, great! Move on to the next one. If not, you can
-          keep trying or skip to the next puzzle. You can also use the "Show
-          Solution" button to reveal the correct answer.
+          When you think you&apos;ve found the correct move, enter it on the
+          board. If you&apos;re correct, great! Move on to the next one. If not,
+          you can keep trying or skip to the next puzzle. You can also use the
+          &quot;Show Solution&quot; button to reveal the correct answer.
         </p>
         <p>
           Just like all our other trainers, gain experience points for each
@@ -95,4 +95,6 @@ export default async function VisualisationPage() {
       </CtaRow>
     </>
   );
-}
+};
+
+export VisualisationPage;

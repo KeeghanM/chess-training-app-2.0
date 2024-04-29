@@ -1,12 +1,11 @@
 import { redirect } from 'next/navigation';
 
+import { getUserServer } from '@/app/_util/getUserServer';
 import Container from '@/app/components/_elements/container';
-import PageHeader from '@/app/components/_layouts/pageHeader';
+import { PageHeader } from '@/app/components/_layouts/page-header';
 import VisualisationTrainer from '@/app/components/training/visualisation/VisualisationTrainer';
 
-import { getUserServer } from '@/app/_util/getUserServer';
-
-export default async function VisualisationTrainPage() {
+const VisualisationTrainPage = async () => {
   const { user } = await getUserServer();
   if (!user) redirect('/auth/signin');
 
@@ -26,4 +25,6 @@ export default async function VisualisationTrainPage() {
       </div>
     </>
   );
-}
+};
+
+export VisualisationTrainPage;

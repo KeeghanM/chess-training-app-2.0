@@ -1,9 +1,9 @@
-import { errorResponse, successResponse } from '@/app/api/responses';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
 
 import { AddBadgeToUser } from '@/app/_util/AddBadge';
 import { TacticStreakBadges } from '@/app/_util/RanksAndBadges';
+import { errorResponse, successResponse } from '@/app/api/responses';
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request);
@@ -15,11 +15,11 @@ export async function POST(request: Request) {
   const { currentStreak } = (await request.json()) as {
     currentStreak: number;
   };
-  if (currentStreak == undefined) return errorResponse('Missing fields', 400);
+  if (currentStreak === undefined) return errorResponse('Missing fields', 400);
 
   try {
     const badge = TacticStreakBadges.find(
-      (badge) => badge.streak === currentStreak && badge.level == undefined,
+      (badge) => badge.streak === currentStreak && badge.level === undefined,
     );
     if (!badge) return successResponse('No badge to add', {}, 200);
 

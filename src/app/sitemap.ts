@@ -1,14 +1,14 @@
 import type { MetadataRoute } from 'next';
 
-import Prismic from '@/prismicio';
+import { Prismic } from '@/prismicio';
 
-export default async function sitemap() {
+export async function sitemap() {
   const articles = await Prismic.getAllByType('article');
   const authors = await Prismic.getAllByType('author');
 
   const tidiedArticles = articles.map((article) => {
     return {
-      url: `https://chesstraining.app/articles/${article.uid}`,
+      url: `https://chesstraining.app/articles/${article.uid ?? article.id}`,
       lastModified: new Date(article.last_publication_date),
       changeFrequency: 'monthly',
       priority: 0.9,
@@ -16,7 +16,7 @@ export default async function sitemap() {
   }) as MetadataRoute.Sitemap;
   const tidiedAuthors = authors.map((author) => {
     return {
-      url: `https://chesstraining.app/articles/author/${author.uid}`,
+      url: `https://chesstraining.app/articles/author/${author.uid ?? author.id}`,
       lastModified: new Date(author.last_publication_date),
       changeFrequency: 'monthly',
       priority: 0.4,

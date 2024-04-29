@@ -1,5 +1,6 @@
-import { prisma } from '@/server/db';
 import * as Sentry from '@sentry/nextjs';
+
+import { prisma } from '@/server/db';
 
 import { errorResponse, successResponse } from '../../responses';
 

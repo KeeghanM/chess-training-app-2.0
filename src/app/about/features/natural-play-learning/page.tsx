@@ -2,11 +2,11 @@ import Link from 'next/link';
 
 import Button from '@/app/components/_elements/button';
 import Heading from '@/app/components/_elements/heading';
-import BigText from '@/app/components/_layouts/bigText';
-import CtaRow from '@/app/components/_layouts/ctaRow';
+import BigText from '@/app/components/_layouts/big-text';
+import CtaRow from '@/app/components/_layouts/cta-row';
 import Hero from '@/app/components/_layouts/hero';
-import ImageRowFull from '@/app/components/_layouts/imageRowFull';
-import { TextWall } from '@/app/components/_layouts/textWall';
+import ImageRowFull from '@/app/components/_layouts/image-row-full';
+import { TextWall } from '@/app/components/_layouts/text-wall';
 
 export const metadata = {
   title:
@@ -15,7 +15,7 @@ export const metadata = {
     "Discover ChessTraining.app's Natural Play Learning, an innovative chess training method for faster learning and longer retention. Master chess openings like never before with our unique approach, combining the effectiveness of spaced repetition with real-game scenarios. Join us now and elevate your chess game",
 };
 
-export default async function NaturalPlayLearningPage() {
+export async function NaturalPlayLearningPage() {
   return (
     <>
       <Hero

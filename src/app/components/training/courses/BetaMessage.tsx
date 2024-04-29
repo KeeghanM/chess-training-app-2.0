@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 
 import Button from '../../_elements/button';
 import Heading from '../../_elements/heading';
-import StyledLink from '../../_elements/styledLink';
+import StyledLink from '../../_elements/styled-link';
 
-export default function BetaMessage() {
+export function BetaMessage() {
   const [show, setShow] = useState(false);
 
   const close = () => {

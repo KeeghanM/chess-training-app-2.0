@@ -1,11 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-
-import { useEffect, useState } from 'react';
-
 import type { ResponseJson } from '@/app/api/responses';
 import type { PrismaUserLine } from '@/app/training/courses/[userCourseId]/page';
+
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import type { Comment, Move, UserFen } from '@prisma/client';
 import * as Sentry from '@sentry/nextjs';
@@ -13,23 +10,25 @@ import Tippy from '@tippyjs/react';
 import { useWindowSize } from '@uidotdev/usehooks';
 import { Chess } from 'chess.js';
 import type { Move as ChessMove } from 'chess.js';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import type { Arrow } from 'react-chessboard/dist/chessboard/types';
 import Toggle from 'react-toggle';
 import 'react-toggle/style.css';
 // @ts-expect-error - No types available
 import useSound from 'use-sound';
 
+import getArrows from '@/app/_util/StringToArrows';
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 import ThemeSwitch from '@/app/components//template/header/ThemeSwitch';
 import Button from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 import XpTracker from '@/app/components/general/XpTracker';
 
-import getArrows from '@/app/_util/StringToArrows';
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
-
 import Heading from '../../_elements/heading';
-import StyledLink from '../../_elements/styledLink';
+import StyledLink from '../../_elements/styled-link';
 import ChessBoard from '../ChessBoard';
+
 import type { PrismaUserCourse } from './list/CoursesList';
 
 // TODO: Add delay on wrong move jumping
@@ -39,7 +38,7 @@ import type { PrismaUserCourse } from './list/CoursesList';
 
 type PrismaMove = Move & { comment?: Comment | null };
 
-export default function CourseTrainer(props: {
+export function CourseTrainer(props: {
   userCourse: PrismaUserCourse;
   userLines: PrismaUserLine[];
   userFens: UserFen[];
@@ -48,16 +47,16 @@ export default function CourseTrainer(props: {
   const { user } = useKindeBrowserClient();
 
   // Line/Course State
-  const [lines, setLines] = useState<PrismaUserLine[]>(props.userLines);
+  const [lines, setLines] = useState<PrismaUserLine[]>(userLines);
   const [allComments] = useState(
-    props.userLines
+    userLines
       .map((line) => {
         return line.line.moves
           .map((move) => move.comment)
-          .filter((comment) => comment != null);
+          .filter((comment) => comment !== null);
       })
       .flat()
-      .filter((comment) => comment != null) as Comment[],
+      .filter((comment) => comment !== null) as Comment[],
   );
   const [currentLine, setCurrentLine] = useState<PrismaUserLine>();
   const [nextLine, setNextLine] = useState<PrismaUserLine | null>(null);
@@ -91,7 +90,7 @@ export default function CourseTrainer(props: {
     commentId?: number;
   }
   const [existingFens, setExistingFens] = useState<trainingFen[]>(
-    props.userFens.map((fen) => {
+    userFens.map((fen) => {
       return { fen: fen.fen, commentId: fen.commentId ?? undefined };
     }),
   );
@@ -142,15 +141,15 @@ export default function CourseTrainer(props: {
   const needsTeachingMove = () => {
     // If we haven't seen any fens, we need to teach the first move
     const allFens = [...existingFens, ...trainedFens];
-    if (allFens.length == 0) return true;
+    if (allFens.length === 0) return true;
 
     // Explaining the logic here is a bit tricky
     // Basically, we need to check if the CURRENT position is one we've trained before
     // But, we also need to check if the comment on the next move is different to any we've seen before
     // So we need both the current fen, the next fen, and the comment from the next move
     const currentFenString = game.fen();
-    const currentFen = allFens.find((fen) => fen.fen == currentFenString);
-    if (currentFen == undefined) return true; // We haven't seen this position before
+    const currentFen = allFens.find((fen) => fen.fen === currentFenString);
+    if (currentFen === undefined) return true; // We haven't seen this position before
 
     const nextMove = currentLineMoves[game.history().length];
     if (!nextMove) return false; // We've reached the end of the line
@@ -163,10 +162,10 @@ export default function CourseTrainer(props: {
       newGame.move(nextMove.move);
       return newGame.fen();
     })();
-    const nextFen = allFens.find((fen) => fen.fen == nextFenString);
+    const nextFen = allFens.find((fen) => fen.fen === nextFenString);
     const nextFenComment = getComment(nextFen?.commentId);
 
-    if (fenComment == nextMoveComment || nextFenComment == nextMoveComment)
+    if (fenComment === nextMoveComment || nextFenComment === nextMoveComment)
       return false;
 
     // If we've gotten this far, we need to teach the move
@@ -201,9 +200,9 @@ export default function CourseTrainer(props: {
       const allFens = [...existingFens, ...trainedFens];
       const previouslySeenComment = allFens.find((fen) => {
         const fenComment = getComment(fen.commentId); // compare the actual comment, not just the id
-        return fenComment == comment;
+        return fenComment === comment;
       });
-      if (opponentsMove.comment && previouslySeenComment == undefined) {
+      if (opponentsMove.comment && previouslySeenComment === undefined) {
         setShowComment(true);
         setInteractive(false);
         setTeaching(true);
@@ -221,7 +220,7 @@ export default function CourseTrainer(props: {
   // and pauses to let them make a move
   const makeTeachingMove = (delay = 500) => {
     const currentMove =
-      mode == 'normal'
+      mode === 'normal'
         ? currentLineMoves[game.history().length]?.move
         : wrongMoves[currentWrongMove]?.move;
 
@@ -242,7 +241,7 @@ export default function CourseTrainer(props: {
     setShowComment(false);
     const lineColour = currentLine!.line.colour.toLowerCase().charAt(0);
 
-    if (game.turn() != lineColour) {
+    if (game.turn() !== lineColour) {
       // We were shown a move for us to make, so we need to undo it
       game.undo();
       setPosition(game.fen());
@@ -254,7 +253,7 @@ export default function CourseTrainer(props: {
   };
 
   const checkEndOfLine = async () => {
-    if (game.history().length < indexOfOurLastMove && mode != 'recap') return;
+    if (game.history().length < indexOfOurLastMove && mode !== 'recap') return;
 
     // We've reached the end of the line
     if (wrongMoves.length > 0) {
@@ -301,7 +300,7 @@ export default function CourseTrainer(props: {
         // if so, show a nice modal popup and track event
         // For now, just redirect to the course page
         trackEventOnClient('course_completed', {
-          courseName: props.userCourse.course.courseName,
+          courseName: userCourse.course.courseName,
         });
         router.push('/training/courses/');
         return;
@@ -311,7 +310,7 @@ export default function CourseTrainer(props: {
         // We've reached the end of the group
         // TODO: Add a nice modal popup here
         trackEventOnClient('course_group_completed', {
-          courseName: props.userCourse.course.courseName,
+          courseName: userCourse.course.courseName,
         });
       }
 
@@ -342,7 +341,7 @@ export default function CourseTrainer(props: {
     setLoading(true);
     try {
       trackEventOnClient('course_next_line', {
-        courseName: props.userCourse.course.courseName,
+        courseName: userCourse.course.courseName,
       });
 
       setNextLine(null);
@@ -369,7 +368,7 @@ export default function CourseTrainer(props: {
 
   const getComment = (commentId: number | undefined) => {
     if (!commentId) return undefined;
-    return allComments.find((comment) => comment.id == commentId)?.comment;
+    return allComments.find((comment) => comment.id === commentId)?.comment;
   };
 
   const processNewFens = () => {
@@ -402,7 +401,7 @@ export default function CourseTrainer(props: {
       const existingFen = existingFens.find((existingFen) => {
         const existingFenComment = getComment(existingFen.commentId);
         return (
-          existingFen.fen == seenFen.fen && existingFenComment == fenComment
+          existingFen.fen === seenFen.fen && existingFenComment === fenComment
         );
       });
       return !existingFen;
@@ -415,7 +414,7 @@ export default function CourseTrainer(props: {
       // This is not using await, because actually we want this to run in the background
       // and not block the user from continuing. If this errors, all it means is that the user
       // will have to re-do some moves, next time they train which isn't a big deal.
-      fetch(`/api/courses/user/${props.userCourse.id}/fens/upload`, {
+      fetch(`/api/courses/user/${userCourse.id}/fens/upload`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -426,8 +425,8 @@ export default function CourseTrainer(props: {
       })
         .then((resp) => resp.json() as Promise<ResponseJson>)
         .then((json) => {
-          if (json?.message != 'Fens uploaded') {
-            throw new Error(json?.message ?? 'Unknown error');
+          if (json.message !== 'Fens uploaded') {
+            throw new Error(json.message ?? 'Unknown error');
           }
         })
         .catch((e) => Sentry.captureException(e)); // Don't do anything with the error, just log it
@@ -479,7 +478,7 @@ export default function CourseTrainer(props: {
     setLines(updatedLines);
 
     // Send the update to the server in the background
-    fetch(`/api/courses/user/${props.userCourse.id}/stats/${currentLine.id}`, {
+    fetch(`/api/courses/user/${userCourse.id}/stats/${currentLine.id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -491,8 +490,8 @@ export default function CourseTrainer(props: {
     })
       .then((resp) => resp.json() as Promise<ResponseJson>)
       .then((json) => {
-        if (json?.message != 'Stats updated') {
-          throw new Error(json?.message ?? 'Unknown error');
+        if (json.message !== 'Stats updated') {
+          throw new Error(json.message ?? 'Unknown error');
         }
         // Optionally handle the successful response
       })
@@ -506,7 +505,7 @@ export default function CourseTrainer(props: {
 
   const handleMove = async (playerMove: ChessMove) => {
     const correctMove =
-      mode == 'normal'
+      mode === 'normal'
         ? currentLineMoves[game.history().length - 1]!.move
         : wrongMoves[currentWrongMove]!.move;
 
@@ -527,7 +526,7 @@ export default function CourseTrainer(props: {
 
     // We played the correct move
     setCorrectCounter(correctCounter + 1);
-    if (mode == 'normal') {
+    if (mode === 'normal') {
       // log the previous fen as one we've seen and done right.
       game.undo();
       const commentId = currentLineMoves[game.history().length]?.comment?.id;
@@ -552,7 +551,7 @@ export default function CourseTrainer(props: {
     const moveColour = index % 2 === 0 ? 'White' : 'Black';
     const FlexText = () => (
       <p>
-        {moveColour == 'White' && (
+        {moveColour === 'White' && (
           <span className="font-bold">{moveNumber}</span>
         )}{' '}
         <span>{move}</span>
@@ -628,15 +627,15 @@ export default function CourseTrainer(props: {
     if (gameReady && currentLine) {
       setPosition(game.fen());
       const lineColour = currentLine.line.colour;
-      setOrientation(lineColour == 'White' ? 'white' : 'black');
+      setOrientation(lineColour === 'White' ? 'white' : 'black');
 
       let timeoutId: NodeJS.Timeout | undefined;
-      if (lineColour == 'Black') {
+      if (lineColour === 'Black') {
         // If we're Black, we always need the first move to be played automatically
         // the playOpponentsMove function will handle the checks for what type (teaching or normal)
         // and also will then sort out our next move
         timeoutId = playOpponentsMove();
-      } else if (lineColour == 'White' && needsTeachingMove()) {
+      } else if (lineColour === 'White' && needsTeachingMove()) {
         timeoutId = makeTeachingMove();
       }
 
@@ -739,7 +738,7 @@ export default function CourseTrainer(props: {
                 {
                   lines.filter(
                     (line) =>
-                      line.revisionDate == null ||
+                      line.revisionDate === null ||
                       (line.revisionDate && line.revisionDate <= new Date()),
                   ).length
                 }{' '}
@@ -880,13 +879,13 @@ export default function CourseTrainer(props: {
           ) : null}
           {nextLine && !autoNext ? (
             <Button
-              disabled={status == 'loading'}
+              disabled={status === 'loading'}
               variant="primary"
               onClick={async () => {
                 await startNextLine();
               }}
             >
-              Next Line {status == 'loading' && <Spinner />}
+              Next Line {status === 'loading' && <Spinner />}
             </Button>
           ) : null}
           <Button

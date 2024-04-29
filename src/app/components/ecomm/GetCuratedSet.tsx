@@ -1,24 +1,28 @@
 'use client';
 
+import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
+import Tippy from '@tippyjs/react';
 import Link from 'next/link';
-
 import { useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
-import Tippy from '@tippyjs/react';
 
 import Button from '../_elements/button';
 import Spinner from '../general/Spinner';
 
-export default function GetCuratedSet(props: {
+export function GetCuratedSet({
+  setId,
+  price,
+  slug,
+  userSetId,
+  showPrice,
+}: {
   setId: string;
   price: number;
   slug: string;
   userSetId?: string;
   showPrice: boolean;
 }) {
-  const { setId, price, slug, userSetId, showPrice } = props;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { user } = useKindeBrowserClient();
@@ -40,7 +44,7 @@ export default function GetCuratedSet(props: {
         }),
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json?.data?.url == undefined) throw new Error(json?.message);
+      if (json.data?.url === undefined) throw new Error(json.message);
 
       window.location.href = json.data.url as string;
     } catch (e) {

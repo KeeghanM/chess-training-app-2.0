@@ -1,7 +1,3 @@
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
-
-import { prisma } from '@/server/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import type {
   Course,
@@ -11,17 +7,16 @@ import type {
   UserProfile,
 } from '@prisma/client';
 import * as Sentry from '@sentry/nextjs';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 import Container from '@/app/components/_elements/container';
 import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styledLink';
+import StyledLink from '@/app/components/_elements/styled-link';
 import GetCourse from '@/app/components/ecomm/GetCourse';
+import { prisma } from '@/server/db';
 
-export default async function CoursePage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export async function CoursePage({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const session = getKindeServerSession();
   const user = await session.getUser();
@@ -93,7 +88,7 @@ export default async function CoursePage({
     (acc: Record<string, number>, line) => {
       const groupName = course.groups.find(
         (group) => group.id === line.groupId,
-      )!.groupName;
+      )?.groupName;
       if (groupName) acc[groupName] = (acc[groupName] ?? 0) + 1;
       return acc;
     },

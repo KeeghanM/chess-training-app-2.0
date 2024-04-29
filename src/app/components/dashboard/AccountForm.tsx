@@ -1,42 +1,36 @@
 'use client';
 
-import Link from 'next/link';
-
-import { useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import type { UserProfile } from '@prisma/client';
 import * as Sentry from '@sentry/nextjs';
 import Tippy from '@tippyjs/react';
+import Link from 'next/link';
+import { useState } from 'react';
 
+import type { ResponseJson } from '@/app/api/responses';
 import Button from '@/app/components/_elements/button';
 import Heading from '@/app/components/_elements/heading';
 import Spinner from '@/app/components/general/Spinner';
 
-export default function AccountForm(props: { profile: UserProfile }) {
+export function AccountForm(props: { profile: UserProfile }) {
   const { user } = useKindeBrowserClient();
 
   const [username, setUsername] = useState(
-    props.profile.username ?? user?.email ?? '',
+    profile.username ?? user?.email ?? '',
   );
-  const [fullname, setFullame] = useState(props.profile.fullName ?? '');
-  const [description, setDescription] = useState(
-    props.profile.description ?? '',
-  );
+  const [fullname, setFullame] = useState(profile.fullName ?? '');
+  const [description, setDescription] = useState(profile.description ?? '');
   const [highestOnlineRating, setHighestOnlineRating] = useState(
-    props.profile.highestOnlineRating ?? undefined,
+    profile.highestOnlineRating ?? undefined,
   );
   const [highestOTBRating, setHighestOTBRating] = useState(
-    props.profile.highestOTBRating ?? undefined,
+    profile.highestOTBRating ?? undefined,
   );
   const [puzzleRating, setPuzzleRating] = useState(
-    props.profile.puzzleRating ?? 1500,
+    profile.puzzleRating ?? 1500,
   );
-  const [difficulty, setDifficulty] = useState(props.profile.difficulty ?? 1);
-  const [publicProfile, setPublicProfile] = useState(
-    props.profile.public ?? false,
-  );
+  const [difficulty, setDifficulty] = useState(profile.difficulty ?? 1);
+  const [publicProfile, setPublicProfile] = useState(profile.public ?? false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -110,7 +104,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
       });
       const json = (await res.json()) as ResponseJson;
 
-      if (json.message != 'Profile Updated') throw new Error(json.message);
+      if (json.message !== 'Profile Updated') throw new Error(json.message);
 
       setLoading(false);
       setSuccess(true);
@@ -175,19 +169,19 @@ export default function AccountForm(props: { profile: UserProfile }) {
             <label>Default Difficulty</label>
             <div className="flex flex-col items-center gap-2 md:flex-row md:gap-4">
               <Button
-                variant={difficulty == 0 ? 'success' : 'accent'}
+                variant={difficulty === 0 ? 'success' : 'accent'}
                 onClick={() => setDifficulty(0)}
               >
                 Easy
               </Button>
               <Button
-                variant={difficulty == 1 ? 'success' : 'accent'}
+                variant={difficulty === 1 ? 'success' : 'accent'}
                 onClick={() => setDifficulty(1)}
               >
                 Medium
               </Button>
               <Button
-                variant={difficulty == 2 ? 'success' : 'accent'}
+                variant={difficulty === 2 ? 'success' : 'accent'}
                 onClick={() => setDifficulty(2)}
               >
                 Hard

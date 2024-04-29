@@ -1,15 +1,14 @@
-import Heading from '@/app/components/_elements/heading';
-import PageHeader from '@/app/components/_layouts/pageHeader';
-import { TextWall } from '@/app/components/_layouts/textWall';
-
 import {
   MiscBadges,
   StreakBadges,
   TacticStreakBadges,
   XpRanks,
 } from '@/app/_util/RanksAndBadges';
+import Heading from '@/app/components/_elements/heading';
+import { PageHeader } from '@/app/components/_layouts/page-header';
+import { TextWall } from '@/app/components/_layouts/text-wall';
 
-export default async function RankAndBadgesPage() {
+export async function RankAndBadgesPage() {
   const ranks = Array.from(new Set(XpRanks.map((rank) => rank.rank)));
 
   const BadgeElem = (name: string, description: string) => {

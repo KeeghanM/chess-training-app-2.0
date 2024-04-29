@@ -1,6 +1,6 @@
 import * as Sentry from '@sentry/nextjs';
 
-export default function trackEventOnClient(
+export function trackEventOnClient(
   eventName: string,
   data: Record<string, string>,
 ) {

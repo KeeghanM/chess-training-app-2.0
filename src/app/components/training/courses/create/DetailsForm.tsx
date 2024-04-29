@@ -1,25 +1,21 @@
+import * as Sentry from '@sentry/nextjs';
 import { useState } from 'react';
 
+import trackEventOnClient from '@/app/_util/trackEventOnClient';
 import type { ResponseJson } from '@/app/api/responses';
-import * as Sentry from '@sentry/nextjs';
-
 import Button from '@/app/components/_elements/button';
 import Heading from '@/app/components/_elements/heading';
 import Spinner from '@/app/components/general/Spinner';
 import TextEditor from '@/app/components/general/TextEditor';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
-
-export default function DetailsForm(props: {
+export function DetailsForm(props: {
   finished: (name: string, description: string) => void;
   courseName: string | undefined;
   description: string | undefined;
 }) {
-  const [name, setName] = useState<string>(props.courseName ?? '');
+  const [name, setName] = useState<string>(courseName ?? '');
   const [status, setStatus] = useState<'idle' | 'loading'>('idle');
-  const [description, setDescription] = useState<string>(
-    props.description ?? '',
-  );
+  const [description, setDescription] = useState<string>(description ?? '');
   const [error, setError] = useState<string | null>(null);
 
   const create = async () => {
@@ -59,7 +55,7 @@ export default function DetailsForm(props: {
       trackEventOnClient('create_course_details_submitted', {
         name,
       });
-      props.finished(name, description);
+      finished(name, description);
     } catch (e) {
       Sentry.captureException(e);
       setError('Oops! Something went wrong. Please try again later.');
@@ -91,8 +87,8 @@ export default function DetailsForm(props: {
       <div className="flex flex-col gap-2">
         <Button variant="primary" onClick={create}>
           <span className="flex items-center gap-4">
-            <span>{status == 'idle' ? 'Create Course' : 'Checking Name'}</span>
-            {status == 'loading' && <Spinner />}
+            <span>{status === 'idle' ? 'Create Course' : 'Checking Name'}</span>
+            {status === 'loading' && <Spinner />}
           </span>
         </Button>
         {error ? <p className="text-red-500">{error}</p> : null}

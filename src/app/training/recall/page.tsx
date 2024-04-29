@@ -1,7 +1,7 @@
 import Heading from '@/app/components/_elements/heading';
-import CtaRow from '@/app/components/_layouts/ctaRow';
+import CtaRow from '@/app/components/_layouts/cta-row';
 import Hero from '@/app/components/_layouts/hero';
-import ImageRowFull from '@/app/components/_layouts/imageRowFull';
+import ImageRowFull from '@/app/components/_layouts/image-row-full';
 
 export const metadata = {
   title: 'Recall Trainer - Learn Chess Online with ChessTraining.app',
@@ -9,7 +9,7 @@ export const metadata = {
     "Improve your chess skills with ChessTraining.app's Recall Trainer. Designed for busy adults, our trainer helps you learn chess efficiently and effectively. Build your memory and visualize chess positions. Enhance your chess skill development with structured training routines. Start learning chess online today!",
 };
 
-export default async function Recall() {
+export function Recall() {
   return (
     <>
       <Hero
@@ -45,7 +45,7 @@ export default async function Recall() {
         <p>
           You can customize the difficulty level by adjusting the viewing time,
           the number of pieces on the board, and the number of pieces you need
-          to recall. It's flexible training designed to meet your specific
+          to recall. It&apos;s flexible training designed to meet your specific
           needs.
         </p>
       </ImageRowFull>
@@ -64,7 +64,7 @@ export default async function Recall() {
           offers efficient and effective training tailored to your chess rating.
         </p>
         <p>
-          With this trainer, you'll be presented with chess positions for a
+          With this trainer, you&apos;ll be presented with chess positions for a
           brief moment, or longer - you decide. Your task is to recall specific
           details about the position. It forces you to break up the board into
           smaller, more easily recognizable positions, improving your memory and

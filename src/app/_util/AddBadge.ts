@@ -1,5 +1,6 @@
-import { prisma } from '@/server/db';
 import * as Sentry from '@sentry/nextjs';
+
+import { prisma } from '@/server/db';
 
 export async function AddBadgeToUser(userId: string, name: string) {
   if (!name || !userId) return;

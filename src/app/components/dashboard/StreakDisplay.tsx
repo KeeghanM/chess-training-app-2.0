@@ -18,8 +18,8 @@ interface StreakDisplayProps {
   };
   badges: UserBadge[];
 }
-export default function StreakDisplay(props: StreakDisplayProps) {
-  const { trainedToday, currentStreak, streakBadge } = props.data;
+export function StreakDisplay(props: StreakDisplayProps) {
+  const { trainedToday, currentStreak, streakBadge } = data;
 
   return (
     <div className="flex flex-col items-center gap-1">
@@ -58,7 +58,7 @@ export default function StreakDisplay(props: StreakDisplayProps) {
         className="text-sm text-white underline hover:no-underline"
         href="/dashboard/badges"
       >
-        Your Badges ({props.badges.length})
+        Your Badges ({badges.length})
       </a>
     </div>
   );

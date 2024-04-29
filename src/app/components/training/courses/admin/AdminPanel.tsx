@@ -1,13 +1,12 @@
 'use client';
 
-import Link from 'next/link';
-
-import { useEffect, useMemo, useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import type { Course, Group } from '@prisma/client';
 import * as Sentry from '@sentry/nextjs';
 import Tippy from '@tippyjs/react';
+import Link from 'next/link';
+import { useEffect, useMemo, useState } from 'react';
+
+import type { ResponseJson } from '@/app/api/responses';
 import 'tippy.js/dist/tippy.css';
 
 import Button from '@/app/components/_elements/button';
@@ -22,9 +21,7 @@ interface CourseAdminPanelProps {
     lines: LineWithMoves[];
   } & { groups: Group[] };
 }
-export default function CourseAdminPanel(props: CourseAdminPanelProps) {
-  const { course } = props;
-
+export function CourseAdminPanel({ course }: CourseAdminPanelProps) {
   const [saving, setSaving] = useState(false);
   const [hasHadChanges, setHasHadChanges] = useState(false);
   const [lines, setLines] = useState(course.lines);
@@ -70,7 +67,7 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
         }),
       });
       const json = (await res.json()) as ResponseJson;
-      if (json?.message != 'Course updated')
+      if (json.message !== 'Course updated')
         throw new Error(json.message ?? 'Course not updated');
 
       setLines(lines.filter((line) => !linesToDelete.includes(line.id)));
@@ -93,11 +90,11 @@ export default function CourseAdminPanel(props: CourseAdminPanelProps) {
 
   useEffect(() => {
     if (
-      courseName != course.courseName ||
-      courseDescription != course.courseDescription ||
-      lines != course.lines ||
-      groups != course.groups ||
-      shortDescription != course.shortDescription ||
+      courseName !== course.courseName ||
+      courseDescription !== course.courseDescription ||
+      lines !== course.lines ||
+      groups !== course.groups ||
+      shortDescription !== course.shortDescription ||
       linesToDelete.length > 0
     ) {
       setHasHadChanges(true);

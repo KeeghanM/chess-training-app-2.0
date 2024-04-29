@@ -21,31 +21,31 @@ interface HeroProps {
   children: React.ReactNode;
 }
 
-export default function Hero(props: HeroProps) {
+export function Hero({ title, cta, secondary, image, children }: HeroProps) {
   return (
     <div className="relative flex min-h-[70vh] flex-col justify-center">
       <div className="absolute inset-0">
         <Image
           fill
-          alt={props.image.alt}
+          alt={image.alt}
           className="h-full w-full object-cover object-center brightness-[.3] grayscale filter"
-          src={props.image.src}
+          src={image.src}
         />
       </div>
       <div className="relative flex flex-col gap-4 px-4 py-2 md:px-12 md:py-4 lg:px-24 lg:py-6">
         <Heading as="h1" color="text-white">
-          {props.title}
+          {title}
         </Heading>
-        <div className="md:max-w-[50%]">{props.children}</div>
+        <div className="md:max-w-[50%]">{children}</div>
         <div className="flex gap-4">
-          {props.cta ? (
-            <Link href={props.cta.link}>
-              <Button variant="primary">{props.cta.text}</Button>
+          {cta ? (
+            <Link href={cta.link}>
+              <Button variant="primary">{cta.text}</Button>
             </Link>
           ) : null}
-          {props.secondary ? (
-            <Link href={props.secondary.link}>
-              <Button variant="secondary">{props.secondary.text}</Button>
+          {secondary ? (
+            <Link href={secondary.link}>
+              <Button variant="secondary">{secondary.text}</Button>
             </Link>
           ) : null}
         </div>

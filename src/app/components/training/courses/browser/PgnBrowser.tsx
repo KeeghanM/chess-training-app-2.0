@@ -9,24 +9,29 @@ interface PgnBrowserProps {
 }
 
 // TODO: Add arrow keys to navigate moves
-export default function PgnBrowser(props: PgnBrowserProps) {
-  const { pgn, moveSelected, currentMove } = props;
-
+export function PgnBrowser({
+  pgn,
+  moveSelected,
+  currentMove,
+}: PgnBrowserProps) {
   const isCurrentMove = (move: Move) => {
     return (
-      move.number == currentMove?.number &&
-      move.colour == currentMove?.colour &&
-      move.notation == currentMove?.notation &&
-      move.lineId == currentMove?.lineId
+      move.number === currentMove?.number &&
+      move.colour === currentMove.colour &&
+      move.notation === currentMove.notation &&
+      move.lineId === currentMove.lineId
     );
   };
 
-  const Move = (props: {
+  const Move = ({
+    move,
+    mainLine,
+    ellipses,
+  }: {
     move: Move;
     mainLine?: boolean;
     ellipses?: boolean;
   }) => {
-    const { move, mainLine, ellipses } = props;
     return (
       <>
         <span
@@ -74,7 +79,7 @@ export default function PgnBrowser(props: PgnBrowserProps) {
   const Variation = (props: { moves: Move[] }) => {
     return (
       <div className="col-span-2 flex flex-row flex-wrap gap-0.5 border-b border-slate-600 bg-slate-900 bg-opacity-50 px-2 py-1 text-xs md:px-4">
-        {props.moves.map((move, i) => (
+        {moves.map((move, i) => (
           <Move ellipses={i === 0 && !move.colour} move={move} />
         ))}
       </div>

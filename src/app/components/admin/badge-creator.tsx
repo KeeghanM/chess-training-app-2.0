@@ -1,20 +1,18 @@
 'use client';
 
-import { useState } from 'react';
-
-import type { ResponseJson } from '@/app/api/responses';
 import * as Sentry from '@sentry/nextjs';
-
-import Button from '@/app/components/_elements/button';
-import Heading from '@/app/components/_elements/heading';
+import { useState } from 'react';
 
 import {
   MiscBadges,
   StreakBadges,
   TacticStreakBadges,
 } from '@/app/_util/RanksAndBadges';
+import type { ResponseJson } from '@/app/api/responses';
+import { Button } from '@/app/components/_elements/button';
+import { Heading } from '@/app/components/_elements/heading';
 
-export default function BadgeCreator() {
+export function BadgeCreator() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -37,7 +35,7 @@ export default function BadgeCreator() {
         }),
       });
       const json = (await res.json()) as ResponseJson;
-      if (json.message != 'Badge created') throw new Error(json.message);
+      if (json.message !== 'Badge created') throw new Error(json.message);
       return true;
     } catch (e) {
       Sentry.captureException(e);
@@ -103,7 +101,7 @@ export default function BadgeCreator() {
       <Heading as="h2">Create a new badge</Heading>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div>
-          <label>Name</label>
+          <label htmlFor="name">Name</label>
           <input
             className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
             id="name"
@@ -115,7 +113,7 @@ export default function BadgeCreator() {
           />
         </div>
         <div>
-          <label>Description</label>
+          <label htmlFor="description">Description</label>
           <input
             className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
             id="description"
@@ -127,7 +125,7 @@ export default function BadgeCreator() {
           />
         </div>
         <div>
-          <label>Category</label>
+          <label htmlFor="category">Category</label>
           <input
             className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
             id="category"

@@ -1,4 +1,4 @@
-const themes = [
+export const themes = [
   {
     id: 'advancedPawn',
     description:
@@ -339,5 +339,3 @@ const themes = [
     name: 'Healthy mix',
   },
 ];
-
-export default themes;

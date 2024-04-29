@@ -1,19 +1,18 @@
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
-
-import { prisma } from '@/server/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 import Button from '@/app/components/_elements/button';
 import Heading from '@/app/components/_elements/heading';
 import CourseBrowser from '@/app/components/training/courses/browser/CourseBrowser';
+import { prisma } from '@/server/db';
 
-export default async function CourseTrainPage({
+const CourseTrainPage = async ({
   params,
 }: {
   params: { userCourseId: string };
-}) {
+}) => {
   const { getUser } = getKindeServerSession();
   const user = await getUser();
   if (!user) redirect('/auth/signin');
@@ -32,7 +31,7 @@ export default async function CourseTrainPage({
         },
       });
 
-      if (!userCourse) throw new Error('Course not found');
+      if (userCourse === null) throw new Error('Course not found');
 
       const userLines = await prisma.userLine.findMany({
         where: {
@@ -53,7 +52,7 @@ export default async function CourseTrainPage({
         },
       });
 
-      if (!userLines) throw new Error('Lines not found');
+      if (userLines.length === 0) throw new Error('Lines not found');
 
       // Sort lines by their groups sortOrder and then by their own sortOrder
       userLines.sort((a, b) => {
@@ -74,7 +73,7 @@ export default async function CourseTrainPage({
     }
   })();
 
-  if (!userCourse || !userLines) {
+  if (userCourse === undefined || userLines.length === 0) {
     redirect('/404');
   }
 
@@ -89,4 +88,6 @@ export default async function CourseTrainPage({
       <CourseBrowser lines={userLines} />
     </div>
   );
-}
+};
+
+export CourseTrainPage;

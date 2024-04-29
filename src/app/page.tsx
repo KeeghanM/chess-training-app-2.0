@@ -3,12 +3,12 @@ import Script from 'next/script';
 
 import Button from './components/_elements/button';
 import Heading from './components/_elements/heading';
-import StyledLink from './components/_elements/styledLink';
-import BigText from './components/_layouts/bigText';
-import CtaRow from './components/_layouts/ctaRow';
+import StyledLink from './components/_elements/styled-link';
+import BigText from './components/_layouts/big-text';
+import CtaRow from './components/_layouts/cta-row';
 import Hero from './components/_layouts/hero';
-import ImageRowFull from './components/_layouts/imageRowFull';
-import { MultiCol, MultiColItem } from './components/_layouts/multiCol';
+import ImageRowFull from './components/_layouts/image-row-full';
+import { MultiCol, MultiColItem } from './components/_layouts/multi-col';
 
 export const metadata = {
   title:
@@ -17,7 +17,7 @@ export const metadata = {
     'Improve your chess skills using the Woodpecker Method and our innovative Natural Play Learning. With a variety of training tools including tactics, courses, and endgames training. Learn chess in an intuitive, efficient, and enjoyable way, backed by a community of chess enthusiasts and professionals. Designed for those looking to elevate their chess game through science-backed, personalized training.',
 };
 
-export default async function Home() {
+export function Home() {
   const reviews = [
     {
       name: 'Matthias',
@@ -86,7 +86,7 @@ export default async function Home() {
           </StyledLink>{' '}
           to our innovative{' '}
           <StyledLink href="/about/features/natural-play-learning">
-            "Natural Play Learning"
+            &quot;Natural Play Learning&quot;
           </StyledLink>{' '}
           courses, each tool is designed to target specific areas of your game.
         </p>
@@ -108,7 +108,7 @@ export default async function Home() {
         <p>
           A groundbreaking approach exclusive to ChessTraining.app, Natural Play
           Learning revolutionizes the way you learn chess. Gone are the days of
-          repetitive drills on positions you've already mastered. Our
+          repetitive drills on positions you&apos;ve already mastered. Our
           intelligent system adapts to your learning curve, focusing on new
           challenges and reinforcing concepts only as needed.
         </p>
@@ -125,9 +125,9 @@ export default async function Home() {
         </div>
       </ImageRowFull>
       <BigText color="accent">
-        From our "Tactics Trainer" to our "Natural Play Learning" courses, every
-        tool is designed to target specific areas of your chess improvement
-        journey.
+        From our &quot;Tactics Trainer&quot; to our &quot;Natural Play
+        Learning&quot; courses, every tool is designed to target specific areas
+        of your chess improvement journey.
       </BigText>
       <MultiCol
         background="light"
@@ -143,7 +143,7 @@ export default async function Home() {
             <StyledLink href="/about/features/woodpecker-method">
               WoodPecker Method
             </StyledLink>{' '}
-            developed by GM's Axel Smith, and Hans Tikkanen.
+            developed by GM&apos;s Axel Smith, and Hans Tikkanen.
           </p>
           <p>
             Re-program your unconscious mind. With benefits including sharper
@@ -169,7 +169,7 @@ export default async function Home() {
           </p>
           <p>
             Train using a course you have created, or one that has been shared
-            with you. You won't find a better way to learn chess.
+            with you. You won&apos;t find a better way to learn chess.
           </p>
           <Link href="/courses">
             <Button variant="primary">Browse Courses</Button>
@@ -182,7 +182,7 @@ export default async function Home() {
             you.
           </p>
           <p>
-            With our trainer, you're presented with a chess position and a
+            With our trainer, you&apos;re presented with a chess position and a
             sequence of moves. Your task is to visualize these moves in your
             mind, and find the correct final move.
           </p>
@@ -193,7 +193,7 @@ export default async function Home() {
             really set the level of challenge you want.
           </p>
           <Link href="/training/visualisation">
-            <Button variant="primary">Let's See</Button>
+            <Button variant="primary">Let&apos;s See</Button>
           </Link>
         </MultiColItem>
       </MultiCol>

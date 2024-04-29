@@ -1,12 +1,11 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
-
 import { useEffect, useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
 import { env } from '@/env';
-import * as Sentry from '@sentry/nextjs';
 import 'tippy.js/dist/tippy.css';
 
 import Button from '@/app/components/_elements/button';
@@ -14,12 +13,16 @@ import Spinner from '@/app/components/general/Spinner';
 
 import type { PrismaUserCourse } from './CoursesList';
 
-export default function ArchivedList(props: { hasUnlimitedCourses: boolean }) {
+export function ArchivedList({
+  hasUnlimitedCourses,
+}: {
+  hasUnlimitedCourses: boolean;
+}) {
   const [courses, setCourses] = useState<PrismaUserCourse[]>([]);
   const [activeCount, setActiveCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [restoring, setRestoring] = useState(false);
-  const { hasUnlimitedCourses } = props;
+
   const maxCourses = env.NEXT_PUBLIC_MAX_COURSES;
 
   const fetchCourses = async () => {
@@ -28,7 +31,7 @@ export default function ArchivedList(props: { hasUnlimitedCourses: boolean }) {
     try {
       const resp = await fetch(`/api/courses/user/archived`);
       const json = (await resp.json()) as ResponseJson;
-      if (json?.message != 'Courses found')
+      if (json.message !== 'Courses found')
         throw new Error('Failed to fetch courses');
 
       setCourses(json.data!.courses as PrismaUserCourse[]);
@@ -47,7 +50,7 @@ export default function ArchivedList(props: { hasUnlimitedCourses: boolean }) {
         method: 'POST',
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json?.message != 'Course restored')
+      if (json.message !== 'Course restored')
         throw new Error('Failed to restore course');
       await fetchCourses();
     } catch (e) {
@@ -84,7 +87,7 @@ export default function ArchivedList(props: { hasUnlimitedCourses: boolean }) {
       ) : (
         <div
           className={`flex flex-col gap-4 ${
-            courses.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : ''
+            courses.length === 0 ? ' bg-gray-100 dark:bg-slate-900' : ''
           }`}
         >
           {courses.length > 0 ? (

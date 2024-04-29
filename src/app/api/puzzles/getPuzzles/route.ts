@@ -1,7 +1,7 @@
-import { errorResponse, successResponse } from '@/app/api/responses';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
 
+import { errorResponse, successResponse } from '@/app/api/responses';
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 
 export async function POST(request: Request) {
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       playerMoves: number;
     };
 
-  if (!rating || count == undefined || (themes && !themesType))
+  if (!rating || count === undefined || (themes && !themesType))
     return errorResponse('Missing required fields', 400);
 
   if (count < 1 || count > 500)

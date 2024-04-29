@@ -1,14 +1,13 @@
-import { redirect } from 'next/navigation';
-
-import { prisma } from '@/server/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
+import { redirect } from 'next/navigation';
 
 import Container from '@/app/components/_elements/container';
-import PageHeader from '@/app/components/_layouts/pageHeader';
+import { PageHeader } from '@/app/components/_layouts/page-header';
 import AddLines from '@/app/components/training/courses/admin/AddLines';
+import { prisma } from '@/server/db';
 
-export default async function AddLinesPage({
+export async function AddLinesPage({
   params,
 }: {
   params: { courseId: string };
@@ -46,7 +45,7 @@ export default async function AddLinesPage({
     redirect('/404');
   }
 
-  if (course.createdBy != user.id) {
+  if (course.createdBy !== user.id) {
     redirect('/training/courses');
   }
 

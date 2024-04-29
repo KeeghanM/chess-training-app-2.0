@@ -1,8 +1,8 @@
 import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styledLink';
-import CtaRow from '@/app/components/_layouts/ctaRow';
+import StyledLink from '@/app/components/_elements/styled-link';
+import CtaRow from '@/app/components/_layouts/cta-row';
 import Hero from '@/app/components/_layouts/hero';
-import ImageRowFull from '@/app/components/_layouts/imageRowFull';
+import ImageRowFull from '@/app/components/_layouts/image-row-full';
 
 export const metadata = {
   title:
@@ -11,7 +11,7 @@ export const metadata = {
     "Discover the key to mastering chess endgames with the Endgame Trainer feature on ChessTraining.app. Whether you're tackling queen, rook, knight, bishop, or pawn endgames, our tailored training tool guides you through each scenario with precision. Designed for chess enthusiasts of all levels, our Endgame Trainer sharpens your skills for those crucial final moments of the game. Dive into our comprehensive training and turn endgame challenges into your strategic advantage",
 };
 
-export default async function Endgames() {
+export function Endgames() {
   return (
     <>
       <Hero
@@ -26,7 +26,8 @@ export default async function Endgames() {
         }}
       >
         <Heading as="h2" color="text-orange-500">
-          Master your endgame strategy with ChessTraining.app's Endgame Trainer.
+          Master your endgame strategy with ChessTraining.app&apos;s Endgame
+          Trainer.
         </Heading>
       </Hero>
       <ImageRowFull
@@ -38,11 +39,10 @@ export default async function Endgames() {
           alt: 'A player deeply focused on a chess endgame scenario',
         }}
       >
-        <a id="about" />
         <p>
-          Endgames are crucial in chess, where the game's fate often hangs in
-          the balance. Our Endgame Trainer provides you with scenarios that are
-          both challenging and instructive, covering queen, rook, knight,
+          Endgames are crucial in chess, where the game&apos;s fate often hangs
+          in the balance. Our Endgame Trainer provides you with scenarios that
+          are both challenging and instructive, covering queen, rook, knight,
           bishop, and pawn endgames.
         </p>
         <p>
@@ -51,8 +51,8 @@ export default async function Endgames() {
           scenarios, you develop an intuitive understanding and strategic depth.
         </p>
         <p>
-          Our approach isn't just about learning moves; it's about developing a
-          deep strategic understanding of endgame principles.
+          Our approach isn&apos;t just about learning moves; it&apos;s about
+          developing a deep strategic understanding of endgame principles.
         </p>
       </ImageRowFull>
       <ImageRowFull

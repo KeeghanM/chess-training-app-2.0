@@ -1,10 +1,9 @@
 'use client';
 
+import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import { useState } from 'react';
 
 import { type ResponseJson } from '@/app/api/responses';
-import * as AlertDialog from '@radix-ui/react-alert-dialog';
-
 import Button from '@/app/components/_elements/button';
 import Heading from '@/app/components/_elements/heading';
 import Spinner from '@/app/components/general/Spinner';
@@ -17,7 +16,7 @@ interface ResetButtonProps {
   courseId: string;
 }
 
-export default function ResetButtons({ groups, courseId }: ResetButtonProps) {
+export function ResetButtons({ groups, courseId }: ResetButtonProps) {
   const [groupLoading, setGroupLoading] = useState(false);
   const [allLoading, setAllLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

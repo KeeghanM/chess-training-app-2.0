@@ -1,12 +1,10 @@
-import { prisma } from '@/server/db';
-
+import { getUserServer } from '@/app/_util/getUserServer';
 import Container from '@/app/components/_elements/container';
 import Heading from '@/app/components/_elements/heading';
-import PageHeader from '@/app/components/_layouts/pageHeader';
+import { PageHeader } from '@/app/components/_layouts/page-header';
+import { prisma } from '@/server/db';
 
-import { getUserServer } from '@/app/_util/getUserServer';
-
-export default async function BadgesPage() {
+export async function BadgesPage() {
   const { badges } = await getUserServer();
   const allBadges = await prisma.badge.findMany();
   await prisma.$disconnect();

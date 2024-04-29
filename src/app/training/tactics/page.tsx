@@ -2,10 +2,10 @@ import Link from 'next/link';
 
 import Button from '@/app/components/_elements/button';
 import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styledLink';
-import CtaRow from '@/app/components/_layouts/ctaRow';
+import StyledLink from '@/app/components/_elements/styled-link';
+import CtaRow from '@/app/components/_layouts/cta-row';
 import Hero from '@/app/components/_layouts/hero';
-import ImageRowFull from '@/app/components/_layouts/imageRowFull';
+import ImageRowFull from '@/app/components/_layouts/image-row-full';
 
 export const metadata = {
   title:
@@ -14,7 +14,7 @@ export const metadata = {
     "Transform your tactical play in chess with ChessTraining.app's Tactics Trainer, utilizing the renowned WoodPecker Method developed by GMs Axel Smith and Hans Tikkanen. This unique approach involves solving and re-solving challenging puzzles to enhance speed and accuracy, embedding core tactical patterns into your subconscious. Tailored to your chess rating, our Tactics Trainer automates tracking and admin, allowing you to focus solely on puzzle-solving. Experience a significant improvement in your game with sessions designed for all skill levels. Start your journey to tactical mastery today!",
 };
 
-export default async function Tactics() {
+const Tactics = () => {
   return (
     <>
       <Hero
@@ -68,7 +68,6 @@ export default async function Tactics() {
           alt: 'A man sat at a computer studying and improving his chess',
         }}
       >
-        <a id="about" />
         <p>
           The Woodpecker Method is based on solving a large set of puzzles; then
           solving the same puzzles again and again, only faster.
@@ -79,8 +78,8 @@ export default async function Tactics() {
           you will get faster and more accurate.
         </p>
         <p>
-          However this isn't simple memorisation! Rather, you internalise and
-          bake into your subconscious the core ideas and patterns.
+          However this isn&apos;t simple memorisation! Rather, you internalise
+          and bake into your subconscious the core ideas and patterns.
         </p>
         <Link href="/about/features/woodpecker-method">
           <Button variant="primary">
@@ -101,4 +100,6 @@ export default async function Tactics() {
       </CtaRow>
     </>
   );
-}
+};
+
+export Tactics;

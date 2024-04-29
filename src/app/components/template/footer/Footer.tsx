@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 import Heading from '@/app/components/_elements/heading';
 
-export default function Footer() {
+export function Footer() {
   const sections: {
     title: string;
     links: {

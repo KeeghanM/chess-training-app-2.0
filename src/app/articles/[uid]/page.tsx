@@ -1,22 +1,20 @@
+import { type ContentRelationshipField, asText } from '@prismicio/client';
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import Prismic from '@/prismicio';
-import { type ContentRelationshipField, asText } from '@prismicio/client';
-
-import Container from '@/app/components/_elements/container';
-import Heading from '@/app/components/_elements/heading';
-import CtaRow from '@/app/components/_layouts/ctaRow';
-
 import { PrismicRichToHtml } from '@/app/_util/PrismicRichToHtml';
 import type { RichTextContent } from '@/app/_util/PrismicRichToHtml';
+import Container from '@/app/components/_elements/container';
+import Heading from '@/app/components/_elements/heading';
+import CtaRow from '@/app/components/_layouts/cta-row';
+import { Prismic } from '@/prismicio';
 
 interface Params {
   uid: string;
 }
 
-export default async function Page({ params }: { params: Params }) {
+export async function Page({ params }: { params: Params }) {
   const page = await Prismic.getByUID('article', params.uid, {
     fetchLinks: ['author.name', 'author.uid'],
   }).catch(() => notFound());

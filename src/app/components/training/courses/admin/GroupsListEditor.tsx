@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 import type { DragEndEvent } from '@dnd-kit/core';
 import {
   DndContext,
@@ -17,22 +15,27 @@ import {
 } from '@dnd-kit/sortable';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import type { Group } from '@prisma/client';
-
-import Heading from '@/app/components/_elements/heading';
+import { useState } from 'react';
 
 import SortableItem from '@/app/_util/SortableItem';
+import Heading from '@/app/components/_elements/heading';
 
 import type { LineWithMoves } from './GroupEditor';
 import GroupEditor from './GroupEditor';
 
-export default function GroupsListEditor(props: {
+export function GroupsListEditor({
+  groups,
+  setGroups,
+  lines,
+  setLines,
+  addIdToDelete,
+}: {
   groups: Group[];
   setGroups: (groups: Group[]) => void;
   lines: LineWithMoves[];
   setLines: (lines: LineWithMoves[]) => void;
   addIdToDelete: (id: number) => void;
 }) {
-  const { groups, setGroups, lines, setLines, addIdToDelete } = props;
   const [parent] = useAutoAnimate();
   const [groupListItems, setGroupListItems] = useState(
     groups.map((group) => group.id),
@@ -105,7 +108,9 @@ export default function GroupsListEditor(props: {
                       <GroupEditor
                         addIdToDelete={addIdToDelete}
                         group={group}
-                        lines={lines.filter((line) => line.groupId == group.id)}
+                        lines={lines.filter(
+                          (line) => line.groupId === group.id,
+                        )}
                         setGroup={(group) => {
                           setGroups(
                             groups.map((g) => (g.id === group.id ? group : g)),

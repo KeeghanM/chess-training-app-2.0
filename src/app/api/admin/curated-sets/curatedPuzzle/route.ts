@@ -1,9 +1,9 @@
-import { errorResponse, successResponse } from '@/app/api/responses';
-import { prisma } from '@/server/db';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
 
 import getPuzzleById from '@/app/_util/GetPuzzleById';
+import { errorResponse, successResponse } from '@/app/api/responses';
+import { prisma } from '@/server/db';
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request);
@@ -98,9 +98,9 @@ export async function PATCH(request: Request) {
 
     const isCustom = curatedSetPuzzle.puzzleid.startsWith('cta_');
     const hasChange =
-      rating != puzzleData.rating ||
-      moves != puzzleData.moves ||
-      comment != puzzleData.comment;
+      rating !== puzzleData.rating ||
+      moves !== puzzleData.moves ||
+      comment !== puzzleData.comment;
     // If there's a change and the puzzle isn't custom already, create a new custom puzzle
     const newPuzzle =
       !isCustom && hasChange

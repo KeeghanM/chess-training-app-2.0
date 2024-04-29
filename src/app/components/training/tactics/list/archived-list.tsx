@@ -1,12 +1,11 @@
 'use client';
 
+import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
-
 import { useEffect, useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
 import { env } from '@/env';
-import * as Sentry from '@sentry/nextjs';
 import 'tippy.js/dist/tippy.css';
 
 import Button from '@/app/components/_elements/button';
@@ -14,12 +13,12 @@ import Spinner from '@/app/components/general/Spinner';
 
 import type { PrismaTacticsSet } from '../create/TacticsSetCreator';
 
-export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
+export function ArchivedSetList({ hasUnlimitedSets }: { hasUnlimitedSets: boolean }) {
   const [sets, setSets] = useState<PrismaTacticsSet[]>([]);
   const [activeCount, setActiveCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [restoring, setRestoring] = useState(false);
-  const { hasUnlimitedSets } = props;
+  
   const maxSets = env.NEXT_PUBLIC_MAX_SETS;
 
   const fetchSets = async () => {
@@ -28,7 +27,7 @@ export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
     try {
       const resp = await fetch(`/api/tactics/user/archived`);
       const json = (await resp.json()) as ResponseJson;
-      if (json?.message != 'Sets found')
+      if (json.message !== 'Sets found')
         throw new Error('Failed to fetch Sets');
 
       setSets(json.data!.sets as PrismaTacticsSet[]);
@@ -47,7 +46,7 @@ export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
         method: 'POST',
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json?.message != 'Set restored')
+      if (json.message !== 'Set restored')
         throw new Error('Failed to restore Set');
       await fetchSets();
     } catch (e) {
@@ -84,7 +83,7 @@ export default function ArchivedSetList(props: { hasUnlimitedSets: boolean }) {
       ) : (
         <div
           className={`flex flex-col gap-4 ${
-            sets.length == 0 ? ' bg-gray-100 dark:bg-slate-900' : ''
+            sets.length === 0 ? ' bg-gray-100 dark:bg-slate-900' : ''
           }`}
         >
           {sets.length > 0 ? (

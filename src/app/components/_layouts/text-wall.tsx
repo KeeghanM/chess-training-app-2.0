@@ -8,17 +8,22 @@ interface TextWallProps {
   children: React.ReactNode;
 }
 
-export const TextWall = (props: TextWallProps) => {
+export const TextWall = ({
+  title,
+  titleType,
+  background,
+  children,
+}: TextWallProps) => {
   return (
     <div
       className={`w-full py-6 ${
-        props.background === 'light' ? 'bg-white' : 'bg-purple-100'
+        background === 'light' ? 'bg-white' : 'bg-purple-100'
       }`}
     >
       <Container>
-        <Heading as={props.titleType ?? 'h2'}>{props.title}</Heading>
+        <Heading as={titleType ?? 'h2'}>{title}</Heading>
         <div className="flex flex-col gap-4 md:flex-row md:gap-6">
-          {props.children}
+          {children}
         </div>
       </Container>
     </div>

@@ -1,7 +1,7 @@
-import { prisma } from '@/server/db';
 import * as Sentry from '@sentry/nextjs';
 
 import { StreakBadges } from '@/app/_util/RanksAndBadges';
+import { prisma } from '@/server/db';
 
 import { AddBadgeToUser } from './AddBadge';
 
@@ -22,7 +22,7 @@ export async function UpdateStreak(userId: string) {
     const todayString = now.toISOString().split('T')[0];
     const lastTrainedString = lastTrained.toISOString().split('T')[0];
 
-    if (todayString != lastTrainedString) {
+    if (todayString !== lastTrainedString) {
       const yesterdayString = yesterday.toISOString().split('T')[0];
       const trainedYesterday = await prisma.dayTrained.findFirst({
         where: {
@@ -35,7 +35,7 @@ export async function UpdateStreak(userId: string) {
       }
     }
 
-    if (didTrainYesterday || currentStreak == 0) currentStreak++;
+    if (didTrainYesterday || currentStreak === 0) currentStreak++;
 
     const bestStreak = Math.max(currentStreak, profile.bestStreak);
 

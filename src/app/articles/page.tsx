@@ -1,8 +1,8 @@
-import Link from 'next/link';
-
-import Prismic from '@/prismicio';
 import { asHTML, asText } from '@prismicio/client';
 import type { ContentRelationshipField } from '@prismicio/client';
+import Link from 'next/link';
+
+import { Prismic } from '@/prismicio';
 
 import Button from '../components/_elements/button';
 import Container from '../components/_elements/container';
@@ -14,7 +14,7 @@ export const metadata = {
     'Discover the latest articles on chess improvement and chess training. Learn how to improve your chess game and become a better chess player.',
 };
 
-export default async function ArticlesPage() {
+export async function ArticlesPage() {
   const articles = await Prismic.getAllByType('article', {
     fetchLinks: ['author.name', 'author.uid'],
   });

@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import type { DragEndEvent } from '@dnd-kit/core';
 import {
   DndContext,
@@ -19,13 +17,13 @@ import {
 } from '@dnd-kit/sortable';
 import type { Badge } from '@prisma/client';
 import * as Sentry from '@sentry/nextjs';
+import { useEffect, useState } from 'react';
 
-import Heading from '@/app/components/_elements/heading';
+import { SortableItem } from '@/app/_util/SortableItem';
+import { Heading } from '@/app/components/_elements/heading';
 
-import SortableItem from '@/app/_util/SortableItem';
-
-export default function ExistingBadges(props: { existingBadges: Badge[] }) {
-  const [existingBadges, setExistingBadges] = useState(props.existingBadges);
+export function ExistingBadges({ badges }: { badges: Badge[] }) {
+  const [existingBadges, setExistingBadges] = useState(badges);
   const [items, setItems] = useState(existingBadges.map((badge) => badge.name));
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -36,7 +34,9 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
 
   useEffect(() => {
     const newOrderBadges = items.map((name) => {
-      return existingBadges.find((badge) => badge.name === name)!;
+      const newBadge = existingBadges.find((badge) => badge.name === name);
+      if (!newBadge) throw new Error('Badge not found');
+      return newBadge;
     });
     setExistingBadges(newOrderBadges);
   }, [items]);
@@ -47,7 +47,7 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
 
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active && over && active.id !== over.id) {
+    if (over && active.id !== over.id) {
       const oldIndex = items.indexOf(active.id as string);
       const newIndex = items.indexOf(over.id as string);
       setItems((items) => {
@@ -103,8 +103,8 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
                     {existingBadges
                       .filter((badge) => badge.category === category)
                       .map((badge) => (
-                        <SortableItem id={badge.name}>
-                          <p key={badge.name} className="bg-gray-200 p-1">
+                        <SortableItem key={badge.name} id={badge.name}>
+                          <p className="bg-gray-200 p-1">
                             <strong>{badge.name}</strong> - {badge.description}
                           </p>
                         </SortableItem>

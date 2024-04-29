@@ -1,20 +1,15 @@
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { prisma } from '@/server/db';
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
-import * as Sentry from '@sentry/nextjs';
-
 import Container from '@/app/components/_elements/container';
 import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styledLink';
+import StyledLink from '@/app/components/_elements/styled-link';
 import GetCuratedSet from '@/app/components/ecomm/GetCuratedSet';
+import { prisma } from '@/server/db';
 
-export default async function CuratedSetPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+export async function CuratedSetPage({ params }: { params: { slug: string } }) {
   const { slug } = params;
   const session = getKindeServerSession();
   const user = await session.getUser();

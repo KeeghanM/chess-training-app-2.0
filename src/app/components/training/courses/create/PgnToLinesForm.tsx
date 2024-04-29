@@ -1,18 +1,16 @@
 'use client';
 
-import { useState } from 'react';
-
 import { parse as PGNParse } from '@mliebelt/pgn-parser';
 import * as Sentry from '@sentry/nextjs';
-
-import Button from '@/app/components/_elements/button';
+import { useState } from 'react';
 
 import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import Button from '@/app/components/_elements/button';
 
 import { ParsePGNtoLineData } from './parse/ParsePGNtoLineData';
 import type { Line } from './parse/ParsePGNtoLineData';
 
-export default function PgnToLinesForm(props: {
+export function PgnToLinesForm(props: {
   finished: (lines: Line[]) => void;
   back: () => void;
 }) {
@@ -46,7 +44,7 @@ export default function PgnToLinesForm(props: {
     setStatus('loading');
 
     try {
-      if (string == '') {
+      if (string === '') {
         handleError('PGN is empty');
         return;
       }
@@ -62,7 +60,7 @@ export default function PgnToLinesForm(props: {
       }
 
       trackEventOnClient('create_course_pgn_imported', {});
-      props.finished(lines);
+      finished(lines);
     } catch (e) {
       Sentry.captureException(e);
       if (e instanceof Error) setError(e.message);
@@ -98,13 +96,13 @@ export default function PgnToLinesForm(props: {
       />
       <div className="flex flex-col gap-2 md:flex-row">
         <Button
-          disabled={status == 'loading'}
+          disabled={status === 'loading'}
           variant="primary"
           onClick={parse}
         >
           Import
         </Button>
-        <Button variant="secondary" onClick={props.back}>
+        <Button variant="secondary" onClick={back}>
           Go Back
         </Button>
       </div>
