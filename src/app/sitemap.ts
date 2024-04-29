@@ -133,7 +133,7 @@ export default async function sitemap() {
       priority: 0.9,
     },
     {
-      url: 'httpsL//chesstraining.app/premium',
+      url: 'https://chesstraining.app/premium',
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.4,
