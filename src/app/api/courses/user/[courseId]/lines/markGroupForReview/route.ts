@@ -24,6 +24,7 @@ export async function POST(
       where: {
         userId: user.id,
         userCourseId: courseId,
+        revisionDate: { not: null },
       },
       orderBy: {
         revisionDate: 'asc',
