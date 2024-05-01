@@ -35,9 +35,9 @@ export default function PgnBrowser(props: PgnBrowserProps) {
             moveSelected(move)
           }}
           className={
-            'cursor-pointer hover:bg-purple-800 hover:bg-opacity-50' +
+            'cursor-pointer hover:bg-purple-700' +
             (mainLine ? ' border border-black px-1 py-0.5' : '') +
-            (isCurrentMove(move) ? ' !bg-orange-500' : '')
+            (isCurrentMove(move) ? ' !bg-orange-500' : ' hover:text-white')
           }
         >
           {move.colour && <span>{move.number}. </span>}
@@ -45,7 +45,7 @@ export default function PgnBrowser(props: PgnBrowserProps) {
           <span>
             {move.notation}
             {!mainLine && move.comment ? (
-              <span className="italic text-xs text-gray-300">
+              <span className="italic text-xs text-slate-500 dark:text-gray-300">
                 {move.comment}
               </span>
             ) : (
@@ -75,7 +75,7 @@ export default function PgnBrowser(props: PgnBrowserProps) {
 
   const Variation = (props: { moves: Move[] }) => {
     return (
-      <div className="col-span-2 flex flex-row flex-wrap gap-0.5 text-xs bg-slate-900 bg-opacity-50 border-b border-slate-600 px-2 md:px-4 py-1">
+      <div className="col-span-2 flex flex-row items-center flex-wrap gap-0.5 text-xs bg-purple-100 text-black dark:text-white dark:bg-slate-600 border border-slate-800 px-2 md:px-4 py-1">
         {props.moves.map((move, i) => (
           <Move move={move} ellipses={i === 0 && !move.colour} />
         ))}

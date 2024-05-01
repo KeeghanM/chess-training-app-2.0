@@ -120,19 +120,19 @@ export default function AccountForm(props: { profile: UserProfile }) {
       >
         <div className="flex flex-col gap-4 md:flex-row">
           <div>
-            <label>Username</label>
+            <label className="text-black dark:text-white">Username</label>
             <input
               type="text"
-              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-white px-4 py-2 text-black"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div>
-            <label>Email</label>
+            <label className="text-black dark:text-white">Email</label>
             <input
               type="email"
-              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-white px-4 py-2 text-black"
               value={user.email!}
               disabled
             />
@@ -140,18 +140,18 @@ export default function AccountForm(props: { profile: UserProfile }) {
         </div>
         <div className="flex flex-col gap-4 md:flex-row">
           <div>
-            <label>Puzzle Rating</label>
+            <label className="text-black dark:text-white">Puzzle Rating</label>
             <input
               type="number"
               min={500}
               max={3500}
-              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-white px-4 py-2 text-black"
               value={puzzleRating}
               onChange={(e) => setPuzzleRating(parseInt(e.target.value))}
             />
           </div>
           <div>
-            <label>Default Difficulty</label>
+            <label className="text-black dark:text-white">Default Difficulty</label>
             <div className="flex flex-col items-center gap-2 md:flex-row md:gap-4">
               <Button
                 variant={difficulty == 0 ? 'success' : 'accent'}
@@ -175,19 +175,19 @@ export default function AccountForm(props: { profile: UserProfile }) {
           </div>
         </div>
         <div>
-          <label>
+          <label className="text-black dark:text-white">
             Full Name <span className="text-xs italic">(optional)</span>
           </label>
           <input
             type="text"
-            className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
+            className="w-full border border-gray-300 bg-white px-4 py-2 text-black"
             value={fullname}
             onChange={(e) => setFullame(e.target.value)}
           />
         </div>
         <div className="flex flex-col gap-4 md:flex-row">
           <div>
-            <label>
+            <label className="text-black dark:text-white">
               Highest Online Rating{' '}
               <span className="text-xs italic">(optional)</span>
             </label>
@@ -195,13 +195,13 @@ export default function AccountForm(props: { profile: UserProfile }) {
               type="number"
               min={100}
               max={3500}
-              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-white px-4 py-2 text-black"
               value={highestOnlineRating}
               onChange={(e) => setHighestOnlineRating(parseInt(e.target.value))}
             />
           </div>
           <div>
-            <label>
+            <label className="text-black dark:text-white">
               Highest OTB Rating{' '}
               <span className="text-xs italic">(optional)</span>
             </label>
@@ -209,27 +209,27 @@ export default function AccountForm(props: { profile: UserProfile }) {
               type="number"
               min={100}
               max={3500}
-              className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
+              className="w-full border border-gray-300 bg-white px-4 py-2 text-black"
               value={highestOTBRating}
               onChange={(e) => setHighestOTBRating(parseInt(e.target.value))}
             />
           </div>
         </div>
         <div>
-          <label>
+          <label className="text-black dark:text-white">
             Bio <span className="text-xs italic">(optional)</span>
           </label>
           <textarea
             rows={5}
-            className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
+            className="w-full border border-gray-300 bg-white px-4 py-2 text-black"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
         </div>
         <div className="flex flex-row items-center gap-2">
           <Tippy content="Public profiles will show your ratings, bio, and Username. Your email will always be kept private.">
-            <label className="flex gap-1 flex-row items-center">
-              <p>Public Profile</p>
+            <label className="text-black dark:text-white flex gap-1 flex-row items-center">
+              <p className=''>Public Profile</p>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="24"
@@ -244,7 +244,7 @@ export default function AccountForm(props: { profile: UserProfile }) {
             </label>
           </Tippy>
           <input
-            className="w-4 h-4 bg-gray-100 text-black"
+            className="w-4 h-4 bg-white text-black"
             type="checkbox"
             checked={publicProfile}
             onChange={() => setPublicProfile(!publicProfile)}
