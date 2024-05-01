@@ -46,7 +46,9 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
       return
     }
     const newGame = new Chess()
-    const line = props.lines.find((line) => line.id === currentMove.lineId)!
+    const line = props.lines.find((line) => line.id === currentMove.lineId)
+    if (!line) return
+    
     for (const move of line.line.moves) {
       newGame.move(move.move)
       if (
@@ -102,7 +104,7 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
           moveMade={null}
         />
       </div>
-      <div className="flex-1 max-w-[500px]">
+      <div className="flex-1 max-w-fit">
         <PgnBrowser
           pgn={pgn}
           moveSelected={setCurrentMove}

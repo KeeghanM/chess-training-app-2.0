@@ -72,7 +72,7 @@ export default function DetailsForm(props: {
       <div>
         <Heading as="h3">Give your course a name</Heading>
         <input
-          className="w-full border border-gray-300 px-4 py-2 bg-gray-100 text-black"
+          className="w-full border border-gray-300 px-4 py-2 bg-white text-black"
           type="text"
           placeholder="Ruy Lopez: For white"
           value={name}

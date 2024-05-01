@@ -42,7 +42,7 @@ export function GroupItem(props: {
   return (
     <div
       ref={parent}
-      className="flex flex-col justify-center gap-2 bg-gray-100 p-2 md:p-4"
+      className="flex flex-col justify-center gap-2 bg-white p-2 md:p-4"
     >
       <div className="flex items-center gap-2">
         <p className="font-bold">{count} x</p>
@@ -118,7 +118,7 @@ export function GroupItem(props: {
             .map((line) => {
               return (
                 <div
-                  className="flex flex-col justify-center gap-2 bg-gray-200 p-2"
+                  className="flex flex-col justify-center gap-2 bg-purple-100 dark:bg-gray-200 p-2"
                   key={line.moves.join('')}
                 >
                   <div className="flex items-center gap-2 text-sm">
