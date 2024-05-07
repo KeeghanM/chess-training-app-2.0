@@ -18,15 +18,15 @@ import 'react-toggle/style.css';
 // @ts-expect-error - No types available
 import useSound from 'use-sound';
 
-import getArrows from '@/app/_util/StringToArrows';
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import getArrows from '@/app/_util/string-to-arrows';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
 import ThemeSwitch from '@/app/components//template/header/ThemeSwitch';
-import Button from '@/app/components/_elements/button';
+import { Button } from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 import XpTracker from '@/app/components/general/XpTracker';
 
-import Heading from '../../_elements/heading';
-import StyledLink from '../../_elements/styled-link';
+import { Heading } from '../../_elements/heading';
+import { StyledLink } from '../../_elements/styled-link';
 import ChessBoard from '../ChessBoard';
 
 import type { PrismaUserCourse } from './list/CoursesList';

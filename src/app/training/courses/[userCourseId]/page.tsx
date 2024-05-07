@@ -3,7 +3,7 @@ import type { Comment, Group, Line, Move, UserLine } from '@prisma/client';
 import * as Sentry from '@sentry/nextjs';
 import { redirect } from 'next/navigation';
 
-import Container from '@/app/components/_elements/container';
+import { Container } from '@/app/components/_elements/container';
 import { PageHeader } from '@/app/components/_layouts/page-header';
 import CourseTrainer from '@/app/components/training/courses/CourseTrainer';
 import { prisma } from '@/server/db';

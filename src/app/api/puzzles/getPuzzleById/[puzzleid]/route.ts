@@ -1,7 +1,7 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
 
-import getPuzzleById from '@/app/_util/GetPuzzleById';
+import { getPuzzleById } from '@/app/_util/get-puzzle-by-id';
 import { errorResponse, successResponse } from '@/app/api/responses';
 
 export async function GET(
@@ -12,7 +12,6 @@ export async function GET(
   if (!puzzleid) return errorResponse('Missing required fields', 400);
 
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);

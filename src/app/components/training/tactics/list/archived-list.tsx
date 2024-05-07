@@ -8,17 +8,21 @@ import type { ResponseJson } from '@/app/api/responses';
 import { env } from '@/env';
 import 'tippy.js/dist/tippy.css';
 
-import Button from '@/app/components/_elements/button';
+import { Button } from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 
 import type { PrismaTacticsSet } from '../create/TacticsSetCreator';
 
-export function ArchivedSetList({ hasUnlimitedSets }: { hasUnlimitedSets: boolean }) {
+export function ArchivedSetList({
+  hasUnlimitedSets,
+}: {
+  hasUnlimitedSets: boolean;
+}) {
   const [sets, setSets] = useState<PrismaTacticsSet[]>([]);
   const [activeCount, setActiveCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [restoring, setRestoring] = useState(false);
-  
+
   const maxSets = env.NEXT_PUBLIC_MAX_SETS;
 
   const fetchSets = async () => {

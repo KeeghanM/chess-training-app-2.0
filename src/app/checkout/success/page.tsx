@@ -2,16 +2,15 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import Button from '@/app/components/_elements/button';
-import Container from '@/app/components/_elements/container';
-import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styled-link';
+import { Button } from '@/app/components/_elements/button';
+import { Container } from '@/app/components/_elements/container';
+import { Heading } from '@/app/components/_elements/heading';
+import { StyledLink } from '@/app/components/_elements/styled-link';
 import { PageHeader } from '@/app/components/_layouts/page-header';
 import { prisma } from '@/server/db';
 
-export async function CheckoutSuccessPage() {
+export default async function CheckoutSuccessPage() {
   const session = getKindeServerSession();
-  if (!session) redirect('/');
   const user = await session.getUser();
   if (!user) redirect('/');
 
@@ -41,8 +40,9 @@ export async function CheckoutSuccessPage() {
           id: item.productId,
         },
       });
+      if (!curatedSet) continue;
       items.push({
-        name: curatedSet!.name,
+        name: curatedSet.name,
         url: '/training/tactics/list',
       });
     } else if (item.productType === 'course') {
@@ -51,8 +51,9 @@ export async function CheckoutSuccessPage() {
           id: item.productId,
         },
       });
+      if (!course) continue;
       items.push({
-        name: course!.courseName,
+        name: course.courseName,
         url: '/training/courses',
       });
     } else if (item.productType === 'subscription') {

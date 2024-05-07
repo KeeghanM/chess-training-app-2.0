@@ -1,12 +1,14 @@
-import vercelPrettierOptions from '@vercel/style-guide/prettier';
-
 /** @type {import('prettier').Config} */
 const config = {
-  ...vercelPrettierOptions,
+    endOfLine: 'lf',
+  tabWidth: 2,
+  printWidth: 80,
+  useTabs: false,
+  singleQuote: true,
   plugins: [
     'prettier-plugin-tailwindcss',
     'prettier-plugin-prisma',
-    ...vercelPrettierOptions.plugins,
+    'prettier-plugin-packagejson'
   ],
 };
 

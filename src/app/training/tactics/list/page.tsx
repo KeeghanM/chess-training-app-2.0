@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { getUserServer } from '@/app/_util/getUserServer';
+import { getUserServer } from '@/app/_util/get-user-server';
 import { PageHeader } from '@/app/components/_layouts/page-header';
 import { TacticsList } from '@/app/components/training/tactics/list/TacticsList';
 

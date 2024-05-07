@@ -6,7 +6,6 @@ import { prisma } from '@/server/db';
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
@@ -50,7 +49,6 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);

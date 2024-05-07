@@ -5,9 +5,9 @@ import * as Sentry from '@sentry/nextjs';
 import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types';
 import { useEffect, useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
-import Button from '@/app/components/_elements/button';
+import { Button } from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator';
 

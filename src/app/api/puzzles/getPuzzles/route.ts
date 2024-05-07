@@ -3,10 +3,10 @@ import * as Sentry from '@sentry/nextjs';
 
 import { errorResponse, successResponse } from '@/app/api/responses';
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
+import { env } from '@/env';
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
@@ -16,7 +16,7 @@ export async function POST(request: Request) {
       rating: number;
       themesType: string;
       themes: string;
-      count: number;
+      count?: number;
       playerMoves: number;
     };
 
@@ -51,14 +51,16 @@ export async function POST(request: Request) {
         method: 'GET',
         headers: {
           'x-rapidapi-host': 'chess-puzzles.p.rapidapi.com',
-          'x-rapidapi-key': process.env.RAPIDAPI_KEY!,
+          'x-rapidapi-key': env.RAPIDAPI_KEY,
         },
       },
     );
-    const json = (await resp.json()) as { puzzles: TrainingPuzzle[] };
+    const json = (await resp.json()) as {
+      puzzles: TrainingPuzzle[] | undefined;
+    };
     const puzzles = json.puzzles;
 
-    if (!puzzles) return errorResponse('Puzzles not found', 404);
+    if (puzzles === undefined) return errorResponse('Puzzles not found', 404);
 
     return successResponse('Puzzles found', { puzzles }, 200);
   } catch (e) {

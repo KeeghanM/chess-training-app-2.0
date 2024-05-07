@@ -1,13 +1,13 @@
 import Link from 'next/link';
 import Script from 'next/script';
 
-import Button from './components/_elements/button';
-import Heading from './components/_elements/heading';
-import StyledLink from './components/_elements/styled-link';
-import BigText from './components/_layouts/big-text';
-import CtaRow from './components/_layouts/cta-row';
-import Hero from './components/_layouts/hero';
-import ImageRowFull from './components/_layouts/image-row-full';
+import { Button } from './components/_elements/button';
+import { Heading } from './components/_elements/heading';
+import { StyledLink } from './components/_elements/styled-link';
+import { BigText } from './components/_layouts/big-text';
+import { CtaRow } from './components/_layouts/cta-row';
+import { Hero } from './components/_layouts/hero';
+import { ImageRowFull } from './components/_layouts/image-row-full';
 import { MultiCol, MultiColItem } from './components/_layouts/multi-col';
 
 export const metadata = {

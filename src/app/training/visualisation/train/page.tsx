@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
-import { getUserServer } from '@/app/_util/getUserServer';
-import Container from '@/app/components/_elements/container';
+import { getUserServer } from '@/app/_util/get-user-server';
+import { Container } from '@/app/components/_elements/container';
 import { PageHeader } from '@/app/components/_layouts/page-header';
 import VisualisationTrainer from '@/app/components/training/visualisation/VisualisationTrainer';
 

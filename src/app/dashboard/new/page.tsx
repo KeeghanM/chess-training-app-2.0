@@ -2,14 +2,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { createUserProfile, getUserServer } from '@/app/_util/getUserServer';
-import { trackEventOnServer } from '@/app/_util/trackEventOnServer';
-import Button from '@/app/components/_elements/button';
-import Container from '@/app/components/_elements/container';
-import StyledLink from '@/app/components/_elements/styled-link';
+import { createUserProfile, getUserServer } from '@/app/_util/get-user-server';
+import { trackEventOnServer } from '@/app/_util/track-event-on-server';
+import { Button } from '@/app/components/_elements/button';
+import { Container } from '@/app/components/_elements/container';
+import { StyledLink } from '@/app/components/_elements/styled-link';
 import { PageHeader } from '@/app/components/_layouts/page-header';
 
-export async function NewUserWelcome() {
+export default async function NewUserWelcome() {
   const { user, profile } = await getUserServer();
   if (!user) redirect('/auth/signin');
   if (!profile) {

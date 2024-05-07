@@ -1,12 +1,15 @@
 import { asHTML, asText } from '@prismicio/client';
-import type { ContentRelationshipField } from '@prismicio/client';
+import type {
+  ContentRelationshipField,
+  RichTextField,
+} from '@prismicio/client';
 import Link from 'next/link';
 
 import { Prismic } from '@/prismicio';
 
-import Button from '../components/_elements/button';
-import Container from '../components/_elements/container';
-import Heading from '../components/_elements/heading';
+import { Button } from '../components/_elements/button';
+import { Container } from '../components/_elements/container';
+import { Heading } from '../components/_elements/heading';
 
 export const metadata = {
   title: 'Read the latest Articles on Chess Improvement',
@@ -14,10 +17,20 @@ export const metadata = {
     'Discover the latest articles on chess improvement and chess training. Learn how to improve your chess game and become a better chess player.',
 };
 
-export async function ArticlesPage() {
-  const articles = await Prismic.getAllByType('article', {
+export default async function ArticlesPage() {
+  const articles = (await Prismic.getAllByType('article', {
     fetchLinks: ['author.name', 'author.uid'],
-  });
+  })) as unknown as {
+    id: string;
+    uid: string;
+    first_publication_date: Date;
+    last_publication_date: Date;
+    data: {
+      author: unknown;
+      title: string;
+      introduction: RichTextField;
+    };
+  }[];
 
   return (
     <>
@@ -75,7 +88,7 @@ export async function ArticlesPage() {
                         "url": "https://chesstraining.app/_next/image?url=%2Fchesstrainingapplogo.png&w=64&q=75"
                         }
                     },
-                    "description": "${asText(article.data.introduction)?.replaceAll('"', '\\"')}"
+                    "description": "${asText(article.data.introduction).replaceAll('"', '\\"')}"
                     }
                 `,
                   }}
@@ -120,7 +133,7 @@ export async function ArticlesPage() {
                 </div>
                 <div
                   dangerouslySetInnerHTML={{
-                    __html: asHTML(article.data.introduction) ?? '',
+                    __html: asHTML(article.data.introduction),
                   }}
                   className="p-2"
                 />

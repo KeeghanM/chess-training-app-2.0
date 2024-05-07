@@ -1,5 +1,5 @@
-import getDistinctId from './getDistinctId';
-import { PostHogClient } from './trackEventOnServer';
+import getDistinctId from './get-distinct-id';
+import { PostHogClient } from './track-event-on-server';
 
 export async function isFlagEnabledServer(flag: string) {
   const posthog = PostHogClient();

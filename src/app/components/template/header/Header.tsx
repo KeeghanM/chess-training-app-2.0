@@ -1,4 +1,4 @@
-import { getUserServer } from '@/app/_util/getUserServer';
+import { getUserServer } from '@/app/_util/get-user-server';
 
 import Nav from './Nav';
 

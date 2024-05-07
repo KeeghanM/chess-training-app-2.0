@@ -2,19 +2,19 @@ import { Tour } from '@frigade/react';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 
-import { PostHogClient } from '@/app/_util/trackEventOnServer';
-import Container from '@/app/components/_elements/container';
-import Heading from '@/app/components/_elements/heading';
-import StreakDisplay from '@/app/components/dashboard/StreakDisplay';
-import ToolGrid from '@/app/components/dashboard/ToolGrid';
-import XpDisplay from '@/app/components/dashboard/XpDisplay';
-import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
+import { PostHogClient } from '@/app/_util/track-event-on-server';
+import { Container } from '@/app/components/_elements/container';
+import { Heading } from '@/app/components/_elements/heading';
+import { StreakDisplay } from '@/app/components/dashboard/StreakDisplay';
+import { ToolGrid } from '@/app/components/dashboard/ToolGrid';
+import { XpDisplay } from '@/app/components/dashboard/XpDisplay';
+import { ThemeSwitch } from '@/app/components/template/header/ThemeSwitch';
 import { prisma } from '@/server/db';
 
-import CalculateStreakBadge from '../_util/CalculateStreakBadge';
-import CalculateXpRank from '../_util/CalculateXpRank';
-import { getUserServer } from '../_util/getUserServer';
-import PremiumDisplay from '../components/dashboard/PremiumDisplay';
+import { CalculateStreakBadge } from '../_util/calculate-streak-badge';
+import { CalculateXpRank } from '../_util/calculate-xp-rank';
+import { getUserServer } from '../_util/get-user-server';
+import { PremiumDisplay } from '../components/dashboard/PremiumDisplay';
 
 export interface Tool {
   name: string;

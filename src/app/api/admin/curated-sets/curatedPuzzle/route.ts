@@ -1,13 +1,12 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
 
-import getPuzzleById from '@/app/_util/GetPuzzleById';
+import { getPuzzleById } from '@/app/_util/get-puzzle-by-id';
 import { errorResponse, successResponse } from '@/app/api/responses';
 import { prisma } from '@/server/db';
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
@@ -70,7 +69,6 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
@@ -151,7 +149,6 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);

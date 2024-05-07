@@ -8,7 +8,6 @@ import { prisma } from '@/server/db';
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
@@ -18,10 +17,10 @@ export async function POST(request: Request) {
       courseName: string;
       slug: string;
       description: string;
-      groupNames: {
+      groupNames?: {
         groupName: string;
       }[];
-      lines: {
+      lines?: {
         groupName: string;
         colour: string;
         moves: CleanMove[];
@@ -80,9 +79,6 @@ export async function POST(request: Request) {
 
       return { course, userCourse };
     });
-
-    if (!course || !userCourse)
-      throw new Error('Course or userCourse not found');
 
     // TODO: Need to relook at a transaction here...
     // Create each new line and userLine

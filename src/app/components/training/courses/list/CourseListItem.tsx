@@ -7,10 +7,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
-import Button from '@/app/components/_elements/button';
-import StyledLink from '@/app/components/_elements/styled-link';
+import { Button } from '@/app/components/_elements/button';
+import { StyledLink } from '@/app/components/_elements/styled-link';
 import PremiumSubscribe from '@/app/components/ecomm/PremiumSubscribe';
 import Spinner from '@/app/components/general/Spinner';
 import TimeSince from '@/app/components/general/TimeSince';

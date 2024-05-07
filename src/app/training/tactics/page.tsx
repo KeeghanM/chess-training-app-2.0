@@ -1,11 +1,11 @@
 import Link from 'next/link';
 
-import Button from '@/app/components/_elements/button';
-import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styled-link';
-import CtaRow from '@/app/components/_layouts/cta-row';
-import Hero from '@/app/components/_layouts/hero';
-import ImageRowFull from '@/app/components/_layouts/image-row-full';
+import { Button } from '@/app/components/_elements/button';
+import { Heading } from '@/app/components/_elements/heading';
+import { StyledLink }from '@/app/components/_elements/styled-link';
+import { CtaRow } from '@/app/components/_layouts/cta-row';
+import { Hero } from '@/app/components/_layouts/hero';
+import { ImageRowFull } from '@/app/components/_layouts/image-row-full';
 
 export const metadata = {
   title:

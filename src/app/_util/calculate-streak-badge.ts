@@ -1,6 +1,6 @@
 import type { UserProfile } from '@prisma/client';
 
-import { StreakBadges } from './RanksAndBadges';
+import { StreakBadges } from './ranks-and-badges';
 
 export function CalculateStreakBadge(profile: UserProfile) {
   const currentStreak = profile.currentStreak;

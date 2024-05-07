@@ -9,13 +9,11 @@ export async function GET(
   { params }: { params: { courseId: string } },
 ) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
+
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
 
-  const { courseId } = params as { courseId: string };
-
-  if (courseId === undefined) return errorResponse('Missing fields', 400);
+  const { courseId } = params;
 
   try {
     const course = await prisma.userCourse.findUnique({
@@ -72,13 +70,11 @@ export async function DELETE(
   { params }: { params: { courseId: string } },
 ) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
+
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
 
-  const { courseId } = params as { courseId: string };
-
-  if (courseId === undefined) return errorResponse('Missing fields', 400);
+  const { courseId } = params;
 
   try {
     // if user is creator and course is unpublished, delete everything

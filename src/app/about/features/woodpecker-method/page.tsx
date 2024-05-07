@@ -1,10 +1,10 @@
 import Link from 'next/link';
 
-import Heading from '@/app/components/_elements/heading';
-import BigText from '@/app/components/_layouts/big-text';
-import CtaRow from '@/app/components/_layouts/cta-row';
-import Hero from '@/app/components/_layouts/hero';
-import ImageRowFull from '@/app/components/_layouts/image-row-full';
+import { Heading } from '@/app/components/_elements/heading';
+import { BigText } from '@/app/components/_layouts/big-text';
+import { CtaRow } from '@/app/components/_layouts/cta-row';
+import { Hero } from '@/app/components/_layouts/hero';
+import { ImageRowFull } from '@/app/components/_layouts/image-row-full';
 import { TextWall } from '@/app/components/_layouts/text-wall';
 
 export const metadata = {
@@ -14,7 +14,7 @@ export const metadata = {
     'Master tactical chess play with the Woodpecker Method. Perfect for all skill levels, this method developed by GMs Axel Smith and Hans Tikkanen emphasizes solving and re-solving puzzles for speed and accuracy. Join ChessTraining.app to revolutionize your tactical skills.',
 };
 
-export async function WoodPeckerPage() {
+export default function WoodPeckerPage() {
   return (
     <>
       <Hero
@@ -25,8 +25,8 @@ export async function WoodPeckerPage() {
         }}
       >
         <Heading as="h2" color="text-orange-500">
-          Train chess puzzles using the WoodPecker Method developed by GM's Axel
-          Smith, and Hans Tikkanen.
+          Train chess puzzles using the WoodPecker Method developed by GM&apos;s
+          Axel Smith, and Hans Tikkanen.
         </Heading>
       </Hero>
       <ImageRowFull
@@ -83,7 +83,7 @@ export async function WoodPeckerPage() {
         <p>
           The key to getting the most out of the Woodpecker Method is to ensure
           the puzzles are challenging enough to push you, but not so difficult
-          that you can't solve them. Ideally each puzzle on your first run
+          that you can&apos;t solve them. Ideally each puzzle on your first run
           through should take between 1-2 minutes to solve. If you find yourself
           taking longer than this, you may want to consider reducing the
           difficulty of the puzzle set.

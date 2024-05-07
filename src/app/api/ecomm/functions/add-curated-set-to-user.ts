@@ -71,8 +71,6 @@ export async function AddCuratedSetToUser(setId: string, userId: string) {
           incorrect: 0,
         },
       });
-
-      if (!userTacticsSet) throw new Error('No userTacticsSet found');
     });
 
     return true;

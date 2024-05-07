@@ -7,7 +7,7 @@ import {
   MiscBadges,
   StreakBadges,
   TacticStreakBadges,
-} from '@/app/_util/RanksAndBadges';
+} from '@/app/_util/ranks-and-badges';
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
 import { Heading } from '@/app/components/_elements/heading';

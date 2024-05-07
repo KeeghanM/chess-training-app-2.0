@@ -5,11 +5,11 @@ import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
-import Button from '@/app/components/_elements/button';
-import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styled-link';
+import { Button } from '@/app/components/_elements/button';
+import { Heading } from '@/app/components/_elements/heading';
+import { StyledLink } from '@/app/components/_elements/styled-link';
 
 import GroupSelector from '../create/GroupSelector';
 import PgnToLinesForm from '../create/PgnToLinesForm';

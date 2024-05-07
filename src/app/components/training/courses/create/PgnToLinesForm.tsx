@@ -4,8 +4,8 @@ import { parse as PGNParse } from '@mliebelt/pgn-parser';
 import * as Sentry from '@sentry/nextjs';
 import { useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
-import Button from '@/app/components/_elements/button';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { Button } from '@/app/components/_elements/button';
 
 import { ParsePGNtoLineData } from './parse/ParsePGNtoLineData';
 import type { Line } from './parse/ParsePGNtoLineData';

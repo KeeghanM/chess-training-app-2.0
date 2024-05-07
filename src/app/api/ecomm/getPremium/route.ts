@@ -1,9 +1,9 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { getUserServer } from '@/app/_util/getUserServer';
+import { getUserServer } from '@/app/_util/get-user-server';
 
 import { errorResponse, successResponse } from '../../responses';
-import { CreateCheckoutSession } from '../functions/CreateCheckoutSession';
+import { CreateCheckoutSession } from '../functions/create-checkout-session';
 
 export async function POST(request: Request) {
   try {

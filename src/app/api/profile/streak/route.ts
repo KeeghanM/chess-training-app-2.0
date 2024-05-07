@@ -1,12 +1,11 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
 
-import { UpdateStreak } from '@/app/_util/UpdateStreak';
+import { UpdateStreak } from '@/app/_util/update-streak';
 import { errorResponse, successResponse } from '@/app/api/responses';
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);

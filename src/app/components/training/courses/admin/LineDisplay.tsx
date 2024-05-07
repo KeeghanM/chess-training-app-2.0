@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@/app/components/_elements/button';
+import { Button } from '@/app/components/_elements/button';
 import PrettyPrintLine from '@/app/components/general/PrettyPrintLine';
 import type { Line } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData';
 

@@ -1,11 +1,11 @@
 import Link from 'next/link';
 
-import Button from '@/app/components/_elements/button';
-import Heading from '@/app/components/_elements/heading';
-import BigText from '@/app/components/_layouts/big-text';
-import CtaRow from '@/app/components/_layouts/cta-row';
-import Hero from '@/app/components/_layouts/hero';
-import ImageRowFull from '@/app/components/_layouts/image-row-full';
+import { Button } from '@/app/components/_elements/button';
+import { Heading } from '@/app/components/_elements/heading';
+import { BigText } from '@/app/components/_layouts/big-text';
+import { CtaRow } from '@/app/components/_layouts/cta-row';
+import { Hero } from '@/app/components/_layouts/hero';
+import { ImageRowFull } from '@/app/components/_layouts/image-row-full';
 import { TextWall } from '@/app/components/_layouts/text-wall';
 
 export const metadata = {
@@ -15,7 +15,7 @@ export const metadata = {
     "Discover ChessTraining.app's Natural Play Learning, an innovative chess training method for faster learning and longer retention. Master chess openings like never before with our unique approach, combining the effectiveness of spaced repetition with real-game scenarios. Join us now and elevate your chess game",
 };
 
-export async function NaturalPlayLearningPage() {
+export default function NaturalPlayLearningPage() {
   return (
     <>
       <Hero
@@ -30,9 +30,9 @@ export async function NaturalPlayLearningPage() {
         </Heading>
       </Hero>
       <BigText color="primary" size="small">
-        At ChessTraining.app, we're redefining the way you learn chess openings.
-        Our unique Natural Play Learning method is here to transform your
-        understanding and mastery of chess openings.
+        At ChessTraining.app, we&apos;re redefining the way you learn chess
+        openings. Our unique Natural Play Learning method is here to transform
+        your understanding and mastery of chess openings.
       </BigText>
       <ImageRowFull
         background="light"
@@ -51,7 +51,7 @@ export async function NaturalPlayLearningPage() {
           the courses shared by other users. We will also regularly publish
           bespoke courses created by our in-house Masters and top players.
         </p>
-        <Heading as="h3">Here's what you can expect:</Heading>
+        <Heading as="h3">Here&apos;s what you can expect:</Heading>
         <ul>
           <li>
             <strong>User-Centric:</strong> You can either create your own
@@ -99,12 +99,12 @@ export async function NaturalPlayLearningPage() {
           Repetition with a creative twist.
         </p>
         <p>
-          By ensuring you only "learn" a move once, and after that are shown it
-          directly in context as you would when playing, we not only cut down on
-          the time it takes to learn a move, but also ensure you retain it for
-          longer.
+          By ensuring you only &quot;learn&quot; a move once, and after that are
+          shown it directly in context as you would when playing, we not only
+          cut down on the time it takes to learn a move, but also ensure you
+          retain it for longer.
         </p>
-        <Heading as="h3">Here's how it works:</Heading>
+        <Heading as="h3">Here&apos;s how it works:</Heading>
         <ul>
           <li>
             <strong>Learning Through Playing:</strong> Instead of monotonously
@@ -119,9 +119,9 @@ export async function NaturalPlayLearningPage() {
             only makes learning more efficient but also deeply engaging.
           </li>
           <li>
-            <strong>Tailored to All Levels:</strong> Whether you're a beginner
-            or a seasoned Grandmaster, our Natural Play Learning method is
-            designed to cater to every skill level.
+            <strong>Tailored to All Levels:</strong> Whether you&apos;re a
+            beginner or a seasoned Grandmaster, our Natural Play Learning method
+            is designed to cater to every skill level.
           </li>
         </ul>
       </ImageRowFull>

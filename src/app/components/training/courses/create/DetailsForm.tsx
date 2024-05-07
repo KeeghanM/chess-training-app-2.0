@@ -1,10 +1,10 @@
 import * as Sentry from '@sentry/nextjs';
 import { useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
-import Button from '@/app/components/_elements/button';
-import Heading from '@/app/components/_elements/heading';
+import { Button } from '@/app/components/_elements/button';
+import { Heading } from '@/app/components/_elements/heading';
 import Spinner from '@/app/components/general/Spinner';
 import TextEditor from '@/app/components/general/TextEditor';
 

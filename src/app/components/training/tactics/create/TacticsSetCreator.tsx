@@ -7,10 +7,10 @@ import * as Sentry from '@sentry/nextjs';
 import { useState } from 'react';
 import Select from 'react-select';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
-import Button from '@/app/components/_elements/button';
-import StyledLink from '@/app/components/_elements/styled-link';
+import { Button } from '@/app/components/_elements/button';
+import { StyledLink } from '@/app/components/_elements/styled-link';
 import GetPremiumButton from '@/app/components/ecomm/GetPremiumButton';
 import Spinner from '@/app/components/general/Spinner';
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';

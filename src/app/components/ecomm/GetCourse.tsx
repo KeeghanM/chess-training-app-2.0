@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
 
-import Button from '../_elements/button';
+import { Button } from '../_elements/button';
 import Spinner from '../general/Spinner';
 
 export function GetCourse({

@@ -1,5 +1,5 @@
-import Heading from '@/app/components/_elements/heading';
-import Hero from '@/app/components/_layouts/hero';
+import { Heading } from '@/app/components/_elements/heading';
+import { Hero } from '@/app/components/_layouts/hero';
 
 import { MultiCol, MultiColItem } from '../components/_layouts/multi-col';
 import { TextWall } from '../components/_layouts/text-wall';

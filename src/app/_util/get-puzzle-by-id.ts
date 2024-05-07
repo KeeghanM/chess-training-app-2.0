@@ -2,6 +2,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 import { prisma } from '@/server/db';
+import { env } from '@/env';
 
 export async function getPuzzleById(puzzleid: string) {
   let puzzle: TrainingPuzzle | undefined;
@@ -35,7 +36,7 @@ export async function getPuzzleById(puzzleid: string) {
           method: 'GET',
           headers: {
             'x-rapidapi-host': 'chess-puzzles.p.rapidapi.com',
-            'x-rapidapi-key': process.env.RAPIDAPI_KEY!,
+            'x-rapidapi-key': env.RAPIDAPI_KEY,
           },
         },
       );

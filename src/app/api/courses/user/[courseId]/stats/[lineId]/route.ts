@@ -6,17 +6,17 @@ import { prisma } from '@/server/db';
 
 export async function POST(
   request: Request,
-  { params }: { params: { courseId: string; lineId: number } },
+  { params }: { params: { courseId?: string; lineId?: number } },
 ) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
+
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
 
   const { courseId, lineId } = params;
   const { lineCorrect, revisionDate } = (await request.json()) as {
-    lineCorrect: boolean;
-    revisionDate: Date;
+    lineCorrect?: boolean;
+    revisionDate?: Date;
   };
 
   if (

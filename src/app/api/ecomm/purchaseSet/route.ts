@@ -4,16 +4,16 @@ import * as Sentry from '@sentry/nextjs';
 import { prisma } from '@/server/db';
 
 import { errorResponse, successResponse } from '../../responses';
-import { AddCuratedSetToUser } from '../functions/AddCuratedSetToUser';
+import { AddCuratedSetToUser } from '../functions/add-curated-set-to-user';
 import {
   CreateCheckoutSession,
   getProductDetails,
-} from '../functions/CreateCheckoutSession';
+} from '../functions/create-checkout-session';
 
 export async function POST(request: Request) {
   try {
     const session = getKindeServerSession();
-    if (!session) return errorResponse('Unauthorized', 401);
+
     const user = await session.getUser();
     if (!user) return errorResponse('Unauthorized', 401);
 

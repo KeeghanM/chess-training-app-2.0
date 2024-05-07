@@ -5,12 +5,12 @@ import * as Sentry from '@sentry/nextjs';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import GenerateSlug from '@/app/_util/GenerateSlug';
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import GenerateSlug from '@/app/_util/generate-slug';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
-import Button from '@/app/components/_elements/button';
-import Container from '@/app/components/_elements/container';
-import Heading from '@/app/components/_elements/heading';
+import { Button } from '@/app/components/_elements/button';
+import { Container } from '@/app/components/_elements/container';
+import { Heading } from '@/app/components/_elements/heading';
 
 import DetailsForm from './DetailsForm';
 import GroupSelector from './GroupSelector';

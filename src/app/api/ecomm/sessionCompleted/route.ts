@@ -5,15 +5,16 @@ import Stripe from 'stripe';
 import { prisma } from '@/server/db';
 
 import { errorResponse, successResponse } from '../../responses';
-import { AddCourseToUser } from '../functions/AddCourseToUser';
-import { AddCuratedSetToUser } from '../functions/AddCuratedSetToUser';
-import SubscribeUser from '../functions/SubscribeUser';
+import { AddCourseToUser } from '../functions/add-course-to-user';
+import { AddCuratedSetToUser } from '../functions/add-curated-set-to-user';
+import { SubscribeUser } from '../functions/subscribe-user';
+import { env } from '@/env';
 
 export async function POST(request: Request) {
   try {
     const payload = await request.text();
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
-    const webHookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
+    const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+    const webHookSecret = env.STRIPE_WEBHOOK_SECRET;
     const signature = headers().get('stripe-signature');
 
     if (!signature) {

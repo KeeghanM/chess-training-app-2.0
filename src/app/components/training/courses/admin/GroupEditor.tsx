@@ -17,7 +17,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import type { Group, Line, Move } from '@prisma/client';
 import { useMemo, useState } from 'react';
 
-import SortableItem from '@/app/_util/SortableItem';
+import SortableItem from '@/app/_util/sortable-item';
 
 import LineDisplay from './LineDisplay';
 

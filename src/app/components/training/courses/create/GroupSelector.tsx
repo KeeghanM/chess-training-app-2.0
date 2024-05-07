@@ -4,10 +4,10 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import * as Tabs from '@radix-ui/react-tabs';
 import { useEffect, useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
-import Button from '@/app/components/_elements/button';
-import Container from '@/app/components/_elements/container';
-import Heading from '@/app/components/_elements/heading';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { Button } from '@/app/components/_elements/button';
+import { Container } from '@/app/components/_elements/container';
+import { Heading } from '@/app/components/_elements/heading';
 import Spinner from '@/app/components/general/Spinner';
 
 import { GroupItem } from './GroupItem';

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-import Button from '@/app/components/_elements/button';
+import { Button } from '@/app/components/_elements/button';
 import type { Tool } from '@/app/dashboard/page';
 
 export function ToolGrid({ tool }: { tool: Tool }) {

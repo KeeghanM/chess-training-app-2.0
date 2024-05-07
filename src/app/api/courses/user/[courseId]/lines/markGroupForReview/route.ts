@@ -9,7 +9,7 @@ export async function POST(
   { params }: { params: { courseId: string } },
 ) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
+
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
 

@@ -1,15 +1,15 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import Link from 'next/link';
 
-import Heading from '@/app/components/_elements/heading';
+import { Heading } from '@/app/components/_elements/heading';
 import { prisma } from '@/server/db';
 
-import Button from '../components/_elements/button';
-import Container from '../components/_elements/container';
-import StyledLink from '../components/_elements/styled-link';
-import BigText from '../components/_layouts/big-text';
+import { Button } from '../components/_elements/button';
+import { Container } from '../components/_elements/container';
+import { StyledLink } from '../components/_elements/styled-link';
+import { BigText } from '../components/_layouts/big-text';
 import { PageHeader } from '../components/_layouts/page-header';
-import GetCourse from '../components/ecomm/GetCourse';
+import { GetCourse } from '../components/ecomm/GetCourse';
 
 export const metadata = {
   title:
@@ -18,7 +18,7 @@ export const metadata = {
     "Embark on a chess learning adventure with ChessTraining.app's courses, featuring our unique Natural Play Learning method. Our courses are designed to help you learn and remember chess openings more effectively and enjoyably. Utilizing spaced repetition with a creative twist, we ensure you grasp every move without tedious repetition. While our own courses are in development, there's nothing stopping you creating your own. Stay updated with our upcoming courses and feature releases to enhance your chess journey!",
 };
 
-export async function Courses() {
+export default async function Courses() {
   const session = getKindeServerSession();
   const user = await session.getUser();
   const courses = await prisma.course.findMany({

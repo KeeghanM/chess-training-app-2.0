@@ -5,12 +5,12 @@ import type { ReactNode } from 'react';
 
 import { env } from '@/env';
 
-import { PostHogPageview, PosthogProvider } from './_util/PostHog';
-import { ThemeSwitchProvider } from './_util/ThemeProvider';
-import getDistinctId from './_util/getDistinctId';
-import CookieBanner from './components/template/CookieBanner';
-import Footer from './components/template/footer/Footer';
-import Header from './components/template/header/Header';
+import { PostHogPageview, PosthogProvider } from './_util/posthog';
+import { ThemeSwitchProvider } from './_util/theme-provider';
+import {getDistinctId} from './_util/get-distinct-id';
+import {CookieBanner} from './components/template/CookieBanner';
+import {Footer} from './components/template/footer/Footer';
+import {Header} from './components/template/header/Header';
 
 import './globals.css';
 
@@ -45,7 +45,7 @@ export const metadata = {
   ],
 };
 
-export async function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({ children }: { children: ReactNode }) {
   const distinctId = await getDistinctId();
   return (
     <>

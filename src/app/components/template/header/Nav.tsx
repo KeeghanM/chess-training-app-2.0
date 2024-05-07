@@ -8,7 +8,7 @@ import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/t
 import { useState } from 'react';
 import 'tippy.js/dist/tippy.css';
 
-import CalculateXpRank from '@/app/_util/CalculateXpRank';
+import CalculateXpRank from '@/app/_util/calculate-xp-rank';
 
 export function Nav({
   user,

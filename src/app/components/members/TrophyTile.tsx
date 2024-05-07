@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
-import CalculateXpRank from '@/app/_util/CalculateXpRank';
+import CalculateXpRank from '@/app/_util/calculate-xp-rank';
 
-import Heading from '../_elements/heading';
+import { Heading } from '../_elements/heading';
 import XpDisplay from '../dashboard/XpDisplay';
 
 export function TrophyTile({

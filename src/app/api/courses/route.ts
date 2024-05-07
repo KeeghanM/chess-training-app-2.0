@@ -6,7 +6,6 @@ import { prisma } from '@/server/db';
 
 export async function PATCH(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
@@ -24,9 +23,9 @@ export async function PATCH(request: Request) {
     courseName: string;
     courseDescription: string;
     shortDescription: string;
-    lines: { id: number; sortOrder: number; trainable: boolean }[];
+    lines?: { id: number; sortOrder: number; trainable: boolean }[];
     linesToDelete: number[];
-    groups: {
+    groups?: {
       id: string;
       groupName: string;
       sortOrder: number;

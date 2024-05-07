@@ -83,6 +83,7 @@ export function ContactForm() {
 
   const openChat = () => {
     // @ts-expect-error : BrevoConversations is defined in the head
+    // eslint-disable-next-line -- Brevo conversations is defined in the head
     BrevoConversations('openChat', true);
   };
 
@@ -140,6 +141,7 @@ export function ContactForm() {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    required
                   />
                 </div>
                 <div>
@@ -152,6 +154,7 @@ export function ContactForm() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -164,6 +167,7 @@ export function ContactForm() {
                   rows={6}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
+                  required
                 />
               </div>
               <div>

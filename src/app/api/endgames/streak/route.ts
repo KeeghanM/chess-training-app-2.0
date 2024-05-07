@@ -1,19 +1,18 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
 
-import { AddBadgeToUser } from '@/app/_util/AddBadge';
-import { TacticStreakBadges } from '@/app/_util/RanksAndBadges';
+import { AddBadgeToUser } from '@/app/_util/add-badge';
+import { TacticStreakBadges } from '@/app/_util/ranks-and-badges';
 import { errorResponse, successResponse } from '@/app/api/responses';
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
 
   const { currentStreak } = (await request.json()) as {
-    currentStreak: number;
+    currentStreak?: number;
   };
   if (currentStreak === undefined) return errorResponse('Missing fields', 400);
 

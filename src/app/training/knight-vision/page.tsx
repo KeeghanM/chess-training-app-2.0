@@ -1,4 +1,4 @@
-import CtaRow from '@/app/components/_layouts/cta-row';
+import { CtaRow } from '@/app/components/_layouts/cta-row';
 import { PageHeader } from '@/app/components/_layouts/page-header';
 
 export const metadata = {

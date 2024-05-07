@@ -17,12 +17,12 @@ import 'react-toggle/style.css';
 // @ts-expect-error - No types available
 import useSound from 'use-sound';
 
-import Button from '@/app/components/_elements/button';
+import { Button } from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 import TimeSince from '@/app/components/general/TimeSince';
 import XpTracker from '@/app/components/general/XpTracker';
 import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
 
 import ChessBoard from '../ChessBoard';
 

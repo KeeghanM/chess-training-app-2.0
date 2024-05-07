@@ -3,12 +3,11 @@
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import { useState } from 'react';
 
-import toHHMMSS from '@/app/_util/toHHMMSS';
-import Button from '@/app/components/_elements/button';
+import toHHMMSS from '@/app/_util/to-hhmmss';
+import { Button } from '@/app/components/_elements/button';
 import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator';
 
 export function SetListStats({ set }: { set: PrismaTacticsSet }) {
-  
   const [open, setOpen] = useState(false);
 
   const close = () => {

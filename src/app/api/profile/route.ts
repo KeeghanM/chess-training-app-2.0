@@ -1,13 +1,12 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
 
-import { AddBadgeToUser } from '@/app/_util/AddBadge';
+import { AddBadgeToUser } from '@/app/_util/add-badge';
 import { errorResponse, successResponse } from '@/app/api/responses';
 import { prisma } from '@/server/db';
 
 export async function PUT(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
@@ -22,14 +21,14 @@ export async function PUT(request: Request) {
     difficulty,
     publicProfile,
   } = (await request.json()) as {
-    username: string;
-    fullname: string;
-    description: string;
-    highestOnlineRating: number;
-    highestOTBRating: number;
-    puzzleRating: number;
-    difficulty: number;
-    publicProfile: boolean;
+    username?: string;
+    fullname?: string;
+    description?: string;
+    highestOnlineRating?: number;
+    highestOTBRating?: number;
+    puzzleRating?: number;
+    difficulty?: number;
+    publicProfile?: boolean;
   };
 
   if (
@@ -41,7 +40,7 @@ export async function PUT(request: Request) {
     return errorResponse('Missing required fields', 400);
   }
 
-  const nameRegex = /[@?#%^\*]/g;
+  const nameRegex = /[@?#%^*]/g;
   if (
     username.length < 5 ||
     username.length > 150 ||
@@ -54,15 +53,18 @@ export async function PUT(request: Request) {
     return errorResponse('Invalid fullname', 400);
   }
 
-  if (description.length > 1000) {
+  if (description && description.length > 1000) {
     return errorResponse('Invalid description', 400);
   }
 
-  if (highestOnlineRating < 0 || highestOnlineRating > 3500) {
+  if (
+    highestOnlineRating &&
+    (highestOnlineRating < 0 || highestOnlineRating > 3500)
+  ) {
     return errorResponse('Invalid highestOnlineRating', 400);
   }
 
-  if (highestOTBRating < 0 || highestOTBRating > 3500) {
+  if (highestOTBRating && (highestOTBRating < 0 || highestOTBRating > 3500)) {
     return errorResponse('Invalid highestOTBRating', 400);
   }
 
@@ -99,9 +101,12 @@ export async function PUT(request: Request) {
       },
     });
 
-    if (highestOTBRating > 0) await AddBadgeToUser(user.id, 'OTB Player');
-    if (highestOnlineRating > 0) await AddBadgeToUser(user.id, 'Online Player');
-    if (description.length > 0) await AddBadgeToUser(user.id, 'Well Known');
+    if (highestOTBRating && highestOTBRating > 0)
+      await AddBadgeToUser(user.id, 'OTB Player');
+    if (highestOnlineRating && highestOnlineRating > 0)
+      await AddBadgeToUser(user.id, 'Online Player');
+    if (description && description.length > 0)
+      await AddBadgeToUser(user.id, 'Well Known');
 
     return successResponse('Profile Updated', { profile }, 200);
   } catch (e) {

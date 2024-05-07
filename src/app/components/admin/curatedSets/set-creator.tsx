@@ -5,7 +5,7 @@ import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import * as Sentry from '@sentry/react';
 import { useState } from 'react';
 
-import { GenerateSlug } from '@/app/_util/GenerateSlug';
+import { GenerateSlug } from '@/app/_util/generate-slug';
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
 import { Heading } from '@/app/components/_elements/heading';

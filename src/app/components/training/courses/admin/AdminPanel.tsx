@@ -9,7 +9,7 @@ import { useEffect, useMemo, useState } from 'react';
 import type { ResponseJson } from '@/app/api/responses';
 import 'tippy.js/dist/tippy.css';
 
-import Button from '@/app/components/_elements/button';
+import { Button } from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 import TextEditor from '@/app/components/general/TextEditor';
 

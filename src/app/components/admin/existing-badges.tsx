@@ -19,7 +19,7 @@ import type { Badge } from '@prisma/client';
 import * as Sentry from '@sentry/nextjs';
 import { useEffect, useState } from 'react';
 
-import { SortableItem } from '@/app/_util/SortableItem';
+import { SortableItem } from '@/app/_util/sortable-item';
 import { Heading } from '@/app/components/_elements/heading';
 
 export function ExistingBadges({ badges }: { badges: Badge[] }) {

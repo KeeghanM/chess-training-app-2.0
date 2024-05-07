@@ -2,9 +2,9 @@ import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import { getUserServer } from '@/app/_util/getUserServer';
-import Button from '@/app/components/_elements/button';
-import Container from '@/app/components/_elements/container';
+import { getUserServer } from '@/app/_util/get-user-server';
+import { Button } from '@/app/components/_elements/button';
+import { Container } from '@/app/components/_elements/container';
 import { PageHeader } from '@/app/components/_layouts/page-header';
 import Info from '@/app/components/training/courses/schedule/Info';
 import LineList from '@/app/components/training/courses/schedule/LineList';

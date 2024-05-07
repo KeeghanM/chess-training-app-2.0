@@ -1,5 +1,5 @@
-import StyledLink from '@/app/components/_elements/styled-link';
-import Hero from '@/app/components/_layouts/hero';
+import { StyledLink } from '@/app/components/_elements/styled-link';
+import { Hero } from '@/app/components/_layouts/hero';
 import { MultiCol, MultiColItem } from '@/app/components/_layouts/multi-col';
 import { TextWall } from '@/app/components/_layouts/text-wall';
 
@@ -9,7 +9,7 @@ export const metadata = {
     'Discover the story behind ChessTraining.app - a passion project turned leading chess training platform by Keeghan. Learn about our mission to provide accessible, high-quality chess training for all, driven by innovation and community support. Explore our values, culture, and vision for a world where top-tier chess training is available to everyone. Join our journey of continuous learning and chess mastery, supported by chess enthusiasts worldwide.',
 };
 
-export function AboutUsPage() {
+export default function AboutUsPage() {
   return (
     <>
       <Hero
@@ -20,13 +20,14 @@ export function AboutUsPage() {
         }}
       >
         <p className="bg-[rgba(0,0,0,0.3)] p-2 text-orange-500">
-          ChessTraining.app is more than just a chess training platform; it's a
-          testament to the passion for chess and the power of technology.
-          Founded in 2020 by Keeghan, a chess enthusiast and software developer,
-          our website is designed to be an incredibly powerful yet super
-          easy-to-use tool for improving your chess skills.
+          ChessTraining.app is more than just a chess training platform;
+          it&apos;s a testament to the passion for chess and the power of
+          technology. Founded in 2020 by Keeghan, a chess enthusiast and
+          software developer, our website is designed to be an incredibly
+          powerful yet super easy-to-use tool for improving your chess skills.
         </p>
       </Hero>
+      {/* eslint-disable-next-line -- Anchor for diff link */}
       <a className="anchor" id="our-mission" />
       <TextWall background="light" title="Our Mission">
         <p>
@@ -37,6 +38,7 @@ export function AboutUsPage() {
           levels improve their game through innovative, user-friendly tools.
         </p>
       </TextWall>
+      {/* eslint-disable-next-line -- Anchor for diff link */}
       <a className="anchor" id="our-vision" />
       <TextWall background="dark" title="Our Vision">
         <p>
@@ -44,19 +46,20 @@ export function AboutUsPage() {
           resources, has access to top-tier chess training. Our vision extends
           beyond just being a training platform; we aim to be a hub for chess
           lovers, where learning, sharing, and growing together is the norm.
-          We're committed to continually evolving, ensuring we're always at the
-          forefront of chess training technology.
+          We&apos;re committed to continually evolving, ensuring we&apos;re
+          always at the forefront of chess training technology.
         </p>
       </TextWall>
+      {/* eslint-disable-next-line -- Anchor for diff link */}
       <a className="anchor" id="our-values" />
       <MultiCol background="light" title="Our Values">
         <MultiColItem title="Accessibility">
-          ChessTraining.app is, and always will be, free to use. We're committed
-          to breaking down barriers in the chess world.
+          ChessTraining.app is, and always will be, free to use. We&apos;re
+          committed to breaking down barriers in the chess world.
         </MultiColItem>
         <MultiColItem title="Innovation">
-          We believe in pushing boundaries and creating tools that don't just
-          mimic what's out there but improve upon it.
+          We believe in pushing boundaries and creating tools that don&apos;t
+          just mimic what&apos;s out there but improve upon it.
         </MultiColItem>
         <MultiColItem title="Community">
           Powered by the generosity of our users, we value and rely on our
@@ -67,10 +70,11 @@ export function AboutUsPage() {
           experience for our users every day.
         </MultiColItem>
       </MultiCol>
+      {/* eslint-disable-next-line -- Anchor for diff link */}
       <a className="anchor" id="our-culture" />
       <TextWall background="dark" title="Our Culture">
         <p>
-          At ChessTraining.app, we're a team of chess aficionados and tech
+          At ChessTraining.app, we&apos;re a team of chess aficionados and tech
           enthusiasts. We foster a culture of openness, collaboration, and
           continuous learning. Our culture is rooted in the belief that everyone
           has something to contribute, and together, we can create the best
@@ -81,6 +85,7 @@ export function AboutUsPage() {
           </StyledLink>
         </p>
       </TextWall>
+      {/* eslint-disable-next-line -- Anchor for diff link */}
       <a className="anchor" id="our-story" />
       <TextWall background="light" title="Our Story">
         <p>
@@ -90,7 +95,7 @@ export function AboutUsPage() {
           tools, he set out to create a platform that he would love to use
           daily. Since then (and with the help of our community),
           ChessTraining.app has grown into a leading chess training platform,
-          with thousands of users worldwide. We're proud of our humble
+          with thousands of users worldwide. We&apos;re proud of our humble
           beginnings and are excited to continue our own journey of chess
           mastery alongside you.
         </p>

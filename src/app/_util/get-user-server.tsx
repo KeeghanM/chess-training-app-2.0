@@ -1,50 +1,57 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
-import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types';
 import Stripe from 'stripe';
 import { v4 as uuidv4 } from 'uuid';
-
+import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs';
 import { prisma } from '@/server/db';
+import { env } from '@/env';
 
 export async function getUserServer() {
   const { getUser, isAuthenticated, getPermissions } = getKindeServerSession();
   const user = await getUser();
 
-  if (user) {
-    const hasAuth = await isAuthenticated();
-    const permissions = await getPermissions();
-    try {
-      const profile = await prisma.userProfile.findFirst({
-        where: {
-          id: user.id,
-        },
-      });
-      const badges = await prisma.userBadge.findMany({
-        where: {
-          userId: user.id,
-        },
-      });
-      const isStaff =
-        permissions?.permissions.includes('staff-member') ?? false;
-      const isPremium =
-        permissions?.permissions.includes('premium-override') ??
-        (await hasBoughtPremium(user.id));
+  if (!user)
+    return {
+      user,
+      hasAuth: false,
+      profile: null,
+      isStaff: false,
+      isPremium: false,
+      badges: [],
+    };
 
-      return { user, hasAuth, profile, isStaff, isPremium, badges };
-    } catch (e) {
-      Sentry.captureException(e);
-    } finally {
-      await prisma.$disconnect();
-    }
+  const hasAuth = await isAuthenticated();
+  const permissions = await getPermissions();
+  try {
+    const profile = await prisma.userProfile.findFirst({
+      where: {
+        id: user.id,
+      },
+    });
+    const badges = await prisma.userBadge.findMany({
+      where: {
+        userId: user.id,
+      },
+    });
+    const isStaff = permissions?.permissions.includes('staff-member') ?? false;
+    const isPremium =
+      permissions?.permissions.includes('premium-override') ??
+      (await hasBoughtPremium(user.id));
+
+    return { user, hasAuth, profile, isStaff, isPremium, badges };
+  } catch (e) {
+    Sentry.captureException(e);
+    return {
+      user,
+      hasAuth: false,
+      profile: null,
+      isStaff: false,
+      isPremium: false,
+      badges: [],
+    };
+  } finally {
+    await prisma.$disconnect();
   }
-  return {
-    user,
-    hasAuth: false,
-    profile: null,
-    isStaff: false,
-    isPremium: false,
-    badges: [],
-  };
 }
 
 export async function createUserProfile(user: KindeUser) {
@@ -74,11 +81,10 @@ export async function createUserProfile(user: KindeUser) {
     // create contact in Brevo
     await fetch('https://api.brevo.com/v3/contacts', {
       method: 'POST',
-      // @ts-expect-error : this is a valid request
       headers: {
         accept: 'application/json',
         'content-type': 'application/json',
-        'api-key': process.env.BREVO_API_KEY,
+        'api-key': env.BREVO_API_KEY,
       },
       body: JSON.stringify({
         attributes: { FIRSTNAME: firstName, LASTNAME: lastName },
@@ -112,7 +118,7 @@ async function hasBoughtPremium(userId: string) {
       return false;
     }
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+    const stripe = new Stripe(env.STRIPE_SECRET_KEY!);
     const stripeSubscriptions = await stripe.subscriptions.list({
       customer: stripeCustomerId,
       status: 'active',

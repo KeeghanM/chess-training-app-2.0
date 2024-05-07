@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/nextjs';
 import { useEffect, useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-import Container from '@/app/components/_elements/container';
+import { Container } from '@/app/components/_elements/container';
 import Spinner from '@/app/components/general/Spinner';
 import type { PrismaTacticsSet } from '@/app/components/training/tactics//create/TacticsSetCreator';
 import TacticsSetCreator from '@/app/components/training/tactics//create/TacticsSetCreator';
@@ -13,8 +13,11 @@ import { env } from '@/env';
 
 import { SetListItem } from './set-list-item';
 
-export function TacticsList({ hasUnlimitedSets }: { hasUnlimitedSets: boolean }) {
-  
+export function TacticsList({
+  hasUnlimitedSets,
+}: {
+  hasUnlimitedSets: boolean;
+}) {
   const { user } = useKindeBrowserClient();
   const [sets, setSets] = useState<PrismaTacticsSet[]>([]);
   const [loading, setLoading] = useState(true);

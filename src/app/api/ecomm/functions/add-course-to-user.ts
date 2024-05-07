@@ -49,8 +49,6 @@ export async function AddCourseToUser(courseId: string, userId: string) {
         });
       }
 
-      if (!userCourse) throw new Error('User course not found');
-
       // Create each new line and userLine
       await Promise.all(
         course.lines.map(async (line) => {

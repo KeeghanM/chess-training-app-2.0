@@ -1,15 +1,13 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import * as Sentry from '@sentry/nextjs';
 
-
-import { UpdateStreak } from '@/app/_util/UpdateStreak';
+import { UpdateStreak } from '@/app/_util/update-streak';
 import { errorResponse, successResponse } from '@/app/api/responses';
 import type { availableTypes } from '@/app/components/general/XpTracker';
 import { prisma } from '@/server/db';
 
 export async function PUT(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
@@ -48,7 +46,8 @@ export async function PUT(request: Request) {
       },
     });
 
-    const dateString = new Date().toISOString().split('T')[0]!;
+    const dateString = new Date().toISOString().split('T')[0];
+    if (!dateString) throw new Error('Invalid date');
 
     const dayTrained = await prisma.dayTrained.findFirst({
       where: {

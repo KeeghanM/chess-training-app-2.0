@@ -9,14 +9,14 @@ export async function POST(
   { params }: { params: { courseId: string } },
 ) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
+
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
 
   const { courseId } = params;
   const { lineId, minDate } = (await request.json()) as {
-    lineId: number;
-    minDate: Date;
+    lineId?: number;
+    minDate?: Date;
   };
 
   if (!courseId) return errorResponse('Missing courseId', 400);

@@ -1,4 +1,4 @@
-import Heading from '@/app/components/_elements/heading';
+import { Heading } from '@/app/components/_elements/heading';
 import { MultiCol, MultiColItem } from '@/app/components/_layouts/multi-col';
 import { PageHeader } from '@/app/components/_layouts/page-header';
 
@@ -6,7 +6,7 @@ export const metadata = {
   title: 'Meet Our Team - The Minds Behind ChessTraining.app',
 };
 
-export function MeetTheTeam() {
+export default function MeetTheTeamPage() {
   const teamMembers: {
     name: string;
     title: string;

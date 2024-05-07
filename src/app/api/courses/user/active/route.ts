@@ -6,7 +6,7 @@ import { prisma } from '@/server/db';
 
 export async function GET(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
+
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
 

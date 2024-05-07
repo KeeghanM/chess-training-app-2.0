@@ -4,7 +4,7 @@ import type { Group, Line, Move, UserLine } from '@prisma/client';
 import { useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
-import Button from '@/app/components/_elements/button';
+import { Button } from '@/app/components/_elements/button';
 import PrettyPrintLine from '@/app/components/general/PrettyPrintLine';
 import Spinner from '@/app/components/general/Spinner';
 import type { Line as NiceLine } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData';

@@ -6,7 +6,7 @@ import type { Arrow } from 'react-chessboard/dist/chessboard/types';
 
 import type { Move } from '@/app/_util/BuildPgn';
 import BuildPGN from '@/app/_util/BuildPgn';
-import getArrows from '@/app/_util/StringToArrows';
+import getArrows from '@/app/_util/string-to-arrows';
 
 import ChessBoard from '../../ChessBoard';
 

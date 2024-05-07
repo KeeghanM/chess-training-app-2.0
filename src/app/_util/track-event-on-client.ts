@@ -14,5 +14,5 @@ export function trackEventOnClient(
     headers: {
       'Content-Type': 'application/json',
     },
-  }).catch((e) => Sentry.captureException(e));
+  }).catch((e: unknown) => Sentry.captureException(e));
 }

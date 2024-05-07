@@ -16,8 +16,8 @@ import 'tippy.js/dist/tippy.css';
 // @ts-expect-error - No types available
 import useSound from 'use-sound';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
-import Button from '@/app/components/_elements/button';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { Button } from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 import XpTracker from '@/app/components/general/XpTracker';
 import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';

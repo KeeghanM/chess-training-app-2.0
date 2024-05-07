@@ -1,10 +1,10 @@
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
 import Link from 'next/link';
 
-import Button from '@/app/components/_elements/button';
-import Container from '@/app/components/_elements/container';
-import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styled-link';
+import { Button } from '@/app/components/_elements/button';
+import { Container } from '@/app/components/_elements/container';
+import { Heading } from '@/app/components/_elements/heading';
+import { StyledLink } from '@/app/components/_elements/styled-link';
 import { PageHeader } from '@/app/components/_layouts/page-header';
 import { TextWall } from '@/app/components/_layouts/text-wall';
 import GetCuratedSet from '@/app/components/ecomm/GetCuratedSet';

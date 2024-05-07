@@ -1,5 +1,5 @@
-import StyledLink from '@/app/components/_elements/styled-link';
-import BigText from '@/app/components/_layouts/big-text';
+import { StyledLink } from '@/app/components/_elements/styled-link';
+import { BigText } from '@/app/components/_layouts/big-text';
 import { TextWall } from '@/app/components/_layouts/text-wall';
 
 export const metadata = {

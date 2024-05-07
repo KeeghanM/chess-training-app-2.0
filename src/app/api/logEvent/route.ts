@@ -1,12 +1,12 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { trackEventOnServer } from '@/app/_util/trackEventOnServer';
+import { trackEventOnServer } from '@/app/_util/track-event-on-server';
 import { errorResponse, successResponse } from '@/app/api/responses';
 
 export async function POST(request: Request) {
   const { eventName, data } = (await request.json()) as {
-    eventName: string;
-    data: Record<string, string>;
+    eventName?: string;
+    data?: Record<string, string>;
   };
 
   if (!eventName) return errorResponse('Missing event name', 400);

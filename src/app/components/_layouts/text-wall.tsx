@@ -1,5 +1,5 @@
-import Container from '@/app/components/_elements/container';
-import Heading from '@/app/components/_elements/heading';
+import { Container } from '@/app/components/_elements/container';
+import { Heading } from '@/app/components/_elements/heading';
 
 interface TextWallProps {
   title: string;

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import Heading from '@/app/components/_elements/heading';
+import { Heading } from '@/app/components/_elements/heading';
 
 interface PageHeaderProps {
   title: string;

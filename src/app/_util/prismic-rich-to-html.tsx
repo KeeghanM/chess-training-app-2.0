@@ -1,4 +1,4 @@
-import Heading from '../components/_elements/heading';
+import { Heading } from '../components/_elements/heading';
 
 interface Span {
   start: number;
@@ -16,6 +16,9 @@ export interface RichTextContent {
 }
 
 export const PrismicRichToHtml = (content: RichTextContent) => {
+  const { spans, type, url, alt } = content;
+  let { text } = content;
+
   const mergeOverlappingSpans = (spans: Span[]) => {
     const mergedSpans = [];
 
@@ -60,7 +63,7 @@ export const PrismicRichToHtml = (content: RichTextContent) => {
             break;
           case 'hyperlink':
             spanContent = `<a class="font-bold text-purple-700 underline hover:text-purple-600 hover:no-underline" href="${
-              span.data!.url
+              span.data?.url ?? ''
             }">${spanContent}</a>`;
             break;
         }
@@ -77,14 +80,14 @@ export const PrismicRichToHtml = (content: RichTextContent) => {
     return result;
   };
 
-  if (content.spans) {
-    const sortedSpans = [...content.spans].sort((a, b) => b.start - a.start);
-    content.text = applySpans(content.text, sortedSpans);
+  if (spans.length > 0) {
+    const sortedSpans = [...spans].sort((a, b) => b.start - a.start);
+    text = applySpans(text, sortedSpans);
   }
 
-  const html = { __html: content.text };
+  const html = { __html: text };
 
-  switch (content.type) {
+  switch (type) {
     case 'paragraph':
       return <p dangerouslySetInnerHTML={html} className="mb-4 md:mb-6" />;
     case 'heading1':
@@ -118,12 +121,8 @@ export const PrismicRichToHtml = (content: RichTextContent) => {
     case 'image':
       return (
         <div className="flex flex-col gap-2">
-          <img
-            alt={content.alt}
-            className="mx-auto w-full max-w-[600px]"
-            src={content.url}
-          />
-          <p>{content.alt}</p>
+          <img alt={alt} className="mx-auto w-full max-w-[600px]" src={url} />
+          <p>{alt}</p>
         </div>
       );
     default:
@@ -139,8 +138,8 @@ export function decodeUTF8(str: string) {
     .replace(/”/g, '"')
     .replace(/–/g, '-')
     .replace(/—/g, '-')
-    .replace(/ /g, ' ')
-    .replace(/ /g, ' ')
+    .replace(/ /g, ' ') // eslint-disable-line -- the whole point is to fix the irregular whitespace
+    .replace(/ /g, ' ') // eslint-disable-line -- the whole point is to fix the irregular whitespace
     .replace(/…/g, '...')
     .replace(/«/g, '<<')
     .replace(/»/g, '>>')

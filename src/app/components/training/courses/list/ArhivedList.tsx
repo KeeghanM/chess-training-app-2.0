@@ -8,7 +8,7 @@ import type { ResponseJson } from '@/app/api/responses';
 import { env } from '@/env';
 import 'tippy.js/dist/tippy.css';
 
-import Button from '@/app/components/_elements/button';
+import { Button } from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 
 import type { PrismaUserCourse } from './CoursesList';

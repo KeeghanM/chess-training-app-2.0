@@ -1,17 +1,15 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { getUserServer } from '@/app/_util/getUserServer';
+import { getUserServer } from '@/app/_util/get-user-server';
 import { errorResponse, successResponse } from '@/app/api/responses';
 import { env } from '@/env';
 import { prisma } from '@/server/db';
-
 
 export async function GET() {
   const { user, isPremium } = await getUserServer();
   if (!user) return errorResponse('Unauthorized', 401);
 
   const maxCourses = env.NEXT_PUBLIC_MAX_COURSES;
-  const hasUnlimitedCourses = isPremium ?? false;
 
   try {
     const courses = await prisma.userCourse.findMany({
@@ -24,7 +22,7 @@ export async function GET() {
       },
     });
 
-    const canCreate = hasUnlimitedCourses || courses.length < maxCourses;
+    const canCreate = isPremium || courses.length < maxCourses;
 
     return successResponse('Courses found', { canCreate }, 200);
   } catch (e) {

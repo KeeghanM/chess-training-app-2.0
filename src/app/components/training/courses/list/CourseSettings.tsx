@@ -7,11 +7,11 @@ import Tippy from '@tippyjs/react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
-import Button from '@/app/components/_elements/button';
-import Heading from '@/app/components/_elements/heading';
-import StyledLink from '@/app/components/_elements/styled-link';
+import { Button } from '@/app/components/_elements/button';
+import { Heading } from '@/app/components/_elements/heading';
+import { StyledLink } from '@/app/components/_elements/styled-link';
 import Spinner from '@/app/components/general/Spinner';
 
 import type { PrismaUserCourse } from './CoursesList';

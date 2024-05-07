@@ -6,7 +6,6 @@ import { prisma } from '@/server/db';
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
@@ -54,7 +53,6 @@ export async function POST(request: Request) {
 
 export async function PATCH(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
@@ -80,11 +78,11 @@ export async function PATCH(request: Request) {
     slug: string;
     description: string;
     shortDesc: string;
-    size: number;
+    size?: number;
     minRating: number;
     maxRating: number;
-    price: number;
-    published: boolean;
+    price?: number;
+    published?: boolean;
   };
   if (
     !id ||
@@ -141,7 +139,6 @@ export async function PATCH(request: Request) {
 
 export async function DELETE(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);

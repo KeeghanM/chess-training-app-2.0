@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import Heading from '@/app/components/_elements/heading';
+import { Heading } from '@/app/components/_elements/heading';
 
 export function Footer() {
   const sections: {

@@ -157,6 +157,7 @@ export function ReportIssueForm() {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
+                    required
                   />
                 </div>
                 <div>
@@ -169,6 +170,7 @@ export function ReportIssueForm() {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
                   />
                 </div>
               </div>
@@ -200,6 +202,7 @@ export function ReportIssueForm() {
                   rows={6}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
+                  required
                 />
               </div>
               <div>

@@ -1,8 +1,8 @@
 import * as Sentry from '@sentry/nextjs';
 import { redirect } from 'next/navigation';
 
-import { getUserServer } from '@/app/_util/getUserServer';
-import Container from '@/app/components/_elements/container';
+import { getUserServer } from '@/app/_util/get-user-server';
+import { Container } from '@/app/components/_elements/container';
 import TacticsTrainer from '@/app/components/training/tactics/TacticsTrainer';
 import type { PrismaTacticsSetWithPuzzles } from '@/app/components/training/tactics/TacticsTrainer';
 import { prisma } from '@/server/db';

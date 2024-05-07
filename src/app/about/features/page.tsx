@@ -1,8 +1,8 @@
 import Link from 'next/link';
 
-import BigText from '@/app/components/_layouts/big-text';
-import CtaRow from '@/app/components/_layouts/cta-row';
-import Hero from '@/app/components/_layouts/hero';
+import { BigText } from '@/app/components/_layouts/big-text';
+import { CtaRow } from '@/app/components/_layouts/cta-row';
+import { Hero } from '@/app/components/_layouts/hero';
 
 export const metadata = {
   title: 'Explore Chess Training Tools & Features at ChessTraining.app',
@@ -10,7 +10,7 @@ export const metadata = {
     "Dive into the world of chess training with ChessTraining.app's range of unique tools. From our pioneering Natural Play Learning to the engaging Tactics Trainer, and our comprehensive Course Trainer, we offer tailored solutions to enhance your chess skills. Whether you're a beginner or a seasoned player, our features like Knight Vision and Endgame Trainer are designed to elevate your game. Start your journey towards chess mastery today with ChessTraining.app!",
 };
 
-export async function FeaturesPage() {
+export default function FeaturesPage() {
   const features = [
     {
       name: 'Natural Play Learning',
@@ -114,6 +114,7 @@ export async function FeaturesPage() {
       </Hero>
       {features.map((feature, index) => (
         <>
+          {/* eslint-disable-next-line -- This is a click through anchor, as in the target for something else */}
           <a className="anchor" id={feature.anchor} />
           <CtaRow
             key={`feature-${index.toString()}`}

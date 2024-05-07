@@ -1,8 +1,9 @@
 import * as Sentry from '@sentry/nextjs';
-import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types';
+import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs/dist/types';
 import Stripe from 'stripe';
 
 import { prisma } from '@/server/db';
+import { env } from '@/env';
 
 type ProductType = 'curatedSet' | 'course' | 'subscription';
 
@@ -47,7 +48,7 @@ export async function CreateCheckoutSession(
       }),
     );
 
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+    const stripe = new Stripe(env.STRIPE_SECRET_KEY);
 
     const hasSubscription = products.some(
       (product) => product.productType === 'subscription',
@@ -58,8 +59,8 @@ export async function CreateCheckoutSession(
       customer_email: user.email ?? undefined,
       line_items: lineItems,
       mode: hasSubscription ? 'subscription' : 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/checkout/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/${returnUrl ?? '/'}`,
+      success_url: `${env.NEXT_PUBLIC_SITE_URL}/checkout/success`,
+      cancel_url: `${env.NEXT_PUBLIC_SITE_URL}/${returnUrl}`,
       automatic_tax: { enabled: true },
     });
 
@@ -109,7 +110,7 @@ export async function getProductDetails(
       });
       if (!course) throw new Error('Course not found');
       return { price: course.price, name: course.courseName };
-    } else if (productType === 'subscription') {
+    } else {
       return { price: 299, name: 'Premium Subscription' };
     }
     throw new Error('Invalid product type');

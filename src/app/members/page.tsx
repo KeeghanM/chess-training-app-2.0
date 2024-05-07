@@ -1,8 +1,8 @@
 import { prisma } from '@/server/db';
 
-import CalculateXpRank from '../_util/CalculateXpRank';
-import Container from '../components/_elements/container';
-import StyledLink from '../components/_elements/styled-link';
+import CalculateXpRank from '../_util/calculate-xp-rank';
+import { Container } from '../components/_elements/container';
+import { StyledLink } from '../components/_elements/styled-link';
 import { PageHeader } from '../components/_layouts/page-header';
 import TrophyTile from '../components/members/TrophyTile';
 

@@ -96,8 +96,11 @@ export function BuildPGN(lines: LineMove[][]): PGN {
           },
         ]);
 
-        lineToAddTo =
-          existingMove.variations[existingMove.variations.length - 1]!;
+        const potentialLine =
+          existingMove.variations[existingMove.variations.length - 1];
+        if (potentialLine === undefined)
+          throw new Error('Accessed array index out of bounds');
+        lineToAddTo = potentialLine;
         found = true;
         break;
       }

@@ -1,9 +1,9 @@
 import * as Sentry from '@sentry/nextjs';
 
-import { StreakBadges } from '@/app/_util/RanksAndBadges';
+import { StreakBadges } from '@/app/_util/ranks-and-badges';
 import { prisma } from '@/server/db';
 
-import { AddBadgeToUser } from './AddBadge';
+import { AddBadgeToUser } from './add-badge';
 
 export async function UpdateStreak(userId: string) {
   if (!userId) return;

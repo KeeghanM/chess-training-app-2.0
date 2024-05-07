@@ -3,8 +3,8 @@ import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import Button from '@/app/components/_elements/button';
-import Heading from '@/app/components/_elements/heading';
+import { Button } from '@/app/components/_elements/button';
+import { Heading } from '@/app/components/_elements/heading';
 import CourseBrowser from '@/app/components/training/courses/browser/CourseBrowser';
 import { prisma } from '@/server/db';
 

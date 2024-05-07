@@ -4,9 +4,9 @@ import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import toHHMMSS from '@/app/_util/toHHMMSS';
-import trackEventOnClient from '@/app/_util/trackEventOnClient';
-import Button from '@/app/components/_elements/button';
+import toHHMMSS from '@/app/_util/to-hhmmss';
+import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { Button } from '@/app/components/_elements/button';
 import Spinner from '@/app/components/general/Spinner';
 import TimeSince from '@/app/components/general/TimeSince';
 import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator';

@@ -8,15 +8,14 @@ import { prisma } from '@/server/db';
 
 export async function POST(request: Request) {
   const session = getKindeServerSession(request);
-  if (!session) return errorResponse('Unauthorized', 401);
 
   const user = await session.getUser();
   if (!user) return errorResponse('Unauthorized', 401);
 
   const { groupNames, lines, courseId } = (await request.json()) as {
     courseId: string;
-    groupNames: string[];
-    lines: {
+    groupNames?: string[];
+    lines?: {
       groupName: string;
       colour: string;
       moves: CleanMove[];
