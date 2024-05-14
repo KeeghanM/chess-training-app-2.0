@@ -7,20 +7,25 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
 import { StyledLink } from '@/app/components/_elements/styled-link';
-import PremiumSubscribe from '@/app/components/ecomm/premium-subscribe';
-import Spinner from '@/app/components/general/spinner';
-import TimeSince from '@/app/components/general/time-since';
+import { PremiumSubscribe } from '@/app/components/ecomm/premium-subscribe';
+import { Spinner } from '@/app/components/general/spinner';
+import { TimeSince } from '@/app/components/general/time-since';
 
-import CourseSettings from './CourseSettings';
-import type { PrismaUserCourse } from './CoursesList';
+import { CourseSettings } from './course-settings';
+import type { PrismaUserCourse } from './courses-list';
 
 // TODO: Add revision schedule viewer
 
-export function CourseListItem(props: {
+export function CourseListItem({
+  courseId,
+  courseName,
+  update,
+  hasPremium,
+}: {
   courseId: string;
   courseName: string;
   update: () => void;
@@ -33,7 +38,7 @@ export function CourseListItem(props: {
   const [loading, setLoading] = useState(true);
   const [opening, setOpening] = useState(false);
 
-  const openCourse = async (mode: 'learn' | 'revise') => {
+  const openCourse = (mode: 'learn' | 'revise') => {
     if (!userCourse) return;
 
     setOpening(true);
@@ -54,18 +59,18 @@ export function CourseListItem(props: {
         if (json.message !== 'Course Fetched')
           throw new Error('Course not fetched');
 
-        const course = json.data!.course as PrismaUserCourse;
+        const course = json.data?.course as PrismaUserCourse;
 
         setUserCourse(course);
         setConicGradient(GenerateConicGradient(course));
-        if (json.data!.nextReview) {
-          setNextReview(new Date(json.data!.nextReview as string));
+        if (json.data?.nextReview) {
+          setNextReview(new Date(json.data.nextReview as string));
         }
       } catch (e) {
         Sentry.captureException(e);
       }
     })()
-      .catch((e) => Sentry.captureException(e))
+      .catch((e: unknown) => Sentry.captureException(e))
       .finally(() => setLoading(false));
   }, []);
 
@@ -74,7 +79,7 @@ export function CourseListItem(props: {
       key={courseId}
       className="flex flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900"
     >
-      {loading ? (
+      {loading || !userCourse ? (
         <div className="flex flex-col gap-2 p-2">
           <div className="flex flex-col items-start justify-between gap-1 border-b border-gray-300 px-2 py-1 font-bold dark:border-slate-600 md:flex-row">
             <p className="flex flex-col gap-1">
@@ -105,14 +110,14 @@ export function CourseListItem(props: {
               <Tippy content="View lines and other stats">
                 <Link
                   className="cursor-pointer text-lg text-orange-500"
-                  href={`/training/courses/${userCourse?.id}/lines`}
+                  href={`/training/courses/${userCourse.id}/lines`}
                 >
                   {courseName}
                 </Link>
               </Tippy>
               <span className="text-xs italic text-gray-600 dark:text-gray-400">
                 Last trained{' '}
-                {userCourse?.lastTrained ? (
+                {userCourse.lastTrained ? (
                   <TimeSince
                     date={new Date(userCourse.lastTrained)}
                     text="ago"
@@ -122,7 +127,7 @@ export function CourseListItem(props: {
                 )}
               </span>
             </p>
-            <CourseSettings update={update} userCourse={userCourse!} />
+            <CourseSettings update={update} userCourse={userCourse} />
           </div>
           <div className="flex flex-col items-center gap-2 p-2 md:flex-row">
             <div className="flex flex-col items-center gap-2 md:flex-row">
@@ -131,16 +136,16 @@ export function CourseListItem(props: {
                 content={
                   <div className="flex flex-col gap-2">
                     <p className="text-gray-300">
-                      {userCourse?.linesUnseen} lines unseen
+                      {userCourse.linesUnseen} lines unseen
                     </p>
                     <p className="text-green-500">
-                      {userCourse?.linesLearned} lines learned
+                      {userCourse.linesLearned} lines learned
                     </p>
                     <p className="text-blue-600">
-                      {userCourse?.linesLearning} lines learning
+                      {userCourse.linesLearning} lines learning
                     </p>
                     <p className="text-red-500">
-                      {userCourse?.linesHard} lines hard
+                      {userCourse.linesHard} lines hard
                     </p>
                   </div>
                 }
@@ -155,7 +160,7 @@ export function CourseListItem(props: {
                 </div>
               </Tippy>
               <Tippy
-                disabled={Boolean(userCourse?.lines?.length)}
+                disabled={Boolean(userCourse.lines?.length)}
                 content={
                   nextReview ? (
                     <p>
@@ -167,28 +172,28 @@ export function CourseListItem(props: {
                 <div className="flex flex-col gap-1">
                   <p className="text-sm italic">
                     {
-                      userCourse?.lines?.filter(
+                      userCourse.lines?.filter(
                         (line) => line.revisionDate !== null,
                       ).length
                     }{' '}
-                    {userCourse?.lines?.length === 1
+                    {userCourse.lines?.length === 1
                       ? 'line to review.'
                       : 'lines to review.'}
                   </p>
                   <p className="text-sm italic">
                     {
-                      userCourse?.lines?.filter(
+                      userCourse.lines?.filter(
                         (line) => line.revisionDate === null,
                       ).length
                     }{' '}
-                    {userCourse?.lines?.length === 1
+                    {userCourse.lines?.length === 1
                       ? 'line to learn.'
                       : 'lines to learn.'}
                   </p>
                   {hasPremium ? (
                     <Link
                       className="text-xs text-purple-700 underline hover:no-underline dark:text-purple-400"
-                      href={`/training/courses/${userCourse?.id}/schedule`}
+                      href={`/training/courses/${userCourse.id}/schedule`}
                     >
                       Edit revision schedule
                     </Link>
@@ -204,16 +209,16 @@ export function CourseListItem(props: {
                       <p>
                         With premium, you can view and edit the revision
                         schedule, allowing you to bring forward the next review
-                        date for lines you're struggling with. In the future, we
-                        will also be adding the ability to customise the
-                        revision schedule to your liking.
+                        date for lines you&apos;re struggling with. In the
+                        future, we will also be adding the ability to customise
+                        the revision schedule to your liking.
                       </p>
                       <p>
-                        This is super useful if you're preparing for a
+                        This is super useful if you&apos;re preparing for a
                         tournament or just want to revise everything.
                       </p>
                       <p className="rounded bg-green-200 p-4 font-bold">
-                        It's only £2.99/month to upgrade to premium!{' '}
+                        It&apos;s only £2.99/month to upgrade to premium!{' '}
                         <StyledLink href="/premium">Learn more.</StyledLink>
                       </p>
                       <p>
@@ -228,7 +233,7 @@ export function CourseListItem(props: {
             </div>
             <div className="flex flex-col gap-2 md:ml-auto md:flex-row">
               <Button
-                disabled={userCourse?.lines?.length === 0 || opening}
+                disabled={userCourse.lines?.length === 0 || opening}
                 variant="primary"
                 onClick={() => openCourse('revise')}
               >
@@ -240,7 +245,7 @@ export function CourseListItem(props: {
                   'Study Course'
                 )}
               </Button>
-              <Link href={`/training/courses/${userCourse?.id}/lines`}>
+              <Link href={`/training/courses/${userCourse.id}/lines`}>
                 <Button variant="secondary">View Lines</Button>
               </Link>
             </div>

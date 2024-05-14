@@ -9,11 +9,11 @@ import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
 import { Heading } from '@/app/components/_elements/heading';
 import { StyledLink } from '@/app/components/_elements/styled-link';
-import Spinner from '@/app/components/general/spinner';
+import { Spinner } from '@/app/components/general/spinner';
 
-import PremiumSubscribe from '../../../ecomm/premium-subscribe';
+import { PremiumSubscribe } from '../../../ecomm/premium-subscribe';
 
-import CourseListItem from './CourseListItem';
+import { CourseListItem } from './course-list-item';
 
 export type PrismaUserCourse = UserCourse & {
   course: Course;
@@ -21,7 +21,7 @@ export type PrismaUserCourse = UserCourse & {
   lines?: UserLine[];
 };
 
-export function CourseList({
+export function CoursesList({
   hasUnlimitedCourses,
 }: {
   hasUnlimitedCourses: boolean;
@@ -39,7 +39,7 @@ export function CourseList({
       if (data.message !== 'Courses found')
         throw new Error('Failed to fetch courses');
 
-      setCourses(data.data!.courses as PrismaUserCourse[]);
+      setCourses(data.data?.courses as PrismaUserCourse[]);
     } catch (e) {
       Sentry.captureException(e);
       setCourses([]);
@@ -51,7 +51,7 @@ export function CourseList({
   useEffect(() => {
     (async () => {
       await fetchCourses();
-    })().catch((e) => {
+    })().catch((e: unknown) => {
       Sentry.captureException(e);
     });
   }, []);
@@ -105,7 +105,7 @@ export function CourseList({
               premium.
             </p>
             <p className="rounded bg-green-200 p-4 font-bold">
-              It's only £2.99/month to upgrade to premium!{' '}
+              It&apos;s only £2.99/month to upgrade to premium!{' '}
               <StyledLink href="/premium">Learn more.</StyledLink>
             </p>
             <p>
@@ -127,7 +127,7 @@ export function CourseList({
       </div>
 
       <div className="flex flex-col gap-4">
-        {loading ? (
+        {loading && (
           <>
             <div className="flex h-24 flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] opacity-50 shadow-md transition-shadow duration-300 hover:shadow-lg dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
               <p className="m-auto flex w-fit gap-1">
@@ -140,7 +140,8 @@ export function CourseList({
               </p>
             </div>
           </>
-        ) : courses.length > 0 ? (
+        )}
+        {!loading && courses.length > 0 ? (
           courses
             .sort(
               (a, b) =>
@@ -161,7 +162,7 @@ export function CourseList({
             ))
         ) : (
           <div className="bg-gray-100 p-2 dark:bg-slate-900">
-            <Heading as="h3">You haven't got any courses yet</Heading>
+            <Heading as="h3">You haven&apos;t got any courses yet</Heading>
             <p className="text-gray-500  dark:text-white">
               You can browse any of our{' '}
               <StyledLink href="/courses">amazing courses</StyledLink> or try{' '}

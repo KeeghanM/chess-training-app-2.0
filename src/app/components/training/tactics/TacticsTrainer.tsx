@@ -20,7 +20,7 @@ import { Button } from '@/app/components/_elements/button';
 import { Spinner } from '@/app/components/general/spinner';
 import { TimeSince } from '@/app/components/general/time-since';
 import { XpTracker } from '@/app/components/general/xp-tracker';
-import { ThemeSwitch } from '@/app/components/template/header/ThemeSwitch';
+import { ThemeSwitch } from '@/app/components/template/header/theme-switch';
 import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 
 import { ChessBoard } from '../chess-board';

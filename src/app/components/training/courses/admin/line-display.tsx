@@ -1,17 +1,20 @@
 'use client';
 
 import { Button } from '@/app/components/_elements/button';
-import PrettyPrintLine from '@/app/components/general/pretty-print-line';
-import type { Line } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData';
+import { PrettyPrintLine } from '@/app/components/general/pretty-print-line';
+import type { Line } from '@/app/components/training/courses/create/parse/parse-pgn-to-line-data';
 
-import type { LineWithMoves } from './GroupEditor';
+import type { LineWithMoves } from './group-editor';
 
-export function LineDisplay(props: {
+export function LineDisplay({
+  line,
+  onChange,
+  onDelete,
+}: {
   line: LineWithMoves;
   onChange: (line: LineWithMoves) => void;
   onDelete: () => void;
 }) {
-  const { line } = props;
   const niceLine = {
     moves: line.moves.map((move) => ({
       notation: move.move,

@@ -19,7 +19,7 @@ import { useAudio } from '@/app/hooks/use-audio';
 
 import { getArrows } from '@/app/_util/string-to-arrows';
 import { trackEventOnClient } from '@/app/_util/track-event-on-client';
-import { ThemeSwitch } from '@/app/components//template/header/ThemeSwitch';
+import { ThemeSwitch } from '@/app/components/template/header/theme-switch';
 import { Button } from '@/app/components/_elements/button';
 import { Spinner } from '@/app/components/general/spinner';
 import { XpTracker } from '@/app/components/general/xp-tracker';
@@ -28,7 +28,7 @@ import { Heading } from '../../_elements/heading';
 import { StyledLink } from '../../_elements/styled-link';
 import { ChessBoard } from '../chess-board';
 
-import type { PrismaUserCourse } from './list/CoursesList';
+import type { PrismaUserCourse } from './list/courses-list';
 
 // TODO: Add delay on wrong move jumping
 // TODO: Modal for confirming exit
@@ -36,8 +36,16 @@ import type { PrismaUserCourse } from './list/CoursesList';
 // TODO: Add onboarding for first time users
 
 type PrismaMove = Move & { comment?: Comment | null };
+type TrainingFen = {
+  fen: string;
+  commentId?: number;
+};
 
-export function CourseTrainer(props: {
+export function CourseTrainer({
+  userCourse,
+  userLines,
+  userFens,
+}: {
   userCourse: PrismaUserCourse;
   userLines: PrismaUserLine[];
   userFens: UserFen[];
@@ -84,16 +92,12 @@ export function CourseTrainer(props: {
   const [incorrectCounter, setIncorrectCounter] = useState(0);
 
   // Tracking/Stats State
-  interface trainingFen {
-    fen: string;
-    commentId?: number;
-  }
-  const [existingFens, setExistingFens] = useState<trainingFen[]>(
+  const [existingFens, setExistingFens] = useState<TrainingFen[]>(
     userFens.map((fen) => {
       return { fen: fen.fen, commentId: fen.commentId ?? undefined };
     }),
   );
-  const [trainedFens, setTrainedFens] = useState<trainingFen[]>([]);
+  const [trainedFens, setTrainedFens] = useState<TrainingFen[]>([]);
   const [wrongFens, setWrongFens] = useState<string[]>([]);
   const [wrongMoves, setWrongMoves] = useState<{ move: string; fen: string }[]>(
     [],
@@ -120,7 +124,10 @@ export function CourseTrainer(props: {
 
     const dueLines = lines
       .filter((line) => line.revisionDate && line.revisionDate < now)
-      .sort((a, b) => a.revisionDate!.getTime() - b.revisionDate!.getTime());
+      .sort(
+        (a, b) =>
+          (a.revisionDate?.getTime() ?? 0) - (b.revisionDate?.getTime() ?? 0),
+      );
     if (dueLines.length > 0) return dueLines[0];
 
     const unseenLines = lines
@@ -238,7 +245,9 @@ export function CourseTrainer(props: {
     setTeaching(false);
     setInteractive(true);
     setShowComment(false);
-    const lineColour = currentLine!.line.colour.toLowerCase().charAt(0);
+    if (!currentLine) return;
+
+    const lineColour = currentLine.line.colour.toLowerCase().charAt(0);
 
     if (game.turn() !== lineColour) {
       // We were shown a move for us to make, so we need to undo it
@@ -251,7 +260,7 @@ export function CourseTrainer(props: {
     }
   };
 
-  const checkEndOfLine = async () => {
+  const checkEndOfLine = () => {
     if (game.history().length < indexOfOurLastMove && mode !== 'recap') return;
 
     // We've reached the end of the line
@@ -259,7 +268,8 @@ export function CourseTrainer(props: {
       // We got some moves wrong, so we need to go back over them
       setMode('recap');
       setCurrentWrongMove(0);
-      const fen = wrongMoves[currentWrongMove]!.fen;
+      const fen = wrongMoves[currentWrongMove]?.fen;
+      if (!fen) throw new Error('No FEN found');
       game.load(fen);
       setPosition(fen);
       return;
@@ -288,11 +298,10 @@ export function CourseTrainer(props: {
       processNewFens();
       const updatedLines = processStats();
       if (soundEnabled) correctSound();
-
       if (updatedLines === null) throw new Error('No updated lines'); // This is likely because we've lost auth somehow
 
       // Now we need to get the next line
-      const nextLine = getNextLine(updatedLines ?? lines);
+      const nextLine = getNextLine(updatedLines);
       if (!nextLine) {
         // Nothing left to review/learn
         // TODO: Check if this is the first time completing the course
@@ -335,7 +344,7 @@ export function CourseTrainer(props: {
     }
   };
 
-  const startNextLine = async () => {
+  const startNextLine = () => {
     if (!nextLine) return;
     setLoading(true);
     try {
@@ -376,7 +385,7 @@ export function CourseTrainer(props: {
     // it misses the last move out due to the update sequence of State
     const seenFens = (() => {
       const newGame = new Chess();
-      const fens = [] as trainingFen[];
+      const fens = [] as TrainingFen[];
 
       // Add the starting position
       const commentId = currentLineMoves[0]?.comment?.id;
@@ -425,10 +434,10 @@ export function CourseTrainer(props: {
         .then((resp) => resp.json() as Promise<ResponseJson>)
         .then((json) => {
           if (json.message !== 'Fens uploaded') {
-            throw new Error(json.message ?? 'Unknown error');
+            throw new Error(json.message);
           }
         })
-        .catch((e) => Sentry.captureException(e)); // Don't do anything with the error, just log it
+        .catch((e: unknown) => Sentry.captureException(e)); // Don't do anything with the error, just log it
     }
   };
 
@@ -490,11 +499,11 @@ export function CourseTrainer(props: {
       .then((resp) => resp.json() as Promise<ResponseJson>)
       .then((json) => {
         if (json.message !== 'Stats updated') {
-          throw new Error(json.message ?? 'Unknown error');
+          throw new Error(json.message);
         }
         // Optionally handle the successful response
       })
-      .catch((e) => {
+      .catch((e: unknown) => {
         Sentry.captureException(e);
         // Revert to the previous state or handle the error
       });
@@ -502,11 +511,13 @@ export function CourseTrainer(props: {
     return updatedLines; // Return the optimistically updated lines
   };
 
-  const handleMove = async (playerMove: ChessMove) => {
+  const handleMove = (playerMove: ChessMove) => {
     const correctMove =
       mode === 'normal'
-        ? currentLineMoves[game.history().length - 1]!.move
-        : wrongMoves[currentWrongMove]!.move;
+        ? currentLineMoves[game.history().length - 1]?.move
+        : wrongMoves[currentWrongMove]?.move;
+
+    if (correctMove === undefined) throw new Error('No correct move found');
 
     if (correctMove !== playerMove.san) {
       // We played the wrong move
@@ -541,22 +552,13 @@ export function CourseTrainer(props: {
       wrongMoves.splice(currentWrongMove, 1);
       setCurrentWrongMove(currentWrongMove + 1);
     }
-    await checkEndOfLine();
+    checkEndOfLine();
     return true;
   };
 
   const PgnDisplay = game.history().map((move, index) => {
     const moveNumber = Math.floor(index / 2) + 1;
     const moveColour = index % 2 === 0 ? 'White' : 'Black';
-    const FlexText = () => (
-      <p>
-        {moveColour === 'White' && (
-          <span className="font-bold">{moveNumber}</span>
-        )}{' '}
-        <span>{move}</span>
-      </p>
-    );
-
     return nextLine ? (
       <button
         key={`${index}_pgn`}
@@ -564,17 +566,28 @@ export function CourseTrainer(props: {
         onClick={() => {
           const newGame = new Chess();
           for (let i = 0; i <= index; i++) {
-            newGame.move(game.history()[i]!);
+            const move = game.history()[i];
+            if (move) newGame.move(move);
           }
           setPosition(newGame.fen());
           setCurrentMove(currentLineMoves[index]);
         }}
       >
-        <FlexText />
+        <p>
+          {moveColour === 'White' && (
+            <span className="font-bold">{moveNumber}</span>
+          )}{' '}
+          <span>{move}</span>
+        </p>
       </button>
     ) : (
       <div key={`${index}_pgn`} className="px-1 py-1">
-        <FlexText />
+        <p>
+          {moveColour === 'White' && (
+            <span className="font-bold">{moveNumber}</span>
+          )}{' '}
+          <span>{move}</span>
+        </p>
       </div>
     );
   });
@@ -602,7 +615,7 @@ export function CourseTrainer(props: {
   }, [currentLine]);
 
   useEffect(() => {
-    if (!currentLine || !currentLineMoves) return;
+    if (!currentLine || currentLineMoves.length === 0) return;
     const ourColour = currentLine.line.colour === 'White';
     const isOurMove = (move: PrismaMove) => move.colour === ourColour;
     const lastIndex = currentLineMoves.reduce(
@@ -669,11 +682,7 @@ export function CourseTrainer(props: {
 
   useEffect(() => {
     if (!nextLine || !autoNext) return;
-    (async () => await startNextLine())().catch((e) => {
-      Sentry.captureException(e);
-      if (e instanceof Error) setError(e.message);
-      else setError('An unknown error occurred');
-    });
+    startNextLine();
   }, [nextLine]);
 
   // Listen for spacebar as a way to press the "next" button
@@ -738,7 +747,7 @@ export function CourseTrainer(props: {
                   lines.filter(
                     (line) =>
                       line.revisionDate === null ||
-                      (line.revisionDate && line.revisionDate <= new Date()),
+                      line.revisionDate <= new Date(),
                   ).length
                 }{' '}
                 lines remaining
@@ -779,7 +788,7 @@ export function CourseTrainer(props: {
         </div>
         <div className="flex items-center gap-2 text-black dark:text-white">
           <ThemeSwitch />
-          <div
+          <button
             className="flex cursor-pointer flex-row items-center gap-2 hover:text-orange-500"
             onClick={() => setSoundEnabled(!soundEnabled)}
           >
@@ -818,7 +827,7 @@ export function CourseTrainer(props: {
                 </svg>
               )}
             </Tippy>
-          </div>
+          </button>
         </div>
       </div>
       <div className="flex flex-col md:flex-row">
@@ -861,12 +870,16 @@ export function CourseTrainer(props: {
           >
             {PgnDisplay.map((item) => item)}
           </div>
-          <label className="ml-auto flex items-center gap-2 text-sm">
+          <label
+            htmlFor="autoNext"
+            className="ml-auto flex items-center gap-2 text-sm"
+          >
             <Toggle
+              id="autoNext"
               defaultChecked={autoNext}
-              onChange={async () => {
+              onChange={() => {
                 setAutoNext(!autoNext);
-                if (nextLine) await startNextLine();
+                if (nextLine) startNextLine();
               }}
             />
             <span>Auto Next on correct</span>
@@ -880,9 +893,7 @@ export function CourseTrainer(props: {
             <Button
               disabled={status === 'loading'}
               variant="primary"
-              onClick={async () => {
-                await startNextLine();
-              }}
+              onClick={startNextLine}
             >
               Next Line {status === 'loading' && <Spinner />}
             </Button>

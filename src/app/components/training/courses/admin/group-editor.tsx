@@ -17,9 +17,9 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import type { Group, Line, Move } from '@prisma/client';
 import { useMemo, useState } from 'react';
 
-import SortableItem from '@/app/_util/sortable-item';
+import { SortableItem } from '@/app/_util/sortable-item';
 
-import LineDisplay from './LineDisplay';
+import { LineDisplay } from './line-display';
 
 export type LineWithMoves = Line & { moves: Move[] };
 
@@ -52,9 +52,9 @@ export function GroupEditor({
     }),
   );
 
-  const handleDragEnd = async (event: DragEndEvent) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active && over && active.id !== over.id) {
+    if (over && active.id !== over.id) {
       const oldIndex = lineItems.indexOf(active.id as number);
       const newIndex = lineItems.indexOf(over.id as number);
       setLineItems((items) => {

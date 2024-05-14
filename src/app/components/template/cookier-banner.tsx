@@ -4,7 +4,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { usePostHog } from 'posthog-js/react';
 import { useEffect, useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 import { Button } from '@/app/components/_elements/button';
 import { Heading } from '@/app/components/_elements/heading';
 
@@ -26,13 +26,13 @@ export function CookieBanner() {
     return null;
   }
 
-  const acceptCookies = async () => {
+  const acceptCookies = () => {
     setShowBanner(false);
     trackEventOnClient('cookie_opt_in', {});
     posthog.opt_in_capturing();
   };
 
-  const declineCookies = async () => {
+  const declineCookies = () => {
     setShowBanner(false);
     trackEventOnClient('cookie_opt_out', {});
     posthog.opt_out_capturing();
@@ -40,13 +40,14 @@ export function CookieBanner() {
 
   return (
     <div className="fixed inset-0 z-[5000] grid place-items-center">
+      {/* eslint-disable-next-line -- Modal innit */}
       <div
         className="fixed inset-0 bg-[rgba(0,0,0,0.5)] "
         onClick={acceptCookies}
       />
       <div className="z-[9999] flex max-h-[90vh] w-[850px] max-w-[90vw] flex-col items-center gap-4 bg-slate-800 p-4 text-sm text-white shadow-md md:p-6 lg:px-24">
         <Heading as="h3">
-          We're all about the 🍪cookies🍪, but only the good kind! 🎉
+          We&apos;re all about the 🍪cookies🍪, but only the good kind! 🎉
         </Heading>
         <div
           ref={parent}
@@ -60,34 +61,35 @@ export function CookieBanner() {
             yours!).
           </p>
           {!readMore && (
-            <p
+            <button
               className="cursor-pointer text-sm text-orange-500 underline"
               onClick={() => setReadMore(true)}
             >
               Read More
-            </p>
+            </button>
           )}
           {readMore ? (
             <>
               <p>
                 Our trusty sidekick in this endeavor is PostHog, a product
                 analytics platform. It helps us track events like
-                'course_started' and 'course_created', ensuring we're always on
-                top of our training game. And don't worry, there's no Google
-                Analytics or hidden ad trackers here.
+                &apos;course_started&apos; and &apos;course_created&apos;,
+                ensuring we&apos;re always on top of our training game. But, we
+                don&apos;t serve ads or share your personal data with third
+                parties.
               </p>
               <p>
-                Your privacy is our priority, and we're committed to being
-                transparent and responsible with your data. So, let's enjoy a
-                cookie-filled (data-wise!) journey to chess mastery, with no
+                Your privacy is our priority, and we&apos;re committed to being
+                transparent and responsible with your data. So, let&apos;s enjoy
+                a cookie-filled (data-wise!) journey to chess mastery, with no
                 unexpected ads!
               </p>
-              <p
+              <button
                 className="cursor-pointer text-sm text-orange-500 underline"
                 onClick={() => setReadMore(false)}
               >
                 Hide
-              </p>
+              </button>
             </>
           ) : null}
         </div>

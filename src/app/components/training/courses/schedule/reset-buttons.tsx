@@ -5,16 +5,15 @@ import { useState } from 'react';
 
 import { type ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
-import { Heading } from '@/app/components/_elements/heading';
-import Spinner from '@/app/components/general/spinner';
+import { Spinner } from '@/app/components/general/spinner';
 
-interface ResetButtonProps {
+type ResetButtonProps = {
   groups: {
     id: string;
     name: string;
   }[];
   courseId: string;
-}
+};
 
 export function ResetButtons({ groups, courseId }: ResetButtonProps) {
   const [groupLoading, setGroupLoading] = useState(false);

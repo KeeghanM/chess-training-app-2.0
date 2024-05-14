@@ -7,19 +7,19 @@ import Tippy from '@tippyjs/react';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
 import { Heading } from '@/app/components/_elements/heading';
 import { StyledLink } from '@/app/components/_elements/styled-link';
-import Spinner from '@/app/components/general/spinner';
+import { Spinner } from '@/app/components/general/spinner';
 
-import type { PrismaUserCourse } from './CoursesList';
+import type { PrismaUserCourse } from './courses-list';
 
-interface CourseSettingsProps {
+type CourseSettingsProps = {
   userCourse: PrismaUserCourse;
   update: () => void;
-}
+};
 
 export function CourseSettings({ userCourse, update }: CourseSettingsProps) {
   const { user } = useKindeBrowserClient();
@@ -32,8 +32,6 @@ export function CourseSettings({ userCourse, update }: CourseSettingsProps) {
   };
 
   const archiveCourse = async () => {
-    if (!userCourse) return;
-
     const confirmString =
       !userCourse.course.published && userCourse.course.createdBy === user?.id
         ? 'Are you sure you want to archive this course? This will DELETE the course ENTIRELY.'
@@ -49,16 +47,13 @@ export function CourseSettings({ userCourse, update }: CourseSettingsProps) {
         method: 'DELETE',
       });
       const json = (await resp.json()) as ResponseJson;
-      if (json.message !== 'Course archived')
-        throw new Error(json.message ?? 'Course not archived');
+      if (json.message !== 'Course archived') throw new Error(json.message);
       update();
     } catch (e) {
       Sentry.captureException(e);
     }
     setDeleting(false);
   };
-
-  if (!userCourse) return null;
 
   return (
     <AlertDialog.Root open={open} onOpenChange={setOpen}>
@@ -160,7 +155,7 @@ export function CourseSettings({ userCourse, update }: CourseSettingsProps) {
               the course entirely, needing to be recreated.
             </p>
             <p>
-              If this is a course you have purchased, you won't lose your
+              If this is a course you have purchased, you won&apos;t lose your
               purchase and can redeem it again at anytime, either from the
               course page itself or from your{' '}
               <StyledLink href="/training/courses/archived">

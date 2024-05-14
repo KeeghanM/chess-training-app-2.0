@@ -16,7 +16,7 @@ import { DetailsForm } from './details-form';
 import { GroupSelector } from './group-selector';
 import { PgnToLinesForm } from './pgn-to-lines-form';
 import { Steps } from './steps';
-import type { Line } from './parse/ParsePGNtoLineData';
+import type { Line } from './parse/parse-pgn-to-line-data';
 
 export function CreateCourseForm() {
   const router = useRouter();

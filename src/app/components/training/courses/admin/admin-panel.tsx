@@ -10,17 +10,17 @@ import type { ResponseJson } from '@/app/api/responses';
 import 'tippy.js/dist/tippy.css';
 
 import { Button } from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/spinner';
-import TextEditor from '@/app/components/general/text-editor';
+import { Spinner } from '@/app/components/general/spinner';
+import { TextEditor } from '@/app/components/general/text-editor';
 
-import type { LineWithMoves } from './GroupEditor';
-import GroupsListEditor from './GroupsListEditor';
+import type { LineWithMoves } from './group-editor';
+import { GroupsListEditor } from './groups-list-editor';
 
-interface CourseAdminPanelProps {
+type CourseAdminPanelProps = {
   course: Course & {
     lines: LineWithMoves[];
   } & { groups: Group[] };
-}
+};
 export function CourseAdminPanel({ course }: CourseAdminPanelProps) {
   const [saving, setSaving] = useState(false);
   const [hasHadChanges, setHasHadChanges] = useState(false);
@@ -44,7 +44,6 @@ export function CourseAdminPanel({ course }: CourseAdminPanelProps) {
 
     setSaving(true);
     try {
-      console.log(lines);
       const res = await fetch('/api/courses', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -67,8 +66,7 @@ export function CourseAdminPanel({ course }: CourseAdminPanelProps) {
         }),
       });
       const json = (await res.json()) as ResponseJson;
-      if (json.message !== 'Course updated')
-        throw new Error(json.message ?? 'Course not updated');
+      if (json.message !== 'Course updated') throw new Error(json.message);
 
       setLines(lines.filter((line) => !linesToDelete.includes(line.id)));
       setLinesToDelete([]);
@@ -106,27 +104,35 @@ export function CourseAdminPanel({ course }: CourseAdminPanelProps) {
   return (
     <div className="flex flex-col gap-2 border border-gray-300 bg-[rgba(0,0,0,0.03)] p-2 shadow-md dark:border-slate-600 dark:bg-[rgba(255,255,255,0.03)] dark:text-white dark:shadow-slate-900">
       <div>
-        <label className="font-bold">Course Name:</label>
+        <label className="font-bold" htmlFor="name">
+          Course Name:
+        </label>
         <input
           className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
           type="text"
           value={courseName}
           onChange={(e) => setCourseName(e.target.value)}
+          id="name"
         />
       </div>
       {course.published ? (
         <div>
-          <label className="font-bold">Short Description:</label>
+          <label className="font-bold" htmlFor="short-description">
+            Short Description:
+          </label>
           <textarea
             className="w-full border border-gray-300 bg-gray-100 px-4 py-2 text-black"
             rows={3}
             value={shortDescription}
             onChange={(e) => setShortDescription(e.target.value)}
+            id="short-description"
           />
         </div>
       ) : null}
       <div>
-        <label className="font-bold">Course Description:</label>
+        <label className="font-bold" htmlFor="long-description">
+          Course Description:
+        </label>
         <TextEditor value={courseDescription} onChange={setCourseDescription} />
       </div>
       <div className="flex flex-col gap-2 md:flex-row md:flex-wrap">

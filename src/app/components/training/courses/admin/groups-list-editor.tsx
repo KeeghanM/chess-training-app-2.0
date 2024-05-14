@@ -17,11 +17,11 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import type { Group } from '@prisma/client';
 import { useState } from 'react';
 
-import SortableItem from '@/app/_util/sortable-item';
+import { SortableItem } from '@/app/_util/sortable-item';
 import { Heading } from '@/app/components/_elements/heading';
 
-import type { LineWithMoves } from './GroupEditor';
-import GroupEditor from './GroupEditor';
+import type { LineWithMoves } from './group-editor';
+import { GroupEditor } from './group-editor';
 
 export function GroupsListEditor({
   groups,
@@ -50,9 +50,9 @@ export function GroupsListEditor({
     }),
   );
 
-  const handleDragEnd = async (event: DragEndEvent) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
-    if (active && over && active.id !== over.id) {
+    if (over && active.id !== over.id) {
       const oldIndex = groupListItems.indexOf(active.id as string);
       const newIndex = groupListItems.indexOf(over.id as string);
       setGroupListItems((items) => {
@@ -69,7 +69,7 @@ export function GroupsListEditor({
   return (
     <>
       <Heading as="h2" color="text-white">
-        <span
+        <button
           className="flex cursor-pointer items-center gap-2 hover:text-orange-500"
           onClick={() => setOpen(!open)}
         >
@@ -88,7 +88,7 @@ export function GroupsListEditor({
               fill="currentColor"
             />
           </svg>
-        </span>
+        </button>
       </Heading>
       <DndContext
         collisionDetection={closestCenter}

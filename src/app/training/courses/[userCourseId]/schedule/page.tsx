@@ -6,12 +6,12 @@ import { getUserServer } from '@/app/_util/get-user-server';
 import { Button } from '@/app/components/_elements/button';
 import { Container } from '@/app/components/_elements/container';
 import { PageHeader } from '@/app/components/_layouts/page-header';
-import Info from '@/app/components/training/courses/schedule/Info';
-import LineList from '@/app/components/training/courses/schedule/LineList';
-import ResetButtons from '@/app/components/training/courses/schedule/ResetButtons';
+import { ResetButtons } from '@/app/components/training/courses/schedule/reset-buttons';
 import { prisma } from '@/server/db';
+import { Info } from '@/app/components/training/courses/schedule/Info';
+import { LineList } from '@/app/components/training/courses/schedule/line-list';
 
-export async function CourseSchedulePage({
+export default async function CourseSchedulePage({
   params,
 }: {
   params: { userCourseId: string };

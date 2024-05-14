@@ -5,21 +5,21 @@ import * as Sentry from '@sentry/nextjs';
 import Link from 'next/link';
 import { useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
 import { Heading } from '@/app/components/_elements/heading';
 import { StyledLink } from '@/app/components/_elements/styled-link';
 
-import GroupSelector from '../create/group-selector';
-import PgnToLinesForm from '../create/pgn-to-lines-form';
-import type { Line } from '../create/parse/ParsePGNtoLineData';
+import { GroupSelector } from '../create/group-selector';
+import { PgnToLinesForm } from '../create/pgn-to-lines-form';
+import type { Line } from '../create/parse/parse-pgn-to-line-data';
 
 type FullCourseData = Course & {
   lines: (Line & { moves: Move[] })[];
 };
 
-export function AddLines(props: { courseId: string }) {
+export function AddLines({ courseId }: { courseId: string }) {
   const [step, setStep] = useState<'pgn' | 'groups' | 'error' | 'success'>(
     'pgn',
   );
@@ -48,8 +48,7 @@ export function AddLines(props: { courseId: string }) {
 
       const json = (await resp.json()) as ResponseJson;
 
-      if (json.message !== 'Lines added')
-        throw new Error(json.message ?? 'Unknown error');
+      if (json.message !== 'Lines added') throw new Error(json.message);
 
       trackEventOnClient('course_lines_added', {});
       setStep('success');
@@ -70,10 +69,9 @@ export function AddLines(props: { courseId: string }) {
     });
     const lineJson = (await lineResp.json()) as ResponseJson;
 
-    if (lineJson.message !== 'Success')
-      throw new Error(lineJson.message ?? 'Unknown error');
+    if (lineJson.message !== 'Success') throw new Error(lineJson.message);
 
-    const existingCourseData = lineJson.data!.course as FullCourseData;
+    const existingCourseData = lineJson.data?.course as FullCourseData;
 
     // Now filter out any lines that already exist
     setLines(
@@ -81,7 +79,8 @@ export function AddLines(props: { courseId: string }) {
         (line) =>
           !existingCourseData.lines.some(
             (existingLine) =>
-              // @ts-expect-error : This is a bug in the types, dunno why it's expecting a CleanMove when the moves is a Move[]
+              // @ts-expect-error : Not sure why this is an error, it is expecting a CleanMove even though that's not the type being passed in.
+              // eslint-disable-next-line -- See above
               existingLine.moves.map((move) => move.move).join('') ===
               line.moves.map((move) => move.notation).join(''),
           ),
@@ -121,6 +120,7 @@ export function AddLines(props: { courseId: string }) {
           back={() => setStep('pgn')}
           finished={uploadLines}
           lines={lines}
+          setLines={setLines}
         />
       )}
       {step === 'success' && (

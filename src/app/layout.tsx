@@ -7,12 +7,12 @@ import { env } from '@/env';
 
 import { PostHogPageview, PosthogProvider } from './_util/posthog';
 import { ThemeSwitchProvider } from './_util/theme-provider';
-import {getDistinctId} from './_util/get-distinct-id';
-import {CookieBanner} from './components/template/CookieBanner';
-import {Footer} from './components/template/footer/Footer';
-import {Header} from './components/template/header/Header';
+import { getDistinctId } from './_util/get-distinct-id';
+import { CookieBanner } from './components/template/cookier-banner';
+import { Header } from './components/template/header/header';
 
 import './globals.css';
+import { Footer } from './components/template/footer/footer';
 
 export const metadata = {
   title: 'ChessTraining.app - The best way to improve your chess',
@@ -45,7 +45,11 @@ export const metadata = {
   ],
 };
 
-export default async function RootLayout({ children }: { children: ReactNode }) {
+export default async function RootLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const distinctId = await getDistinctId();
   return (
     <>

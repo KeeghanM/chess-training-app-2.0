@@ -23,6 +23,7 @@ export function BetaMessage() {
   return (
     show && (
       <>
+        {/* eslint-disable-next-line -- Modal background */}
         <div
           className="fixed inset-0 z-[9999] bg-black opacity-30"
           onClick={close}

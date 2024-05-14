@@ -9,7 +9,7 @@ export function ThemeSwitch() {
 
   useEffect(() => setMounted(true), []);
   return (
-    <div
+    <button
       className="flex w-fit cursor-pointer flex-row items-center gap-2 p-2 dark:border-slate-600"
       onClick={() => {
         if (!mounted) return;
@@ -50,6 +50,6 @@ export function ThemeSwitch() {
           </svg>
         )}
       </span>
-    </div>
+    </button>
   );
 }

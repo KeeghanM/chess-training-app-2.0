@@ -2,13 +2,13 @@
 
 import { useMemo, useState } from 'react';
 
-import LineRow from './LineRow';
-import type { ScheduleLine } from './LineRow';
+import { LineRow } from './line-row';
+import type { ScheduleLine } from './line-row';
 
-interface LineListProps {
+type LineListProps = {
   userLines: ScheduleLine[];
   courseId: string;
-}
+};
 export function LineList({ userLines, courseId }: LineListProps) {
   const [lines, setLines] = useState<ScheduleLine[]>(userLines);
   const minDate = useMemo(() => {

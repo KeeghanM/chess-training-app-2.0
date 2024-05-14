@@ -2,24 +2,29 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
 import { useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 import { Button } from '@/app/components/_elements/button';
 import { Heading } from '@/app/components/_elements/heading';
-import PrettyPrintLine from '@/app/components/general/pretty-print-line';
+import { PrettyPrintLine } from '@/app/components/general/pretty-print-line';
 
-import type { Line } from './parse/ParsePGNtoLineData';
+import type { Line } from './parse/parse-pgn-to-line-data';
 
 // TODO: Add informational lines
 // TODO: Add priority lines
 
-export const GroupItem = (props: {
+export const GroupItem = ({
+  lines,
+  selectedGroup,
+  groupKey,
+  count,
+  updateLines,
+}: {
   lines: Line[];
   selectedGroup: string;
   groupKey: string;
   count: number;
   updateLines: (lines: Line[]) => void;
 }) => {
-  const { lines, selectedGroup, groupKey, count } = props;
   const [open, setOpen] = useState<boolean>(false);
   const [setAllOpen, setSetAllOpen] = useState<boolean>(false);
   const [selectedColor, setSelectedColor] = useState<string>('White');
@@ -70,6 +75,7 @@ export const GroupItem = (props: {
 
       {setAllOpen ? (
         <div className="fixed inset-0 z-[99999] grid place-items-center bg-[rgba(0,0,0,0.3)]">
+          {/* eslint-disable-next-line -- Modal, so it should be a clickable div */}
           <div
             className="absolute inset-0"
             onClick={() => setSetAllOpen(false)}
@@ -88,7 +94,7 @@ export const GroupItem = (props: {
             <div className="flex gap-2">
               <Button
                 variant="primary"
-                onClick={async () => {
+                onClick={() => {
                   const updatedLines = lines.map((l) =>
                     l.tags[selectedGroup] === groupKey
                       ? { ...l, tags: { ...l.tags, Colour: selectedColor } }
@@ -125,7 +131,7 @@ export const GroupItem = (props: {
                       <select
                         className="border border-gray-300 p-2  dark:bg-gray-100"
                         defaultValue={line.tags.Colour}
-                        onChange={async (e) => {
+                        onChange={(e) => {
                           const v = e.target.value;
                           handleColorChange(line, v);
                           trackEventOnClient(
@@ -158,7 +164,7 @@ export const GroupItem = (props: {
                                 <AlertDialog.Action>
                                   <Button
                                     variant="danger"
-                                    onClick={async () => {
+                                    onClick={() => {
                                       handleLineDeletion(line);
                                       trackEventOnClient(
                                         'create_course_delete_line',

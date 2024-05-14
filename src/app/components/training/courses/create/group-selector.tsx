@@ -11,7 +11,7 @@ import { Heading } from '@/app/components/_elements/heading';
 import { Spinner } from '@/app/components/general/spinner';
 
 import { GroupItem } from './group-item';
-import type { Line } from './parse/ParsePGNtoLineData';
+import type { Line } from './parse/parse-pgn-to-line-data';
 
 export function GroupSelector({
   lines,

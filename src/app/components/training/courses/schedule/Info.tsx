@@ -10,24 +10,25 @@ export function Info() {
         <div className="flex flex-col gap-4">
           <p>
             Here you can see which lines are due when. The order shown on this
-            page is the order in which you'll be shown them in the course
+            page is the order in which you&apos;ll be shown them in the course
             trainer.
           </p>
           <p>
             If you want to review a line or group of lines sooner than
             scheduled, you can mark them for review. This will reset their
-            revision date to the earliest date in the schedule, meaning you'll
-            see them first.
+            revision date to the earliest date in the schedule, meaning
+            you&apos;ll see them first.
           </p>
           <p>
             If you want to review all lines, even ones with dates far in the
-            future or ones you've not yet seen, you can click "Mark All Lines
-            For Review", which will set all lines to be reviewed immediately.
+            future or ones you&apos;ve not yet seen, you can click &quot;Mark
+            All Lines For Review&quot;, which will set all lines to be reviewed
+            immediately.
           </p>
           <p>
             This is a particularly useful feature if you need to prep for a
-            tournament, or if you're going on holiday and want to get some extra
-            training in before you go.
+            tournament, or if you&apos;re going on holiday and want to get some
+            extra training in before you go.
           </p>
           <div>
             <button
@@ -42,7 +43,7 @@ export function Info() {
         <>
           <p>
             Here you can see which lines are due when. The order shown on this
-            page is the order in which you'll be shown them in the course
+            page is the order in which you&apos;ll be shown them in the course
             trainer.
           </p>
           <div>

@@ -101,10 +101,12 @@ export function ChessBoard({
     // Make the move to see if it's legal
     const playerMove = (() => {
       try {
-        const from = sourceSquare ?? startSquare;
-        const to = targetSquare ?? moveTo;
+        const from = sourceSquare;
+        const to = targetSquare;
+        const pieceString = piece.split('')[1];
+        if (pieceString === undefined) throw new Error('Missing piece string');
         const promotionPiece = promotion
-          ? piece.split('')[1]!.toLowerCase()
+          ? pieceString.toLowerCase()
           : checkPromotion(from, to, piece);
 
         const move = game.move({
@@ -183,10 +185,10 @@ export function ChessBoard({
   const handlePromotionSelection = (
     selectedPiece: PromotionPieceOption | undefined,
   ) => {
-    if (!selectedPiece || !moveTo) return false;
+    if (!selectedPiece || !moveTo || !startSquare) return false;
 
     setShowPromotionDialog(false);
-    handlePieceDrop(startSquare!, moveTo, selectedPiece, true);
+    handlePieceDrop(startSquare, moveTo, selectedPiece, true);
     return true;
   };
 
@@ -210,7 +212,6 @@ export function ChessBoard({
     validMoves.map((move) => {
       newOptions[move.to] = {
         background:
-          game.get(move.to) &&
           game.get(move.to).color !== game.get(startSquare).color
             ? 'radial-gradient(circle, transparent 50%,  rgba(0, 0, 0, 0.2) 51%,  rgba(0, 0, 0, 0.2) 65%,transparent 66%)'
             : 'radial-gradient(circle, rgba(0,0,0,.2) 20%, transparent 22%)',

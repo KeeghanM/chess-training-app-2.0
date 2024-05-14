@@ -4,11 +4,11 @@ import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs';
 import Tippy from '@tippyjs/react';
 import Image from 'next/image';
 import Link from 'next/link';
-import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types';
+import type { KindeUser } from '@kinde-oss/kinde-auth-nextjs';
 import { useState } from 'react';
 import 'tippy.js/dist/tippy.css';
 
-import CalculateXpRank from '@/app/_util/calculate-xp-rank';
+import { CalculateXpRank } from '@/app/_util/calculate-xp-rank';
 
 export function Nav({
   user,
@@ -123,6 +123,7 @@ export function Nav({
               </Tippy>
               {userOpen ? (
                 <>
+                  {/* eslint-disable-next-line -- It's a modal. Do one. */}
                   <div
                     className="fixed inset-0 z-10"
                     onClick={() => setUserOpen(false)}
@@ -198,6 +199,7 @@ export function Nav({
           </button>
         </div>
         {menuOpen ? (
+          // eslint-disable-next-line -- Again, modal, it's a clickable div.
           <div
             className="fixed inset-0 z-10 bg-[rgba(0,0,0,0.3)]"
             onClick={() => setMenuOpen(false)}
@@ -211,6 +213,7 @@ export function Nav({
           } items-center justify-between lg:order-1 lg:ml-auto lg:flex lg:w-auto `}
         >
           {openSub !== '' && (
+            // eslint-disable-next-line -- Again, modal, it's a clickable div.
             <div
               className="fixed inset-0 z-10 hidden lg:block"
               onClick={() => setOpenSub('')}

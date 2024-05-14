@@ -8,7 +8,7 @@ import { Heading } from '@/app/components/_elements/heading';
 import { StreakDisplay } from '@/app/components/dashboard/streak-display';
 import { ToolGrid } from '@/app/components/dashboard/tool-grid';
 import { XpDisplay } from '@/app/components/dashboard/xp-display';
-import { ThemeSwitch } from '@/app/components/template/header/ThemeSwitch';
+import { ThemeSwitch } from '@/app/components/template/header/theme-switch';
 import { prisma } from '@/server/db';
 
 import { CalculateStreakBadge } from '../_util/calculate-streak-badge';

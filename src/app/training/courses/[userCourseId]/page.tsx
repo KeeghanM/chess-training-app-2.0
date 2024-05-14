@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 
 import { Container } from '@/app/components/_elements/container';
 import { PageHeader } from '@/app/components/_layouts/page-header';
-import CourseTrainer from '@/app/components/training/courses/CourseTrainer';
+import { CourseTrainer } from '@/app/components/training/courses/course-trainer';
 import { prisma } from '@/server/db';
 
 export type PrismaUserLine = UserLine & {

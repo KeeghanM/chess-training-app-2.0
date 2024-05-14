@@ -7,8 +7,8 @@ import { useState } from 'react';
 import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 import { Button } from '@/app/components/_elements/button';
 
-import { ParsePGNtoLineData } from './parse/ParsePGNtoLineData';
-import type { Line } from './parse/ParsePGNtoLineData';
+import { ParsePGNtoLineData } from './parse/parse-pgn-to-line-data';
+import type { Line } from './parse/parse-pgn-to-line-data';
 
 export function PgnToLinesForm({
   finished,

@@ -9,9 +9,9 @@ import { env } from '@/env';
 import 'tippy.js/dist/tippy.css';
 
 import { Button } from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/spinner';
+import { Spinner } from '@/app/components/general/spinner';
 
-import type { PrismaUserCourse } from './CoursesList';
+import type { PrismaUserCourse } from './courses-list';
 
 export function ArchivedList({
   hasUnlimitedCourses,
@@ -34,8 +34,8 @@ export function ArchivedList({
       if (json.message !== 'Courses found')
         throw new Error('Failed to fetch courses');
 
-      setCourses(json.data!.courses as PrismaUserCourse[]);
-      setActiveCount(json.data!.activeCount as number);
+      setCourses(json.data?.courses as PrismaUserCourse[]);
+      setActiveCount(json.data?.activeCount as number);
     } catch (e) {
       Sentry.captureException(e);
       setCourses([]);
@@ -62,7 +62,7 @@ export function ArchivedList({
   useEffect(() => {
     (async () => {
       await fetchCourses();
-    })().catch((e) => {
+    })().catch((e: unknown) => {
       Sentry.captureException(e);
     });
   }, []);
@@ -119,7 +119,7 @@ export function ArchivedList({
           ) : (
             <div className="p-2">
               <p className="text-gray-500  dark:text-white">
-                You don't have any archived courses.
+                You don&apos;t have any archived courses.
               </p>
             </div>
           )}

@@ -21,7 +21,7 @@ import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 import { Button } from '@/app/components/_elements/button';
 import { Spinner } from '@/app/components/general/spinner';
 import { XpTracker } from '@/app/components/general/xp-tracker';
-import { ThemeSwitch } from '@/app/components/template/header/ThemeSwitch';
+import { ThemeSwitch } from '@/app/components/template/header/theme-switch';
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 
 export function VisualisationTrainer() {
