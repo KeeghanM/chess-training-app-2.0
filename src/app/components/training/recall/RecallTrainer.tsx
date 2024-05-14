@@ -13,8 +13,7 @@ import { useEffect, useState } from 'react';
 import { Chessboard } from 'react-chessboard';
 import 'react-toggle/style.css';
 import 'tippy.js/dist/tippy.css';
-// @ts-expect-error - No types available
-import useSound from 'use-sound';
+import { useAudio } from '@/app/hooks/use-audio';
 
 import trackEventOnClient from '@/app/_util/track-event-on-client';
 import { Button } from '@/app/components/_elements/button';
@@ -63,8 +62,8 @@ export function RecallTrainer() {
 
   // Setup SFX
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [correctSound] = useSound('/sfx/correct.mp3');
-  const [incorrectSound] = useSound('/sfx/incorrect.mp3');
+  const correctSound = useAudio('/sfx/correct.mp3');
+  const incorrectSound = useAudio('/sfx/incorrect.mp3');
 
   // Setup state for the settings/general
   const [loading, setLoading] = useState(true);

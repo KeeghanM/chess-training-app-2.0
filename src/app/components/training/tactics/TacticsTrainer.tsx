@@ -14,17 +14,16 @@ import Toggle from 'react-toggle';
 import type { ResponseJson } from '@/app/api/responses';
 
 import 'react-toggle/style.css';
-// @ts-expect-error - No types available
-import useSound from 'use-sound';
+import { useAudio } from '@/app/hooks/use-audio';
 
 import { Button } from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/spinner';
-import TimeSince from '@/app/components/general/time-since';
-import XpTracker from '@/app/components/general/xp-tracker';
-import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
-import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { Spinner } from '@/app/components/general/spinner';
+import { TimeSince } from '@/app/components/general/time-since';
+import { XpTracker } from '@/app/components/general/xp-tracker';
+import { ThemeSwitch } from '@/app/components/template/header/ThemeSwitch';
+import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 
-import ChessBoard from '../chess-board';
+import { ChessBoard } from '../chess-board';
 
 import type { PrismaTacticsSet } from './create/TacticsSetCreator';
 
@@ -64,8 +63,8 @@ export function TacticsTrainer(props: { set: PrismaTacticsSetWithPuzzles }) {
   const [position, setPosition] = useState(game.fen());
 
   // Setup SFX
-  const [correctSound] = useSound('/sfx/correct.mp3');
-  const [incorrectSound] = useSound('/sfx/incorrect.mp3');
+  const correctSound = useAudio('/sfx/correct.mp3');
+  const incorrectSound = useAudio('/sfx/incorrect.mp3');
 
   // Setup state for the settings/general
   const [soundEnabled, setSoundEnabled] = useState(true);

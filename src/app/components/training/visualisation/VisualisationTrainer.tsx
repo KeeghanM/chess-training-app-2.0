@@ -15,14 +15,13 @@ import { Chessboard } from 'react-chessboard';
 import Toggle from 'react-toggle';
 import 'react-toggle/style.css';
 import 'tippy.js/dist/tippy.css';
-// @ts-expect-error - No types available
-import useSound from 'use-sound';
+import { useAudio } from '@/app/hooks/use-audio';
 
-import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 import { Button } from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/spinner';
-import XpTracker from '@/app/components/general/xp-tracker';
-import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
+import { Spinner } from '@/app/components/general/spinner';
+import { XpTracker } from '@/app/components/general/xp-tracker';
+import { ThemeSwitch } from '@/app/components/template/header/ThemeSwitch';
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 
 export function VisualisationTrainer() {
@@ -45,8 +44,8 @@ export function VisualisationTrainer() {
 
   // Setup SFX
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [correctSound] = useSound('/sfx/correct.mp3');
-  const [incorrectSound] = useSound('/sfx/incorrect.mp3');
+  const correctSound = useAudio('/sfx/correct.mp3');
+  const incorrectSound = useAudio('/sfx/incorrect.mp3');
 
   // Setup state for the settings/general
   const [autoNext, setAutoNext] = useState(false);

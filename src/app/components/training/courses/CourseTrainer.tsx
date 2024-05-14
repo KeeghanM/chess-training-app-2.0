@@ -15,19 +15,18 @@ import { useEffect, useState } from 'react';
 import type { Arrow } from 'react-chessboard/dist/chessboard/types';
 import Toggle from 'react-toggle';
 import 'react-toggle/style.css';
-// @ts-expect-error - No types available
-import useSound from 'use-sound';
+import { useAudio } from '@/app/hooks/use-audio';
 
-import getArrows from '@/app/_util/string-to-arrows';
-import trackEventOnClient from '@/app/_util/track-event-on-client';
-import ThemeSwitch from '@/app/components//template/header/ThemeSwitch';
+import { getArrows } from '@/app/_util/string-to-arrows';
+import { trackEventOnClient } from '@/app/_util/track-event-on-client';
+import { ThemeSwitch } from '@/app/components//template/header/ThemeSwitch';
 import { Button } from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/spinner';
-import XpTracker from '@/app/components/general/xp-tracker';
+import { Spinner } from '@/app/components/general/spinner';
+import { XpTracker } from '@/app/components/general/xp-tracker';
 
 import { Heading } from '../../_elements/heading';
 import { StyledLink } from '../../_elements/styled-link';
-import ChessBoard from '../chess-board';
+import { ChessBoard } from '../chess-board';
 
 import type { PrismaUserCourse } from './list/CoursesList';
 
@@ -110,8 +109,8 @@ export function CourseTrainer(props: {
   const [error, setError] = useState('');
 
   // SFX
-  const [incorrectSound] = useSound('/sfx/incorrect.mp3') as [() => void];
-  const [correctSound] = useSound('/sfx/correct.mp3') as [() => void];
+  const incorrectSound = useAudio('/sfx/incorrect.mp3');
+  const correctSound = useAudio('/sfx/correct.mp3');
 
   const getNextLine = (lines: PrismaUserLine[]) => {
     // Sorts the lines in order of priority

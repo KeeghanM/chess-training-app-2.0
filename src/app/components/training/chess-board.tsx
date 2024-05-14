@@ -2,7 +2,7 @@
 
 import { useWindowSize } from '@uidotdev/usehooks';
 import type { Chess, Move, Piece, Square } from 'chess.js';
-import useSound from 'use-sound';
+import { useAudio } from '@/app/hooks/use-audio';
 import { useEffect, useState } from 'react';
 import { Chessboard } from 'react-chessboard';
 import type {
@@ -45,11 +45,11 @@ export function ChessBoard({
   const [arrows] = useState<Arrow[]>([]);
 
   // Setup SFX
-  const [checkSound] = useSound('/sfx/check.mp3');
-  const [captureSound] = useSound('/sfx/capture.mp3');
-  const [promotionSound] = useSound('/sfx/promote.mp3');
-  const [castleSound] = useSound('/sfx/castle.mp3');
-  const [moveSound] = useSound('/sfx/move.mp3');
+  const checkSound = useAudio('/sfx/check.mp3');
+  const captureSound = useAudio('/sfx/capture.mp3');
+  const promotionSound = useAudio('/sfx/promote.mp3');
+  const castleSound = useAudio('/sfx/castle.mp3');
+  const moveSound = useAudio('/sfx/move.mp3');
 
   const playMoveSound = (move: string) => {
     if (!soundEnabled) return;
