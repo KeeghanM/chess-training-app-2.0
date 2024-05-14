@@ -13,19 +13,21 @@ interface XpDisplayProps {
       name: string;
       xp: number;
     };
-    nextRank: {
-      rank: string;
-      name: string;
-      xp: number;
-    };
+    nextRank:
+      | {
+          rank: string;
+          name: string;
+          xp: number;
+        }
+      | undefined;
     percentage: number;
   };
   displayLink?: boolean;
 }
-export function XpDisplay(props: XpDisplayProps) {
-  const { currentXp, rank, nextRank, percentage } = data;
-  const displayLink = displayLink ?? true;
-
+export function XpDisplay({
+  data: { currentXp, rank, nextRank, percentage },
+  displayLink = true,
+}: XpDisplayProps) {
   return (
     <div className="flex flex-col items-center gap-1">
       <div className="flex h-fit w-fit  flex-row items-center border-2 border-orange-500 bg-white">

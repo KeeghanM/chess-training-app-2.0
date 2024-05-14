@@ -9,7 +9,7 @@ import { Container } from '../components/_elements/container';
 import { StyledLink } from '../components/_elements/styled-link';
 import { BigText } from '../components/_layouts/big-text';
 import { PageHeader } from '../components/_layouts/page-header';
-import { GetCourse } from '../components/ecomm/GetCourse';
+import { GetCourse } from '../components/ecomm/get-course';
 
 export const metadata = {
   title:

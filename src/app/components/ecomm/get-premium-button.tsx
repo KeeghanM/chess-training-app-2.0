@@ -7,13 +7,13 @@ import { useState } from 'react';
 import type { ResponseJson } from '@/app/api/responses';
 
 import { Button } from '../_elements/button';
-import Spinner from '../general/Spinner';
+import { Spinner } from '../general/spinner';
 
 export function GetPremiumButton({ returnUrl }: { returnUrl: string }) {
   const { user } = useKindeBrowserClient();
 
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const getPremium = async () => {
     setLoading(true);
 
@@ -30,13 +30,19 @@ export function GetPremiumButton({ returnUrl }: { returnUrl: string }) {
         }),
       });
       const json = (await resp.json()) as ResponseJson;
+      if (json.message === 'User is already premium') {
+        setError("You're already a premium member!");
+        return;
+      }
       if (json.data?.url === undefined) throw new Error(json.message);
 
       window.location.href = json.data.url as string;
     } catch (e) {
       Sentry.captureException(e);
+      if (e instanceof Error) setError(e.message);
+      else setError("Oops, something wen't wrong");
+    } finally {
       setLoading(false);
-      setError(true);
     }
   };
 
@@ -48,10 +54,11 @@ export function GetPremiumButton({ returnUrl }: { returnUrl: string }) {
         <>
           Loading... <Spinner />
         </>
-      ) : user ? (
-        'Get Premium'
       ) : (
-        'Sign in to get Premium'
+        <>
+          {user && 'Get Premium'}
+          {!user && 'Sign in to get Premium'}
+        </>
       )}
     </Button>
   );

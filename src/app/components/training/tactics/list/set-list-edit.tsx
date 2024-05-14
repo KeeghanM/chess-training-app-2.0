@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import trackEventOnClient from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/Spinner';
+import Spinner from '@/app/components/general/spinner';
 import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator';
 
 export function SetListEdit(props: {

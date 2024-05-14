@@ -5,8 +5,8 @@ import trackEventOnClient from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
 import { Heading } from '@/app/components/_elements/heading';
-import Spinner from '@/app/components/general/Spinner';
-import TextEditor from '@/app/components/general/TextEditor';
+import Spinner from '@/app/components/general/spinner';
+import TextEditor from '@/app/components/general/text-editor';
 
 export function DetailsForm(props: {
   finished: (name: string, description: string) => void;

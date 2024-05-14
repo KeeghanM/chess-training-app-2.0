@@ -5,16 +5,16 @@ import { redirect } from 'next/navigation';
 import { PostHogClient } from '@/app/_util/track-event-on-server';
 import { Container } from '@/app/components/_elements/container';
 import { Heading } from '@/app/components/_elements/heading';
-import { StreakDisplay } from '@/app/components/dashboard/StreakDisplay';
-import { ToolGrid } from '@/app/components/dashboard/ToolGrid';
-import { XpDisplay } from '@/app/components/dashboard/XpDisplay';
+import { StreakDisplay } from '@/app/components/dashboard/streak-display';
+import { ToolGrid } from '@/app/components/dashboard/tool-grid';
+import { XpDisplay } from '@/app/components/dashboard/xp-display';
 import { ThemeSwitch } from '@/app/components/template/header/ThemeSwitch';
 import { prisma } from '@/server/db';
 
 import { CalculateStreakBadge } from '../_util/calculate-streak-badge';
 import { CalculateXpRank } from '../_util/calculate-xp-rank';
 import { getUserServer } from '../_util/get-user-server';
-import { PremiumDisplay } from '../components/dashboard/PremiumDisplay';
+import { PremiumDisplay } from '../components/dashboard/premium-display';
 
 export interface Tool {
   name: string;

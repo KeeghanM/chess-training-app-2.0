@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react';
 import type { ResponseJson } from '@/app/api/responses';
 
 import { Button } from '../../_elements/button';
-import { Spinner } from '../../general/Spinner';
-import { ChessBoard } from '../../training/ChessBoard';
+import { Spinner } from '../../general/spinner';
+import { ChessBoard } from '../../training/chess-board';
 
 import type { CuratedSetPuzzle } from './curated-sets-browser';
 

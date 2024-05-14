@@ -13,7 +13,7 @@ import { redirect } from 'next/navigation';
 import { Container } from '@/app/components/_elements/container';
 import { Heading } from '@/app/components/_elements/heading';
 import { StyledLink } from '@/app/components/_elements/styled-link';
-import { GetCourse } from '@/app/components/ecomm/GetCourse';
+import { GetCourse } from '@/app/components/ecomm/get-course';
 import { prisma } from '@/server/db';
 
 export default async function CoursePage({

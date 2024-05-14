@@ -5,12 +5,12 @@ import { useEffect, useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
 
-export type availableTypes = 'line' | 'tactic';
-export function XpTracker(props: { counter: number; type: availableTypes }) {
+export type Type = 'line' | 'tactic';
+export function XpTracker({ counter, type }: { counter: number; type: Type }) {
   const [show, setShow] = useState(false);
   const [xpToAdd, setXpToAdd] = useState(0);
 
-  const calculateXp = (type: availableTypes) => {
+  const calculateXp = (type: Type) => {
     switch (type) {
       case 'line':
         return 15;
@@ -30,7 +30,7 @@ export function XpTracker(props: { counter: number; type: availableTypes }) {
     // in a short period of time
     setShow(false);
     setShow(true);
-    // Hide the message after 3.5 seconds
+    // Hide the message after 2.5 seconds
     setTimeout(() => {
       setShow(false);
     }, 2500);
@@ -45,7 +45,7 @@ export function XpTracker(props: { counter: number; type: availableTypes }) {
       });
       const json = (await resp.json()) as ResponseJson;
       if (json.message !== 'XP added') throw new Error(json.message);
-    })().catch((e) => {
+    })().catch((e: unknown) => {
       Sentry.captureException(e);
     });
   }, [counter]);

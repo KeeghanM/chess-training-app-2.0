@@ -4,13 +4,16 @@ import { parse as PGNParse } from '@mliebelt/pgn-parser';
 import * as Sentry from '@sentry/nextjs';
 import { useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 import { Button } from '@/app/components/_elements/button';
 
 import { ParsePGNtoLineData } from './parse/ParsePGNtoLineData';
 import type { Line } from './parse/ParsePGNtoLineData';
 
-export function PgnToLinesForm(props: {
+export function PgnToLinesForm({
+  finished,
+  back,
+}: {
   finished: (lines: Line[]) => void;
   back: () => void;
 }) {
@@ -25,10 +28,8 @@ export function PgnToLinesForm(props: {
 
   const validPGN = (string: string) => {
     try {
-      const parsed = PGNParse(string, { startRule: 'games' });
-      if (parsed) return true;
-
-      return false;
+      PGNParse(string, { startRule: 'games' });
+      return true;
     } catch (e) {
       Sentry.captureException(e);
       if (e instanceof Error) setError(e.message);
@@ -39,7 +40,7 @@ export function PgnToLinesForm(props: {
     }
   };
 
-  const parse = async () => {
+  const parse = () => {
     setError(null);
     setStatus('loading');
 

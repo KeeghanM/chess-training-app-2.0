@@ -11,9 +11,9 @@ import trackEventOnClient from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
 import { StyledLink } from '@/app/components/_elements/styled-link';
-import PremiumSubscribe from '@/app/components/ecomm/PremiumSubscribe';
-import Spinner from '@/app/components/general/Spinner';
-import TimeSince from '@/app/components/general/TimeSince';
+import PremiumSubscribe from '@/app/components/ecomm/premium-subscribe';
+import Spinner from '@/app/components/general/spinner';
+import TimeSince from '@/app/components/general/time-since';
 
 import CourseSettings from './CourseSettings';
 import type { PrismaUserCourse } from './CoursesList';

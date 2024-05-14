@@ -5,7 +5,7 @@ import { useState } from 'react';
 import trackEventOnClient from '@/app/_util/track-event-on-client';
 import { Button } from '@/app/components/_elements/button';
 import { Heading } from '@/app/components/_elements/heading';
-import PrettyPrintLine from '@/app/components/general/PrettyPrintLine';
+import PrettyPrintLine from '@/app/components/general/pretty-print-line';
 
 import type { Line } from './parse/ParsePGNtoLineData';
 

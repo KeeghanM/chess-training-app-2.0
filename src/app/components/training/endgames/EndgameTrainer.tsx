@@ -15,13 +15,13 @@ import 'react-toggle/style.css';
 // @ts-expect-error - No types available
 
 import { Button } from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/Spinner';
-import XpTracker from '@/app/components/general/XpTracker';
+import Spinner from '@/app/components/general/spinner';
+import XpTracker from '@/app/components/general/xp-tracker';
 import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 import trackEventOnClient from '@/app/_util/track-event-on-client';
 
-import ChessBoard from '../ChessBoard';
+import ChessBoard from '../chess-board';
 
 // TODO: "Show solution" button
 

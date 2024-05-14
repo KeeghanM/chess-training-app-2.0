@@ -22,12 +22,12 @@ import getArrows from '@/app/_util/string-to-arrows';
 import trackEventOnClient from '@/app/_util/track-event-on-client';
 import ThemeSwitch from '@/app/components//template/header/ThemeSwitch';
 import { Button } from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/Spinner';
-import XpTracker from '@/app/components/general/XpTracker';
+import Spinner from '@/app/components/general/spinner';
+import XpTracker from '@/app/components/general/xp-tracker';
 
 import { Heading } from '../../_elements/heading';
 import { StyledLink } from '../../_elements/styled-link';
-import ChessBoard from '../ChessBoard';
+import ChessBoard from '../chess-board';
 
 import type { PrismaUserCourse } from './list/CoursesList';
 

@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
 
-import { Spinner } from '../../general/Spinner';
+import { Spinner } from '../../general/spinner';
 
 import type { CuratedSetPuzzle } from './curated-sets-browser';
 

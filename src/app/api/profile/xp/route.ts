@@ -3,7 +3,7 @@ import * as Sentry from '@sentry/nextjs';
 
 import { UpdateStreak } from '@/app/_util/update-streak';
 import { errorResponse, successResponse } from '@/app/api/responses';
-import type { availableTypes } from '@/app/components/general/XpTracker';
+import type { Type } from '@/app/components/general/xp-tracker';
 import { prisma } from '@/server/db';
 
 export async function PUT(request: Request) {
@@ -14,10 +14,10 @@ export async function PUT(request: Request) {
 
   const { xp, type } = (await request.json()) as {
     xp: number;
-    type: availableTypes;
+    type: Type;
   };
 
-  const calculateXp = (type: availableTypes) => {
+  const calculateXp = (type: Type) => {
     switch (type) {
       case 'line':
         return 15;

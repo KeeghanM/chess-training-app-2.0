@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   try {
     const { user, isPremium } = await getUserServer();
     if (!user) return errorResponse('Unauthorized', 401);
-    if (isPremium) return errorResponse('User is already premium', 400);
+    if (isPremium) return successResponse('User is already premium', {}, 400);
 
     const { returnUrl } = (await request.json()) as { returnUrl: string };
 

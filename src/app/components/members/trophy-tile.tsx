@@ -1,9 +1,9 @@
 import Link from 'next/link';
 
-import CalculateXpRank from '@/app/_util/calculate-xp-rank';
+import { CalculateXpRank } from '@/app/_util/calculate-xp-rank';
 
 import { Heading } from '../_elements/heading';
-import XpDisplay from '../dashboard/XpDisplay';
+import { XpDisplay } from '../dashboard/xp-display';
 
 export function TrophyTile({
   placement,
@@ -16,10 +16,17 @@ export function TrophyTile({
   xp: number;
   published: boolean;
 }) {
-  const Trophy = (props: { placement: number }) => {
-    switch (placement) {
-      case 1:
-        return (
+  return (
+    <div
+      className={
+        'mt-auto flex flex-col items-center gap-2 bg-slate-800 p-4 font-bold text-white' +
+        (placement === 1 ? ' md:order-2 ' : '') +
+        (placement === 2 ? ' md:order-1 ' : '') +
+        (placement === 3 ? ' md:order-3 ' : '')
+      }
+    >
+      <div>
+        {placement === 1 && (
           <svg
             height="200"
             viewBox="0 0 128 128"
@@ -63,9 +70,8 @@ export function TrophyTile({
               fill="#fcc219"
             />
           </svg>
-        );
-      case 2:
-        return (
+        )}{' '}
+        {placement === 2 && (
           <svg
             height="128"
             viewBox="0 0 128 128"
@@ -109,9 +115,8 @@ export function TrophyTile({
               fill="#e8f3f8"
             />
           </svg>
-        );
-      case 3:
-        return (
+        )}
+        {placement === 3 && (
           <svg
             height="128"
             viewBox="0 0 128 128"
@@ -155,24 +160,7 @@ export function TrophyTile({
               fill="#854700"
             />
           </svg>
-        );
-      default:
-        return null;
-    }
-  };
-
-  return (
-    <div
-      className={`mt-auto flex flex-col gap-2 bg-slate-800 p-4 font-bold text-white items-center${
-        placement === 1
-          ? ' md:order-2 '
-          : placement === 2
-            ? ' md:order-1 '
-            : ' md:order-3 '
-      }`}
-    >
-      <div>
-        <Trophy placement={placement} />
+        )}
       </div>
       <div>
         {published ? (

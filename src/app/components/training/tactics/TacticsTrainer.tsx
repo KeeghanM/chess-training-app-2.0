@@ -18,13 +18,13 @@ import 'react-toggle/style.css';
 import useSound from 'use-sound';
 
 import { Button } from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/Spinner';
-import TimeSince from '@/app/components/general/TimeSince';
-import XpTracker from '@/app/components/general/XpTracker';
+import Spinner from '@/app/components/general/spinner';
+import TimeSince from '@/app/components/general/time-since';
+import XpTracker from '@/app/components/general/xp-tracker';
 import ThemeSwitch from '@/app/components/template/header/ThemeSwitch';
 import trackEventOnClient from '@/app/_util/track-event-on-client';
 
-import ChessBoard from '../ChessBoard';
+import ChessBoard from '../chess-board';
 
 import type { PrismaTacticsSet } from './create/TacticsSetCreator';
 

@@ -1,12 +1,12 @@
 import { prisma } from '@/server/db';
 
-import CalculateXpRank from '../_util/calculate-xp-rank';
+import { CalculateXpRank } from '../_util/calculate-xp-rank';
 import { Container } from '../components/_elements/container';
 import { StyledLink } from '../components/_elements/styled-link';
 import { PageHeader } from '../components/_layouts/page-header';
-import TrophyTile from '../components/members/TrophyTile';
+import { TrophyTile } from '../components/members/trophy-tile';
 
-export async function MembersPage({
+export default async function MembersPage({
   searchParams,
 }: {
   searchParams?: Record<string, string | string[]>;

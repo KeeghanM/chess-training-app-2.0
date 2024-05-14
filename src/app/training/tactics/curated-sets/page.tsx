@@ -7,7 +7,7 @@ import { Heading } from '@/app/components/_elements/heading';
 import { StyledLink } from '@/app/components/_elements/styled-link';
 import { PageHeader } from '@/app/components/_layouts/page-header';
 import { TextWall } from '@/app/components/_layouts/text-wall';
-import GetCuratedSet from '@/app/components/ecomm/GetCuratedSet';
+import GetCuratedSet from '@/app/components/ecomm/get-curated-set';
 import { prisma } from '@/server/db';
 
 export const metadata = {

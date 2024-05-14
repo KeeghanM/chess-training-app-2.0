@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/Spinner';
+import Spinner from '@/app/components/general/spinner';
 
 export function CreateCustom({ onLoad }: { onLoad: () => void }) {
   const [loading, setLoading] = useState(false);

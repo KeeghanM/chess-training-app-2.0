@@ -4,22 +4,27 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import * as Tabs from '@radix-ui/react-tabs';
 import { useEffect, useState } from 'react';
 
-import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 import { Button } from '@/app/components/_elements/button';
 import { Container } from '@/app/components/_elements/container';
 import { Heading } from '@/app/components/_elements/heading';
-import Spinner from '@/app/components/general/Spinner';
+import { Spinner } from '@/app/components/general/spinner';
 
-import { GroupItem } from './GroupItem';
+import { GroupItem } from './group-item';
 import type { Line } from './parse/ParsePGNtoLineData';
 
-export function GroupSelector(props: {
+export function GroupSelector({
+  lines,
+  setLines,
+  back,
+  finished,
+}: {
   lines: Line[];
+  setLines: (lines: Line[]) => void;
   back: () => void;
   finished: (group: string, lines: Line[]) => void;
 }) {
   const [parent] = useAutoAnimate();
-  const [lines, setLines] = useState<Line[]>(lines);
   const [groupOptions, setGroupOptions] = useState<string[]>([]);
   const [selectedGroup, setSelectedGroup] = useState<string>('');
   const [groupedLineCounts, setGroupedLineCounts] = useState<
@@ -61,8 +66,8 @@ export function GroupSelector(props: {
   useEffect(() => {
     const groups = getGroupOptionsFromLines(lines);
     setGroupOptions(groups);
-    if (selectedGroup || groups.length === 0) return;
-    setSelectedGroup(groups[0]!);
+    if (selectedGroup || groups.length === 0 || groups[0] === undefined) return;
+    setSelectedGroup(groups[0]);
 
     if (hasPrompted) return;
     const whiteCount = countLines('Colour', 'White');
@@ -71,14 +76,15 @@ export function GroupSelector(props: {
       setNeedsPrompt(true);
       setSelectedGroup('Colour');
     }
-  }, [lines]);
+  }, [lines, selectedGroup]);
 
   useEffect(() => {
     if (!selectedGroup) return;
 
     setGroupedLineCounts(
       lines.reduce<Record<string, number>>((prev, curr) => {
-        const tag = curr.tags[selectedGroup]!;
+        const tag = curr.tags[selectedGroup];
+        if (tag === undefined) throw new Error('Missing tag');
         if (prev[tag]) {
           prev[tag]++;
         } else {
@@ -93,6 +99,7 @@ export function GroupSelector(props: {
     <Container>
       {needsPrompt && !hasPrompted ? (
         <div className="fixed inset-0 z-[99999] grid place-items-center bg-[rgba(0,0,0,0.3)]">
+          {/* eslint-disable-next-line -- This is the modal background, what else do you want me to use? */}
           <div
             className="absolute inset-0"
             onClick={() => setHasPrompted(true)}
@@ -104,21 +111,23 @@ export function GroupSelector(props: {
             <p>
               <strong>
                 It looks like you have both white and black lines in this PGN.
-                The default colour of a line is based on it's last move.
+                The default colour of a line is based on it&apos;s last move.
               </strong>
             </p>
             <p>
               To allow you to review these, we have set the grouping to
-              "Colour". Here you can edit each lines colour individually, or use
-              the "Set All" button to set all lines to the same colour.
+              &quot;Colour&quot;. Here you can edit each lines colour
+              individually, or use the &quot;Set All&quot; button to set all
+              lines to the same colour.
             </p>
             <p>
-              Once you're happy with the line colours, you can change it back to
-              whatever grouping you like.
+              Once you&apos;re happy with the line colours, you can change it
+              back to whatever grouping you like.
             </p>
             <p className="italic">
-              If a line's last move doesn't align with it's set colour, the
-              training will stop at the last move matching the set colour.
+              If a line&apos;s last move doesn&apos;t align with it&apos;s set
+              colour, the training will stop at the last move matching the set
+              colour.
             </p>
             <Button variant="primary" onClick={() => setHasPrompted(true)}>
               Okay, got it!
@@ -157,7 +166,7 @@ export function GroupSelector(props: {
           </div>
           <Tabs.Root
             defaultValue={groupOptions[0]}
-            onValueChange={async (x) => {
+            onValueChange={(x) => {
               setSelectedGroup(x);
               trackEventOnClient('create_course_change_grouping', {
                 groupName: x,
@@ -182,11 +191,11 @@ export function GroupSelector(props: {
             </Tabs.List>
           </Tabs.Root>
           <div ref={parent} className="flex flex-col gap-2">
-            {Object.keys(groupedLineCounts).map((key) => (
+            {Object.entries(groupedLineCounts).map((entry) => (
               <GroupItem
-                key={key}
-                count={groupedLineCounts[key]!}
-                groupKey={key}
+                key={entry[0]}
+                count={entry[1]}
+                groupKey={entry[0]}
                 lines={lines}
                 selectedGroup={selectedGroup}
                 updateLines={(newLines) => setLines(newLines)}

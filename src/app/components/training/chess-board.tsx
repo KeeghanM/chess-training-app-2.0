@@ -2,7 +2,7 @@
 
 import { useWindowSize } from '@uidotdev/usehooks';
 import type { Chess, Move, Piece, Square } from 'chess.js';
-import useSound from 'node_modules/use-sound/dist';
+import useSound from 'use-sound';
 import { useEffect, useState } from 'react';
 import { Chessboard } from 'react-chessboard';
 import type {
@@ -22,10 +22,18 @@ interface ChessBoardProps {
   enableHighlights: boolean;
   moveMade: null | ((move: Move) => void);
 }
-export function ChessBoard(props: ChessBoardProps) {
-  // Chess Game
-  const game = game;
-
+export function ChessBoard({
+  game,
+  position,
+  orientation,
+  readyForInput,
+  soundEnabled,
+  additionalSquares,
+  additionalArrows,
+  enableArrows,
+  enableHighlights,
+  moveMade,
+}: ChessBoardProps) {
   // Board State
   const [showPromotionDialog, setShowPromotionDialog] = useState(false);
   const [startSquare, setStartSquare] = useState<Square>();

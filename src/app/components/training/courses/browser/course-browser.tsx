@@ -3,8 +3,8 @@
 import type { Comment, Group, Line, Move, UserLine } from '@prisma/client';
 import { useState } from 'react';
 
-import GroupBrowser from './GroupBrowser';
-import GroupListItem from './GroupListItem';
+import { GroupBrowser } from './group-browser';
+import { GroupListItem } from './group-list-item';
 
 export type UserLineWithData = UserLine & {
   line: Line & {
@@ -17,8 +17,7 @@ export interface CourseBrowserProps {
   lines: UserLineWithData[];
 }
 
-export function CourseBrowser(props: CourseBrowserProps) {
-  const { lines } = props;
+export function CourseBrowser({ lines }: CourseBrowserProps) {
   const [groupIds] = useState<string[]>(
     Array.from(new Set(lines.map((line) => line.line.groupId))),
   );

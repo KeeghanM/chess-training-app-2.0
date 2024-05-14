@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import type { ResponseJson } from '@/app/api/responses';
 
 import { Button } from '../../_elements/button';
-import { Spinner } from '../../general/Spinner';
+import { Spinner } from '../../general/spinner';
 
 export function AddToSet({
   setId,

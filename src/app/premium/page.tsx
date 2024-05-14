@@ -3,7 +3,7 @@ import { Hero } from '@/app/components/_layouts/hero';
 
 import { MultiCol, MultiColItem } from '../components/_layouts/multi-col';
 import { TextWall } from '../components/_layouts/text-wall';
-import GetPremiumButton from '../components/ecomm/GetPremiumButton';
+import { GetPremiumButton } from '../components/ecomm/get-premium-button';
 
 export const metadata = {
   title: 'Go Premium and Unlock Unlimited Chess Training at ChessTraining.app',
@@ -11,7 +11,7 @@ export const metadata = {
     'Unlock unlimited chess training at ChessTraining.app with a premium account. Access all features, including unlimited chess puzzles, courses, and more. Start your premium account today!',
 };
 
-export function PremiumPage() {
+export default function PremiumPage() {
   return (
     <>
       <Hero

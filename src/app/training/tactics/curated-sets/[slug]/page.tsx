@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 import { Container } from '@/app/components/_elements/container';
 import { Heading } from '@/app/components/_elements/heading';
 import { StyledLink } from '@/app/components/_elements/styled-link';
-import GetCuratedSet from '@/app/components/ecomm/GetCuratedSet';
+import GetCuratedSet from '@/app/components/ecomm/get-curated-set';
 import { prisma } from '@/server/db';
 
 export async function CuratedSetPage({ params }: { params: { slug: string } }) {

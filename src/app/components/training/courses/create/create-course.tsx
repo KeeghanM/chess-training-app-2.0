@@ -5,17 +5,17 @@ import * as Sentry from '@sentry/nextjs';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import GenerateSlug from '@/app/_util/generate-slug';
-import trackEventOnClient from '@/app/_util/track-event-on-client';
+import { GenerateSlug } from '@/app/_util/generate-slug';
+import { trackEventOnClient } from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
 import { Container } from '@/app/components/_elements/container';
 import { Heading } from '@/app/components/_elements/heading';
 
-import DetailsForm from './DetailsForm';
-import GroupSelector from './GroupSelector';
-import PgnToLinesForm from './PgnToLinesForm';
-import Steps from './Steps';
+import { DetailsForm } from './details-form';
+import { GroupSelector } from './group-selector';
+import { PgnToLinesForm } from './pgn-to-lines-form';
+import { Steps } from './steps';
 import type { Line } from './parse/ParsePGNtoLineData';
 
 export function CreateCourseForm() {
@@ -52,8 +52,7 @@ export function CreateCourseForm() {
         return;
       }
 
-      if (json.message !== 'Course created')
-        throw new Error(json.message ?? 'Unknown error');
+      if (json.message !== 'Course created') throw new Error(json.message);
 
       trackEventOnClient('create_course_success', {});
       router.push('/training/courses/');
@@ -98,6 +97,7 @@ export function CreateCourseForm() {
           {currentStep === 'group' && (
             <GroupSelector
               lines={lines}
+              setLines={setLines}
               back={() => {
                 setCurrentStep('import');
               }}
@@ -138,7 +138,7 @@ export function transformCourseData(
   // Extract the unique group names from the lines
   // into an array of objects with a groupName property
   const groupNames = lines.reduce((acc: { groupName: string }[], line) => {
-    const groupName = line.tags[group]!;
+    const groupName = line.tags[group];
     if (
       groupName !== undefined &&
       !acc.some((item) => item.groupName === groupName)
@@ -149,8 +149,8 @@ export function transformCourseData(
   }, []);
 
   const processedLines = lines.map((line) => {
-    const groupName = line.tags[group]!;
-    const colour = line.tags.Colour!;
+    const groupName = line.tags[group];
+    const colour = line.tags.Colour;
     const moves = line.moves;
     return {
       groupName,

@@ -5,8 +5,8 @@ import { useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
-import PrettyPrintLine from '@/app/components/general/PrettyPrintLine';
-import Spinner from '@/app/components/general/Spinner';
+import PrettyPrintLine from '@/app/components/general/pretty-print-line';
+import Spinner from '@/app/components/general/spinner';
 import type { Line as NiceLine } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData';
 
 export type ScheduleLine = UserLine & {

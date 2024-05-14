@@ -7,8 +7,8 @@ import { useState } from 'react';
 import { GenerateSlug } from '@/app/_util/generate-slug';
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
-import { Spinner } from '@/app/components/general/Spinner';
-import { TextEditor } from '@/app/components/general/TextEditor';
+import { Spinner } from '@/app/components/general/spinner';
+import { TextEditor } from '@/app/components/general/text-editor';
 
 export function SetEditor({ set }: { set: CuratedSet }) {
   // Form

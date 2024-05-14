@@ -4,16 +4,16 @@ import { Chess } from 'chess.js';
 import { useEffect, useState } from 'react';
 import type { Arrow } from 'react-chessboard/dist/chessboard/types';
 
-import type { Move } from '@/app/_util/BuildPgn';
-import BuildPGN from '@/app/_util/BuildPgn';
-import getArrows from '@/app/_util/string-to-arrows';
+import type { Move } from '@/app/_util/build-pgn';
+import { BuildPGN } from '@/app/_util/build-pgn';
+import { getArrows } from '@/app/_util/string-to-arrows';
 
-import ChessBoard from '../../ChessBoard';
+import { ChessBoard } from '../../chess-board';
 
-import type { UserLineWithData } from './CourseBrowser';
-import PgnBrowser from './PgnBrowser';
+import type { UserLineWithData } from './course-browser';
+import { PgnBrowser } from './pgn-browser';
 
-export function GroupBrowser(props: { lines: UserLineWithData[] }) {
+export function GroupBrowser({ lines }: { lines: UserLineWithData[] }) {
   const pgn = BuildPGN(
     lines.map((line) =>
       line.line.moves.map((move) => {
@@ -32,7 +32,8 @@ export function GroupBrowser(props: { lines: UserLineWithData[] }) {
   const [game, setGame] = useState(new Chess());
   const [position, setPosition] = useState(game.fen());
   const [orientation, setOrientation] = useState<'white' | 'black'>('white');
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  // TODO: Add sound toggle
+  const [soundEnabled] = useState(true);
   const [currentMove, setCurrentMove] = useState<Move | undefined>();
   const [arrows, setArrows] = useState<Arrow[]>([]);
   const [highlightSquares, setHighlightSquares] = useState<
@@ -46,7 +47,9 @@ export function GroupBrowser(props: { lines: UserLineWithData[] }) {
       return;
     }
     const newGame = new Chess();
-    const line = lines.find((line) => line.id === currentMove.lineId)!;
+    const line = lines.find((line) => line.id === currentMove.lineId);
+    if (!line) return;
+
     for (const move of line.line.moves) {
       newGame.move(move.move);
       if (
@@ -59,7 +62,9 @@ export function GroupBrowser(props: { lines: UserLineWithData[] }) {
 
     const lastMove = newGame.history({ verbose: true })[
       newGame.history().length - 1
-    ]!;
+    ];
+
+    if (!lastMove) return;
 
     setHighlightSquares({
       [lastMove.to]: { backgroundColor: 'rgba(126,34,206, 0.3)' },

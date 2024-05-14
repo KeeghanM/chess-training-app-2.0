@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from '@/app/components/_elements/button';
-import PrettyPrintLine from '@/app/components/general/PrettyPrintLine';
+import PrettyPrintLine from '@/app/components/general/pretty-print-line';
 import type { Line } from '@/app/components/training/courses/create/parse/ParsePGNtoLineData';
 
 import type { LineWithMoves } from './GroupEditor';

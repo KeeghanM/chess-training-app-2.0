@@ -11,8 +11,8 @@ import trackEventOnClient from '@/app/_util/track-event-on-client';
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
 import { StyledLink } from '@/app/components/_elements/styled-link';
-import GetPremiumButton from '@/app/components/ecomm/GetPremiumButton';
-import Spinner from '@/app/components/general/Spinner';
+import GetPremiumButton from '@/app/components/ecomm/get-premium-button';
+import Spinner from '@/app/components/general/spinner';
 import type { TrainingPuzzle } from '@/app/components/training/tactics/TacticsTrainer';
 
 export type PrismaTacticsSet = TacticsSet & { rounds: TacticsSetRound[] };

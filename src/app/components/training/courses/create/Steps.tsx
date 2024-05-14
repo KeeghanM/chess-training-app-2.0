@@ -1,4 +1,4 @@
-import NumberIcon from '@/app/components/general/NumberIcon';
+import { NumberIcon } from '@/app/components/general/number-icon';
 
 export function Steps({ currentStep }: { currentStep: string }) {
   return (

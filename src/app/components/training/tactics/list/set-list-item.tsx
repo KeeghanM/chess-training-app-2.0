@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react';
 import toHHMMSS from '@/app/_util/to-hhmmss';
 import trackEventOnClient from '@/app/_util/track-event-on-client';
 import { Button } from '@/app/components/_elements/button';
-import Spinner from '@/app/components/general/Spinner';
-import TimeSince from '@/app/components/general/TimeSince';
+import Spinner from '@/app/components/general/spinner';
+import TimeSince from '@/app/components/general/time-since';
 import type { PrismaTacticsSet } from '@/app/components/training/tactics/create/TacticsSetCreator';
 
 import SetListEdit from './set-list-edit';

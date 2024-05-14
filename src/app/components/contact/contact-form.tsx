@@ -5,7 +5,7 @@ import { useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
 import { Button } from '@/app/components/_elements/button';
-import { Spinner } from '@/app/components/general/Spinner';
+import { Spinner } from '@/app/components/general/spinner';
 
 export function ContactForm() {
   const [sendEmail, setSendEmail] = useState(false);

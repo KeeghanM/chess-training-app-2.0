@@ -11,8 +11,8 @@ import { Button } from '@/app/components/_elements/button';
 import { Heading } from '@/app/components/_elements/heading';
 import { StyledLink } from '@/app/components/_elements/styled-link';
 
-import GroupSelector from '../create/GroupSelector';
-import PgnToLinesForm from '../create/PgnToLinesForm';
+import GroupSelector from '../create/group-selector';
+import PgnToLinesForm from '../create/pgn-to-lines-form';
 import type { Line } from '../create/parse/ParsePGNtoLineData';
 
 type FullCourseData = Course & {

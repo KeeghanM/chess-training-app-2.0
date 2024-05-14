@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { getUserServer } from '@/app/_util/get-user-server';
 import { PageHeader } from '@/app/components/_layouts/page-header';
-import { CreateCourseForm } from '@/app/components/training/courses/create/CreateCourse';
+import { CreateCourseForm } from '@/app/components/training/courses/create/create-course';
 
 export const metadata = {
   title: 'Create a new course - ChessTraining.app',

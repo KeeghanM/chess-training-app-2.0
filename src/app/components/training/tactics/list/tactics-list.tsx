@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 import type { ResponseJson } from '@/app/api/responses';
 import { Container } from '@/app/components/_elements/container';
-import Spinner from '@/app/components/general/Spinner';
+import Spinner from '@/app/components/general/spinner';
 import type { PrismaTacticsSet } from '@/app/components/training/tactics//create/TacticsSetCreator';
 import TacticsSetCreator from '@/app/components/training/tactics//create/TacticsSetCreator';
 import { env } from '@/env';

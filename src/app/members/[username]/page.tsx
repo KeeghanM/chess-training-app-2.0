@@ -1,13 +1,17 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-import CalculateXpRank from '@/app/_util/calculate-xp-rank';
+import { CalculateXpRank } from '@/app/_util/calculate-xp-rank';
 import { Container } from '@/app/components/_elements/container';
 import { Heading } from '@/app/components/_elements/heading';
-import XpDisplay from '@/app/components/dashboard/XpDisplay';
+import { XpDisplay } from '@/app/components/dashboard/xp-display';
 import { prisma } from '@/server/db';
 
-export async function MemberPage({ params }: { params: { username: string } }) {
+export default async function MemberPage({
+  params,
+}: {
+  params: { username: string };
+}) {
   const { username } = params;
 
   const account = await prisma.userProfile.findUnique({

@@ -2,7 +2,7 @@ import { redirect } from 'next/navigation';
 
 import { getUserServer } from '@/app/_util/get-user-server';
 import { Container } from '@/app/components/_elements/container';
-import { AccountForm } from '@/app/components/dashboard/AccountForm';
+import { AccountForm } from '@/app/components/dashboard/account-form';
 
 export default async function AccountSettingsPage() {
   const { user, profile } = await getUserServer();
