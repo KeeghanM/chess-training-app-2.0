@@ -1,15 +1,15 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-import Heading from '~/app/components/_elements/heading'
+import { Heading } from '@/app/components/_elements/heading';
 
-export default function Footer() {
+export function Footer() {
   const sections: {
-    title: string
+    title: string;
     links: {
-      icon?: React.ReactNode
-      text: string
-      url: string
-    }[]
+      icon?: React.ReactNode;
+      text: string;
+      url: string;
+    }[];
   }[] = [
     {
       title: 'ChessTraining.app',
@@ -106,19 +106,19 @@ export default function Footer() {
         },
       ],
     },
-  ]
+  ];
 
   return (
     <footer className="flex flex-col gap-4 border-t border-slate-600 bg-slate-800 p-4 text-sm text-white md:px-12">
       <div className="flex flex-col justify-evenly gap-4 md:flex-row md:gap-6">
         {sections.map((section, i) => (
           <div key={i} className="flex flex-col gap-2">
-            <Heading as={'h3'}>{section.title}</Heading>
+            <Heading as="h3">{section.title}</Heading>
             {section.links.map((link, i) => (
               <Link
                 key={i}
-                href={link.url}
                 className="flex items-center gap-2 hover:underline"
+                href={link.url}
               >
                 {link.icon}
                 <span>{link.text}</span>
@@ -131,5 +131,5 @@ export default function Footer() {
         <p>&copy; 2020-2023 ChessTraining.app</p>
       </div>
     </footer>
-  )
+  );
 }

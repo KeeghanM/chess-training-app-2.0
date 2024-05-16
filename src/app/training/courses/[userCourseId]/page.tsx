@@ -1,32 +1,30 @@
-import { redirect } from 'next/navigation'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import type { Comment, Group, Line, Move, UserLine } from '@prisma/client';
+import * as Sentry from '@sentry/nextjs';
+import { redirect } from 'next/navigation';
 
-import { prisma } from '~/server/db'
-
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import type { Comment, Group, Line, Move, UserLine } from '@prisma/client'
-import * as Sentry from '@sentry/nextjs'
-
-import Container from '~/app/components/_elements/container'
-import PageHeader from '~/app/components/_layouts/pageHeader'
-import CourseTrainer from '~/app/components/training/courses/CourseTrainer'
+import { Container } from '@/app/components/_elements/container';
+import { PageHeader } from '@/app/components/_layouts/page-header';
+import { CourseTrainer } from '@/app/components/training/courses/course-trainer';
+import { prisma } from '@/server/db';
 
 export type PrismaUserLine = UserLine & {
   line: Line & {
-    group: Group
-    moves: (Move & { comment: Comment | null })[]
-  }
-}
+    group: Group;
+    moves: (Move & { comment: Comment | null })[];
+  };
+};
 
-export default async function CourseTrainPage({
+export async function CourseTrainPage({
   params,
 }: {
-  params: { userCourseId: string }
+  params: { userCourseId: string };
 }) {
-  const { getUser } = getKindeServerSession()
-  const user = await getUser()
-  if (!user) redirect('/auth/signin')
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+  if (!user) redirect('/auth/signin');
 
-  const { userCourseId } = params
+  const { userCourseId } = params;
 
   const { userCourse, userLines, userFens } = await (async () => {
     try {
@@ -38,9 +36,9 @@ export default async function CourseTrainPage({
         include: {
           course: true,
         },
-      })
+      });
 
-      if (!userCourse) throw new Error('Course not found')
+      if (userCourse === null) throw new Error('Course not found');
 
       const userLines = await prisma.userLine.findMany({
         where: {
@@ -62,42 +60,46 @@ export default async function CourseTrainPage({
             },
           },
         },
-      })
+      });
 
-      if (!userLines) throw new Error('Lines not found')
+      if (userLines.length === 0) throw new Error('Lines not found');
 
       const userFens = await prisma.userFen.findMany({
         where: {
           userCourseId,
         },
-      })
+      });
 
-      if (!userFens) throw new Error('Fens not found')
+      if (userFens.length === 0) throw new Error('Fens not found');
 
       // Sort lines by their groups sortOrder and then by their own sortOrder
       userLines.sort((a, b) => {
-        if (a.line.group.sortOrder < b.line.group.sortOrder) return -1
-        if (a.line.group.sortOrder > b.line.group.sortOrder) return 1
-        if (a.line.sortOrder < b.line.sortOrder) return -1
-        if (a.line.sortOrder > b.line.sortOrder) return 1
-        return 0
-      })
+        if (a.line.group.sortOrder < b.line.group.sortOrder) return -1;
+        if (a.line.group.sortOrder > b.line.group.sortOrder) return 1;
+        if (a.line.sortOrder < b.line.sortOrder) return -1;
+        if (a.line.sortOrder > b.line.sortOrder) return 1;
+        return 0;
+      });
 
-      return { userCourse, userLines, userFens }
+      return { userCourse, userLines, userFens };
     } catch (e) {
-      Sentry.captureException(e)
+      Sentry.captureException(e);
       return {
         userCourse: undefined,
         userLines: undefined,
         userFens: undefined,
-      }
+      };
     }
-  })()
+  })();
 
-  await prisma.$disconnect()
+  await prisma.$disconnect();
 
-  if (!userCourse || !userLines || !userFens) {
-    redirect('/404')
+  if (
+    userCourse === undefined ||
+    userLines.length === 0 ||
+    userFens.length === 0
+  ) {
+    redirect('/404');
   }
 
   return (
@@ -111,15 +113,13 @@ export default async function CourseTrainPage({
       />
       <div className="dark:bg-slate-800">
         <Container>
-          {userCourse && (
-            <CourseTrainer
-              userCourse={userCourse}
-              userLines={userLines}
-              userFens={userFens}
-            />
-          )}
+          <CourseTrainer
+            userCourse={userCourse}
+            userFens={userFens}
+            userLines={userLines}
+          />
         </Container>
       </div>
     </>
-  )
+  );
 }

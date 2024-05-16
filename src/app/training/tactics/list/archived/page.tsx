@@ -1,19 +1,18 @@
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
 
-import Container from '~/app/components/_elements/container'
-import PageHeader from '~/app/components/_layouts/pageHeader'
-import ArchivedSetList from '~/app/components/training/tactics/list/ArhivedList'
-
-import { getUserServer } from '~/app/_util/getUserServer'
+import { getUserServer } from '@/app/_util/get-user-server';
+import { Container } from '@/app/components/_elements/container';
+import { PageHeader } from '@/app/components/_layouts/page-header';
+import { ArchivedSetList } from '@/app/components/training/tactics/list/archived-list';
 
 export const metadata = {
   title: 'Your Archived Sets - ChessTraining.app',
-}
+};
 
-export default async function ArchivedSetsPage() {
-  const { user, isPremium } = await getUserServer()
+export async function ArchivedSetsPage() {
+  const { user, isPremium } = await getUserServer();
 
-  if (!user) redirect('/auth/signin')
+  if (!user) redirect('/auth/signin');
   return (
     <>
       <PageHeader
@@ -29,5 +28,5 @@ export default async function ArchivedSetsPage() {
         </Container>
       </div>
     </>
-  )
+  );
 }

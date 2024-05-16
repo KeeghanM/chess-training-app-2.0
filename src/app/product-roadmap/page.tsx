@@ -1,14 +1,14 @@
-import StyledLink from '~/app/components/_elements/styledLink'
-import BigText from '~/app/components/_layouts/bigText'
-import { TextWall } from '~/app/components/_layouts/textWall'
+import { StyledLink } from '@/app/components/_elements/styled-link';
+import { BigText } from '@/app/components/_layouts/big-text';
+import { TextWall } from '@/app/components/_layouts/text-wall';
 
 export const metadata = {
   title: 'Explore Our Open Product Roadmap at ChessTraining.app',
   description:
     "Join us on our journey of transparent and open development at ChessTraining.app. Our Product Roadmap is a reflection of our commitment to honesty and customer engagement. Here, you can view upcoming features, current projects, and past updates. We encourage your participation - vote on features, offer feedback, and share your ideas. If you have suggestions not yet listed, we're just a click away. Discover our roadmap and help shape the future of chess training",
-}
+};
 
-export default async function ProductRoadmap() {
+export function ProductRoadmap() {
   return (
     <>
       <TextWall
@@ -35,7 +35,7 @@ export default async function ProductRoadmap() {
           </p>
           <p>
             This includes ideas/features currently under consideration, things
-            we're currently working on, as well as all previously released
+            we&apos;re currently working on, as well as all previously released
             features.
           </p>
           <p>
@@ -45,15 +45,16 @@ export default async function ProductRoadmap() {
         </div>
       </TextWall>
       <iframe
+        title="Product Roadmap"
+        className="mx-auto h-[70vh]"
+        height="60vh"
         src="https://starter.productboard.com/chesstraining-starter/1-chesstraining-app"
         width="100%"
-        height="60vh"
-        className="mx-auto h-[70vh]"
-      ></iframe>
+      />
       <BigText color="accent">
-        If there is anything not on here you'd like to see{' '}
+        If there is anything not on here you&apos;d like to see{' '}
         <StyledLink href="/contact">get in touch</StyledLink>
       </BigText>
     </>
-  )
+  );
 }

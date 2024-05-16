@@ -1,35 +1,33 @@
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-import { prisma } from '~/server/db'
-
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
-import XpDisplay from '~/app/components/dashboard/XpDisplay'
-
-import CalculateXpRank from '~/app/_util/CalculateXpRank'
+import { CalculateXpRank } from '@/app/_util/calculate-xp-rank';
+import { Container } from '@/app/components/_elements/container';
+import { Heading } from '@/app/components/_elements/heading';
+import { XpDisplay } from '@/app/components/dashboard/xp-display';
+import { prisma } from '@/server/db';
 
 export default async function MemberPage({
   params,
 }: {
-  params: { username: string }
+  params: { username: string };
 }) {
-  const { username } = params
+  const { username } = params;
 
   const account = await prisma.userProfile.findUnique({
     where: {
       username,
     },
-  })
-  await prisma.$disconnect()
+  });
+  await prisma.$disconnect();
 
   if (!account) {
-    redirect('/404')
+    redirect('/404');
   }
 
   return (
     <>
-      <div className="w-full flex items-center justify-center py-2 bg-gray-200">
+      <div className="flex w-full items-center justify-center bg-gray-200 py-2">
         <p className="text-xs text-gray-600">
           <Link className="text-purple-700 hover:underline" href="/">
             Home
@@ -42,46 +40,46 @@ export default async function MemberPage({
       </div>
       <Container>
         {account.public ? (
-          <div className="bg-gray-100 p-2 flex flex-col gap-2">
-            <div className="flex items-center gap-2 flex-col md:flex-row">
-              <Heading as={'h1'}>{account.username}</Heading>
-              {account.fullName && (
-                <p className="italic text-sm">({account.fullName})</p>
-              )}
+          <div className="flex flex-col gap-2 bg-gray-100 p-2">
+            <div className="flex flex-col items-center gap-2 md:flex-row">
+              <Heading as="h1">{account.username}</Heading>
+              {account.fullName ? (
+                <p className="text-sm italic">({account.fullName})</p>
+              ) : null}
             </div>
             <div className="w-fit">
               <XpDisplay
-                displayLink={false}
                 data={CalculateXpRank(account.experience)}
+                displayLink={false}
               />
             </div>
-            {account.description && (
-              <p className="bg-purple-700 text-white p-2">
+            {account.description ? (
+              <p className="bg-purple-700 p-2 text-white">
                 {account.description}
               </p>
-            )}
-            {account.highestOTBRating && (
+            ) : null}
+            {account.highestOTBRating ? (
               <p>
                 <span className="font-bold">OTB Rating:</span>{' '}
                 {account.highestOTBRating}
               </p>
-            )}
-            {account.highestOnlineRating && (
+            ) : null}
+            {account.highestOnlineRating ? (
               <p>
                 <span className="font-bold">Online Rating:</span>{' '}
                 {account.highestOnlineRating}
               </p>
-            )}
-            {account.puzzleRating && (
+            ) : null}
+            {account.puzzleRating ? (
               <p>
                 <span className="font-bold">Puzzle Rating:</span>{' '}
                 {account.puzzleRating}
               </p>
-            )}
+            ) : null}
           </div>
         ) : (
           <div className="bg-gray-100 p-2">
-            <Heading as={'h1'}>{account.username}</Heading>
+            <Heading as="h1">{account.username}</Heading>
             <p className="text-gray-600">
               This user has chosen to keep their profile private.
             </p>
@@ -89,5 +87,5 @@ export default async function MemberPage({
         )}
       </Container>
     </>
-  )
+  );
 }

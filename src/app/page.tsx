@@ -1,23 +1,23 @@
-import Link from 'next/link'
-import Script from 'next/script'
+import Link from 'next/link';
+import Script from 'next/script';
 
-import Button from './components/_elements/button'
-import Heading from './components/_elements/heading'
-import StyledLink from './components/_elements/styledLink'
-import BigText from './components/_layouts/bigText'
-import CtaRow from './components/_layouts/ctaRow'
-import Hero from './components/_layouts/hero'
-import ImageRowFull from './components/_layouts/imageRowFull'
-import { MultiCol, MultiColItem } from './components/_layouts/multiCol'
+import { Button } from './components/_elements/button';
+import { Heading } from './components/_elements/heading';
+import { StyledLink } from './components/_elements/styled-link';
+import { BigText } from './components/_layouts/big-text';
+import { CtaRow } from './components/_layouts/cta-row';
+import { Hero } from './components/_layouts/hero';
+import { ImageRowFull } from './components/_layouts/image-row-full';
+import { MultiCol, MultiColItem } from './components/_layouts/multi-col';
 
 export const metadata = {
   title:
     'ChessTraining.app: Revolutionize Your Chess Game with Innovative Learning Methods',
   description:
     'Improve your chess skills using the Woodpecker Method and our innovative Natural Play Learning. With a variety of training tools including tactics, courses, and endgames training. Learn chess in an intuitive, efficient, and enjoyable way, backed by a community of chess enthusiasts and professionals. Designed for those looking to elevate their chess game through science-backed, personalized training.',
-}
+};
 
-export default async function Home() {
+export function Home() {
   const reviews = [
     {
       name: 'Matthias',
@@ -39,7 +39,7 @@ export default async function Home() {
       date: '2022-02-16',
       text: 'Just tried a few tactics positions.. level is not too hard, but taxing enough to make you think',
     },
-  ]
+  ];
 
   return (
     <>
@@ -55,15 +55,15 @@ export default async function Home() {
           alt: 'Chess board with pieces set up',
         }}
       >
-        <Heading color="text-orange-500" as="h2">
+        <Heading as="h2" color="text-orange-500">
           Discover the power of science backed chess training - Available for
           free forever!
         </Heading>
       </Hero>
       <ImageRowFull
+        background="light"
         heading="The definitive destination for chess enthusiasts of all skill levels"
         imageSide="left"
-        background="light"
         image={{
           src: '/images/chess_group_detailed.png',
           alt: 'Abstract art of a varied group of people learning chess',
@@ -86,7 +86,7 @@ export default async function Home() {
           </StyledLink>{' '}
           to our innovative{' '}
           <StyledLink href="/about/features/natural-play-learning">
-            "Natural Play Learning"
+            &quot;Natural Play Learning&quot;
           </StyledLink>{' '}
           courses, each tool is designed to target specific areas of your game.
         </p>
@@ -97,9 +97,9 @@ export default async function Home() {
         </div>
       </ImageRowFull>
       <ImageRowFull
+        background="light"
         heading="Introducing Natural Play Learning"
         imageSide="right"
-        background="light"
         image={{
           src: '/images/two_women_playing_chess.png',
           alt: 'Two women sat down studying chess surrounded by abstract art chess pieces',
@@ -108,7 +108,7 @@ export default async function Home() {
         <p>
           A groundbreaking approach exclusive to ChessTraining.app, Natural Play
           Learning revolutionizes the way you learn chess. Gone are the days of
-          repetitive drills on positions you've already mastered. Our
+          repetitive drills on positions you&apos;ve already mastered. Our
           intelligent system adapts to your learning curve, focusing on new
           challenges and reinforcing concepts only as needed.
         </p>
@@ -125,13 +125,13 @@ export default async function Home() {
         </div>
       </ImageRowFull>
       <BigText color="accent">
-        From our "Tactics Trainer" to our "Natural Play Learning" courses, every
-        tool is designed to target specific areas of your chess improvement
-        journey.
+        From our &quot;Tactics Trainer&quot; to our &quot;Natural Play
+        Learning&quot; courses, every tool is designed to target specific areas
+        of your chess improvement journey.
       </BigText>
       <MultiCol
-        title="Our Training Tools"
         background="light"
+        title="Our Training Tools"
         cta={{
           text: 'See all features',
           link: '/about/features',
@@ -143,7 +143,7 @@ export default async function Home() {
             <StyledLink href="/about/features/woodpecker-method">
               WoodPecker Method
             </StyledLink>{' '}
-            developed by GM's Axel Smith, and Hans Tikkanen.
+            developed by GM&apos;s Axel Smith, and Hans Tikkanen.
           </p>
           <p>
             Re-program your unconscious mind. With benefits including sharper
@@ -169,7 +169,7 @@ export default async function Home() {
           </p>
           <p>
             Train using a course you have created, or one that has been shared
-            with you. You won't find a better way to learn chess.
+            with you. You won&apos;t find a better way to learn chess.
           </p>
           <Link href="/courses">
             <Button variant="primary">Browse Courses</Button>
@@ -182,7 +182,7 @@ export default async function Home() {
             you.
           </p>
           <p>
-            With our trainer, you're presented with a chess position and a
+            With our trainer, you&apos;re presented with a chess position and a
             sequence of moves. Your task is to visualize these moves in your
             mind, and find the correct final move.
           </p>
@@ -193,22 +193,22 @@ export default async function Home() {
             really set the level of challenge you want.
           </p>
           <Link href="/training/visualisation">
-            <Button variant="primary">Let's See</Button>
+            <Button variant="primary">Let&apos;s See</Button>
           </Link>
         </MultiColItem>
       </MultiCol>
       <CtaRow
-        title="Ready to transform your chess game?"
-        cta={{ text: 'Sign Up Now', link: '/auth/signin' }}
         background="dark"
+        cta={{ text: 'Sign Up Now', link: '/auth/signin' }}
+        title="Ready to transform your chess game?"
       >
         <p>Sign up now for free and start your journey to chess mastery.</p>
       </CtaRow>
       <div className="item flex flex-col items-center pb-6 md:pb-12">
-        <MultiCol title="What Our Members Say" background="light">
+        <MultiCol background="light" title="What Our Members Say">
           {reviews
             .sort((a, b) => {
-              return new Date(b.date).getTime() - new Date(a.date).getTime()
+              return new Date(b.date).getTime() - new Date(a.date).getTime();
             })
             .map((review) => (
               <MultiColItem key={review.name} title={review.name}>
@@ -219,24 +219,24 @@ export default async function Home() {
         </MultiCol>
         <div
           className="trustpilot-widget"
-          data-locale="en-GB"
-          data-template-id="56278e9abfbbba0bdcd568bc"
           data-businessunit-id="6577973a318437a64285f90c"
+          data-locale="en-GB"
           data-style-height="52px"
           data-style-width="100%"
+          data-template-id="56278e9abfbbba0bdcd568bc"
         >
           <a
             href="https://uk.trustpilot.com/review/chesstraining.app"
-            target="_blank"
             rel="noopener"
+            target="_blank"
           >
             Trustpilot
           </a>
         </div>
-        <Link target="_blank" href="https://www.buymeacoffee.com/keeghanm">
+        <Link href="https://www.buymeacoffee.com/keeghanm" target="_blank">
           <Button variant="primary">Support us with Coffee</Button>
         </Link>
       </div>
     </>
-  )
+  );
 }

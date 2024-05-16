@@ -1,27 +1,16 @@
-import Heading from '~/app/components/_elements/heading'
-import PageHeader from '~/app/components/_layouts/pageHeader'
-import { TextWall } from '~/app/components/_layouts/textWall'
-
 import {
   MiscBadges,
   StreakBadges,
   TacticStreakBadges,
   XpRanks,
-} from '~/app/_util/RanksAndBadges'
+} from '@/app/_util/ranks-and-badges';
+import { Heading } from '@/app/components/_elements/heading';
+import { PageHeader } from '@/app/components/_layouts/page-header';
+import { TextWall } from '@/app/components/_layouts/text-wall';
+import { BadgeElem } from '@/app/components/dashboard/badge-elem';
 
-export default async function RankAndBadgesPage() {
-  const ranks = Array.from(new Set(XpRanks.map((rank) => rank.rank)))
-
-  const BadgeElem = (name: string, description: string) => {
-    return (
-      <div key={name}>
-        <p className="border border-black bg-purple-700 p-2 font-bold  text-white">
-          {name}
-        </p>
-        <p className="border border-black p-2">{description}</p>
-      </div>
-    )
-  }
+export default function RankAndBadgesPage() {
+  const ranks = Array.from(new Set(XpRanks.map((rank) => rank.rank)));
 
   return (
     <>
@@ -32,7 +21,7 @@ export default async function RankAndBadgesPage() {
           alt: 'Wooden chess pieces on a chess board',
         }}
       />
-      <TextWall title="How do they work?" background="light">
+      <TextWall background="light" title="How do they work?">
         <p>
           Ranks are earned by gaining experience points (XP). You gain XP by
           training on the site. This can be from any of our trainers, whether
@@ -45,8 +34,9 @@ export default async function RankAndBadgesPage() {
           completing a certain amount of puzzles correctly in a row.
         </p>
       </TextWall>
+      {/* eslint-disable-next-line -- Anchor for diff link */}
       <a className="anchor" id="ranks" />
-      <TextWall title="Ranks" background="dark">
+      <TextWall background="dark" title="Ranks">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
           {ranks.map((rank, index) => (
             <div key={index}>
@@ -54,7 +44,7 @@ export default async function RankAndBadgesPage() {
                 {rank}
               </p>
               {XpRanks.filter((r) => r.rank === rank).map((r) => (
-                <p className="border border-black p-2">
+                <p key={r.name + r.rank} className="border border-black p-2">
                   <strong>{r.name}:</strong> {r.xp.toLocaleString()}xp
                 </p>
               ))}
@@ -62,23 +52,24 @@ export default async function RankAndBadgesPage() {
           ))}
         </div>
       </TextWall>
-      <TextWall title="Badges" background="light">
+      <TextWall background="light" title="Badges">
         <div>
+          {/* eslint-disable-next-line -- Anchor for diff link */}
           <a className="anchor" id="badges" />
-          <Heading as={'h3'}>Daily Streaks</Heading>
+          <Heading as="h3">Daily Streaks</Heading>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {StreakBadges.map((b) => BadgeElem(b.name, b.description))}
           </div>
-          <Heading as={'h3'}>Tactics Streaks</Heading>
+          <Heading as="h3">Tactics Streaks</Heading>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {TacticStreakBadges.map((b) => BadgeElem(b.name, b.description))}
           </div>
-          <Heading as={'h3'}>Miscellaneous</Heading>
+          <Heading as="h3">Miscellaneous</Heading>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
             {MiscBadges.map((b) => BadgeElem(b.name, b.description))}
           </div>
         </div>
       </TextWall>
     </>
-  )
+  );
 }

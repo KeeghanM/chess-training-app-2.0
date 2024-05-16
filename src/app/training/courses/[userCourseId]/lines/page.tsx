@@ -1,25 +1,23 @@
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import * as Sentry from '@sentry/nextjs';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-import { prisma } from '~/server/db'
+import { Button } from '@/app/components/_elements/button';
+import { Heading } from '@/app/components/_elements/heading';
+import CourseBrowser from '@/app/components/training/courses/browser/CourseBrowser';
+import { prisma } from '@/server/db';
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import * as Sentry from '@sentry/nextjs'
-
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
-import CourseBrowser from '~/app/components/training/courses/browser/CourseBrowser'
-
-export default async function CourseTrainPage({
+const CourseTrainPage = async ({
   params,
 }: {
-  params: { userCourseId: string }
-}) {
-  const { getUser } = getKindeServerSession()
-  const user = await getUser()
-  if (!user) redirect('/auth/signin')
+  params: { userCourseId: string };
+}) => {
+  const { getUser } = getKindeServerSession();
+  const user = await getUser();
+  if (!user) redirect('/auth/signin');
 
-  const { userCourseId } = params
+  const { userCourseId } = params;
 
   const { userCourse, userLines } = await (async () => {
     try {
@@ -31,9 +29,9 @@ export default async function CourseTrainPage({
         include: {
           course: true,
         },
-      })
+      });
 
-      if (!userCourse) throw new Error('Course not found')
+      if (userCourse === null) throw new Error('Course not found');
 
       const userLines = await prisma.userLine.findMany({
         where: {
@@ -52,44 +50,44 @@ export default async function CourseTrainPage({
             },
           },
         },
-      })
+      });
 
-      if (!userLines) throw new Error('Lines not found')
+      if (userLines.length === 0) throw new Error('Lines not found');
 
       // Sort lines by their groups sortOrder and then by their own sortOrder
       userLines.sort((a, b) => {
-        if (a.line.group.sortOrder < b.line.group.sortOrder) return -1
-        if (a.line.group.sortOrder > b.line.group.sortOrder) return 1
-        if (a.line.sortOrder < b.line.sortOrder) return -1
-        if (a.line.sortOrder > b.line.sortOrder) return 1
-        return 0
-      })
+        if (a.line.group.sortOrder < b.line.group.sortOrder) return -1;
+        if (a.line.group.sortOrder > b.line.group.sortOrder) return 1;
+        if (a.line.sortOrder < b.line.sortOrder) return -1;
+        if (a.line.sortOrder > b.line.sortOrder) return 1;
+        return 0;
+      });
 
-      return { userCourse, userLines }
+      return { userCourse, userLines };
     } catch (e) {
-      Sentry.captureException(e)
+      Sentry.captureException(e);
       return {
         userCourse: undefined,
         userLines: undefined,
-      }
+      };
     }
-  })()
+  })();
 
-  if (!userCourse || !userLines) {
-    redirect('/404')
+  if (userCourse === undefined || userLines.length === 0) {
+    redirect('/404');
   }
 
   return (
-    <>
-      <div className="dark:bg-slate-800 p-2 md:p-4 lg:px-6">
-        <Heading as="h1">
-          {userCourse.course.courseName}
-          <Link className="ml-2" href={`/training/courses/`}>
-            <Button variant="accent">Back to courses</Button>
-          </Link>
-        </Heading>
-        <CourseBrowser lines={userLines} />
-      </div>
-    </>
-  )
-}
+    <div className="p-2 dark:bg-slate-800 md:p-4 lg:px-6">
+      <Heading as="h1">
+        {userCourse.course.courseName}
+        <Link className="ml-2" href="/training/courses/">
+          <Button variant="accent">Back to courses</Button>
+        </Link>
+      </Heading>
+      <CourseBrowser lines={userLines} />
+    </div>
+  );
+};
+
+export CourseTrainPage;

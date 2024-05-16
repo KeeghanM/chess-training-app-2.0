@@ -1,21 +1,20 @@
-import { prisma } from '~/server/db'
+import { prisma } from '@/server/db';
 
-import Container from '../components/_elements/container'
-import StyledLink from '../components/_elements/styledLink'
-import PageHeader from '../components/_layouts/pageHeader'
-import TrophyTile from '../components/members/TrophyTile'
-
-import CalculateXpRank from '../_util/CalculateXpRank'
+import { CalculateXpRank } from '../_util/calculate-xp-rank';
+import { Container } from '../components/_elements/container';
+import { StyledLink } from '../components/_elements/styled-link';
+import { PageHeader } from '../components/_layouts/page-header';
+import { TrophyTile } from '../components/members/trophy-tile';
 
 export default async function MembersPage({
   searchParams,
 }: {
-  searchParams?: Record<string, string | string[]>
+  searchParams?: Record<string, string | string[]>;
 }) {
   const pageNumber = searchParams?.page
     ? parseInt(searchParams.page as string)
-    : 1
-  const resultsPerPage = 50
+    : 1;
+  const resultsPerPage = 50;
   const members = await prisma.userProfile.findMany({
     where: {
       lastTrained: {
@@ -27,48 +26,46 @@ export default async function MembersPage({
     orderBy: {
       experience: 'desc',
     },
-  })
+  });
 
-  const topThree = pageNumber === 1 ? members.slice(0, 3) : []
+  const topThree = pageNumber === 1 ? members.slice(0, 3) : [];
 
   return (
     <>
       <PageHeader
+        subTitle="How do you rank among the best?"
         title="Members Leaderboard"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
         }}
-        subTitle="How do you rank among the best?"
       />
       <Container>
         {topThree.length > 0 && (
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col gap-4 md:flex-row">
             {topThree.map((member, index) => (
               <TrophyTile
                 key={member.id}
-                username={member.username}
-                xp={member.experience}
                 placement={index + 1}
                 published={member.public}
+                username={member.username}
+                xp={member.experience}
               />
             ))}
           </div>
         )}
-        <table className="w-full my-6">
+        <table className="my-6 w-full">
           <tr className="bg-slate-800 text-white">
             <th>Username</th>
             <th>Experience</th>
             <th>Rank</th>
           </tr>
           {members.map((member, index) => {
-            const rank = CalculateXpRank(member.experience)
+            const rank = CalculateXpRank(member.experience);
             return (
               <tr
-                className={
-                  'text-center ' + (index % 2 === 0 ? 'bg-gray-100' : '')
-                }
                 key={member.id}
+                className={`text-center ${index % 2 === 0 ? 'bg-gray-100' : ''}`}
               >
                 <td>
                   {member.public ? (
@@ -84,11 +81,11 @@ export default async function MembersPage({
                   <strong>{rank.rank.rank}:</strong> {rank.rank.name}
                 </td>
               </tr>
-            )
+            );
           })}
         </table>
 
-        <div className="flex gap-2 items-center">
+        <div className="flex items-center gap-2">
           {pageNumber > 1 && (
             <StyledLink href={`/members?page=${pageNumber - 1}`}>
               Previous Page
@@ -102,5 +99,5 @@ export default async function MembersPage({
         </div>
       </Container>
     </>
-  )
+  );
 }

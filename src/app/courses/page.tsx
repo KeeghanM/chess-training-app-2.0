@@ -1,33 +1,32 @@
-import Link from 'next/link'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import Link from 'next/link';
 
-import { prisma } from '~/server/db'
+import { Heading } from '@/app/components/_elements/heading';
+import { prisma } from '@/server/db';
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-
-import Button from '../components/_elements/button'
-import Container from '../components/_elements/container'
-import StyledLink from '../components/_elements/styledLink'
-import BigText from '../components/_layouts/bigText'
-import PageHeader from '../components/_layouts/pageHeader'
-import GetCourse from '../components/ecomm/GetCourse'
-import Heading from '~/app/components/_elements/heading'
+import { Button } from '../components/_elements/button';
+import { Container } from '../components/_elements/container';
+import { StyledLink } from '../components/_elements/styled-link';
+import { BigText } from '../components/_layouts/big-text';
+import { PageHeader } from '../components/_layouts/page-header';
+import { GetCourse } from '../components/ecomm/get-course';
 
 export const metadata = {
   title:
     'Master Chess Openings with Courses Using Natural Play Learning - ChessTraining.app',
   description:
     "Embark on a chess learning adventure with ChessTraining.app's courses, featuring our unique Natural Play Learning method. Our courses are designed to help you learn and remember chess openings more effectively and enjoyably. Utilizing spaced repetition with a creative twist, we ensure you grasp every move without tedious repetition. While our own courses are in development, there's nothing stopping you creating your own. Stay updated with our upcoming courses and feature releases to enhance your chess journey!",
-}
+};
 
 export default async function Courses() {
-  const session = getKindeServerSession()
-  const user = await session.getUser()
+  const session = getKindeServerSession();
+  const user = await session.getUser();
   const courses = await prisma.course.findMany({
     where: { published: true },
     include: {
       createdByProfile: true,
     },
-  })
+  });
 
   const userCourses = user
     ? await prisma.userCourse.findMany({
@@ -36,19 +35,19 @@ export default async function Courses() {
           active: true,
         },
       })
-    : []
+    : [];
 
   return (
     <>
       <PageHeader
+        subTitle="The best way to improve your Chess Openings and beyond"
         title="Study Chess Openings with Natural Play Learning"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
         }}
-        subTitle="The best way to improve your Chess Openings and beyond"
-      ></PageHeader>
-      <BigText size="small" color="secondary">
+      />
+      <BigText color="secondary" size="small">
         Learn about Natural Play Learning, our innovative chess training method{' '}
         <StyledLink href="/about/features/natural-play-learning">
           here
@@ -67,9 +66,9 @@ export default async function Courses() {
             .map((course) => (
               <div
                 key={course.id}
-                className="flex flex-col gap-0 border border-gray-300 shadow-md bg-[rgba(0,0,0,0.03)]"
+                className="flex flex-col gap-0 border border-gray-300 bg-[rgba(0,0,0,0.03)] shadow-md"
               >
-                <div className="px-2 py-1 border-b border-gray-300 font-bold  text-orange-500 flex items-center flex-wrap justify-between">
+                <div className="flex flex-wrap items-center justify-between border-b  border-gray-300 px-2 py-1 font-bold text-orange-500">
                   <Link href={`/courses/${course.slug}`}>
                     <Heading as="h4">{course.courseName}</Heading>
                   </Link>
@@ -77,7 +76,7 @@ export default async function Courses() {
                     {course.price > 0 ? <>£{course.price / 100}</> : 'FREE'}
                   </p>
                 </div>
-                <p className="w-full text-center bg-purple-300  py-1 italic text-sm">
+                <p className="w-full bg-purple-300 py-1  text-center text-sm italic">
                   Created By:{' '}
                   {course.createdByProfile.public ? (
                     <StyledLink
@@ -90,20 +89,20 @@ export default async function Courses() {
                   )}
                 </p>
                 <div
-                  className="p-2"
                   dangerouslySetInnerHTML={{
                     __html: course.shortDescription ?? '',
                   }}
+                  className="p-2"
                 />
-                <div className="flex flex-col md:flex-row gap-2 p-2 items-center justify-center">
+                <div className="flex flex-col items-center justify-center gap-2 p-2 md:flex-row">
                   <GetCourse
                     courseId={course.id}
                     price={course.price}
+                    showPrice={false}
                     slug={course.slug}
                     userCourseId={
                       userCourses.find((c) => c.courseId === course.id)?.id
                     }
-                    showPrice={false}
                   />
                   <Link href={`/courses/${course.slug}`}>
                     <Button variant="secondary">View Course</Button>
@@ -117,5 +116,5 @@ export default async function Courses() {
         </Heading>
       </Container>
     </>
-  )
+  );
 }

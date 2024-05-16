@@ -1,42 +1,42 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-import Heading from '~/app/components/_elements/heading'
-import BigText from '~/app/components/_layouts/bigText'
-import CtaRow from '~/app/components/_layouts/ctaRow'
-import Hero from '~/app/components/_layouts/hero'
-import ImageRowFull from '~/app/components/_layouts/imageRowFull'
-import { TextWall } from '~/app/components/_layouts/textWall'
+import { Heading } from '@/app/components/_elements/heading';
+import { BigText } from '@/app/components/_layouts/big-text';
+import { CtaRow } from '@/app/components/_layouts/cta-row';
+import { Hero } from '@/app/components/_layouts/hero';
+import { ImageRowFull } from '@/app/components/_layouts/image-row-full';
+import { TextWall } from '@/app/components/_layouts/text-wall';
 
 export const metadata = {
   title:
     'Boost Your Chess Tactics with the Woodpecker Method - ChessTraining.app',
   description:
     'Master tactical chess play with the Woodpecker Method. Perfect for all skill levels, this method developed by GMs Axel Smith and Hans Tikkanen emphasizes solving and re-solving puzzles for speed and accuracy. Join ChessTraining.app to revolutionize your tactical skills.',
-}
+};
 
-export default async function WoodPeckerPage() {
+export default function WoodPeckerPage() {
   return (
     <>
       <Hero
-        title={'Chess Tactics Training with the Woodpecker Method'}
+        title="Chess Tactics Training with the Woodpecker Method"
         image={{
           src: '/images/hero.avif',
           alt: 'Chess board focusing on tactical positions',
         }}
       >
-        <Heading color="text-orange-500" as={'h2'}>
-          Train chess puzzles using the WoodPecker Method developed by GM's Axel
-          Smith, and Hans Tikkanen.
+        <Heading as="h2" color="text-orange-500">
+          Train chess puzzles using the WoodPecker Method developed by GM&apos;s
+          Axel Smith, and Hans Tikkanen.
         </Heading>
       </Hero>
       <ImageRowFull
+        background="light"
+        heading="Discover the Woodpecker Method"
+        imageSide="left"
         image={{
           src: '/images/man_chess_computer_3.png',
           alt: 'A person at a computer engaging in intense chess tactics training',
         }}
-        imageSide="left"
-        heading="Discover the Woodpecker Method"
-        background="light"
       >
         <p>
           The Woodpecker Method, developed by Grandmasters Axel Smith and Hans
@@ -61,13 +61,13 @@ export default async function WoodPeckerPage() {
         </Link>
       </BigText>
       <ImageRowFull
+        background="light"
+        heading="How to Train with the Woodpecker Method"
+        imageSide="right"
         image={{
           src: '/images/woman_chess_3.png',
           alt: 'A focused individual studying chess tactics on a computer',
         }}
-        imageSide="right"
-        heading="How to Train with the Woodpecker Method"
-        background="light"
       >
         <p>
           Our Tactics Trainer lets you build and solve a customized set of
@@ -83,7 +83,7 @@ export default async function WoodPeckerPage() {
         <p>
           The key to getting the most out of the Woodpecker Method is to ensure
           the puzzles are challenging enough to push you, but not so difficult
-          that you can't solve them. Ideally each puzzle on your first run
+          that you can&apos;t solve them. Ideally each puzzle on your first run
           through should take between 1-2 minutes to solve. If you find yourself
           taking longer than this, you may want to consider reducing the
           difficulty of the puzzle set.
@@ -96,7 +96,7 @@ export default async function WoodPeckerPage() {
           memory.
         </p>
       </ImageRowFull>
-      <TextWall title="Why the Woodpecker Method?" background="dark">
+      <TextWall background="dark" title="Why the Woodpecker Method?">
         <ul>
           <li>
             <strong>Effective Learning:</strong> Absorb and retain tactical
@@ -117,12 +117,12 @@ export default async function WoodPeckerPage() {
         </ul>
       </TextWall>
       <CtaRow
-        title="Are You Ready to Revolutionize Your Chess Tactics?"
-        cta={{ text: 'Begin Your Journey', link: '/training/tactics/list' }}
         background="light"
+        cta={{ text: 'Begin Your Journey', link: '/training/tactics/list' }}
+        title="Are You Ready to Revolutionize Your Chess Tactics?"
       >
         <p>Start now for free and take your tactical skills to new heights.</p>
       </CtaRow>
     </>
-  )
+  );
 }

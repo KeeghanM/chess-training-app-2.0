@@ -1,47 +1,47 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-import Button from '~/app/components/_elements/button'
-import Heading from '~/app/components/_elements/heading'
-import BigText from '~/app/components/_layouts/bigText'
-import CtaRow from '~/app/components/_layouts/ctaRow'
-import Hero from '~/app/components/_layouts/hero'
-import ImageRowFull from '~/app/components/_layouts/imageRowFull'
-import { TextWall } from '~/app/components/_layouts/textWall'
+import { Button } from '@/app/components/_elements/button';
+import { Heading } from '@/app/components/_elements/heading';
+import { BigText } from '@/app/components/_layouts/big-text';
+import { CtaRow } from '@/app/components/_layouts/cta-row';
+import { Hero } from '@/app/components/_layouts/hero';
+import { ImageRowFull } from '@/app/components/_layouts/image-row-full';
+import { TextWall } from '@/app/components/_layouts/text-wall';
 
 export const metadata = {
   title:
     'Revolutionize your Chess Training with Natural Play Learning - ChessTraining.app',
   description:
     "Discover ChessTraining.app's Natural Play Learning, an innovative chess training method for faster learning and longer retention. Master chess openings like never before with our unique approach, combining the effectiveness of spaced repetition with real-game scenarios. Join us now and elevate your chess game",
-}
+};
 
-export default async function NaturalPlayLearningPage() {
+export default function NaturalPlayLearningPage() {
   return (
     <>
       <Hero
-        title={'Master Chess Openings with Natural Play Learning'}
+        title="Master Chess Openings with Natural Play Learning"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden Chess pieces on a chess board',
         }}
       >
-        <Heading color="text-orange-500" as={'h2'}>
+        <Heading as="h2" color="text-orange-500">
           Welcome to a Revolutionary Chess Training Experience
         </Heading>
       </Hero>
-      <BigText size="small" color="primary">
-        At ChessTraining.app, we're redefining the way you learn chess openings.
-        Our unique Natural Play Learning method is here to transform your
-        understanding and mastery of chess openings.
+      <BigText color="primary" size="small">
+        At ChessTraining.app, we&apos;re redefining the way you learn chess
+        openings. Our unique Natural Play Learning method is here to transform
+        your understanding and mastery of chess openings.
       </BigText>
       <ImageRowFull
+        background="light"
+        heading="Courses Powered by Natural Play Learning"
+        imageSide="right"
         image={{
           src: '/images/man_chess_computer_3.png',
           alt: 'A person sat at a computer studying and improving their chess',
         }}
-        imageSide="right"
-        heading="Courses Powered by Natural Play Learning"
-        background="light"
       >
         <p>
           Our Course Trainer is specifically designed to help you learn chess
@@ -51,7 +51,7 @@ export default async function NaturalPlayLearningPage() {
           the courses shared by other users. We will also regularly publish
           bespoke courses created by our in-house Masters and top players.
         </p>
-        <Heading as="h3">Here's what you can expect:</Heading>
+        <Heading as="h3">Here&apos;s what you can expect:</Heading>
         <ul>
           <li>
             <strong>User-Centric:</strong> You can either create your own
@@ -84,13 +84,13 @@ export default async function NaturalPlayLearningPage() {
         for free!
       </BigText>
       <ImageRowFull
+        background="light"
+        heading="What is Natural Play Learning?"
+        imageSide="left"
         image={{
           src: '/images/man_frustrated_3.png',
           alt: 'A man sat at a desk frustrated yet determined to improve his chess',
         }}
-        imageSide="left"
-        heading="What is Natural Play Learning?"
-        background="light"
       >
         <p>
           Natural Play Learning is a groundbreaking technique developed
@@ -99,12 +99,12 @@ export default async function NaturalPlayLearningPage() {
           Repetition with a creative twist.
         </p>
         <p>
-          By ensuring you only "learn" a move once, and after that are shown it
-          directly in context as you would when playing, we not only cut down on
-          the time it takes to learn a move, but also ensure you retain it for
-          longer.
+          By ensuring you only &quot;learn&quot; a move once, and after that are
+          shown it directly in context as you would when playing, we not only
+          cut down on the time it takes to learn a move, but also ensure you
+          retain it for longer.
         </p>
-        <Heading as="h3">Here's how it works:</Heading>
+        <Heading as="h3">Here&apos;s how it works:</Heading>
         <ul>
           <li>
             <strong>Learning Through Playing:</strong> Instead of monotonously
@@ -119,13 +119,13 @@ export default async function NaturalPlayLearningPage() {
             only makes learning more efficient but also deeply engaging.
           </li>
           <li>
-            <strong>Tailored to All Levels:</strong> Whether you're a beginner
-            or a seasoned Grandmaster, our Natural Play Learning method is
-            designed to cater to every skill level.
+            <strong>Tailored to All Levels:</strong> Whether you&apos;re a
+            beginner or a seasoned Grandmaster, our Natural Play Learning method
+            is designed to cater to every skill level.
           </li>
         </ul>
       </ImageRowFull>
-      <TextWall title="Why choose Natural Play Learning?" background="dark">
+      <TextWall background="dark" title="Why choose Natural Play Learning?">
         <ul>
           <li>
             <strong>Faster Learning:</strong> Absorb and comprehend chess
@@ -146,12 +146,12 @@ export default async function NaturalPlayLearningPage() {
         </ul>
       </TextWall>
       <CtaRow
-        title="Ready to transform your chess game?"
-        cta={{ text: 'Sign Up Now', link: '/auth/signin' }}
         background="light"
+        cta={{ text: 'Sign Up Now', link: '/auth/signin' }}
+        title="Ready to transform your chess game?"
       >
         <p>Sign up now for free and start your journey to chess mastery.</p>
       </CtaRow>
     </>
-  )
+  );
 }

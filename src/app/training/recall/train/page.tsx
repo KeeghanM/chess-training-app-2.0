@@ -1,14 +1,13 @@
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
 
-import Container from '~/app/components/_elements/container'
-import PageHeader from '~/app/components/_layouts/pageHeader'
-import RecallTrainer from '~/app/components/training/recall/RecallTrainer'
+import { getUserServer } from '@/app/_util/get-user-server';
+import { Container } from '@/app/components/_elements/container';
+import { PageHeader } from '@/app/components/_layouts/page-header';
+import RecallTrainer from '@/app/components/training/recall/RecallTrainer';
 
-import { getUserServer } from '~/app/_util/getUserServer'
-
-export default async function RecallTrainPage() {
-  const { user } = await getUserServer()
-  if (!user) redirect('/auth/signin')
+export async function RecallTrainPage() {
+  const { user } = await getUserServer();
+  if (!user) redirect('/auth/signin');
 
   return (
     <>
@@ -25,5 +24,5 @@ export default async function RecallTrainPage() {
         </Container>
       </div>
     </>
-  )
+  );
 }

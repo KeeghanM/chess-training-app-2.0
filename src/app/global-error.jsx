@@ -1,21 +1,19 @@
-'use client'
+'use client';
 
-import Error from 'next/error'
+import * as Sentry from '@sentry/nextjs';
+import Error from 'next/error';
+import { useEffect } from 'react';
 
-import { useEffect } from 'react'
-
-import * as Sentry from '@sentry/nextjs'
-
-export default function GlobalError({ error }) {
+export function GlobalError({ error }) {
   useEffect(() => {
-    Sentry.captureException(error)
-  }, [error])
+    Sentry.captureException(error);
+  }, [error]);
 
   return (
-    <html>
+    <html lang="en-GB">
       <body>
         <Error />
       </body>
     </html>
-  )
+  );
 }

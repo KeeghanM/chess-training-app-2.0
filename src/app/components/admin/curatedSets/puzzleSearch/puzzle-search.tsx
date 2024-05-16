@@ -1,0 +1,103 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+
+import type { ResponseJson } from '@/app/api/responses';
+import Spinner from '@/app/components/general/spinner';
+
+import type { CuratedSetPuzzle } from '../curated-sets-browser';
+
+import { CreateCustom } from './create-custom';
+import { LiChessSearch } from './lichess-search';
+
+export function PuzzleSearch({
+  setPuzzle,
+}: {
+  setPuzzle: (puzzle: CuratedSetPuzzle) => void;
+}) {
+  const [mode, setMode] = useState<'LiChess' | 'Custom'>('LiChess');
+  const [puzzles, setPuzzles] = useState<CuratedSetPuzzle[]>([]);
+  const [selectedPuzzle, setSelectedPuzzle] = useState<CuratedSetPuzzle>();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const loadPuzzles = async () => {
+    setLoading(true);
+    const response = await fetch('/api/admin/curated-sets/customPuzzle');
+    const json = (await response.json()) as ResponseJson;
+    if (!json.data?.puzzles) return;
+    setPuzzles(json.data.puzzles as CuratedSetPuzzle[]);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (mode === 'LiChess') {
+      setPuzzles([]);
+      return;
+    }
+    (async () => await loadPuzzles())().catch((e: unknown) => {
+      if (e instanceof Error) setError(e.message);
+      else setError('Error loading puzzles');
+    });
+  }, [mode]);
+
+  return (
+    <div className="flex max-h-[70vh] flex-1 flex-col gap-2 border border-purple-700 bg-purple-700 bg-opacity-20 p-2 text-black dark:text-white lg:border-4">
+      <div className="flex items-center justify-around text-sm">
+        <button
+          className={`px-4 py-1 font-bold text-white ${
+            mode === 'LiChess'
+              ? 'bg-green-500'
+              : 'cursor-pointer bg-gray-700 hover:bg-purple-600'
+          }`}
+          onClick={() => setMode('LiChess')}
+        >
+          LiChess
+        </button>
+        <button
+          className={`px-4 py-1 font-bold text-white ${
+            mode === 'Custom'
+              ? 'bg-green-500'
+              : 'cursor-pointer bg-gray-700 hover:bg-purple-600'
+          }`}
+          onClick={() => setMode('Custom')}
+        >
+          Custom
+        </button>
+      </div>
+      {mode === 'LiChess' ? (
+        <LiChessSearch setPuzzle={setPuzzle} />
+      ) : (
+        <>
+          <CreateCustom onLoad={loadPuzzles} />
+          {loading ? (
+            <Spinner />
+          ) : (
+            <ul className="h-full max-h-[50vh] overflow-y-auto text-black">
+              {puzzles.map((puzzle) => (
+                <li
+                  key={puzzle.puzzleid}
+                  className={`cursor-pointer border-b border-slate-500 bg-gray-50 p-2 hover:bg-orange-200 text-sm${
+                    selectedPuzzle?.puzzleid === puzzle.puzzleid
+                      ? ' bg-purple-200'
+                      : ''
+                  }`}
+                >
+                  <button
+                    onClick={() => {
+                      setSelectedPuzzle(puzzle);
+                      setPuzzle(puzzle);
+                    }}
+                  >
+                    {puzzle.puzzleid} ({puzzle.rating} - {puzzle.moves.length} )
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </>
+      )}
+      {error && <p>{error}</p>}
+    </div>
+  );
+}

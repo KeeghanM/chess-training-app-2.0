@@ -1,27 +1,27 @@
-import type { MetadataRoute } from 'next'
+import type { MetadataRoute } from 'next';
 
-import Prismic from '~/prismicio'
+import { Prismic } from '@/prismicio';
 
-export default async function sitemap() {
-  const articles = await Prismic.getAllByType('article')
-  const authors = await Prismic.getAllByType('author')
+export async function sitemap() {
+  const articles = await Prismic.getAllByType('article');
+  const authors = await Prismic.getAllByType('author');
 
   const tidiedArticles = articles.map((article) => {
     return {
-      url: `https://chesstraining.app/articles/${article.uid}`,
+      url: `https://chesstraining.app/articles/${article.uid ?? article.id}`,
       lastModified: new Date(article.last_publication_date),
       changeFrequency: 'monthly',
       priority: 0.9,
-    }
-  }) as MetadataRoute.Sitemap
+    };
+  }) as MetadataRoute.Sitemap;
   const tidiedAuthors = authors.map((author) => {
     return {
-      url: `https://chesstraining.app/articles/author/${author.uid}`,
+      url: `https://chesstraining.app/articles/author/${author.uid ?? author.id}`,
       lastModified: new Date(author.last_publication_date),
       changeFrequency: 'monthly',
       priority: 0.4,
-    }
-  }) as MetadataRoute.Sitemap
+    };
+  }) as MetadataRoute.Sitemap;
 
   const pages: MetadataRoute.Sitemap = [
     {
@@ -140,12 +140,12 @@ export default async function sitemap() {
     },
     ...tidiedArticles,
     ...tidiedAuthors,
-  ]
+  ];
 
   pages.sort((a, b) => {
     // sort by priority order, highest first
-    return (b.priority ?? 0.5) - (a.priority ?? 0.5)
-  })
+    return (b.priority ?? 0.5) - (a.priority ?? 0.5);
+  });
 
-  return pages
+  return pages;
 }

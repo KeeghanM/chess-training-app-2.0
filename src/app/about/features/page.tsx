@@ -1,16 +1,16 @@
-import Link from 'next/link'
+import Link from 'next/link';
 
-import BigText from '~/app/components/_layouts/bigText'
-import CtaRow from '~/app/components/_layouts/ctaRow'
-import Hero from '~/app/components/_layouts/hero'
+import { BigText } from '@/app/components/_layouts/big-text';
+import { CtaRow } from '@/app/components/_layouts/cta-row';
+import { Hero } from '@/app/components/_layouts/hero';
 
 export const metadata = {
   title: 'Explore Chess Training Tools & Features at ChessTraining.app',
   description:
     "Dive into the world of chess training with ChessTraining.app's range of unique tools. From our pioneering Natural Play Learning to the engaging Tactics Trainer, and our comprehensive Course Trainer, we offer tailored solutions to enhance your chess skills. Whether you're a beginner or a seasoned player, our features like Knight Vision and Endgame Trainer are designed to elevate your game. Start your journey towards chess mastery today with ChessTraining.app!",
-}
+};
 
-export default async function FeaturesPage() {
+export default function FeaturesPage() {
   const features = [
     {
       name: 'Natural Play Learning',
@@ -88,7 +88,7 @@ export default async function FeaturesPage() {
       anchor: 'knight-vision',
       link: '/training/knight-vision',
     },
-  ]
+  ];
 
   return (
     <>
@@ -99,13 +99,13 @@ export default async function FeaturesPage() {
           alt: 'Wooden Chess pieces on a chess board',
         }}
       >
-        <ol className="text-orange-500 p-2 bg-[rgba(0,0,0,0.3)]">
+        <ol className="bg-[rgba(0,0,0,0.3)] p-2 text-orange-500">
           {features.map((feature, index) => (
             <li
-              key={'li' + index.toString()}
+              key={`li${index.toString()}`}
               className="cursor-pointer hover:underline"
             >
-              <Link href={'#' + feature.anchor}>
+              <Link href={`#${feature.anchor}`}>
                 {index + 1}. {feature.name}
               </Link>
             </li>
@@ -114,18 +114,19 @@ export default async function FeaturesPage() {
       </Hero>
       {features.map((feature, index) => (
         <>
-          <a id={feature.anchor} className="anchor" />
+          {/* eslint-disable-next-line -- This is a click through anchor, as in the target for something else */}
+          <a className="anchor" id={feature.anchor} />
           <CtaRow
+            key={`feature-${index.toString()}`}
+            background={index % 2 === 0 ? 'dark' : 'light'}
             title={feature.name}
-            background={index % 2 == 0 ? 'dark' : 'light'}
-            key={'feature-' + index.toString()}
             cta={{
               text: 'Learn More',
               link: feature.link,
             }}
           >
             {feature.description.map((paragraph, index) => (
-              <p className="flex-1" key={'desc-' + index.toString()}>
+              <p key={`desc-${index.toString()}`} className="flex-1">
                 {paragraph}
               </p>
             ))}
@@ -145,5 +146,5 @@ export default async function FeaturesPage() {
         </p>
       </BigText>
     </>
-  )
+  );
 }

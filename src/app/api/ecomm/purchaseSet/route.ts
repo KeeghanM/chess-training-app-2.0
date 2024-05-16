@@ -1,27 +1,27 @@
-import { prisma } from '~/server/db'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import * as Sentry from '@sentry/nextjs';
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-import * as Sentry from '@sentry/nextjs'
+import { prisma } from '@/server/db';
 
-import { errorResponse, successResponse } from '../../responses'
-import { AddCuratedSetToUser } from '../functions/AddCuratedSetToUser'
+import { errorResponse, successResponse } from '../../responses';
+import { AddCuratedSetToUser } from '../functions/add-curated-set-to-user';
 import {
   CreateCheckoutSession,
   getProductDetails,
-} from '../functions/CreateCheckoutSession'
+} from '../functions/create-checkout-session';
 
 export async function POST(request: Request) {
   try {
-    const session = getKindeServerSession()
-    if (!session) return errorResponse('Unauthorized', 401)
-    const user = await session.getUser()
-    if (!user) return errorResponse('Unauthorized', 401)
+    const session = getKindeServerSession();
+
+    const user = await session.getUser();
+    if (!user) return errorResponse('Unauthorized', 401);
 
     const { productId } = (await request.json()) as {
-      productId: string
-    }
+      productId: string;
+    };
 
-    if (!productId) return errorResponse('Missing productId', 400)
+    if (!productId) return errorResponse('Missing productId', 400);
 
     // Check if the user already owns the set
     const existingSet = await prisma.tacticsSet.findFirst({
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         userId: user.id,
         curatedSetId: productId,
       },
-    })
+    });
 
     if (existingSet) {
       if (!existingSet.active) {
@@ -41,14 +41,14 @@ export async function POST(request: Request) {
           data: {
             active: true,
           },
-        })
+        });
       }
 
       return successResponse(
         'User already owns this set',
         { url: '/training/tactics/list' },
         200,
-      )
+      );
     }
 
     // Check if the user has space
@@ -57,25 +57,25 @@ export async function POST(request: Request) {
         userId: user.id,
         active: true,
       },
-    })
-    const permissions = await session.getPermissions()
+    });
+    const permissions = await session.getPermissions();
 
     if (ownedSets >= 3 && !permissions?.permissions.includes('unlimited-sets'))
-      return errorResponse('User has max sets', 400)
+      return errorResponse('User has max sets', 400);
 
     // Now get the product details
-    const { price, name } = await getProductDetails('curatedSet', productId)
+    const { price, name } = await getProductDetails('curatedSet', productId);
     if (price === undefined || !name)
-      return errorResponse('Product not found', 404)
+      return errorResponse('Product not found', 404);
 
     // If the product is free, add it
     if (price === 0) {
-      await AddCuratedSetToUser(productId, user.id)
+      await AddCuratedSetToUser(productId, user.id);
       return successResponse(
         'Set Purchased',
         { url: '/training/tactics/list' },
         200,
-      )
+      );
     }
 
     // If the product is paid, create a checkout session
@@ -83,18 +83,18 @@ export async function POST(request: Request) {
       [{ productType: 'curatedSet', productId }],
       '/training/tactics/list',
       user,
-    )
+    );
 
-    if (!checkoutSession) return errorResponse('Session creation failed', 500)
+    if (!checkoutSession) return errorResponse('Session creation failed', 500);
 
     return successResponse(
       'Checkout Session Created',
       { url: checkoutSession },
       200,
-    )
+    );
   } catch (e) {
-    Sentry.captureException(e)
-    if (e instanceof Error) return errorResponse(e.message, 500)
-    else return errorResponse('Something went wrong', 500)
+    Sentry.captureException(e);
+    if (e instanceof Error) return errorResponse(e.message, 500);
+    return errorResponse('Something went wrong', 500);
   }
 }

@@ -1,70 +1,68 @@
-import Image from 'next/image'
-import { redirect } from 'next/navigation'
+import { Tour } from '@frigade/react';
+import Image from 'next/image';
+import { redirect } from 'next/navigation';
 
-import { prisma } from '~/server/db'
+import { PostHogClient } from '@/app/_util/track-event-on-server';
+import { Container } from '@/app/components/_elements/container';
+import { Heading } from '@/app/components/_elements/heading';
+import { StreakDisplay } from '@/app/components/dashboard/streak-display';
+import { ToolGrid } from '@/app/components/dashboard/tool-grid';
+import { XpDisplay } from '@/app/components/dashboard/xp-display';
+import { ThemeSwitch } from '@/app/components/template/header/theme-switch';
+import { prisma } from '@/server/db';
 
-import { Tour } from '@frigade/react'
+import { CalculateStreakBadge } from '../_util/calculate-streak-badge';
+import { CalculateXpRank } from '../_util/calculate-xp-rank';
+import { getUserServer } from '../_util/get-user-server';
+import { PremiumDisplay } from '../components/dashboard/premium-display';
 
-import PremiumDisplay from '../components/dashboard/PremiumDisplay'
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
-import StreakDisplay from '~/app/components/dashboard/StreakDisplay'
-import ToolGrid from '~/app/components/dashboard/ToolGrid'
-import XpDisplay from '~/app/components/dashboard/XpDisplay'
-import ThemeSwitch from '~/app/components/template/header/ThemeSwitch'
-
-import CalculateStreakBadge from '../_util/CalculateStreakBadge'
-import CalculateXpRank from '../_util/CalculateXpRank'
-import { getUserServer } from '../_util/getUserServer'
-import { PostHogClient } from '~/app/_util/trackEventOnServer'
-
-export type Tool = {
-  name: string
-  description: string[]
-  trainingLink: string
-  learnMoreLink?: string
-  buttonText: string
-  active: boolean
-  id?: string
+export interface Tool {
+  name: string;
+  description: string[];
+  trainingLink: string;
+  learnMoreLink?: string;
+  buttonText: string;
+  active: boolean;
+  id?: string;
 }
 
 export const metadata = {
   title: 'Dashboard - ChessTraining.app',
-}
+};
 
-export default async function Dashboard() {
-  const { user, isPremium, isStaff } = await getUserServer()
+export async function Dashboard() {
+  const { user, isPremium, isStaff } = await getUserServer();
 
   if (!user) {
-    redirect('/auth/signin')
-    return
+    redirect('/auth/signin');
+    return;
   }
 
   const profile = await prisma.userProfile.findFirst({
     where: {
       id: user.id,
     },
-  })
+  });
   const badges = await prisma.userBadge.findMany({
     where: {
       userId: user.id,
     },
-  })
-  await prisma.$disconnect()
+  });
+  await prisma.$disconnect();
 
-  const override = false ?? process.env.NODE_ENV === 'development'
+  const override = process.env.NODE_ENV === 'development';
 
   // Identify the user immediately upon signin
-  const posthog = PostHogClient()
+  const posthog = PostHogClient();
   posthog.identify({
     distinctId: user.id,
     properties: {
       email: user.email ?? 'unknown',
     },
-  })
+  });
 
   // This will force new users into the onboarding
-  if (!profile) redirect('/dashboard/new')
+  if (!profile) redirect('/dashboard/new');
 
   const tools: Tool[] = [
     {
@@ -77,7 +75,7 @@ export default async function Dashboard() {
       trainingLink: '/training/tactics/list',
       learnMoreLink: '/training/tactics',
       buttonText: 'Train',
-      active: true || override,
+      active: override || true,
       id: 'tooltip-1',
     },
     {
@@ -89,7 +87,7 @@ export default async function Dashboard() {
       trainingLink: '/training/courses',
       learnMoreLink: '/about/features/natural-play-learning',
       buttonText: 'Train',
-      active: true || override,
+      active: override || true,
       id: 'tooltip-2',
     },
     {
@@ -102,7 +100,7 @@ export default async function Dashboard() {
       trainingLink: '/training/visualisation/train',
       learnMoreLink: '/training/visualisation',
       buttonText: 'Train',
-      active: true || override,
+      active: override || true,
       id: 'tooltip-3',
     },
     {
@@ -115,7 +113,7 @@ export default async function Dashboard() {
       trainingLink: '/training/recall/train',
       learnMoreLink: '/training/recall',
       buttonText: 'Train',
-      active: true || override,
+      active: override || true,
       id: 'tooltip-4',
     },
     {
@@ -128,7 +126,7 @@ export default async function Dashboard() {
       trainingLink: '/training/endgames/train',
       learnMoreLink: '/training/endgames',
       buttonText: 'Train',
-      active: true || override,
+      active: override || true,
       id: 'tooltip-5',
     },
     {
@@ -140,7 +138,7 @@ export default async function Dashboard() {
       ],
       trainingLink: '/training/play-the-masters',
       buttonText: 'Train',
-      active: false || override,
+      active: override || false,
     },
     {
       name: 'Knight Vision',
@@ -151,9 +149,9 @@ export default async function Dashboard() {
       ],
       trainingLink: '/training/knight-vision/train',
       buttonText: 'Train',
-      active: false || override,
+      active: override || false,
     },
-  ]
+  ];
 
   const staffTools: Tool[] = [
     {
@@ -172,7 +170,7 @@ export default async function Dashboard() {
       buttonText: 'Open',
       active: true,
     },
-  ]
+  ];
 
   return (
     <>
@@ -180,34 +178,32 @@ export default async function Dashboard() {
       <div className="relative">
         <div className="absolute inset-0">
           <Image
-            fill={true}
-            className="object-cover object-center w-full h-full filter grayscale brightness-[.3]"
-            src="/images/hero.avif"
+            fill
             alt="Chess board with pieces set up"
+            className="h-full w-full object-cover object-center brightness-[.3] grayscale filter"
+            src="/images/hero.avif"
           />
         </div>
         <Container size="wide">
-          <Heading color="text-white" as={'h1'}>
+          <Heading as="h1" color="text-white">
             Welcome back,{' '}
-            <span id="tooltip-6">
-              {user.given_name ?? profile.username ?? user.email}
-            </span>
+            <span id="tooltip-6">{user.given_name ?? profile.username}</span>
             <PremiumDisplay isPremium={isPremium} />
           </Heading>
           <div
-            id="tooltip-0"
             className="flex flex-col flex-wrap gap-2 md:flex-row"
+            id="tooltip-0"
           >
             <StreakDisplay
-              data={CalculateStreakBadge(profile)}
               badges={badges}
+              data={CalculateStreakBadge(profile)}
             />
             <XpDisplay data={CalculateXpRank(profile.experience)} />
           </div>
         </Container>
       </div>
       <div className="p-4 dark:bg-slate-800 md:p-6">
-        <div className="mb-6 w-fit flex items-center gap-1 rounded-full border border-gray-300 px-2 text-black dark:border-slate-600 dark:text-white">
+        <div className="mb-6 flex w-fit items-center gap-1 rounded-full border border-gray-300 px-2 text-black dark:border-slate-600 dark:text-white">
           <p>Light</p>
           <ThemeSwitch />
           <p>Dark</p>
@@ -215,27 +211,27 @@ export default async function Dashboard() {
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
           {tools
             .sort((a, b) => {
-              if (a.active && !b.active) return -1
-              if (!a.active && b.active) return 1
-              return 0
+              if (a.active && !b.active) return -1;
+              if (!a.active && b.active) return 1;
+              return 0;
             })
             .map((tool) => (
-              <ToolGrid tool={tool} key={tool.name} />
+              <ToolGrid key={tool.name} tool={tool} />
             ))}
         </div>
-        {isStaff && (
+        {isStaff ? (
           <div>
-            <Heading color="text-purple-700" as={'h2'}>
+            <Heading as="h2" color="text-purple-700">
               Staff Tools
             </Heading>
             <div className="mb-2 grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {staffTools.map((tool) => (
-                <ToolGrid tool={tool} key={tool.name} />
+                <ToolGrid key={tool.name} tool={tool} />
               ))}
             </div>
           </div>
-        )}
+        ) : null}
       </div>
     </>
-  )
+  );
 }

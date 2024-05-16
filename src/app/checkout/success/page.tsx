@@ -1,21 +1,18 @@
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
+import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
-import { prisma } from '~/server/db'
-
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
-
-import Button from '~/app/components/_elements/button'
-import Container from '~/app/components/_elements/container'
-import Heading from '~/app/components/_elements/heading'
-import StyledLink from '~/app/components/_elements/styledLink'
-import PageHeader from '~/app/components/_layouts/pageHeader'
+import { Button } from '@/app/components/_elements/button';
+import { Container } from '@/app/components/_elements/container';
+import { Heading } from '@/app/components/_elements/heading';
+import { StyledLink } from '@/app/components/_elements/styled-link';
+import { PageHeader } from '@/app/components/_layouts/page-header';
+import { prisma } from '@/server/db';
 
 export default async function CheckoutSuccessPage() {
-  const session = getKindeServerSession()
-  if (!session) redirect('/')
-  const user = await session.getUser()
-  if (!user) redirect('/')
+  const session = getKindeServerSession();
+  const user = await session.getUser();
+  if (!user) redirect('/');
 
   const latestSession = await prisma.checkoutSession.findFirst({
     where: {
@@ -27,14 +24,14 @@ export default async function CheckoutSuccessPage() {
     include: {
       items: true,
     },
-  })
+  });
 
-  if (!latestSession) redirect('/')
+  if (!latestSession) redirect('/');
 
   const items: {
-    name: string
-    url: string
-  }[] = []
+    name: string;
+    url: string;
+  }[] = [];
 
   for (const item of latestSession.items) {
     if (item.productType === 'curatedSet') {
@@ -42,26 +39,28 @@ export default async function CheckoutSuccessPage() {
         where: {
           id: item.productId,
         },
-      })
+      });
+      if (!curatedSet) continue;
       items.push({
-        name: curatedSet!.name,
+        name: curatedSet.name,
         url: '/training/tactics/list',
-      })
+      });
     } else if (item.productType === 'course') {
       const course = await prisma.course.findUnique({
         where: {
           id: item.productId,
         },
-      })
+      });
+      if (!course) continue;
       items.push({
-        name: course!.courseName,
+        name: course.courseName,
         url: '/training/courses',
-      })
+      });
     } else if (item.productType === 'subscription') {
       items.push({
         name: 'Premium Subscription',
         url: '/dashboard',
-      })
+      });
     }
   }
 
@@ -80,7 +79,7 @@ export default async function CheckoutSuccessPage() {
           {items.map((item, index) => (
             <li
               key={index}
-              className="flex flex-col gap-2 p-2 md:p-4 md:px-6 bg-gray-100"
+              className="flex flex-col gap-2 bg-gray-100 p-2 md:p-4 md:px-6"
             >
               <Heading as="h3">{item.name}</Heading>
               <Link href={item.url}>
@@ -102,5 +101,5 @@ export default async function CheckoutSuccessPage() {
         </div>
       </Container>
     </>
-  )
+  );
 }

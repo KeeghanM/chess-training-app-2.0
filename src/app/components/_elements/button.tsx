@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
 interface ButtonProps {
-  onClick?: () => void
+  onClick?: () => void;
   variant:
     | 'primary'
     | 'secondary'
@@ -10,13 +10,20 @@ interface ButtonProps {
     | 'danger'
     | 'warning'
     | 'success'
-    | 'info'
-  disabled?: boolean
-  children: React.ReactNode
-  id?: string
-  className?: string
+    | 'info';
+  disabled?: boolean;
+  children: React.ReactNode;
+  id?: string;
+  className?: string;
 }
-export default function Button(props: ButtonProps) {
+export function Button({
+  onClick,
+  variant,
+  disabled,
+  children,
+  id,
+  className,
+}: ButtonProps) {
   const styles = {
     primary:
       'bg-purple-700 hover:bg-purple-600 text-white font-bold py-2 px-6 shadow',
@@ -32,21 +39,20 @@ export default function Button(props: ButtonProps) {
     success:
       'bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-6 shadow',
     info: 'bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-6 shadow',
-  }
+  };
 
   return (
     <button
-      id={props.id}
-      className={
-        'flex min-w-[145px] items-center justify-center gap-2 text-sm ' +
-        styles[props.variant] +
-        (props.disabled ? ' cursor-not-allowed opacity-50' : '') +
-        (props.className ? ' ' + props.className : '')
-      }
-      onClick={props.onClick ? props.onClick : undefined}
-      disabled={props.disabled}
+      disabled={disabled}
+      id={id}
+      className={`flex min-w-[145px] items-center justify-center gap-2 text-sm ${
+        styles[variant]
+      }${
+        disabled ? ' cursor-not-allowed opacity-50' : ''
+      }${className ? ` ${className}` : ''}`}
+      onClick={onClick ? onClick : undefined}
     >
-      {props.children}
+      {children}
     </button>
-  )
+  );
 }

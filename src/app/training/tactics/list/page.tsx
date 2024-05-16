@@ -1,19 +1,18 @@
-import { redirect } from 'next/navigation'
+import { redirect } from 'next/navigation';
 
-import PageHeader from '~/app/components/_layouts/pageHeader'
-import TacticsList from '~/app/components/training/tactics/list/TacticsList'
+import { getUserServer } from '@/app/_util/get-user-server';
+import { PageHeader } from '@/app/components/_layouts/page-header';
+import { TacticsList } from '@/app/components/training/tactics/list/TacticsList';
 
-import { getUserServer } from '~/app/_util/getUserServer'
-
-export default async function TacticsListPage() {
-  const { user, isPremium } = await getUserServer()
-  if (!user) redirect('/auth/signin')
+export async function TacticsListPage() {
+  const { user, isPremium } = await getUserServer();
+  if (!user) redirect('/auth/signin');
 
   return (
     <>
       <PageHeader
-        title="Tactics Trainer"
         subTitle="Your puzzle sets"
+        title="Tactics Trainer"
         image={{
           src: '/images/hero.avif',
           alt: 'Wooden chess pieces on a chess board',
@@ -23,5 +22,5 @@ export default async function TacticsListPage() {
         <TacticsList hasUnlimitedSets={isPremium} />
       </div>
     </>
-  )
+  );
 }
