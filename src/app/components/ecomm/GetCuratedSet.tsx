@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
 import Tippy from '@tippyjs/react'
 import type { ResponseJson } from '~/app/api/responses'
+import { env } from '~/env'
 
 import Button from '../_elements/button'
 import Spinner from '../general/Spinner'
@@ -25,7 +26,7 @@ export default function GetCuratedSet(props: {
 
   const handleBuy = async () => {
     if (!user) {
-      window.location.href = `/api/auth/login?post_login_redirect_url=/training/tactics/curated-sets/${slug}`
+      window.location.href = `/api/auth/login?post_login_redirect_url=${env.NEXT_PUBLIC_SITE_URL}/training/tactics/curated-sets/${slug}`
       return
     }
     setLoading(true)

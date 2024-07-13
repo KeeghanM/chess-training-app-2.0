@@ -1,7 +1,9 @@
 import { prisma } from '~/server/db'
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
+import { env } from '~/env'
+
+import { getUserServer } from '~/app/_util/getUserServer'
 
 import { errorResponse, successResponse } from '../../responses'
 import { AddCourseToUser } from '../functions/AddCourseToUser'
@@ -12,9 +14,7 @@ import {
 
 export async function POST(request: Request) {
   try {
-    const session = getKindeServerSession()
-    if (!session) return errorResponse('Unauthorized', 401)
-    const user = await session.getUser()
+    const { user, isPremium } = await getUserServer()
     if (!user) return errorResponse('Unauthorized', 401)
 
     const { productId } = (await request.json()) as {
@@ -58,12 +58,8 @@ export async function POST(request: Request) {
         active: true,
       },
     })
-    const permissions = await session.getPermissions()
 
-    if (
-      ownedCourses >= 3 &&
-      !permissions?.permissions.includes('unlimited-courses')
-    )
+    if (!isPremium && ownedCourses >= env.NEXT_PUBLIC_MAX_COURSES)
       return errorResponse('User has max courses', 400)
 
     // Now get the product details

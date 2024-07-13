@@ -1,5 +1,4 @@
-import MillionLint from '@million/lint';
-import { withSentryConfig } from '@sentry/nextjs';
+import { withSentryConfig } from '@sentry/nextjs'
 
 // Next.js configuration
 /**
@@ -8,22 +7,29 @@ import { withSentryConfig } from '@sentry/nextjs';
 const nextConfig = {
   reactStrictMode: true,
   eslint: {
-    ignoreDuringBuilds: true
+    ignoreDuringBuilds: true,
   },
-  headers: async () => [{
-    source: '/dashboard',
-    headers: [{
-      key: 'Cache-Control',
-      value: 'no-store'
-    }]
-  }, {
-    source: '/training/:slug',
-    headers: [{
-      key: 'Cache-Control',
-      value: 'no-store'
-    }]
-  }]
-};
+  headers: async () => [
+    {
+      source: '/dashboard',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'no-store',
+        },
+      ],
+    },
+    {
+      source: '/training/:slug',
+      headers: [
+        {
+          key: 'Cache-Control',
+          value: 'no-store',
+        },
+      ],
+    },
+  ],
+}
 
 // Sentry configuration options
 const sentryWebpackPluginOptions = {
@@ -38,11 +44,9 @@ const sentryWebpackPluginOptions = {
   // Automatically tree-shake Sentry logger statements to reduce bundle size
   disableLogger: true,
   // Enables automatic instrumentation of Vercel Cron Monitors.
-  automaticVercelMonitors: true
-};
+  automaticVercelMonitors: true,
+}
 
 // Wrap your config with Sentry's configuration
-const config = withSentryConfig(nextConfig, sentryWebpackPluginOptions);
-export default MillionLint.next({
-  rsc: true
-})(config);
+const config = withSentryConfig(nextConfig, sentryWebpackPluginOptions)
+export default config

@@ -80,19 +80,17 @@ export default function TacticsList(props: { hasUnlimitedSets: boolean }) {
           loading={loading}
           hasUnlimitedSets={hasUnlimitedSets}
         />
-        {false && (
-          <>
-            <Link href="/training/tactics/curated-sets">
-              <Button variant="secondary">Browse Curated Sets</Button>
-            </Link>
-            <Link
-              className="text-sm text-purple-700 hover:text-purple-600 underline md:ml-auto"
-              href="/training/tactics/list/archived"
-            >
-              View archived sets
-            </Link>
-          </>
-        )}
+        <>
+          <Link href="/training/tactics/curated-sets">
+            <Button variant="secondary">Browse Curated Sets</Button>
+          </Link>
+          <Link
+            className="text-sm text-purple-700 hover:text-purple-600 underline md:ml-auto"
+            href="/training/tactics/list/archived"
+          >
+            View archived sets
+          </Link>
+        </>
       </div>
       <div className="mt-4 flex flex-col gap-4">
         {loading ? (

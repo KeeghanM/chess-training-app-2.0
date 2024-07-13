@@ -1,7 +1,9 @@
 import { prisma } from '~/server/db'
 
-import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
+import { env } from '~/env'
+
+import { getUserServer } from '~/app/_util/getUserServer'
 
 import { errorResponse, successResponse } from '../../responses'
 import { AddCuratedSetToUser } from '../functions/AddCuratedSetToUser'
@@ -12,9 +14,7 @@ import {
 
 export async function POST(request: Request) {
   try {
-    const session = getKindeServerSession()
-    if (!session) return errorResponse('Unauthorized', 401)
-    const user = await session.getUser()
+    const { user, isPremium } = await getUserServer()
     if (!user) return errorResponse('Unauthorized', 401)
 
     const { productId } = (await request.json()) as {
@@ -58,9 +58,8 @@ export async function POST(request: Request) {
         active: true,
       },
     })
-    const permissions = await session.getPermissions()
 
-    if (ownedSets >= 3 && !permissions?.permissions.includes('unlimited-sets'))
+    if (!isPremium && ownedSets >= env.NEXT_PUBLIC_MAX_SETS)
       return errorResponse('User has max sets', 400)
 
     // Now get the product details
