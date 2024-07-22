@@ -16,10 +16,10 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 import GroupSelector from '../create/GroupSelector'
 import PgnToLinesForm from '../create/PgnToLinesForm'
-import type { Line } from '../create/parse/ParsePGNtoLineData'
+import type { Line, Tags } from '../create/parse/ParsePGNtoLineData'
 
 type FullCourseData = Course & {
-  lines: (Line & { moves: Move[] })[]
+  lines: { tags: Tags[]; moves: Move[] }[]
 }
 
 export default function AddLines(props: { courseId: string }) {
@@ -84,7 +84,6 @@ export default function AddLines(props: { courseId: string }) {
         (line) =>
           !existingCourseData.lines.some(
             (existingLine) =>
-              // @ts-expect-error : This is a bug in the types, dunno why it's expecting a CleanMove when the moves is a Move[]
               existingLine.moves.map((move) => move.move).join('') ===
               line.moves.map((move) => move.notation).join(''),
           ),

@@ -10,7 +10,7 @@ export interface CleanMove {
   comment?: string
   arrows?: string
 }
-type Tags = Record<string, string>
+export type Tags = Record<string, string>
 
 export interface Line {
   tags: Tags

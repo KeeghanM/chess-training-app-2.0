@@ -14,7 +14,6 @@ import type { Move as ChessMove } from 'chess.js'
 import type { Arrow } from 'react-chessboard/dist/chessboard/types'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
-// @ts-expect-error - No types available
 import useSound from 'use-sound'
 import type { ResponseJson } from '~/app/api/responses'
 import type { PrismaUserLine } from '~/app/training/courses/[userCourseId]/page'
@@ -57,7 +56,7 @@ export default function CourseTrainer(props: {
           .filter((comment) => comment != null)
       })
       .flat()
-      .filter((comment) => comment != null) as Comment[],
+      .filter((comment) => comment != null),
   )
   const [currentLine, setCurrentLine] = useState<PrismaUserLine>()
   const [nextLine, setNextLine] = useState<PrismaUserLine | null>(null)
@@ -108,8 +107,8 @@ export default function CourseTrainer(props: {
   const [error, setError] = useState('')
 
   // SFX
-  const [incorrectSound] = useSound('/sfx/incorrect.mp3') as [() => void]
-  const [correctSound] = useSound('/sfx/correct.mp3') as [() => void]
+  const [incorrectSound] = useSound('/sfx/incorrect.mp3')
+  const [correctSound] = useSound('/sfx/correct.mp3')
 
   const getNextLine = (lines: PrismaUserLine[]) => {
     // Sorts the lines in order of priority
@@ -680,7 +679,8 @@ export default function CourseTrainer(props: {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === ' ') {
         e.preventDefault()
-        if (nextLine && !autoNext) startNextLine()
+        if (nextLine && !autoNext)
+          startNextLine().catch((e) => Sentry.captureException(e))
         if (teaching) resetTeachingMove()
       }
     }

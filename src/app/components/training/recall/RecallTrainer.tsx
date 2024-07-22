@@ -12,7 +12,6 @@ import type { Color, PieceSymbol, Square } from 'chess.js'
 import { Chessboard } from 'react-chessboard'
 import 'react-toggle/style.css'
 import 'tippy.js/dist/tippy.css'
-// @ts-expect-error - No types available
 import useSound from 'use-sound'
 import type { ResponseJson } from '~/app/api/responses'
 
@@ -633,16 +632,16 @@ export default function RecallTrainer() {
                         <p id="tooltip-3">
                           Where is a{' '}
                           <span className="font-bold underline">
-                            {correctSquares[counter]!.color == 'w'
+                            {correctSquares[counter].color == 'w'
                               ? 'White'
                               : 'Black'}{' '}
-                            {correctSquares[counter]!.type == 'b'
+                            {correctSquares[counter].type == 'b'
                               ? 'Bishop'
-                              : correctSquares[counter]!.type == 'k'
+                              : correctSquares[counter].type == 'k'
                                 ? 'King'
-                                : correctSquares[counter]!.type == 'n'
+                                : correctSquares[counter].type == 'n'
                                   ? 'Knight'
-                                  : correctSquares[counter]!.type == 'q'
+                                  : correctSquares[counter].type == 'q'
                                     ? 'Queen'
                                     : 'Rook'}
                           </span>
