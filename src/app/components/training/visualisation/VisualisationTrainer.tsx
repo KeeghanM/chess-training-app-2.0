@@ -15,7 +15,6 @@ import { Chessboard } from 'react-chessboard'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
 import 'tippy.js/dist/tippy.css'
-// @ts-expect-error - No types available
 import useSound from 'use-sound'
 import type { ResponseJson } from '~/app/api/responses'
 
@@ -432,7 +431,7 @@ export default function VisualisationTrainer() {
                 </div>
                 <p
                   onClick={async () => {
-                    await flow.restart()
+                    await flow?.restart()
                     setMode('settings')
                   }}
                   className="cursor-pointer underline hover:no-underline"

@@ -39,5 +39,4 @@ export async function trackEventOnServer(
 
     posthog.capture(captureData)
   }
-  await posthog.shutdownAsync()
 }

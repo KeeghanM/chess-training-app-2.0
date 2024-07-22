@@ -13,7 +13,6 @@ import type { Move } from 'chess.js'
 import { Chess } from 'chess.js'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
-// @ts-expect-error - No types available
 import useSound from 'use-sound'
 import type { ResponseJson } from '~/app/api/responses'
 
@@ -455,7 +454,8 @@ export default function TacticsTrainer(props: {
     const handleKeyPress = (e: KeyboardEvent) => {
       if (e.key === ' ') {
         e.preventDefault()
-        if (puzzleFinished && puzzleStatus == 'correct') goToNextPuzzle()
+        if (puzzleFinished && puzzleStatus == 'correct')
+          goToNextPuzzle().catch((e) => Sentry.captureException(e))
       }
     }
     window.addEventListener('keydown', handleKeyPress)

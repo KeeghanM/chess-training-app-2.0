@@ -11,7 +11,6 @@ import { Chess } from 'chess.js'
 import type { Move } from 'chess.js'
 import Toggle from 'react-toggle'
 import 'react-toggle/style.css'
-// @ts-expect-error - No types available
 import useSound from 'use-sound'
 import type { ResponseJson } from '~/app/api/responses'
 
