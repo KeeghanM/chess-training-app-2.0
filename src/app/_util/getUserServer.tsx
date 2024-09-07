@@ -25,11 +25,11 @@ export async function getUserServer() {
         },
       })
       const isStaff = permissions?.permissions.includes('staff-member') ?? false
-      let isPremium = false;
+      let isPremium = false
       if (permissions?.permissions?.includes('premium-override')) {
-        isPremium = true;
+        isPremium = true
       } else {
-        isPremium = await hasBoughtPremium(user.id);
+        isPremium = await hasBoughtPremium(user.id)
       }
 
       return { user, hasAuth, profile, isStaff, isPremium, badges }
@@ -47,7 +47,7 @@ export async function getUserServer() {
   }
 }
 
-export async function createUserProfile(user: KindeUser) {
+export async function createUserProfile(user: KindeUser<object>) {
   try {
     const profile = await prisma.userProfile.findFirst({
       where: {

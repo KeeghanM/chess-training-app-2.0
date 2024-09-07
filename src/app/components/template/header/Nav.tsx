@@ -13,7 +13,7 @@ import 'tippy.js/dist/tippy.css'
 import CalculateXpRank from '~/app/_util/CalculateXpRank'
 
 export default function Nav(props: {
-  user: KindeUser | null
+  user: KindeUser<object> | null
   experience: number
 }) {
   const [userOpen, setUserOpen] = useState(false)
