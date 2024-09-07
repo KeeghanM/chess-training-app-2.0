@@ -25,15 +25,16 @@ export async function getUserServer() {
         },
       })
       const isStaff = permissions?.permissions.includes('staff-member') ?? false
-      const isPremium =
-        permissions?.permissions.includes('premium-override') ??
-        (await hasBoughtPremium(user.id))
+      let isPremium = false;
+      if (permissions?.permissions?.includes('premium-override')) {
+        isPremium = true;
+      } else {
+        isPremium = await hasBoughtPremium(user.id);
+      }
 
       return { user, hasAuth, profile, isStaff, isPremium, badges }
     } catch (e) {
       Sentry.captureException(e)
-    } finally {
-      await prisma.$disconnect()
     }
   }
   return {
