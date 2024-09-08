@@ -47,7 +47,7 @@ export async function getUserServer() {
   }
 }
 
-export async function createUserProfile(user: KindeUser<object>) {
+export async function createUserProfile(user: KindeUser) {
   try {
     const profile = await prisma.userProfile.findFirst({
       where: {

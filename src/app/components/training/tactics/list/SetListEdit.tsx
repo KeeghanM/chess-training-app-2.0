@@ -15,7 +15,7 @@ import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export default function SetListEdit(props: {
   set: PrismaTacticsSet
-  user: KindeUser<object> | null
+  user: KindeUser | null
   onFinished: () => void
 }) {
   const { set } = props

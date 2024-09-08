@@ -9,7 +9,7 @@ type ProductType = 'curatedSet' | 'course' | 'subscription'
 export async function CreateCheckoutSession(
   products: { productType: ProductType; productId: string }[],
   returnUrl: string,
-  user: KindeUser<object>,
+  user: KindeUser,
 ) {
   try {
     const lineItems = await Promise.all(
