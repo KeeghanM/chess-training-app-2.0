@@ -30,7 +30,7 @@ export async function getUserServer() {
       const isStaff = permissions?.permissions.includes('staff-member') ?? false
       const isPremium =
         profile.hasPremium ||
-        (permissions?.permissions.includes('premium') ?? false)
+        (permissions?.permissions.includes('premium-override') ?? false)
 
       return { user, hasAuth, profile, isStaff, isPremium, badges }
     } catch (e) {
