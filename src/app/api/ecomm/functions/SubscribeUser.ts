@@ -16,6 +16,7 @@ export default async function SubscribeUser(
       },
       data: {
         stripeCustomerId: stripeCustomerId,
+        hasPremium: true,
       },
     })
 
