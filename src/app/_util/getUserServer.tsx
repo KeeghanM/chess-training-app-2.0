@@ -3,7 +3,6 @@ import { prisma } from '~/server/db'
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
-import Stripe from 'stripe'
 import { v4 as uuidv4 } from 'uuid'
 
 export async function getUserServer() {
@@ -19,6 +18,10 @@ export async function getUserServer() {
           id: user.id,
         },
       })
+      if (!profile) {
+        throw new Error('User profile not found')
+      }
+
       const badges = await prisma.userBadge.findMany({
         where: {
           userId: user.id,
@@ -26,14 +29,12 @@ export async function getUserServer() {
       })
       const isStaff = permissions?.permissions.includes('staff-member') ?? false
       const isPremium =
-        permissions?.permissions.includes('premium-override') ??
-        (await hasBoughtPremium(user.id))
+        profile.hasPremium ||
+        (permissions?.permissions.includes('premium') ?? false)
 
       return { user, hasAuth, profile, isStaff, isPremium, badges }
     } catch (e) {
       Sentry.captureException(e)
-    } finally {
-      await prisma.$disconnect()
     }
   }
   return {
@@ -90,36 +91,5 @@ export async function createUserProfile(user: KindeUser) {
     Sentry.captureException(e)
   } finally {
     await prisma.$disconnect()
-  }
-}
-
-async function hasBoughtPremium(userId: string) {
-  try {
-    // First, find their stripeCustomerId in the database
-    const stripeCustomerId = await prisma.userProfile
-      .findUnique({
-        where: {
-          id: userId,
-        },
-      })
-      .then((profile) => {
-        return profile?.stripeCustomerId
-      })
-
-    if (!stripeCustomerId) {
-      // If the user doesn't have a stripeCustomerId, there is no way they are premium
-      return false
-    }
-
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-    const stripeSubscriptions = await stripe.subscriptions.list({
-      customer: stripeCustomerId,
-      status: 'active',
-    })
-
-    return stripeSubscriptions.data.length > 0
-  } catch (e) {
-    Sentry.captureException(e)
-    return false
   }
 }

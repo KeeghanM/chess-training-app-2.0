@@ -225,7 +225,8 @@ model UserProfile {
     highestOnlineRating Int?
     highestOTBRating    Int?
     public              Boolean      @default(false)
-    stripeCustomerId    String?
+    stripeCustomerId    String?      @unique
+    hasPremium          Boolean      @default(false)
     createdAt           DateTime     @default(now())
     updatedAt           DateTime     @updatedAt
     publishedCourses    Course[]
