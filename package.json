@@ -20,7 +20,7 @@
     "@dnd-kit/utilities": "3.2.2",
     "@formkit/auto-animate": "0.8.2",
     "@frigade/react": "2.4.25",
-    "@kinde-oss/kinde-auth-nextjs": "2.3.6",
+    "@kinde-oss/kinde-auth-nextjs": "2.3.8",
     "@mliebelt/pgn-parser": "1.4.15",
     "@prisma/client": "5.18.0",
     "@prismicio/client": "7.8.0",
