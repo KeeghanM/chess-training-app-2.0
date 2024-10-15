@@ -7,10 +7,10 @@ import { useState } from 'react'
 
 import { LogoutLink } from '@kinde-oss/kinde-auth-nextjs'
 import Tippy from '@tippyjs/react'
-import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
 import 'tippy.js/dist/tippy.css'
 
 import CalculateXpRank from '~/app/_util/CalculateXpRank'
+import type { KindeUser } from '~/app/_util/getUserServer'
 
 export default function Nav(props: {
   user: KindeUser | null
@@ -272,7 +272,7 @@ export default function Nav(props: {
               ) : (
                 <Link
                   key={link.name}
-                  className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-orange-100 lg:text-white lg:hover:bg-slate-600"
+                  className="text-center block cursor-pointer px-4 py-2 text-gray-700 hover:bg-orange-100 lg:text-white lg:hover:bg-slate-600"
                   href={link.href}
                   onClick={() => {
                     setMenuOpen(false)

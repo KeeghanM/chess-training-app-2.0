@@ -9,7 +9,7 @@ import type { availableTypes } from '~/app/components/general/XpTracker'
 import { UpdateStreak } from '~/app/_util/UpdateStreak'
 
 export async function PUT(request: Request) {
-  const session = getKindeServerSession(request)
+  const session = getKindeServerSession()
   if (!session) return errorResponse('Unauthorized', 401)
 
   const user = await session.getUser()

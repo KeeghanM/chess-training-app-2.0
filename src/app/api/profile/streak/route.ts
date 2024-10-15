@@ -4,8 +4,8 @@ import { errorResponse, successResponse } from '~/app/api/responses'
 
 import { UpdateStreak } from '~/app/_util/UpdateStreak'
 
-export async function POST(request: Request) {
-  const session = getKindeServerSession(request)
+export async function POST() {
+  const session = getKindeServerSession()
   if (!session) return errorResponse('Unauthorized', 401)
 
   const user = await session.getUser()

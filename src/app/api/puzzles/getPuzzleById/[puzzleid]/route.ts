@@ -11,7 +11,7 @@ export async function GET(
   const puzzleid = params.puzzleid
   if (!puzzleid) return errorResponse('Missing required fields', 400)
 
-  const session = getKindeServerSession(request)
+  const session = getKindeServerSession()
   if (!session) return errorResponse('Unauthorized', 401)
 
   const user = await session.getUser()

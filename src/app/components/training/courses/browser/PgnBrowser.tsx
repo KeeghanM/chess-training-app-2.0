@@ -30,7 +30,6 @@ export default function PgnBrowser(props: PgnBrowserProps) {
     return (
       <>
         <span
-          key={move.number.toString() + move.colour ? 'w' : 'b' + move.notation}
           onClick={() => {
             moveSelected(move)
           }}
@@ -67,7 +66,10 @@ export default function PgnBrowser(props: PgnBrowserProps) {
           </>
         )}
         {move.variations.map((variation) => (
-          <Variation moves={variation} />
+          <Variation
+            key={variation.map((m) => m.notation).join('')}
+            moves={variation}
+          />
         ))}
       </>
     )
@@ -77,7 +79,13 @@ export default function PgnBrowser(props: PgnBrowserProps) {
     return (
       <div className="col-span-2 flex flex-row items-center flex-wrap gap-0.5 text-xs bg-purple-100 text-black dark:text-white dark:bg-slate-600 border border-slate-800 px-2 md:px-4 py-1">
         {props.moves.map((move, i) => (
-          <Move move={move} ellipses={i === 0 && !move.colour} />
+          <Move
+            key={
+              move.number.toString() + move.colour ? 'w' : 'b' + move.notation
+            }
+            move={move}
+            ellipses={i === 0 && !move.colour}
+          />
         ))}
       </div>
     )
@@ -86,7 +94,11 @@ export default function PgnBrowser(props: PgnBrowserProps) {
   return (
     <div className="grid grid-cols-2 auto-rows-min w-full text-sm h-full border lg:border-4 border-purple-700 bg-purple-700 bg-opacity-20 text-black dark:text-white flex-1 max-h-[70vh] overflow-y-auto">
       {pgn.moves.map((move) => (
-        <Move mainLine={true} move={move} />
+        <Move
+          key={move.number.toString() + move.colour ? 'w' : 'b' + move.notation}
+          mainLine={true}
+          move={move}
+        />
       ))}
     </div>
   )

@@ -9,7 +9,7 @@ import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTr
 import getPuzzleById from '~/app/_util/GetPuzzleById'
 
 export async function POST(request: Request) {
-  const session = getKindeServerSession(request)
+  const session = getKindeServerSession()
   if (!session) return errorResponse('Unauthorized', 401)
 
   const user = await session.getUser()

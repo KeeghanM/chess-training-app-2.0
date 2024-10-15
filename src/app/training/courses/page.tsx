@@ -28,7 +28,6 @@ export default async function Courses() {
       />
       <div className="dark:bg-slate-800">
         <Container>
-          <BetaMessage />
           <CourseList hasUnlimitedCourses={isPremium} />
         </Container>
       </div>

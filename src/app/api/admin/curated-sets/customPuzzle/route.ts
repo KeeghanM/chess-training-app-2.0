@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
 
 export async function POST(request: Request) {
-  const session = getKindeServerSession(request)
+  const session = getKindeServerSession()
   if (!session) return errorResponse('Unauthorized', 401)
 
   const user = await session.getUser()
@@ -27,14 +27,15 @@ export async function POST(request: Request) {
 
     return successResponse('Puzzles created', { created: puzzles.length }, 200)
   } catch (e) {
+    Sentry.captureException(e)
     return errorResponse('Internal Server Error', 500)
   } finally {
     await prisma.$disconnect()
   }
 }
 
-export async function GET(request: Request) {
-  const session = getKindeServerSession(request)
+export async function GET() {
+  const session = getKindeServerSession()
   if (!session) return errorResponse('Unauthorized', 401)
 
   const user = await session.getUser()
