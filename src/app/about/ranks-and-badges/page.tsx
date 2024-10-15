@@ -54,7 +54,7 @@ export default async function RankAndBadgesPage() {
                 {rank}
               </p>
               {XpRanks.filter((r) => r.rank === rank).map((r) => (
-                <p className="border border-black p-2">
+                <p key={r.rank + r.name} className="border border-black p-2">
                   <strong>{r.name}:</strong> {r.xp.toLocaleString()}xp
                 </p>
               ))}

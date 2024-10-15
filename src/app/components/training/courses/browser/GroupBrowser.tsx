@@ -32,7 +32,7 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
   const [game, setGame] = useState(new Chess())
   const [position, setPosition] = useState(game.fen())
   const [orientation, setOrientation] = useState<'white' | 'black'>('white')
-  const [soundEnabled, setSoundEnabled] = useState(true)
+  const [soundEnabled] = useState(true)
   const [currentMove, setCurrentMove] = useState<Move | undefined>()
   const [arrows, setArrows] = useState<Arrow[]>([])
   const [highlightSquares, setHighlightSquares] = useState<
@@ -48,7 +48,7 @@ export default function GroupBrowser(props: { lines: UserLineWithData[] }) {
     const newGame = new Chess()
     const line = props.lines.find((line) => line.id === currentMove.lineId)
     if (!line) return
-    
+
     for (const move of line.line.moves) {
       newGame.move(move.move)
       if (

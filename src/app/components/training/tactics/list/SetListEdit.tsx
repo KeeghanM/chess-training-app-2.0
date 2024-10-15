@@ -4,13 +4,13 @@ import { useEffect, useState } from 'react'
 
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
 import * as Sentry from '@sentry/nextjs'
-import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 import type { PrismaTacticsSet } from '~/app/components/training/tactics/create/TacticsSetCreator'
 
+import type { KindeUser } from '~/app/_util/getUserServer'
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
 export default function SetListEdit(props: {

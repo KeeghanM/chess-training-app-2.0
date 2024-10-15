@@ -8,7 +8,7 @@ export async function GET(
   request: Request,
   { params }: { params: { courseId: string } },
 ) {
-  const session = getKindeServerSession(request)
+  const session = getKindeServerSession()
   if (!session) return errorResponse('Unauthorized', 401)
   const user = await session.getUser()
   if (!user) return errorResponse('Unauthorized', 401)
@@ -71,7 +71,7 @@ export async function DELETE(
   request: Request,
   { params }: { params: { courseId: string } },
 ) {
-  const session = getKindeServerSession(request)
+  const session = getKindeServerSession()
   if (!session) return errorResponse('Unauthorized', 401)
   const user = await session.getUser()
   if (!user) return errorResponse('Unauthorized', 401)

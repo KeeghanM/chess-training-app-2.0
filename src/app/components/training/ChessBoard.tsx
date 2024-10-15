@@ -107,6 +107,7 @@ export default function ChessBoard(props: ChessBoardProps) {
           promotion: promotionPiece,
         })
         return move
+        // eslint-disable-next-line
       } catch (e) {
         return null
       }
