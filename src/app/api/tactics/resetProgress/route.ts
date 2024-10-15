@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
 
 export async function POST(request: Request) {
-  const session = getKindeServerSession()
+  const session = getKindeServerSession(request)
   if (!session) return errorResponse('Unauthorized', 401)
 
   const user = await session.getUser()
@@ -27,18 +27,19 @@ export async function POST(request: Request) {
 
     if (!existingSet) return errorResponse('Set not found', 404)
 
-    // check if the set is a purchased one, we can't delete purchased sets
-    if (existingSet.curatedSetId)
-      return errorResponse('Cannot delete purchased set', 400)
-
-    await prisma.tacticsSet.delete({
+    // Remove the rounds, which will reset the progress
+    await prisma.tacticsSet.update({
       where: {
         id: setId,
-        userId: user.id,
+      },
+      data: {
+        rounds: {
+          deleteMany: {},
+        },
       },
     })
 
-    return successResponse('Set Deleted', { setId }, 200)
+    return successResponse('Progress Reset', { setId }, 200)
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
