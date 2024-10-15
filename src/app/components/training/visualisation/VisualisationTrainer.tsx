@@ -299,7 +299,7 @@ export default function VisualisationTrainer() {
       Sentry.captureException(e)
       throw new Error('Unable to load puzzle')
     })
-  }, [mode])
+  }, [mode, getPuzzle])
 
   useEffect(() => {
     // Create a new game from the puzzle whenever it changes

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 import { useKindeBrowserClient } from '@kinde-oss/kinde-auth-nextjs'
+import * as Sentry from '@sentry/nextjs'
 import Tippy from '@tippyjs/react'
 import type { ResponseJson } from '~/app/api/responses'
 import { env } from '~/env'
@@ -45,6 +46,7 @@ export default function GetCuratedSet(props: {
 
       window.location.href = json.data.url as string
     } catch (e) {
+      Sentry.captureException(e)
       setError('Something went wrong, please try again later')
       setLoading(false)
     }

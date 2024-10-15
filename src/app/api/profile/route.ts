@@ -7,7 +7,7 @@ import { errorResponse, successResponse } from '~/app/api/responses'
 import { AddBadgeToUser } from '~/app/_util/AddBadge'
 
 export async function PUT(request: Request) {
-  const session = getKindeServerSession(request)
+  const session = getKindeServerSession()
   if (!session) return errorResponse('Unauthorized', 401)
 
   const user = await session.getUser()

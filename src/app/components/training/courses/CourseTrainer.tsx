@@ -173,6 +173,7 @@ export default function CourseTrainer(props: {
     try {
       game.move(move)
       setPosition(game.fen())
+      // eslint-disable-next-line
     } catch (e) {
       // honestly, do nothing
       // I dunno why this is firing, I replicated it once but it didn;t actually affect the usage

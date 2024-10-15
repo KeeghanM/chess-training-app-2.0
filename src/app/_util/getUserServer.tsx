@@ -2,12 +2,18 @@ import { prisma } from '~/server/db'
 
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
-import type { KindeUser } from 'node_modules/@kinde-oss/kinde-auth-nextjs/dist/types'
 import { v4 as uuidv4 } from 'uuid'
+
+export type KindeUser = {
+  id: string
+  email: string
+  given_name: string
+  family_name: string
+}
 
 export async function getUserServer() {
   const { getUser, isAuthenticated, getPermissions } = getKindeServerSession()
-  const user = await getUser()
+  const user = (await getUser()) as KindeUser | null
 
   if (user) {
     const hasAuth = await isAuthenticated()

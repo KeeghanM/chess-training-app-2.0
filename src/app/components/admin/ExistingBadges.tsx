@@ -103,7 +103,7 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
                     {existingBadges
                       .filter((badge) => badge.category === category)
                       .map((badge) => (
-                        <SortableItem id={badge.name}>
+                        <SortableItem key={badge.name} id={badge.name}>
                           <p className="bg-gray-200 p-1" key={badge.name}>
                             <strong>{badge.name}</strong> - {badge.description}
                           </p>

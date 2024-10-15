@@ -36,7 +36,7 @@ export default function CourseBrowser(props: CourseBrowserProps) {
       return { id: group.id, name: group.groupName }
     }),
   )
-  const [search, setSearch] = useState('')
+  const [search] = useState('')
   const [openGroupId, setOpenGroupId] = useState<string | undefined>(
     props.lines[0]?.line.groupId,
   )

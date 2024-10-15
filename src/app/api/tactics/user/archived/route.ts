@@ -4,8 +4,8 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import * as Sentry from '@sentry/nextjs'
 import { errorResponse, successResponse } from '~/app/api/responses'
 
-export async function GET(request: Request) {
-  const session = getKindeServerSession(request)
+export async function GET() {
+  const session = getKindeServerSession()
   if (!session) return errorResponse('Unauthorized', 401)
   const user = await session.getUser()
   if (!user) return errorResponse('Unauthorized', 401)
