@@ -6,9 +6,10 @@ import { v4 as uuidv4 } from 'uuid'
 
 export type KindeUser = {
   id: string
-  email: string
-  given_name: string
-  family_name: string
+  email: string | null
+  given_name: string | null
+  family_name: string | null
+  picture: string | null
 }
 
 export async function getUserServer() {
