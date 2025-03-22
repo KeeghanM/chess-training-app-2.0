@@ -3,15 +3,12 @@ import Script from 'next/script'
 import { Suspense } from 'react'
 import type { ReactNode } from 'react'
 
-import * as Frigade from '@frigade/react'
-import { env } from '~/env'
-
 import CookieBanner from './components/template/CookieBanner'
 import Footer from './components/template/footer/Footer'
 import Header from './components/template/header/Header'
 
-import { PostHogPageview, PosthogProvider } from './_util/PostHog'
-import { ThemeSwitchProvider } from './_util/ThemeProvider'
+import { PostHogPageview } from './_util/PostHog'
+import Providers from './_util/Providers'
 import getDistinctId from './_util/getDistinctId'
 
 import './globals.css'
@@ -53,6 +50,7 @@ export default async function RootLayout({
   children: ReactNode
 }) {
   const distinctId = await getDistinctId()
+
   return (
     <>
       <Script id="brevo-conversations">
@@ -71,18 +69,14 @@ export default async function RootLayout({
         <Suspense>
           <PostHogPageview />
         </Suspense>
-        <PosthogProvider>
-          <body>
-            <Frigade.Provider apiKey={env.FRIGADE_API_KEY} userId={distinctId}>
-              <ThemeSwitchProvider>
-                <Header />
-                {children}
-                <Footer />
-                <CookieBanner />
-              </ThemeSwitchProvider>
-            </Frigade.Provider>
-          </body>
-        </PosthogProvider>
+        <body>
+          <Providers distinctId={distinctId}>
+            <Header />
+            {children}
+            <Footer />
+            <CookieBanner />
+          </Providers>
+        </body>
       </html>
     </>
   )
