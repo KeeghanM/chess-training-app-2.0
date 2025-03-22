@@ -15,7 +15,9 @@ export async function POST(request: Request) {
     setId: string
   }
 
-  if (!setId) return errorResponse('Missing required fields', 400)
+  if (!setId) {
+    return errorResponse('Missing required fields', 400)
+  }
 
   try {
     const existingSet = await prisma.tacticsSet.findFirst({
@@ -27,21 +29,22 @@ export async function POST(request: Request) {
 
     if (!existingSet) return errorResponse('Set not found', 404)
 
-    // check if the set is a purchased one, we can't delete purchased sets
-    if (existingSet.curatedSetId)
-      return errorResponse('Cannot delete purchased set', 400)
-
-    await prisma.tacticsSet.delete({
+    await prisma.tacticsSet.update({
       where: {
         id: setId,
         userId: user.id,
       },
+      data: {
+        active: false,
+      },
     })
 
-    return successResponse('Set Deleted', { setId }, 200)
+    return successResponse('Set Archived', { setId }, 200)
   } catch (e) {
     Sentry.captureException(e)
     if (e instanceof Error) return errorResponse(e.message, 500)
     else return errorResponse('Unknown error', 500)
+  } finally {
+    await prisma.$disconnect()
   }
 }
