@@ -2,7 +2,6 @@ import { redirect } from 'next/navigation'
 
 import Container from '~/app/components/_elements/container'
 import PageHeader from '~/app/components/_layouts/pageHeader'
-import BetaMessage from '~/app/components/training/courses/BetaMessage'
 import CourseList from '~/app/components/training/courses/list/CoursesList'
 
 import { getUserServer } from '~/app/_util/getUserServer'
