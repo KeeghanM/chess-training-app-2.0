@@ -187,7 +187,7 @@ export default function ChessBoard(props: ChessBoardProps) {
   }
 
   useEffect(() => {
-    if (!startSquare || !clickedPiece) {
+    if (!game || !startSquare || !clickedPiece) {
       setOptionSquares({})
       return
     }
