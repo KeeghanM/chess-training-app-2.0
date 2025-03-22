@@ -9,7 +9,8 @@
     "db:studio": "prisma studio",
     "dev": "next dev",
     "postinstall": "prisma generate",
-    "lint": "next lint",
+    "qa:eslint": "next lint",
+    "qa:types": "tsc --noEmit",
     "start": "next start",
     "format": "prettier --log-level warn --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "slicemachine": "start-slicemachine"
