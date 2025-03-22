@@ -191,7 +191,7 @@ export default function ChessBoard(props: ChessBoardProps) {
       setOptionSquares({})
       return
     }
-    const validMoves = game.moves({ square: startSquare, verbose: true })
+    const validMoves = game?.moves({ square: startSquare, verbose: true })
     const newOptions: Record<string, React.CSSProperties> = {}
     // Highlight the start square
     newOptions[startSquare] = {
@@ -206,8 +206,8 @@ export default function ChessBoard(props: ChessBoardProps) {
     validMoves.map((move) => {
       newOptions[move.to] = {
         background:
-          game.get(move.to) &&
-          game.get(move.to).color !== game.get(startSquare).color
+          game?.get(move.to) &&
+          game?.get(move.to).color !== game?.get(startSquare).color
             ? 'radial-gradient(circle, transparent 50%,  rgba(0, 0, 0, 0.2) 51%,  rgba(0, 0, 0, 0.2) 65%,transparent 66%)'
             : 'radial-gradient(circle, rgba(0,0,0,.2) 20%, transparent 22%)',
         borderRadius: '50%',
@@ -220,7 +220,7 @@ export default function ChessBoard(props: ChessBoardProps) {
 
   useEffect(() => {
     if (!props.soundEnabled) return
-    const lastMove = game.history({ verbose: true }).slice(-1)[0]
+    const lastMove = game?.history({ verbose: true }).slice(-1)[0]
     if (!lastMove) return
     playMoveSound(lastMove.san)
   }, [props.position])
