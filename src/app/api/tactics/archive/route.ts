@@ -20,9 +20,19 @@ export async function POST(request: Request) {
   }
 
   try {
+    const existingSet = await prisma.tacticsSet.findFirst({
+      where: {
+        id: setId,
+        userId: user.id,
+      },
+    })
+
+    if (!existingSet) return errorResponse('Set not found', 404)
+
     await prisma.tacticsSet.update({
       where: {
         id: setId,
+        userId: user.id,
       },
       data: {
         active: false,
