@@ -187,7 +187,7 @@ export default function ChessBoard(props: ChessBoardProps) {
   }
 
   useEffect(() => {
-    if (!startSquare || !clickedPiece) {
+    if (!game || !startSquare || !clickedPiece) {
       setOptionSquares({})
       return
     }
@@ -206,8 +206,8 @@ export default function ChessBoard(props: ChessBoardProps) {
     validMoves.map((move) => {
       newOptions[move.to] = {
         background:
-          game!.get(move.to) &&
-          game!.get(move.to).color !== game.get(startSquare).color
+          game.get(move.to) &&
+          game.get(move.to).color !== game.get(startSquare).color
             ? 'radial-gradient(circle, transparent 50%,  rgba(0, 0, 0, 0.2) 51%,  rgba(0, 0, 0, 0.2) 65%,transparent 66%)'
             : 'radial-gradient(circle, rgba(0,0,0,.2) 20%, transparent 22%)',
         borderRadius: '50%',
