@@ -272,7 +272,7 @@ export default function Nav(props: {
               ) : (
                 <Link
                   key={link.name}
-                  className="text-center block cursor-pointer px-4 py-2 text-gray-700 hover:bg-orange-100 lg:text-white lg:hover:bg-slate-600"
+                  className="block cursor-pointer px-4 py-2 text-gray-700 hover:bg-orange-100 lg:text-white lg:hover:bg-slate-600"
                   href={link.href}
                   onClick={() => {
                     setMenuOpen(false)
