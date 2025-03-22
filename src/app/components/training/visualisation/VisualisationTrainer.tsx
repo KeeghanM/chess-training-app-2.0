@@ -26,6 +26,15 @@ import type { TrainingPuzzle } from '~/app/components/training/tactics/TacticsTr
 
 import trackEventOnClient from '~/app/_util/trackEventOnClient'
 
+/**
+ * Renders the chess training visualization interface.
+ *
+ * This component manages the state and user interactions required for practicing chess puzzles. It handles fetching puzzles based on user settings
+ * (rating, difficulty, and number of moves), updates the chess game state, and provides real-time feedback using visual cues and sound effects. The
+ * interface toggles between training and settings modes, tracks user performance, and logs errors via Sentry when fetching puzzles fails.
+ *
+ * @returns A React element representing the visualization trainer.
+ */
 export default function VisualisationTrainer() {
   const { user } = useKindeBrowserClient()
 
