@@ -191,7 +191,7 @@ export default function ChessBoard(props: ChessBoardProps) {
       setOptionSquares({})
       return
     }
-    const validMoves = game?.moves({ square: startSquare, verbose: true })
+    const validMoves = game?.moves({ square: startSquare, verbose: true }) || []
     const newOptions: Record<string, React.CSSProperties> = {}
     // Highlight the start square
     newOptions[startSquare] = {
