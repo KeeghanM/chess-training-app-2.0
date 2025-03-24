@@ -4,7 +4,7 @@ import { useState } from 'react'
 
 import type { CuratedSet } from '@prisma/client'
 import * as AlertDialog from '@radix-ui/react-alert-dialog'
-import * as Sentry from '@sentry/react'
+import { useMutation } from '@tanstack/react-query'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
@@ -21,18 +21,13 @@ export default function SetCreator(props: {
 
   // Status
   const [open, setOpen] = useState(false)
-  const [error, setError] = useState('')
-  const [status, setStatus] = useState<'idle' | 'saving' | 'deleting'>('idle')
 
-  const createSet = async () => {
-    setStatus('saving')
-    try {
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const slug = GenerateSlug(name)
       const resp = await fetch('/api/admin/curated-sets', {
         method: 'POST',
-        body: JSON.stringify({
-          name,
-          slug: GenerateSlug(name),
-        }),
+        body: JSON.stringify({ name, slug }),
       })
       const json = (await resp.json()) as ResponseJson
       if (json.message != 'Set created') throw new Error(json.message)
@@ -40,13 +35,8 @@ export default function SetCreator(props: {
       const newSet = json.data!.set as CuratedSet
       props.onCreate(newSet)
       close()
-    } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('Something went wrong')
-    }
-    setStatus('idle')
-  }
+    },
+  })
 
   const close = () => {
     setOpen(false)
@@ -82,10 +72,10 @@ export default function SetCreator(props: {
             </Button>
             <Button
               variant="primary"
-              onClick={createSet}
-              disabled={status != 'idle'}
+              onClick={() => mutation.mutate()}
+              disabled={mutation.isPending}
             >
-              {status == 'saving' ? (
+              {mutation.isPending ? (
                 <>
                   Saving <Spinner />
                 </>
@@ -94,7 +84,9 @@ export default function SetCreator(props: {
               )}
             </Button>
           </div>
-          {error && <p className="text-red-500">{error}</p>}
+          {mutation.isError && (
+            <p className="text-red-500">{mutation.error.message}</p>
+          )}
         </AlertDialog.Content>
       </AlertDialog.Portal>
     </AlertDialog.Root>

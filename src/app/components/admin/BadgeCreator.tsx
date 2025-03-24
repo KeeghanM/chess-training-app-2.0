@@ -3,6 +3,7 @@
 import { useState } from 'react'
 
 import * as Sentry from '@sentry/nextjs'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
@@ -21,79 +22,73 @@ export default function BadgeCreator() {
   const [category, setCategory] = useState('')
   const [error, setError] = useState('')
 
-  const createBadge = async (
-    name: string,
-    description: string,
-    category: string,
-  ) => {
-    try {
+  const queryClient = useQueryClient()
+
+  const createBadgeMutation = useMutation({
+    mutationFn: async ({
+      name,
+      description,
+      category,
+    }: {
+      name: string
+      description: string
+      category: string
+    }) => {
       const res = await fetch('/api/admin/badges', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name,
-          description,
-          category,
-        }),
+        body: JSON.stringify({ name, description, category }),
       })
       const json = (await res.json()) as ResponseJson
-      if (json.message != 'Badge created') throw new Error(json.message)
-      return true
-    } catch (e) {
-      Sentry.captureException(e)
-      return false
-    }
-  }
+      if (json.message !== 'Badge created') throw new Error(json.message)
+      return json
+    },
+    onError: (error) => {
+      Sentry.captureException(error)
+      setError('Failed to create badge')
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['badges'] })
+      window.location.reload()
+    },
+  })
+
+  const loadCodeBadgesMutation = useMutation({
+    mutationFn: async () => {
+      const cleanBadges = [
+        ...MiscBadges.map((badge) => ({ ...badge, category: 'Miscellaneous' })),
+        ...StreakBadges.map((badge) => ({
+          ...badge,
+          category: 'Daily Streaks',
+        })),
+        ...TacticStreakBadges.map((badge) => ({
+          ...badge,
+          category: 'Tactics Streaks',
+        })),
+      ]
+
+      await Promise.all(
+        cleanBadges.map((badge) => createBadgeMutation.mutateAsync(badge)),
+      )
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['badges'] })
+      window.location.reload()
+    },
+    onError: (error) => {
+      Sentry.captureException(error)
+      setError('Failed to load code badges')
+    },
+  })
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError('')
-    if (!name || !description || !category)
+    if (!name || !description || !category) {
       return setError('All fields are required')
-
-    const newBadge = await createBadge(name, description, category)
-    if (newBadge) {
-      // reload page
-      window.location.reload()
     }
-  }
 
-  const loadCodeBadges = async () => {
-    const cleanBadges: {
-      name: string
-      description: string
-      category: string
-    }[] = []
-    MiscBadges.forEach((badge) => {
-      cleanBadges.push({
-        name: badge.name,
-        description: badge.description,
-        category: 'Miscellaneous',
-      })
-    })
-    StreakBadges.forEach((badge) => {
-      cleanBadges.push({
-        name: badge.name,
-        description: badge.description,
-        category: 'Daily Streaks',
-      })
-    })
-    TacticStreakBadges.forEach((badge) => {
-      cleanBadges.push({
-        name: badge.name,
-        description: badge.description,
-        category: 'Tactics Streaks',
-      })
-    })
-
-    await Promise.all(
-      cleanBadges.map(async (badge) => {
-        await createBadge(badge.name, badge.description, badge.category)
-      }),
-    )
-
-    // reload page
-    window.location.reload()
+    createBadgeMutation.mutate({ name, description, category })
   }
 
   return (
@@ -136,11 +131,17 @@ export default function BadgeCreator() {
             onChange={(e) => setCategory(e.target.value)}
           />
         </div>
-        <Button variant="primary">Create</Button>
+        <Button variant="primary" disabled={createBadgeMutation.isPending}>
+          {createBadgeMutation.isPending ? 'Creating...' : 'Create'}
+        </Button>
       </form>
       {error && <p className="text-red-500">{error}</p>}
       <div className="mt-4 flex flex-col gap-2">
-        <Button onClick={() => setOpen(!open)} variant="danger">
+        <Button
+          onClick={() => setOpen(!open)}
+          variant="danger"
+          disabled={loadCodeBadgesMutation.isPending}
+        >
           Load Code Badges
         </Button>
         {open && (
@@ -149,8 +150,14 @@ export default function BadgeCreator() {
               This will load in all badges that are stored in arrays in code. DO
               NOT USE UNLESS YOU KNOW WHAT YOURE DOING.
             </p>
-            <Button variant="warning" onClick={loadCodeBadges}>
-              Create Code Badges
+            <Button
+              variant="warning"
+              onClick={() => loadCodeBadgesMutation.mutate()}
+              disabled={loadCodeBadgesMutation.isPending}
+            >
+              {loadCodeBadgesMutation.isPending
+                ? 'Creating...'
+                : 'Create Code Badges'}
             </Button>
           </>
         )}

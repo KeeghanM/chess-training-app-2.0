@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 
+import { useMutation } from '@tanstack/react-query'
 import Tippy from '@tippyjs/react'
 import { Chess } from 'chess.js'
 import type { ResponseJson } from '~/app/api/responses'
@@ -9,70 +10,66 @@ import type { ResponseJson } from '~/app/api/responses'
 import Button from '../../_elements/button'
 import Spinner from '../../general/Spinner'
 import ChessBoard from '../../training/ChessBoard'
-import type { CuratedSetPuzzle } from './CuratedSetsBrowser'
+import {
+  CuratedSetBrowserContext,
+  type CuratedSetPuzzle,
+} from './CuratedSetsBrowser'
 
-export default function PuzzleDisplay(props: {
-  puzzle?: CuratedSetPuzzle
-  mode: 'list' | 'search'
-}) {
-  // Status
-  const [status, setStatus] = useState<'saving' | 'deleting' | 'idle'>('idle')
-  const [error, setError] = useState('')
+export default function PuzzleDisplay() {
+  const { puzzle, mode } = useContext(CuratedSetBrowserContext)
+
+  const getOrientation = (
+    puzzle: CuratedSetPuzzle | undefined,
+  ): 'white' | 'black' =>
+    puzzle
+      ? puzzle.directStart
+        ? puzzle.fen.split(' ')[1] == 'w'
+          ? 'white'
+          : 'black'
+        : puzzle.fen.split(' ')[1] == 'w'
+          ? 'black'
+          : 'white'
+      : 'white'
 
   // Puzzle Display
-  const [position, setPosition] = useState('')
   const [game] = useState(new Chess())
-  const [moves, setMoves] = useState<string[]>([])
-  const [orientation, setOrientation] = useState<'white' | 'black'>('white')
+  const [position, setPosition] = useState(puzzle?.fen ?? '')
   const [readyForInput] = useState(false)
 
   // Puzzle Editing
-  const [rating, setRating] = useState(props.puzzle?.rating ?? 1500)
-  const [comment, setComment] = useState(props.puzzle?.comment ?? '')
+  const [rating, setRating] = useState(puzzle?.rating ?? 1500)
+  const [comment, setComment] = useState(puzzle?.comment ?? '')
 
-  const savePuzzle = async () => {
-    setStatus('saving')
-    try {
-      if (!props.puzzle) return
+  const saveMutation = useMutation({
+    mutationFn: async () => {
+      if (!puzzle) throw new Error('No puzzle selected')
       const resp = await fetch('/api/admin/curated-sets/curatedPuzzle', {
         method: 'PATCH',
         body: JSON.stringify({
-          id: props.puzzle.curatedPuzzleId,
+          id: puzzle.curatedPuzzleId,
           rating,
           comment,
-          moves,
+          moves: puzzle.moves,
         }),
       })
       const json = (await resp.json()) as ResponseJson
       if (json.message != 'Puzzle updated') throw new Error(json.message)
-    } catch (e) {
-      if (e instanceof Error) setError(e.message)
-      else setError('Unknown error')
-    } finally {
-      setStatus('idle')
-    }
-  }
+      return json
+    },
+  })
 
-  const deletePuzzle = async () => {
-    setStatus('deleting')
-    try {
-      if (!props.puzzle) return
-      if (!confirm('Are you sure you want to delete this puzzle?')) return
+  const deleteMutation = useMutation({
+    mutationFn: async () => {
+      if (!puzzle) throw new Error('No puzzle selected')
       const resp = await fetch('/api/admin/curated-sets/curatedPuzzle', {
         method: 'DELETE',
-        body: JSON.stringify({
-          id: props.puzzle.curatedPuzzleId,
-        }),
+        body: JSON.stringify({ id: puzzle.curatedPuzzleId }),
       })
       const json = (await resp.json()) as ResponseJson
       if (json?.message != 'Puzzle deleted') throw new Error(json.message)
-    } catch (e) {
-      if (e instanceof Error) setError(e.message)
-      else setError('Unknown error')
-    } finally {
-      setStatus('idle')
-    }
-  }
+      return json
+    },
+  })
 
   const PgnDisplay = game.history().map((move, index) => {
     const moveNumber = Math.floor(index / 2) + 1 + game.moveNumber()
@@ -94,7 +91,7 @@ export default function PuzzleDisplay(props: {
         key={'btn' + moveNumber.toString() + move + moveColour}
         className="h-max max-h-fit bg-none px-1 py-1 hover:bg-purple-800 hover:text-white"
         onClick={() => {
-          const newGame = new Chess(props.puzzle!.fen)
+          const newGame = new Chess(puzzle!.fen)
           for (let i = 0; i <= index; i++) {
             newGame.move(game.history()[i]!)
           }
@@ -106,47 +103,12 @@ export default function PuzzleDisplay(props: {
     )
   })
 
-  useEffect(() => {
-    if (props.puzzle) {
-      ;(async () => {
-        // Ensure we have the latest
-        const json = await fetch(
-          '/api/puzzles/getPuzzleById/' + props.puzzle!.puzzleid,
-        ).then((res) => res.json())
-        const puzzle = json.data.puzzle as CuratedSetPuzzle
-
-        game.load(puzzle.fen)
-        const fenCol = puzzle.fen.split(' ')[1]
-        setOrientation(
-          puzzle.directStart
-            ? fenCol == 'w'
-              ? 'white'
-              : 'black'
-            : fenCol == 'w'
-              ? 'black'
-              : 'white',
-        )
-        for (const move of puzzle.moves) {
-          game.move(move)
-        }
-
-        setPosition(puzzle.fen)
-        setRating(puzzle.rating)
-        setComment(puzzle.comment ?? '')
-        setMoves(puzzle.moves)
-      })().catch(console.error)
-    } else {
-      game.reset()
-      setPosition(game.fen())
-    }
-  }, [props.puzzle])
-
   return (
     <div className="flex">
       <ChessBoard
         game={game}
         position={position}
-        orientation={orientation}
+        orientation={getOrientation(puzzle)}
         readyForInput={readyForInput}
         soundEnabled={true}
         additionalSquares={{}}
@@ -155,14 +117,14 @@ export default function PuzzleDisplay(props: {
         enableHighlights={false}
         moveMade={null}
       />
-      {props.puzzle && (
+      {puzzle && (
         <div className="flex flex-row">
           {/* PGN Display */}
           <div className="flex flex-1 h-full flex-wrap content-start gap-1 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
             <button
               className="h-max max-h-fit bg-none p-1 hover:bg-purple-800 hover:text-white"
               onClick={() => {
-                setPosition(props.puzzle!.fen)
+                setPosition(puzzle!.fen)
               }}
             >
               Start
@@ -170,7 +132,7 @@ export default function PuzzleDisplay(props: {
             {PgnDisplay.map((item) => item)}
           </div>
 
-          {props.mode === 'list' && (
+          {mode === 'list' && (
             <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 text-black dark:text-white">
               <>
                 {/* Puzzle Details Editor */}
@@ -197,10 +159,10 @@ export default function PuzzleDisplay(props: {
                 <div className="flex justify-between gap-2">
                   <Button
                     variant="primary"
-                    onClick={savePuzzle}
-                    disabled={status === 'saving'}
+                    onClick={() => saveMutation.mutate()}
+                    disabled={saveMutation.isPending || puzzle === undefined}
                   >
-                    {status == 'saving' ? (
+                    {saveMutation.isPending ? (
                       <>
                         Saving... <Spinner />
                       </>
@@ -210,10 +172,15 @@ export default function PuzzleDisplay(props: {
                   </Button>
                   <Button
                     variant="danger"
-                    onClick={deletePuzzle}
-                    disabled={status === 'deleting'}
+                    onClick={() => {
+                      if (
+                        confirm('Are you sure you want to delete this puzzle?')
+                      )
+                        deleteMutation.mutate()
+                    }}
+                    disabled={deleteMutation.isPending || puzzle === undefined}
                   >
-                    {status == 'deleting' ? (
+                    {deleteMutation.isPending ? (
                       <>
                         Deleting... <Spinner />
                       </>
@@ -222,7 +189,12 @@ export default function PuzzleDisplay(props: {
                     )}
                   </Button>
                 </div>
-                {error && <p className="text-red-500">{error}</p>}
+                {saveMutation.isError && (
+                  <p className="text-red-500">{saveMutation.error.message}</p>
+                )}
+                {deleteMutation.isError && (
+                  <p className="text-red-500">{deleteMutation.error.message}</p>
+                )}
               </>
             </div>
           )}

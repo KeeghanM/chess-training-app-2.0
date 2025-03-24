@@ -1,49 +1,55 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
-import * as Sentry from '@sentry/react'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Spinner from '../../general/Spinner'
-import type { CuratedSetPuzzle } from './CuratedSetsBrowser'
+import {
+  CuratedSetBrowserContext,
+  type CuratedSetPuzzle,
+} from './CuratedSetsBrowser'
 
-export default function PuzzleList(props: {
-  setId: string
-  selectedId: string
-  selectPuzzle: (puzzle: CuratedSetPuzzle) => void
-}) {
+export default function PuzzleList() {
+  const queryClient = useQueryClient()
+  const { selectedSet, puzzle, setPuzzle } = useContext(
+    CuratedSetBrowserContext,
+  )
   const [puzzles, setPuzzles] = useState<CuratedSetPuzzle[]>([])
-  const [loading, setLoading] = useState(false)
 
-  const getPuzzles = async (setId: string) => {
-    setLoading(true)
-    try {
+  const { isLoading, error } = useQuery({
+    queryKey: ['puzzles'],
+    queryFn: async () => {
+      if (!selectedSet) throw new Error('No set selected')
       const resp = await fetch('/api/admin/curated-sets/getPuzzles', {
         method: 'POST',
-        body: JSON.stringify({ setId }),
+        body: JSON.stringify({ setId: selectedSet.id }),
       })
       const json = (await resp.json()) as ResponseJson
       if (json.message != 'Puzzles found') throw new Error(json.message)
 
       const puzzles = json.data!.puzzles as CuratedSetPuzzle[]
       setPuzzles(puzzles)
-    } catch (e) {
-      Sentry.captureException(e)
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+  })
 
   useEffect(() => {
-    if (props.setId)
-      (async () => getPuzzles(props.setId))().catch(console.error)
-  }, [props.setId])
+    queryClient.invalidateQueries({ queryKey: ['puzzles'] })
+  }, [selectedSet])
+
+  if (error) {
+    return (
+      <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 max-h-[70vh]">
+        <p className="text-red-500">Error loading puzzles: {error.message}</p>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 max-h-[70vh]">
       <ul className="h-full max-h-[50vh] overflow-y-auto text-black">
-        {loading ? (
+        {isLoading ? (
           <Spinner />
         ) : (
           puzzles
@@ -53,17 +59,16 @@ export default function PuzzleList(props: {
                 return (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
               return a.puzzleid.localeCompare(b.puzzleid)
             })
-            .map((puzzle) => (
+            .map((p) => (
               <li
-                key={puzzle.puzzleid}
+                key={p.puzzleid}
                 className={
                   'cursor-pointer bg-gray-50 border-b border-slate-500 hover:bg-orange-200 p-2 text-sm' +
-                  (props.selectedId == puzzle.puzzleid ? ' bg-purple-200' : '')
+                  (puzzle?.puzzleid === p.puzzleid ? ' bg-purple-200' : '')
                 }
-                onClick={() => props.selectPuzzle(puzzle)}
+                onClick={() => setPuzzle(p)}
               >
-                {puzzle.puzzleid} ({puzzle.rating} - {puzzle.moves.length}{' '}
-                moves)
+                {p.puzzleid} ({p.rating} - {p.moves.length} moves)
               </li>
             ))
         )}

@@ -5,7 +5,6 @@ import { usePathname, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 
 import posthog from 'posthog-js'
-import { PostHogProvider } from 'posthog-js/react'
 
 if (typeof window !== 'undefined') {
   posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
@@ -31,8 +30,4 @@ export function PostHogPageview(): JSX.Element {
   }, [pathname, searchParams])
 
   return <></>
-}
-
-export function PosthogProvider({ children }: { children: React.ReactNode }) {
-  return <PostHogProvider client={posthog}>{children}</PostHogProvider>
 }
