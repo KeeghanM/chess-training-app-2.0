@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
 
 import * as Sentry from '@sentry/react'
 import Tippy from '@tippyjs/react'
@@ -7,12 +7,15 @@ import type { ResponseJson } from '~/app/api/responses'
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 
-import type { CuratedSetPuzzle } from '../CuratedSetsBrowser'
+import {
+  CuratedSetBrowserContext,
+  type CuratedSetPuzzle,
+} from '../CuratedSetsBrowser'
 import themes from '../themes'
 
-export default function LiChessSearch(props: {
-  setPuzzle: (puzzle: CuratedSetPuzzle) => void
-}) {
+export default function LiChessSearch() {
+  const { setPuzzle } = useContext(CuratedSetBrowserContext)
+
   // Searching
   const [selectedThemes, setSelectedThemes] = useState<string[]>([])
   const [filter, setFilter] = useState('')
@@ -66,7 +69,7 @@ export default function LiChessSearch(props: {
 
       if (!puzzle) throw new Error('No puzzle found')
 
-      props.setPuzzle(puzzle)
+      setPuzzle(puzzle)
       setPuzzleId('')
     } catch (e) {
       Sentry.captureException(e)

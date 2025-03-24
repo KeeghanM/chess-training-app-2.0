@@ -1,38 +1,42 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Spinner from '~/app/components/general/Spinner'
 
-import type { CuratedSetPuzzle } from '../CuratedSetsBrowser'
+import {
+  CuratedSetBrowserContext,
+  type CuratedSetPuzzle,
+} from '../CuratedSetsBrowser'
 import CreateCustom from './CreateCustom'
 import LiChessSearch from './LiChessSearch'
 
-export default function PuzzleSearch(props: {
-  setPuzzle: (puzzle: CuratedSetPuzzle) => void
-}) {
+export default function PuzzleSearch() {
+  const queryClient = useQueryClient()
+  const { setPuzzle } = useContext(CuratedSetBrowserContext)
   const [mode, setMode] = useState<'LiChess' | 'Custom'>('LiChess')
   const [puzzles, setPuzzles] = useState<CuratedSetPuzzle[]>([])
   const [selectedPuzzle, setSelectedPuzzle] = useState<CuratedSetPuzzle>()
-  const [loading, setLoading] = useState(false)
 
-  const loadPuzzles = async () => {
-    setLoading(true)
-    const response = await fetch('/api/admin/curated-sets/customPuzzle')
-    const json = (await response.json()) as ResponseJson
-    if (!json.data?.puzzles) return
-    setPuzzles(json.data.puzzles as CuratedSetPuzzle[])
-    setLoading(false)
-  }
+  const { isLoading } = useQuery({
+    queryKey: ['puzzles'],
+    queryFn: async () => {
+      const response = await fetch('/api/admin/curated-sets/customPuzzle')
+      const json = (await response.json()) as ResponseJson
+      if (!json.data?.puzzles) return
+      setPuzzles(json.data.puzzles as CuratedSetPuzzle[])
+    },
+  })
 
   useEffect(() => {
     if (mode === 'LiChess') {
       setPuzzles([])
-      return
+    } else {
+      queryClient.invalidateQueries({ queryKey: ['puzzles'] })
     }
-    ;(async () => await loadPuzzles())().catch(console.error)
   }, [mode])
 
   return (
@@ -62,11 +66,11 @@ export default function PuzzleSearch(props: {
         </p>
       </div>
       {mode === 'LiChess' ? (
-        <LiChessSearch setPuzzle={props.setPuzzle} />
+        <LiChessSearch />
       ) : (
         <>
-          <CreateCustom onLoad={loadPuzzles} />
-          {loading ? (
+          <CreateCustom />
+          {isLoading ? (
             <Spinner />
           ) : (
             <ul className="h-full max-h-[50vh] overflow-y-auto text-black">
@@ -81,7 +85,7 @@ export default function PuzzleSearch(props: {
                   }
                   onClick={() => {
                     setSelectedPuzzle(puzzle)
-                    props.setPuzzle(puzzle)
+                    setPuzzle(puzzle)
                   }}
                 >
                   {puzzle.puzzleid} ({puzzle.rating} - {puzzle.moves.length} )

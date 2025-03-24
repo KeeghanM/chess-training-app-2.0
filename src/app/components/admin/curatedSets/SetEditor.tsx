@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useContext, useState } from 'react'
 
-import type { CuratedSet } from '@prisma/client'
 import * as Sentry from '@sentry/react'
+import { useMutation } from '@tanstack/react-query'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
@@ -12,31 +12,32 @@ import TextEditor from '~/app/components/general/TextEditor'
 
 import GenerateSlug from '~/app/_util/GenerateSlug'
 
-export default function SetEditor(props: { set: CuratedSet }) {
-  const { set } = props
+import { CuratedSetBrowserContext } from './CuratedSetsBrowser'
+
+export default function SetEditor() {
+  const { selectedSet } = useContext(CuratedSetBrowserContext)
+
   // Form
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
-  const [shortDescription, setShortDescription] = useState('')
-  const [minRating, setMinRating] = useState(500)
-  const [maxRating, setMaxRating] = useState(2500)
-  const [price, setPrice] = useState(0)
-  const [published, setPublished] = useState(false)
+  const [name, setName] = useState(selectedSet?.name ?? '')
+  const [description, setDescription] = useState(selectedSet?.description ?? '')
+  const [shortDescription, setShortDescription] = useState(
+    selectedSet?.shortDesc ?? '',
+  )
+  const [minRating, setMinRating] = useState(selectedSet?.minRating ?? 500)
+  const [maxRating, setMaxRating] = useState(selectedSet?.maxRating ?? 2500)
+  const [price, setPrice] = useState(selectedSet?.price ?? 0)
+  const [published, setPublished] = useState(selectedSet?.published ?? false)
 
-  // Status
-  const [error, setError] = useState('')
-  const [status, setStatus] = useState<'idle' | 'saving' | 'deleting'>('idle')
-
-  const updateSet = async () => {
-    setStatus('saving')
-    try {
+  const mutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedSet) throw new Error('No set selected')
       const resp = await fetch(`/api/admin/curated-sets`, {
         method: 'PATCH',
         body: JSON.stringify({
-          id: set.id,
+          id: selectedSet.id,
           name,
           slug: GenerateSlug(name),
-          size: set.size,
+          size: selectedSet.size,
           description,
           shortDesc: shortDescription,
           minRating,
@@ -47,24 +48,12 @@ export default function SetEditor(props: { set: CuratedSet }) {
       })
       const json = (await resp.json()) as ResponseJson
       if (json.message != 'Set updated') throw new Error(json.message)
-    } catch (e) {
-      Sentry.captureException(e)
-      if (e instanceof Error) setError(e.message)
-      else setError('Something went wrong')
-    }
-    setStatus('idle')
-  }
-
-  useEffect(() => {
-    if (!set) return
-    setName(set.name)
-    setDescription(set.description ?? '')
-    setShortDescription(set.shortDesc ?? '')
-    setMinRating(set.minRating)
-    setMaxRating(set.maxRating)
-    setPrice(set.price)
-    setPublished(set.published)
-  }, [set])
+      return json
+    },
+    onError: (error) => {
+      Sentry.captureException(error)
+    },
+  })
 
   return (
     <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 max-h-[70vh] text-black dark:text-white">
@@ -136,8 +125,12 @@ export default function SetEditor(props: { set: CuratedSet }) {
           />
         </div>
       </div>
-      <Button variant="primary" onClick={updateSet} disabled={status != 'idle'}>
-        {status == 'saving' ? (
+      <Button
+        variant="primary"
+        onClick={() => mutation.mutate()}
+        disabled={mutation.isPending || selectedSet === undefined}
+      >
+        {mutation.isPending ? (
           <>
             Saving <Spinner />
           </>
@@ -145,7 +138,9 @@ export default function SetEditor(props: { set: CuratedSet }) {
           'Save'
         )}
       </Button>
-      {error && <p className="text-red-500">{error}</p>}
+      {mutation.isError && (
+        <p className="text-red-500">{mutation.error.message}</p>
+      )}
     </div>
   )
 }

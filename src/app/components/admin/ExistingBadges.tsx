@@ -19,20 +19,43 @@ import {
 } from '@dnd-kit/sortable'
 import type { Badge } from '@prisma/client'
 import * as Sentry from '@sentry/nextjs'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 import Heading from '~/app/components/_elements/heading'
 
 import SortableItem from '~/app/_util/SortableItem'
 
 export default function ExistingBadges(props: { existingBadges: Badge[] }) {
+  const queryClient = useQueryClient()
   const [existingBadges, setExistingBadges] = useState(props.existingBadges)
   const [items, setItems] = useState(existingBadges.map((badge) => badge.name))
+
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
     }),
   )
+
+  const updateBadgeOrder = useMutation({
+    mutationFn: async ({ name, sort }: { name: string; sort: number }) => {
+      const response = await fetch('/api/admin/badges', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, sort }),
+      })
+      if (!response.ok) {
+        throw new Error('Failed to update badge order')
+      }
+      return response.json()
+    },
+    onError: (error) => {
+      Sentry.captureException(error)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['badges'] })
+    },
+  })
 
   useEffect(() => {
     const newOrderBadges = items.map((name) => {
@@ -54,27 +77,14 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
         return arrayMove(items, oldIndex, newIndex)
       })
 
-      try {
-        // update sort order in database
-        await fetch('/api/admin/badges', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: active.id,
-            sort: newIndex,
-          }),
-        })
-        await fetch('/api/admin/badges', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: over.id,
-            sort: oldIndex,
-          }),
-        })
-      } catch (e) {
-        Sentry.captureException(e)
-      }
+      await updateBadgeOrder.mutateAsync({
+        name: active.id as string,
+        sort: newIndex,
+      })
+      await updateBadgeOrder.mutateAsync({
+        name: over.id as string,
+        sort: oldIndex,
+      })
     }
   }
 

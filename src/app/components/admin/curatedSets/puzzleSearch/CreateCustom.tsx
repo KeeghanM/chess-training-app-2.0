@@ -1,28 +1,23 @@
 'use client'
 
-import { useState } from 'react'
-
 import { parse } from '@mliebelt/pgn-parser'
 import type { ParseTree } from '@mliebelt/pgn-parser'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { v4 as uuidv4 } from 'uuid'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '~/app/components/_elements/button'
 import Spinner from '~/app/components/general/Spinner'
 
-export default function CreateCustom(props: { onLoad: () => void }) {
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+export default function CreateCustom() {
+  const queryClient = useQueryClient()
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const pgn = prompt('Enter PGN(s) to import')
+      if (!pgn) return
+      const directStart =
+        prompt('Are the first moves the player to move? (y/n)') === 'y'
 
-  const importCustom = async () => {
-    const pgn = prompt('Enter PGN(s) to import')
-    if (!pgn) return
-    const directStart =
-      prompt('Are the first moves the player to move? (y/n)') === 'y'
-
-    setLoading(true)
-    setError('')
-    try {
       const parsed = parse(pgn, { startRule: 'games' }) as ParseTree[]
       const puzzles: {
         id: string
@@ -54,28 +49,25 @@ export default function CreateCustom(props: { onLoad: () => void }) {
       // Send to database
       const response = await fetch('/api/admin/curated-sets/customPuzzle', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ puzzles }),
       })
       const json = (await response.json()) as ResponseJson
       if (json?.message != 'Puzzles created')
         throw new Error(json?.message ?? 'Error importing puzzles')
 
-      props.onLoad()
-    } catch (e) {
-      if (e instanceof Error) setError(e.message)
-      else setError('Error importing puzzles')
-    } finally {
-      setLoading(false)
-    }
-  }
+      queryClient.invalidateQueries({ queryKey: ['puzzles'] })
+    },
+  })
 
   return (
     <>
-      <Button variant="primary" onClick={importCustom} disabled={loading}>
-        {loading ? (
+      <Button
+        variant="primary"
+        onClick={() => mutation.mutate()}
+        disabled={mutation.isPending}
+      >
+        {mutation.isPending ? (
           <>
             Importing... <Spinner />
           </>
@@ -83,7 +75,9 @@ export default function CreateCustom(props: { onLoad: () => void }) {
           'Import Custom Puzzle(s)'
         )}
       </Button>
-      {error && <p className="text-red-500">{error}</p>}
+      {mutation.isError && (
+        <p className="text-red-500">{mutation.error.message}</p>
+      )}
     </>
   )
 }

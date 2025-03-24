@@ -1,59 +1,52 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useContext } from 'react'
 
+import * as Sentry from '@sentry/react'
+import { useMutation } from '@tanstack/react-query'
 import type { ResponseJson } from '~/app/api/responses'
 
 import Button from '../../_elements/button'
 import Spinner from '../../general/Spinner'
+import { CuratedSetBrowserContext } from './CuratedSetsBrowser'
 
-export default function AddToSet(props: { setId: string; puzzleId?: string }) {
-  const { setId, puzzleId } = props
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+export default function AddToSet() {
+  const { selectedSet, puzzle } = useContext(CuratedSetBrowserContext)
 
-  const addPuzzleToSet = async () => {
-    setLoading(true)
-    setError('')
-    try {
+  const mutation = useMutation({
+    mutationFn: async () => {
+      if (!selectedSet || !puzzle) throw new Error('No set or puzzle selected')
+
       const resp = await fetch('/api/admin/curated-sets/curatedPuzzle', {
         method: 'POST',
         body: JSON.stringify({
-          setId,
-          puzzleid: puzzleId,
+          setId: selectedSet.id,
+          puzzleid: puzzle.puzzleid,
         }),
       })
       const json = (await resp.json()) as ResponseJson
       if (json.message !== 'Puzzle added to set') throw new Error(json.message)
-    } catch (e) {
-      if (e instanceof Error) setError(e.message)
-      else setError('Unknown error')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => {
-    setError('')
-  }, [puzzleId, setId])
+      return json
+    },
+    onError: (error) => {
+      Sentry.captureException(error)
+    },
+  })
 
   return (
     <>
       <Button
         variant="accent"
         className="w-full mt-1"
-        onClick={addPuzzleToSet}
-        disabled={loading}
+        onClick={() => mutation.mutate()}
+        disabled={mutation.isPending}
       >
-        {loading ? (
-          <>
-            Add to set <Spinner />
-          </>
-        ) : (
-          'Add to Set'
-        )}
+        Add to Set
+        {mutation.isPending && <Spinner />}
       </Button>
-      {error && <p className="text-red-500">{error}</p>}
+      {mutation.isError && (
+        <p className="text-red-500">{mutation.error.message}</p>
+      )}
     </>
   )
 }

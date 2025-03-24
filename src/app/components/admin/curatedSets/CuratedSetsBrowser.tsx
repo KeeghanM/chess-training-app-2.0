@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 
 import type { CuratedSet } from '@prisma/client'
 import 'react-toggle/style.css'
@@ -18,25 +18,51 @@ import SetSelector from './SetSelector'
 import PuzzleSearch from './puzzleSearch/PuzzleSearch'
 
 export type CuratedSetPuzzle = TrainingPuzzle & { curatedPuzzleId: number }
-export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
+
+type Modes = 'list' | 'search' | 'edit'
+interface ICuratedSetBrowserContext {
+  sets: CuratedSet[]
+  selectedSet: CuratedSet | undefined
+  setSelectedSet: (set: CuratedSet) => void
+  puzzle: CuratedSetPuzzle | undefined
+  setPuzzle: (puzzle: CuratedSetPuzzle) => void
+  mode: Modes
+  setMode: (mode: Modes) => void
+}
+export const CuratedSetBrowserContext =
+  createContext<ICuratedSetBrowserContext>({
+    sets: [],
+    selectedSet: undefined,
+    setSelectedSet: () => {},
+    puzzle: undefined,
+    setPuzzle: () => {},
+    mode: 'edit',
+    setMode: () => {},
+  })
+
+export default function CuratedSetsBrowser({ sets }: { sets: CuratedSet[] }) {
   const [puzzle, setPuzzle] = useState<CuratedSetPuzzle>()
   const [selectedSet, setSelectedSet] = useState<CuratedSet>()
-  const [mode, setMode] = useState<'list' | 'search' | 'edit'>('edit')
+  const [mode, setMode] = useState<Modes>('edit')
 
   useEffect(() => {
     setPuzzle(undefined)
   }, [selectedSet, mode])
 
   return (
-    <>
-      {/* <div className="p-2">
-        <Heading as="h1">Curated Sets Editor & Browser</Heading>
-      </div> */}
+    <CuratedSetBrowserContext.Provider
+      value={{
+        sets,
+        selectedSet,
+        setSelectedSet,
+        puzzle,
+        setPuzzle,
+        mode,
+        setMode,
+      }}
+    >
       {!selectedSet ? (
-        <SetSelector
-          sets={props.sets}
-          selectSet={(set) => setSelectedSet(set)}
-        />
+        <SetSelector />
       ) : (
         <>
           <div className="flex items-center justify-center gap-4">
@@ -83,33 +109,20 @@ export default function CuratedSetsBrowser(props: { sets: CuratedSet[] }) {
                   Edit Set
                 </p>
               </div>
-              {mode === 'list' && (
-                <PuzzleList
-                  setId={selectedSet.id}
-                  selectedId={puzzle?.puzzleid ?? ''}
-                  selectPuzzle={(puzzle) => setPuzzle(puzzle)}
-                />
-              )}
+              {mode === 'list' && <PuzzleList />}
               {mode === 'search' && (
                 <>
-                  <PuzzleSearch setPuzzle={(puzzle) => setPuzzle(puzzle)} />
-                  <AddToSet
-                    puzzleId={puzzle?.puzzleid}
-                    setId={selectedSet.id}
-                  />
+                  <PuzzleSearch />
+                  <AddToSet />
                 </>
               )}
             </div>
 
             {/* SECOND COLUMN */}
-            {mode === 'edit' ? (
-              <SetEditor set={selectedSet} />
-            ) : (
-              <PuzzleDisplay puzzle={puzzle} mode={mode} />
-            )}
+            {mode === 'edit' ? <SetEditor /> : <PuzzleDisplay />}
           </div>
         </>
       )}
-    </>
+    </CuratedSetBrowserContext.Provider>
   )
 }
