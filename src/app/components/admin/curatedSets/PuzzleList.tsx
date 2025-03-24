@@ -18,7 +18,7 @@ export default function PuzzleList() {
   )
   const [puzzles, setPuzzles] = useState<CuratedSetPuzzle[]>([])
 
-  const { isLoading } = useQuery({
+  const { isLoading, error } = useQuery({
     queryKey: ['puzzles'],
     queryFn: async () => {
       if (!selectedSet) throw new Error('No set selected')
@@ -37,6 +37,14 @@ export default function PuzzleList() {
   useEffect(() => {
     queryClient.invalidateQueries({ queryKey: ['puzzles'] })
   }, [selectedSet])
+
+  if (error) {
+    return (
+      <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 max-h-[70vh]">
+        <p className="text-red-500">Error loading puzzles: {error.message}</p>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-1 flex-col gap-2 border lg:border-4 border-purple-700 p-2 bg-purple-700 bg-opacity-20 max-h-[70vh]">

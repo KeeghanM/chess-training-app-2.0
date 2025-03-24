@@ -9,8 +9,6 @@ import posthog from 'posthog-js'
 import { PostHogProvider } from 'posthog-js/react'
 import { env } from '~/env'
 
-const queryClient = new QueryClient()
-
 export default function Providers({
   distinctId,
   children,
@@ -18,6 +16,8 @@ export default function Providers({
   distinctId: string
   children: ReactNode
 }) {
+  const queryClient = new QueryClient()
+
   return (
     <QueryClientProvider client={queryClient}>
       <PostHogProvider client={posthog}>

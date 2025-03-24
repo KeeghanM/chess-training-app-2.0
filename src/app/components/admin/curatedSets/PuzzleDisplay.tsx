@@ -61,7 +61,6 @@ export default function PuzzleDisplay() {
   const deleteMutation = useMutation({
     mutationFn: async () => {
       if (!puzzle) throw new Error('No puzzle selected')
-      if (!confirm('Are you sure you want to delete this puzzle?')) return
       const resp = await fetch('/api/admin/curated-sets/curatedPuzzle', {
         method: 'DELETE',
         body: JSON.stringify({ id: puzzle.curatedPuzzleId }),
@@ -173,7 +172,12 @@ export default function PuzzleDisplay() {
                   </Button>
                   <Button
                     variant="danger"
-                    onClick={() => deleteMutation.mutate()}
+                    onClick={() => {
+                      if (
+                        confirm('Are you sure you want to delete this puzzle?')
+                      )
+                        deleteMutation.mutate()
+                    }}
                     disabled={deleteMutation.isPending || puzzle === undefined}
                   >
                     {deleteMutation.isPending ? (

@@ -24,9 +24,10 @@ export default function SetCreator(props: {
 
   const mutation = useMutation({
     mutationFn: async () => {
+      const slug = GenerateSlug(name)
       const resp = await fetch('/api/admin/curated-sets', {
         method: 'POST',
-        body: JSON.stringify({ name, slug: GenerateSlug(name) }),
+        body: JSON.stringify({ name, slug }),
       })
       const json = (await resp.json()) as ResponseJson
       if (json.message != 'Set created') throw new Error(json.message)
