@@ -22,3 +22,10 @@ export async function tryCatch<T, E = Error>(
     return { data: null, error: error as E }
   }
 }
+
+export type ExpectedError = Error & { expected?: boolean }
+export function expectedError(message: string) {
+  const expectedError: ExpectedError = new Error(message)
+  expectedError.expected = true
+  return expectedError
+}

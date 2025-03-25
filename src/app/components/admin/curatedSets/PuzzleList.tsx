@@ -5,6 +5,8 @@ import { useContext, useEffect, useState } from 'react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import type { ResponseJson } from '~/app/api/responses'
 
+import { expectedError } from '~/app/_util/TryCatch'
+
 import Spinner from '../../general/Spinner'
 import {
   CuratedSetBrowserContext,
@@ -21,7 +23,7 @@ export default function PuzzleList() {
   const { isLoading, error } = useQuery({
     queryKey: ['puzzles'],
     queryFn: async () => {
-      if (!selectedSet) throw new Error('No set selected')
+      if (!selectedSet) throw expectedError('No set selected')
       const resp = await fetch('/api/admin/curated-sets/getPuzzles', {
         method: 'POST',
         body: JSON.stringify({ setId: selectedSet.id }),

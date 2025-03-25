@@ -24,6 +24,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import Heading from '~/app/components/_elements/heading'
 
 import SortableItem from '~/app/_util/SortableItem'
+import { ExpectedError, expectedError } from '~/app/_util/TryCatch'
 
 export default function ExistingBadges(props: { existingBadges: Badge[] }) {
   const queryClient = useQueryClient()
@@ -37,20 +38,18 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
     }),
   )
 
-  const updateBadgeOrder = useMutation({
+  const mutation = useMutation({
     mutationFn: async ({ name, sort }: { name: string; sort: number }) => {
+      if (!name || !sort) throw expectedError('Missing values')
       const response = await fetch('/api/admin/badges', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, sort }),
       })
-      if (!response.ok) {
-        throw new Error('Failed to update badge order')
-      }
-      return response.json()
+      if (!response.ok) throw new Error('Failed to update badge order')
     },
-    onError: (error) => {
-      Sentry.captureException(error)
+    onError: (error: ExpectedError) => {
+      if (!error.expected) Sentry.captureException(error)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['badges'] })
@@ -77,11 +76,11 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
         return arrayMove(items, oldIndex, newIndex)
       })
 
-      await updateBadgeOrder.mutateAsync({
+      await mutation.mutateAsync({
         name: active.id as string,
         sort: newIndex,
       })
-      await updateBadgeOrder.mutateAsync({
+      await mutation.mutateAsync({
         name: over.id as string,
         sort: oldIndex,
       })
@@ -125,6 +124,9 @@ export default function ExistingBadges(props: { existingBadges: Badge[] }) {
             )
           })}
         </DndContext>
+        {mutation.isError && (
+          <p className="text-red-500">{mutation.error.message}</p>
+        )}
       </div>
     </>
   )

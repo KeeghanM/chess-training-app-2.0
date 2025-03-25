@@ -6,6 +6,8 @@ import * as Sentry from '@sentry/react'
 import { useMutation } from '@tanstack/react-query'
 import type { ResponseJson } from '~/app/api/responses'
 
+import { type ExpectedError, expectedError } from '~/app/_util/TryCatch'
+
 import Button from '../../_elements/button'
 import Spinner from '../../general/Spinner'
 import { CuratedSetBrowserContext } from './CuratedSetsBrowser'
@@ -15,7 +17,8 @@ export default function AddToSet() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      if (!selectedSet || !puzzle) throw new Error('No set or puzzle selected')
+      if (!selectedSet || !puzzle)
+        throw expectedError('No set or puzzle selected')
 
       const resp = await fetch('/api/admin/curated-sets/curatedPuzzle', {
         method: 'POST',
@@ -26,10 +29,9 @@ export default function AddToSet() {
       })
       const json = (await resp.json()) as ResponseJson
       if (json.message !== 'Puzzle added to set') throw new Error(json.message)
-      return json
     },
-    onError: (error) => {
-      Sentry.captureException(error)
+    onError: (error: ExpectedError) => {
+      if (!error.expected) Sentry.captureException(error)
     },
   })
 

@@ -2,10 +2,13 @@
 
 import { useContext, useState } from 'react'
 
+import * as Sentry from '@sentry/react'
 import { useMutation } from '@tanstack/react-query'
 import Tippy from '@tippyjs/react'
 import { Chess } from 'chess.js'
 import type { ResponseJson } from '~/app/api/responses'
+
+import { ExpectedError, expectedError } from '~/app/_util/TryCatch'
 
 import Button from '../../_elements/button'
 import Spinner from '../../general/Spinner'
@@ -42,7 +45,7 @@ export default function PuzzleDisplay() {
 
   const saveMutation = useMutation({
     mutationFn: async () => {
-      if (!puzzle) throw new Error('No puzzle selected')
+      if (!puzzle) throw expectedError('No puzzle selected')
       const resp = await fetch('/api/admin/curated-sets/curatedPuzzle', {
         method: 'PATCH',
         body: JSON.stringify({
@@ -54,20 +57,24 @@ export default function PuzzleDisplay() {
       })
       const json = (await resp.json()) as ResponseJson
       if (json.message != 'Puzzle updated') throw new Error(json.message)
-      return json
+    },
+    onError: (error: ExpectedError) => {
+      if (!error.expected) Sentry.captureException(error)
     },
   })
 
   const deleteMutation = useMutation({
     mutationFn: async () => {
-      if (!puzzle) throw new Error('No puzzle selected')
+      if (!puzzle) throw expectedError('No puzzle selected')
       const resp = await fetch('/api/admin/curated-sets/curatedPuzzle', {
         method: 'DELETE',
         body: JSON.stringify({ id: puzzle.curatedPuzzleId }),
       })
       const json = (await resp.json()) as ResponseJson
       if (json?.message != 'Puzzle deleted') throw new Error(json.message)
-      return json
+    },
+    onError: (error: ExpectedError) => {
+      if (!error.expected) Sentry.captureException(error)
     },
   })
 

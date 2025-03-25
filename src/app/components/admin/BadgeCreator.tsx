@@ -14,13 +14,13 @@ import {
   StreakBadges,
   TacticStreakBadges,
 } from '~/app/_util/RanksAndBadges'
+import { ExpectedError, expectedError } from '~/app/_util/TryCatch'
 
 export default function BadgeCreator() {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('')
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
-  const [error, setError] = useState('')
 
   const queryClient = useQueryClient()
 
@@ -34,6 +34,9 @@ export default function BadgeCreator() {
       description: string
       category: string
     }) => {
+      if (!name || !description || !category)
+        throw expectedError('Missing fields')
+
       const res = await fetch('/api/admin/badges', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -41,15 +44,12 @@ export default function BadgeCreator() {
       })
       const json = (await res.json()) as ResponseJson
       if (json.message !== 'Badge created') throw new Error(json.message)
-      return json
     },
-    onError: (error) => {
-      Sentry.captureException(error)
-      setError('Failed to create badge')
+    onError: (error: ExpectedError) => {
+      if (!error.expected) Sentry.captureException(error)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['badges'] })
-      window.location.reload()
     },
   })
 
@@ -71,30 +71,25 @@ export default function BadgeCreator() {
         cleanBadges.map((badge) => createBadgeMutation.mutateAsync(badge)),
       )
     },
+    onError: (error) => {
+      Sentry.captureException(error)
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['badges'] })
       window.location.reload()
     },
-    onError: (error) => {
-      Sentry.captureException(error)
-      setError('Failed to load code badges')
-    },
   })
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    setError('')
-    if (!name || !description || !category) {
-      return setError('All fields are required')
-    }
-
-    createBadgeMutation.mutate({ name, description, category })
-  }
 
   return (
     <div>
       <Heading as={'h2'}>Create a new badge</Heading>
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+      <form
+        className="flex flex-col gap-4"
+        onSubmit={(e) => {
+          e.preventDefault()
+          createBadgeMutation.mutate({ name, description, category })
+        }}
+      >
         <div>
           <label>Name</label>
           <input
@@ -135,7 +130,12 @@ export default function BadgeCreator() {
           {createBadgeMutation.isPending ? 'Creating...' : 'Create'}
         </Button>
       </form>
-      {error && <p className="text-red-500">{error}</p>}
+      {createBadgeMutation.isError && (
+        <p className="text-red-500">{createBadgeMutation.error.message}</p>
+      )}
+      {loadCodeBadgesMutation.isError && (
+        <p className="text-red-500">{loadCodeBadgesMutation.error.message}</p>
+      )}
       <div className="mt-4 flex flex-col gap-2">
         <Button
           onClick={() => setOpen(!open)}
@@ -152,7 +152,9 @@ export default function BadgeCreator() {
             </p>
             <Button
               variant="warning"
-              onClick={() => loadCodeBadgesMutation.mutate()}
+              onClick={() => {
+                if (confirm('Are you sure?')) loadCodeBadgesMutation.mutate()
+              }}
               disabled={loadCodeBadgesMutation.isPending}
             >
               {loadCodeBadgesMutation.isPending
